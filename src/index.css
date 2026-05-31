@@ -74,3 +74,59 @@
                     linear-gradient(90deg, rgba(26, 53, 87, 0.05) 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+/* Conteneur des blocs KaTeX */
+.katex-display,
+.math-block {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch; /* scroll fluide sur iOS */
+  scrollbar-width: thin;
+  scrollbar-color: #D81B60 transparent;
+}
+
+.katex-display::-webkit-scrollbar,
+.math-block::-webkit-scrollbar {
+  height: 4px;
+}
+
+.katex-display::-webkit-scrollbar-thumb,
+.math-block::-webkit-scrollbar-thumb {
+  background-color: #D81B60;
+  border-radius: 2px;
+}
+
+/* Gradient indicatif sur les bords pour signaler le scroll possible */
+.katex-display-wrapper {
+  position: relative;
+}
+
+.katex-display-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(90deg, transparent, white);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.katex-display-wrapper.has-overflow::after {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .katex {
+    font-size: 0.9em !important;
+  }
+  
+  .katex-display {
+    font-size: 1em !important;
+  }
+}
+

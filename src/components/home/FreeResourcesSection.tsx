@@ -49,7 +49,7 @@ export function FreeResourcesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {resources.map((res, index) => (
-            <ScrollReveal key={index} delay={index * 0.1}>
+            <ScrollReveal key={index} delay={index * 0.1} className="h-full">
               <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center h-full flex flex-col items-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-gray-100 relative group overflow-hidden">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-eductome-sky to-eductome-magenta transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 <span className="text-5xl mb-6">{res.icon}</span>

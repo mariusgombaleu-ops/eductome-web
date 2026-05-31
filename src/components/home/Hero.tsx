@@ -25,20 +25,23 @@ export function Hero() {
           className="relative z-10 w-full h-full object-cover object-top opacity-80"
         />
         {/* Gradient overlay for text readability (taller to cover bottom text) */}
-        <div className="absolute inset-x-0 bottom-0 h-[80%] lg:h-[70%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/95 to-transparent z-20"></div>
+        <div className="absolute inset-x-0 bottom-0 h-[80%] lg:h-[70%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/85 to-[#0a1628]/10 z-20"></div>
       </div>
 
       {/* All Text Container (Bottom Aligned) */}
-      <div className="relative z-30 w-full max-w-4xl mx-auto px-4 flex flex-col items-center text-center mt-auto">
+      <div className="relative z-30 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center mt-auto">
         <span className="text-eductome-magenta font-bold tracking-wider uppercase text-sm mb-4 drop-shadow-md">
           BEPC & BAC Ivoirien
         </span>
-        <h1 className="font-poppins text-3xl md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.1] drop-shadow-xl text-white mb-6">
-          Le premier manuel qui t'explique les cours <br className="hidden md:block" /><span className="text-eductome-magenta font-playfair italic font-normal">comme un grand frère.</span>
+        <h1 className="font-poppins text-[2rem] md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.2] drop-shadow-xl text-white mb-6">
+          Le premier manuel qui t'explique les cours <br className="block md:hidden xl:block" />
+          <span className="text-eductome-magenta font-playfair italic font-normal inline-block whitespace-nowrap">
+            comme un grand frère.
+          </span>
         </h1>
 
         <div className="animate-fade-in animation-delay-1000 mb-8 max-w-2xl bg-black/30 md:bg-transparent backdrop-blur-md md:backdrop-blur-none rounded-2xl p-4 border border-white/10 md:border-transparent">
-          <p className="text-lg md:text-xl lg:text-2xl text-white font-medium leading-relaxed drop-shadow-md">
+          <p className="text-base md:text-xl lg:text-2xl text-white font-medium leading-relaxed drop-shadow-md">
             Comprends enfin tes cours, réussis tes devoirs et décroche ton examen.
           </p>
         </div>
@@ -68,7 +71,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-xs lg:text-sm animate-bounce cursor-pointer hover:text-white transition-colors z-40" onClick={() => document.getElementById('diagnostic')?.scrollIntoView({ behavior: 'smooth' })}>
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-xs lg:text-sm animate-bounce cursor-pointer hover:text-white transition-colors z-40" onClick={() => document.getElementById('diagnostic')?.scrollIntoView({ behavior: 'smooth' })}>
         &darr; Scroll
       </div>
     </section>
