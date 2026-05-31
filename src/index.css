@@ -75,58 +75,35 @@
   background-size: 20px 20px;
 }
 
-/* Conteneur des blocs KaTeX */
-.katex-display,
-.math-block {
+/* Conteneur des blocs MathJax */
+mjx-container {
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: auto !important;
   overflow-y: hidden;
-  padding: 0.5rem 0;
-  -webkit-overflow-scrolling: touch; /* scroll fluide sur iOS */
-  scrollbar-width: thin;
-  scrollbar-color: #D81B60 transparent;
+  padding: 0.2rem 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
 }
 
-.katex-display::-webkit-scrollbar,
-.math-block::-webkit-scrollbar {
-  height: 4px;
+mjx-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
-.katex-display::-webkit-scrollbar-thumb,
-.math-block::-webkit-scrollbar-thumb {
-  background-color: #D81B60;
-  border-radius: 2px;
+mjx-container:not([display="true"]) {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Gradient indicatif sur les bords pour signaler le scroll possible */
-.katex-display-wrapper {
-  position: relative;
-}
-
-.katex-display-wrapper::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  background: linear-gradient(90deg, transparent, white);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.katex-display-wrapper.has-overflow::after {
-  opacity: 1;
+.math-content {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 @media (max-width: 767px) {
-  .katex {
-    font-size: 0.9em !important;
-  }
-  
-  .katex-display {
-    font-size: 1em !important;
+  mjx-container {
+    font-size: 0.8em !important;
   }
 }
+
 
