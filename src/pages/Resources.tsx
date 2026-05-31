@@ -151,25 +151,25 @@ export function Resources() {
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 bg-white p-2 rounded-2xl shadow-lg border border-gray-100">
           <button 
             onClick={() => setActiveTab('exercices')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${activeTab === 'exercices' ? 'bg-eductome-marine text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-eductome-marine'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'exercices' ? 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-eductome-marine hover:border-eductome-marine'}`}
           >
             <PenTool className={`w-5 h-5 mr-2 ${activeTab === 'exercices' ? 'animate-bounce' : ''}`} /> Exos Corrigés
           </button>
           <button 
             onClick={() => setActiveTab('fiches')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${activeTab === 'fiches' ? 'bg-[#D81B60] text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-[#D81B60]'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'fiches' ? 'bg-[#D81B60] text-white border-[#D81B60] shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-[#D81B60] hover:border-[#D81B60]'}`}
           >
             <BookOpen className="w-5 h-5 mr-2" /> Fiches Méthode
           </button>
           <button 
             onClick={() => setActiveTab('planning')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${activeTab === 'planning' ? 'bg-teal-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-teal-600'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'planning' ? 'bg-teal-600 text-white border-teal-600 shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-teal-600 hover:border-teal-600'}`}
           >
             <BookMarked className="w-5 h-5 mr-2" /> Le Planning
           </button>
           <button 
             onClick={() => setActiveTab('questions')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${activeTab === 'questions' ? 'bg-orange-500 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-orange-500'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'questions' ? 'bg-orange-500 text-white border-orange-500 shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-orange-500 hover:border-orange-500'}`}
           >
             <span className="text-xl mr-2">🎯</span> 10 Pièges
           </button>
