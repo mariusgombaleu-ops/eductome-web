@@ -1,26 +1,85 @@
 export interface Tome {
   id: string;
+  number?: number;
   title: string;
-  image: string;
+  chapters?: string[];
+  coverImage?: string;
+  image?: string; // retro-compatibility
+  targetClass?: string;
+  selarUrl?: string;
   description?: string;
   link?: string;
 }
 
+export interface Badge {
+  label: string;
+  color: string; // e.g., 'magenta', 'gray', 'green'
+}
+
+export interface CrossSell {
+  collectionId: string;
+  reason: string;
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface TestimonialAuthor {
+  name: string;
+  classe: string;
+  lycee: string;
+}
+
+export interface TestimonialItem {
+  rating: number;
+  text: string;
+  author: TestimonialAuthor;
+}
+
+export interface PreviewItem {
+  image: string;
+  caption: string;
+}
+
 export interface Collection {
   id: string;
-  title: string;
-  emoji: string;
-  badge?: string;
-  image?: string;
-  description: string;
-  mission?: string;
-  valeur?: string[];
-  tag: string;
-  color: string;
-  link: string;
-  format?: string;
-  tomesCount?: number;
-  tomes?: Tome[];
+  name: string;
+  slug: string;
+  primaryColor: string;
+  status?: string; // e.g., 'coming-soon'
+  
+  badges: Badge[];
+  shortDescription: string;
+  format: string;
+  tomeCount: number;
+  targetClass: string;
+  
+  objective: string;
+  benefits: string[];
+  idealFor: string[];
+  
+  crossSell: CrossSell[];
+  
+  placeholderTestimonial?: string;
+  testimonials?: TestimonialItem[];
+  previews?: PreviewItem[];
+  
+  tomes: Tome[];
+  faq: FaqItem[];
+  
+  bundleUrl?: string;
+  coverImage?: string; // image de couverture globale
+  
+  // Retro-compatibilité avec certains anciens composants si nécessaire
+  title?: string; // map to name
+  image?: string; // map to coverImage
+  description?: string; // map to shortDescription
+  emoji?: string;
+  tag?: string;
+  color?: string; // map to primaryColor
+  link?: string;
 }
 
 export interface Testimonial {

@@ -1,186 +1,242 @@
 import { collectionsData } from '../data/collections';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
-import { ShoppingCart, MessageCircle, ShieldCheck, Zap, BookOpen } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { Link } from 'react-router-dom';
 
 export function Collections() {
   return (
-    <div className="min-h-screen bg-gray-50 font-poppins pb-20">
+    <div className="min-h-screen bg-white font-poppins pb-0">
       <SEO title="Boutique & Collections" description="Découvre nos manuels scolaires et fiches de révision pour la 3ème et la Terminale." />
       
-      {/* Hero Banner */}
-      <div className="py-16 px-4 text-center relative overflow-hidden" style={{ backgroundImage: 'linear-gradient(135deg, #1A3557, #0a1628)' }}>
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-           <div className="absolute top-10 left-10 text-6xl rotate-12">📚</div>
-           <div className="absolute bottom-10 right-10 text-6xl -rotate-12">📐</div>
-        </div>
-        <h1 className="font-playfair text-4xl md:text-6xl font-bold text-white mb-6 relative z-10">
-          La Boutique <span className="text-[#D81B60]">Eductome</span>
-        </h1>
-        <p className="text-gray-300 max-w-2xl mx-auto text-base md:text-lg font-light relative z-10">
-          Découvre l'intégralité de nos manuels scolaires au format numérique. 
-          Trouve la collection qui correspond à tes besoins et commence à t'entraîner dès aujourd'hui.
-        </p>
-      </div>
-
-      {/* Avantages */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="flex flex-col items-center p-4">
-              <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-3">
-                <Zap className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-[#1A3557] mb-1">Accès Immédiat</h3>
-              <p className="text-sm text-gray-500">Télécharge tes tomes en PDF dès la validation de ton paiement.</p>
-            </div>
-            <div className="flex flex-col items-center p-4">
-              <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-[#1A3557] mb-1">Paiement Sécurisé</h3>
-              <p className="text-sm text-gray-500">Transactions 100% sécurisées via la plateforme Selar (Mobile Money, Carte).</p>
-            </div>
-            <div className="flex flex-col items-center p-4">
-              <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-3">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-[#1A3557] mb-1">Format Pratique</h3>
-              <p className="text-sm text-gray-500">Lis sur ton téléphone, ta tablette, ou imprime-les pour travailler.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Liste des Collections */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      {/* 1. HERO */}
+      <section className="collections-hero mt-16 md:mt-20">
+        <span className="hero-overline">TOUTE LA COLLECTION EDUCTOME</span>
         
-        <div className="space-y-12 md:space-y-24">
-          {collectionsData.map((collection, index) => {
-            const isEven = index % 2 === 0;
-            return (
-              <ScrollReveal key={collection.id}>
-                <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center`}>
-                  
-                  {/* Image Side */}
-                  <div className="w-full md:w-5/12 flex-shrink-0">
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl relative bg-gray-100 transform transition-transform hover:scale-[1.02]">
-                      {collection.image && (
-                        <img 
-                          src={collection.image} 
-                          alt={`Couverture ${collection.title}`} 
-                          loading="lazy"
-                          className="w-full h-full object-cover relative z-10"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            const fallback = e.currentTarget.nextElementSibling;
-                            if (fallback) {
-                              fallback.classList.remove('hidden');
-                              fallback.classList.add('flex');
-                            }
-                          }}
-                        />
-                      )}
-                      
-                      {/* Fallback Placeholder (S'affiche si l'image ne charge pas) */}
-                      <div className={`hidden absolute inset-0 flex-col items-center justify-center text-center p-8 text-white z-0`} style={{ backgroundColor: collection.color }}>
-                        <span className="text-7xl mb-6 shadow-sm">{collection.emoji}</span>
-                        <h3 className="font-playfair font-bold text-3xl mb-4">{collection.title}</h3>
-                        <div className="w-12 h-1 bg-white/50 mb-4 rounded-full"></div>
-                        <p className="text-sm font-semibold opacity-90">{collection.tag}</p>
-                        <p className="text-xs opacity-70 mt-auto pt-4">Image en attente dans public/covers/</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Content Side */}
-                  <div className="w-full md:w-7/12">
-                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-md border border-gray-200">
-                        {collection.tag}
-                      </span>
-                      {collection.badge && (
-                        <span className="px-3 py-1 bg-[#D81B60] text-white text-xs font-bold rounded-md shadow-sm">
-                          {collection.badge}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <h2 className="text-3xl md:text-4xl font-bold font-playfair text-[#1A3557] mb-4 flex items-center">
-                      <span className="mr-3">{collection.emoji}</span> {collection.title}
-                    </h2>
-                    
-                    <p className="text-lg text-gray-600 mb-8 font-medium leading-relaxed">
-                      {collection.description}
-                    </p>
-                    
-                    <div className="space-y-4 mb-8">
-                      {collection.mission && (
-                        <div className="bg-white p-5 rounded-xl border-l-4 shadow-sm" style={{ borderColor: collection.color }}>
-                          <h4 className="text-sm font-bold uppercase mb-2 flex items-center" style={{ color: collection.color }}>
-                            🎯 L'objectif
-                          </h4>
-                          <p className="text-gray-700 text-sm leading-relaxed">{collection.mission}</p>
-                        </div>
-                      )}
-                      {collection.valeur && (
-                        <div className="bg-white p-5 rounded-xl border-l-4 shadow-sm" style={{ borderColor: collection.color }}>
-                          <h4 className="text-sm font-bold uppercase mb-3 flex items-center" style={{ color: collection.color }}>
-                            💡 Ce que ça t'apporte
-                          </h4>
-                          <ul className="space-y-2">
-                            {Array.isArray(collection.valeur) ? collection.valeur.map((point, idx) => (
-                              <li key={idx} className="flex items-start text-sm text-gray-700 leading-relaxed">
-                                <span className="mr-2 font-bold" style={{ color: collection.color }}>✓</span>
-                                <span>{point}</span>
-                              </li>
-                            )) : (
-                              <p className="text-gray-700 text-sm leading-relaxed">{collection.valeur}</p>
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <a 
-                      href={collection.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-flex items-center justify-center bg-[#D81B60] hover:bg-[#B71C1C] text-white font-bold py-4 px-8 rounded-full transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200 w-full md:w-auto text-lg"
-                    >
-                      <ShoppingCart className="w-5 h-5 mr-3" />
-                      Découvrir sur Selar
-                    </a>
-                  </div>
+        <h1 className="hero-title">
+          Choisis ton manuel. <br/>
+          <span className="hero-title-accent">Décroche ton examen.</span>
+        </h1>
+        
+        <p className="hero-subtitle">
+          6 collections pour les élèves de Terminale et de 3ᵉ.
+          Chaque manuel a une mission précise — trouve celui qui répond à ton blocage.
+        </p>
+        
+        <Link to="/quiz" className="hero-quiz-link">
+          🎯 Pas sûr de quelle collection te convient ? Fais le quiz →
+        </Link>
+      </section>
 
+      {/* 2. GRILLE DES 6 CARDS COLLECTIONS */}
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {collectionsData.map((collection, index) => (
+            <ScrollReveal key={collection.id} delay={index * 0.1}>
+              <div className="collection-card h-full flex flex-col" data-collection={collection.slug}>
+                
+                {/* Image Cover */}
+                <div className="aspect-[3/4] bg-gray-50 relative overflow-hidden">
+                  {collection.coverImage ? (
+                    <img 
+                      src={collection.coverImage} 
+                      alt={`Couverture ${collection.name}`} 
+                      loading="lazy"
+                      draggable="false"
+                      className="w-full h-full object-contain p-4 transition-transform hover:scale-105 duration-300"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling;
+                        if (fallback) {
+                          fallback.classList.remove('hidden');
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <div className={`${collection.coverImage ? 'hidden' : ''} absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-white`} style={{ backgroundColor: collection.primaryColor }}>
+                    <span className="text-6xl mb-4">{collection.emoji}</span>
+                    <h3 className="font-playfair font-bold text-2xl">{collection.name}</h3>
+                  </div>
                 </div>
-              </ScrollReveal>
-            );
-          })}
+                
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {collection.badges.map(badge => (
+                      <span 
+                        key={badge.label} 
+                        className={`px-2 py-1 text-[10px] font-bold rounded-sm ${badge.color === 'magenta' ? 'bg-[#D81B60] text-white' : 'bg-gray-100 text-gray-700 border border-gray-200'}`}
+                      >
+                        {badge.label}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-[#1A3557] mb-2">{collection.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4 flex-grow">{collection.shortDescription}</p>
+                  
+                  <div className="flex items-center gap-4 text-xs text-gray-500 font-medium mb-6">
+                    <span className="flex items-center">📦 {collection.format.split(' + ')[0]}</span>
+                    <span className="flex items-center">📚 {collection.tomeCount > 0 ? `${collection.tomeCount} tome(s)` : '-'}</span>
+                  </div>
+                  
+                  <Link 
+                    to={`/collections/${collection.slug}`} 
+                    className="discover-link mt-auto inline-flex items-center font-bold"
+                  >
+                    Découvrir la collection <span>→</span>
+                  </Link>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
 
-      {/* CTA Contact Bottom */}
-      <ScrollReveal className="mt-12 bg-white py-16 border-t border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <MessageCircle className="w-8 h-8 text-green-600" />
+      {/* 3. TABLEAU COMPARATIF */}
+      <section className="collections-comparator">
+        <ScrollReveal>
+          <div className="comparator-header">
+            <span className="overline">AIDE AU CHOIX</span>
+            <h2>Quelle collection est faite pour toi ?</h2>
+            <p>Compare en un coup d'œil pour faire le bon choix.</p>
           </div>
-          <h2 className="text-3xl font-playfair font-bold text-[#1A3557] mb-4">Besoin d'aide pour choisir ?</h2>
-          <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto">
-            Tu hésites entre plusieurs collections ou tu as une question sur le paiement ? 
-            L'équipe Eductome est là pour t'accompagner directement sur WhatsApp.
-          </p>
-          <a 
-            href="https://wa.me/2250799506300" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full transition-all shadow-md hover:shadow-lg"
-          >
-            Discuter avec nous sur WhatsApp
-          </a>
-        </div>
-      </ScrollReveal>
+          
+          <div className="comparator-table-wrapper">
+            <table className="comparator-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>📘 Clés Maths</th>
+                  <th>🔬 Clés Sciences</th>
+                  <th>🔴 Derniers Codes</th>
+                  <th>📅 La Voie</th>
+                  <th>📕 La Racine</th>
+                  <th>🎨 3e Facile</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="row-label">Format</td>
+                  <td>📦 Physique + PDF</td>
+                  <td>📦 Physique + PDF</td>
+                  <td>📱 PDF</td>
+                  <td>📱 PDF</td>
+                  <td>📱 PDF</td>
+                  <td>📦 Physique + PDF</td>
+                </tr>
+                <tr>
+                  <td className="row-label">Classe</td>
+                  <td>Terminale C/D</td>
+                  <td>Terminale D</td>
+                  <td>Toutes séries</td>
+                  <td>Toutes séries</td>
+                  <td>Toutes séries</td>
+                  <td>3ᵉ</td>
+                </tr>
+                <tr>
+                  <td className="row-label">Durée d'étude</td>
+                  <td>Toute l'année</td>
+                  <td>Toute l'année</td>
+                  <td>1 à 3 mois</td>
+                  <td>1 mois</td>
+                  <td>6 mois</td>
+                  <td>Toute l'année</td>
+                </tr>
+                <tr>
+                  <td className="row-label">Profil idéal</td>
+                  <td>Sérieux, méthodique</td>
+                  <td>Bloqué en PC</td>
+                  <td>Pressé, sprint</td>
+                  <td>Désorganisé</td>
+                  <td>Curieux, ambitieux</td>
+                  <td>Élève de 3ᵉ</td>
+                </tr>
+                <tr>
+                  <td className="row-label">Prérequis</td>
+                  <td>Aucun</td>
+                  <td>Aucun</td>
+                  <td>Cours déjà vu</td>
+                  <td>Aucun</td>
+                  <td>Bon niveau</td>
+                  <td>Aucun</td>
+                </tr>
+                <tr>
+                  <td className="row-label">Idéal pour</td>
+                  <td>Comprendre en profondeur</td>
+                  <td>Maîtriser la PC</td>
+                  <td>Réviser vite</td>
+                  <td>S'organiser</td>
+                  <td>Penser mathématiques</td>
+                  <td>BEPC</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 4. BANDEAU RÉASSURANCES */}
+      <section className="trust-banner">
+        <ScrollReveal>
+          <div className="trust-banner-header">
+            <span className="overline">POURQUOI EDUCTOME ?</span>
+            <h2>Tu achètes en toute confiance</h2>
+          </div>
+          
+          <div className="trust-grid">
+            <div className="trust-item">
+              <div className="trust-icon" style={{ color: '#2E7D32' }}>⚡</div>
+              <h3>Accès Immédiat</h3>
+              <p>
+                Pour les PDF : téléchargement direct après paiement.
+                Pour les livres physiques : livraison rapide à Abidjan
+                et à l'intérieur du pays.
+              </p>
+            </div>
+            
+            <div className="trust-item">
+              <div className="trust-icon" style={{ color: '#1A3557' }}>🔒</div>
+              <h3>Paiement Sécurisé</h3>
+              <p>
+                Transactions 100% sécurisées via Selar.
+                Mobile Money (MTN, Orange, Moov), Wave, ou Carte bancaire.
+              </p>
+            </div>
+            
+            <div className="trust-item">
+              <div className="trust-icon" style={{ color: '#E67E22' }}>💬</div>
+              <h3>Support disponible</h3>
+              <p>
+                Une question avant ou après achat ? Réponse en moins de
+                2h sur WhatsApp.
+              </p>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 5. CTA FINAL */}
+      <section className="collections-final-cta">
+        <ScrollReveal>
+          <div className="cta-content">
+            <h2>Tu hésites encore ?</h2>
+            
+            <p>
+              Fais notre quiz "Quel type d'élève es-tu ?" en 2 minutes — 
+              on te recommande la collection idéale selon ton profil.
+            </p>
+            
+            <div className="cta-buttons">
+              <Link to="/quiz" className="btn btn-primary">
+                🎯 Faire le quiz
+              </Link>
+              <a href="https://wa.me/2250799506300" target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+                💬 Demander conseil sur WhatsApp
+              </a>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
 
     </div>
   );
