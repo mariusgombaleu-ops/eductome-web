@@ -80,6 +80,8 @@ export interface Collection {
   tag?: string;
   color?: string; // map to primaryColor
   link?: string;
+  badge?: string;
+  tomesCount?: number;
 }
 
 export interface Testimonial {
