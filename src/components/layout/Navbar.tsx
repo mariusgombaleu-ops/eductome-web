@@ -4,6 +4,7 @@ import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, Chevron
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -16,8 +17,22 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
+  const toggleMenu = () => {
+    if (isOpen) {
+      closeMenu();
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const closeMenu = () => {
+    if (!isOpen) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 300); // 300ms pour correspondre à la durée de la transition
+  };
 
   const navLinks = [
     { name: 'Accueil', path: '/', icon: Home },
@@ -28,7 +43,7 @@ export function Navbar() {
     { name: 'Devenir Relais', path: '/devenir-relais', icon: HeartHandshake },
   ];
 
-  const isTransparent = isHome && !scrolled && !isOpen;
+  const isTransparent = isHome && !scrolled && !isOpen && !isClosing;
 
   return (
     <>
@@ -70,7 +85,7 @@ export function Navbar() {
             <div className="md:hidden flex items-center">
               <button
                 onClick={toggleMenu}
-                className={`p-2 rounded-xl focus:outline-none transition-colors shadow-sm relative ${
+                className={`p-2 rounded-xl focus:outline-none transition-colors shadow-sm relative z-50 ${
                   isTransparent 
                     ? 'bg-eductome-magenta text-white shadow-eductome-magenta/30' 
                     : isOpen 
@@ -87,10 +102,10 @@ export function Navbar() {
         </div>
 
         {/* Mobile Navigation Dropdown */}
-        {isOpen && (
-          <div className="md:hidden absolute top-[100%] left-0 w-full px-4 pt-2 pb-6 z-50">
+        {(isOpen || isClosing) && (
+          <div className="md:hidden absolute top-[100%] left-0 w-full px-4 pt-2 pb-6 z-40">
             {/* Card style menu with notebook background */}
-            <div className="bg-notebook bg-white rounded-3xl shadow-2xl border border-gray-200 p-3 flex flex-col space-y-2 animate-fade-in relative overflow-hidden">
+            <div className={`bg-notebook bg-white rounded-3xl shadow-2xl border border-gray-200 p-3 flex flex-col space-y-2 relative overflow-hidden transition-all duration-300 ease-in-out transform origin-top-right ${isClosing ? 'scale-0 opacity-0 rotate-12' : 'scale-100 opacity-100 rotate-0 animate-fade-in'}`}>
               
               {/* Binder rings decoration */}
               <div className="absolute top-0 bottom-0 left-4 w-1 border-l-2 border-dashed border-gray-300"></div>
