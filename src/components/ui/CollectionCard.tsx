@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Collection } from '../../types';
 
 interface CollectionCardProps {
@@ -9,8 +10,9 @@ export function CollectionCard({ collection }: CollectionCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="relative overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-400 ease-out transform hover:-translate-y-2 hover:shadow-2xl group cursor-pointer h-full flex flex-row min-h-[160px]"
+    <Link
+      to={`/collection/${collection.id}`}
+      className="relative overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-400 ease-out transform hover:-translate-y-2 hover:shadow-2xl group cursor-pointer h-full flex flex-row min-h-[160px] block"
       style={{ 
         borderLeft: `5px solid ${collection.color}`,
         transform: isHovered ? 'perspective(1000px) rotateX(2deg) rotateY(-2deg) scale3d(1.02, 1.02, 1.02)' : 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)'
@@ -100,6 +102,6 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

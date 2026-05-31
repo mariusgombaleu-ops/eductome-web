@@ -4,6 +4,7 @@ export interface TomeRegistryItem {
   theme: string;
   pdfFile: string;
   hasExercises: boolean;
+  isUpcoming?: boolean;
 }
 
 export const tomesRegistry: TomeRegistryItem[] = [
@@ -17,5 +18,6 @@ export const tomesRegistry: TomeRegistryItem[] = [
   { id: 8, title: "Statistiques", theme: "#00695C", pdfFile: "FICHE_METHODE_T8_STATISTIQUES.pdf", hasExercises: true },
   { id: 9, title: "Géométrie dans l'Espace", theme: "#283593", pdfFile: "FICHE_METHODE_T9_GEOMETRIE.pdf", hasExercises: true },
   { id: 10, title: "Nombres Complexes", theme: "#AD1457", pdfFile: "FICHE_METHODE_T10_COMPLEXES.pdf", hasExercises: true },
-  { id: 11, title: "Équations Différentielles", theme: "#4E342E", pdfFile: "FICHE_METHODE_T11_EQ_DIFF.pdf", hasExercises: true }
+  { id: 11, title: "Équations Différentielles", theme: "#4E342E", pdfFile: "FICHE_METHODE_T11_EQ_DIFF.pdf", hasExercises: true },
+  { id: 12, title: "Révisions BAC", theme: "#757575", pdfFile: "", hasExercises: false, isUpcoming: true }
 ];

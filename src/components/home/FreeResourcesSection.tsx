@@ -4,22 +4,32 @@ import { Link } from 'react-router-dom';
 export function FreeResourcesSection() {
   const resources = [
     {
-      icon: "📖",
-      title: "Le chapitre le plus dur de Terminale, expliqué simplement",
-      desc: "Télécharge gratuitement un chapitre complet des Clés Maths pour voir si notre méthode te correspond.",
-      btnText: "Télécharger l'extrait \u2192"
+      icon: "📋",
+      title: "5 fiches méthode prêtes à imprimer",
+      desc: "Une fiche = une méthode pour résoudre un type d'exercice. Tu imprimes, tu gardes, tu appliques.",
+      btnText: "Voir les fiches \u2192",
+      link: "/ressources?tab=fiches"
     },
     {
-      icon: "📄",
-      title: "Les 10 formules que 80% des élèves oublient au BAC",
-      desc: "Une fiche PDF recto-verso à imprimer et à glisser dans ton cahier de brouillon.",
-      btnText: "Obtenir la fiche \u2192"
+      icon: "📅",
+      title: "Le Planning du Grand Frère",
+      desc: "Un calendrier de révision annuel modulable, avec les rappels méthode aux bons moments de l'année. Imprimable.",
+      btnText: "Voir le planning \u2192",
+      link: "/ressources?tab=planning"
     },
     {
-      icon: "🎥",
-      title: "Vidéo : Comment organiser tes révisions en 3 étapes",
-      desc: "15 minutes de vidéo où le Grand Frère t'explique comment ne plus jamais être en retard sur ton programme.",
-      btnText: "Voir la vidéo \u2192"
+      icon: "✏️",
+      title: "Exercices types BAC corrigés",
+      desc: "Pas seulement la réponse finale. Le raisonnement détaillé, comme si on était à côté de toi.",
+      btnText: "Faire les exercices \u2192",
+      link: "/ressources?tab=exercices"
+    },
+    {
+      icon: "🎯",
+      title: "Le Top 10 des questions au BAC",
+      desc: "On a analysé les sujets passés. Voici les 10 questions pièges qui tombent presque à chaque fois et comment les déjouer.",
+      btnText: "Découvrir le Top 10 \u2192",
+      link: "/ressources?tab=questions"
     }
   ];
 
@@ -37,7 +47,7 @@ export function FreeResourcesSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {resources.map((res, index) => (
             <ScrollReveal key={index} delay={index * 0.1}>
               <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center h-full flex flex-col items-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-gray-100 relative group overflow-hidden">
@@ -50,7 +60,7 @@ export function FreeResourcesSection() {
                   {res.desc}
                 </p>
                 <Link 
-                  to="/ressources" 
+                  to={res.link} 
                   className="mt-auto w-full py-3 md:py-4 px-4 bg-eductome-marine text-white font-semibold rounded-xl transition-transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-md shadow-eductome-marine/20"
                 >
                   {res.btnText}

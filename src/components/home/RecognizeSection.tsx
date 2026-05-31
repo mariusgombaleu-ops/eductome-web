@@ -1,5 +1,6 @@
 import { ScrollReveal } from '../ui/ScrollReveal';
-import { Frown, HelpCircle } from 'lucide-react';
+import { Frown, HelpCircle, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function RecognizeSection() {
   return (
@@ -21,7 +22,7 @@ export function RecognizeSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-12">
           <ScrollReveal delay={0.1}>
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 h-full flex flex-col relative group hover:-translate-y-1 transition-transform duration-300">
               <div className="absolute top-0 left-8 w-16 h-1 bg-eductome-sky rounded-b-md transition-all duration-300 group-hover:w-24"></div>
@@ -68,6 +69,18 @@ export function RecognizeSection() {
             </div>
           </ScrollReveal>
         </div>
+
+        <ScrollReveal delay={0.25}>
+          <div className="flex justify-center mb-20 relative z-20">
+            <Link 
+              to="/quiz" 
+              className="bg-[#1A3557] hover:bg-[#1A3557]/90 text-white font-bold py-4 px-10 rounded-full text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center group border-2 border-transparent hover:border-[#D81B60]/30"
+            >
+              Faire le quiz pour découvrir mon profil
+              <ArrowRight className="ml-3 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
           <div className="bg-eductome-marine rounded-3xl p-8 md:p-12 text-center shadow-xl relative overflow-hidden">

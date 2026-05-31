@@ -1,3 +1,11 @@
+export interface Tome {
+  id: string;
+  title: string;
+  image: string;
+  description?: string;
+  link?: string;
+}
+
 export interface Collection {
   id: string;
   title: string;
@@ -12,6 +20,7 @@ export interface Collection {
   link: string;
   format?: string;
   tomesCount?: number;
+  tomes?: Tome[];
 }
 
 export interface Testimonial {

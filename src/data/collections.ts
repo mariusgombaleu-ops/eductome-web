@@ -18,7 +18,20 @@ export const collectionsData: Collection[] = [
     color: "#1976D2",
     link: "https://selar.com/m/eductome",
     format: "Livre Physique & PDF",
-    tomesCount: 4
+    tomesCount: 11,
+    tomes: [
+      { id: "t1", title: "Tome 1 : Les Limites", image: "/covers/tomes/cover-t1.png" },
+      { id: "t2", title: "Tome 2 : Les Dérivées", image: "/covers/tomes/cover-t2.png" },
+      { id: "t3", title: "Tome 3 : Primitives et Intégrales", image: "/covers/tomes/cover-t3.png" },
+      { id: "t4", title: "Tome 4 : Suites Numériques", image: "/covers/tomes/cover-t4.png" },
+      { id: "t5", title: "Tome 5 : Logarithmes et Exponentielles", image: "/covers/tomes/cover-t5.png" },
+      { id: "t6", title: "Tome 6 : Fonctions Trigonométriques", image: "/covers/tomes/cover-t6.png" },
+      { id: "t7", title: "Tome 7 : Probabilités", image: "/covers/tomes/cover-t7.png" },
+      { id: "t8", title: "Tome 8 : Statistiques", image: "/covers/tomes/cover-t8.png" },
+      { id: "t9", title: "Tome 9 : Géométrie dans l'espace", image: "/covers/tomes/cover-t9.jpeg" },
+      { id: "t10", title: "Tome 10 : Nombres Complexes", image: "/covers/tomes/cover-t10.png" },
+      { id: "t11", title: "Tome 11 : Équations Différentielles", image: "/covers/tomes/cover-t11.png" }
+    ]
   },
   {
     id: "cles-sciences",

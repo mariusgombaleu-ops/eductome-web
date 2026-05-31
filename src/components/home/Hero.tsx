@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] lg:min-h-screen flex flex-col justify-end bg-[#0a1628] text-white overflow-hidden">
+    <section className="relative min-h-[90vh] lg:min-h-screen flex flex-col justify-between pt-12 md:pt-20 lg:pt-24 pb-12 bg-[#0a1628] text-white overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.06] font-serif italic text-2xl select-none z-0">
         <span className="absolute top-[15%] left-[10%] animate-float">lim f(x)</span>
@@ -28,21 +28,26 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-[60%] lg:h-[70%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/90 to-transparent z-20"></div>
       </div>
 
-      {/* Text Container at the bottom */}
-      <div className="relative z-30 w-full max-w-4xl mx-auto px-4 pb-16 lg:pb-12 mt-auto">
+      {/* Top Text Container */}
+      <div className="relative z-30 w-full max-w-4xl mx-auto px-4 mt-0 md:mt-4 lg:mt-8">
         <div className="w-full text-center flex flex-col items-center">
-          <span className="text-eductome-magenta font-bold tracking-wider uppercase text-sm mb-4">
+          <span className="text-eductome-magenta font-bold tracking-wider uppercase text-sm mb-4 drop-shadow-md">
             BEPC & BAC Ivoirien
           </span>
-          <h1 className="font-poppins text-3xl md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.1] mb-6">
-            Le premier manuel qui t'explique les cours <span className="text-eductome-magenta font-playfair italic font-normal">comme un grand frère.</span>
+          <h1 className="font-poppins text-3xl md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.1] drop-shadow-xl text-white">
+            Le premier manuel qui t'explique les cours <br className="hidden md:block" /><span className="text-eductome-magenta font-playfair italic font-normal">comme un grand frère.</span>
           </h1>
+        </div>
+      </div>
 
-          <div className="animate-fade-in animation-delay-1000 mb-8 max-w-2xl">
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-200 font-medium mb-3">
-              Fini les profs qui vont trop vite et les manuels incompréhensibles.
-            </p>
-            <p className="text-sm lg:text-base leading-relaxed text-gray-400">
+      {/* Spacer for face visibility */}
+      <div className="flex-grow"></div>
+
+      {/* Bottom Text Container */}
+      <div className="relative z-30 w-full max-w-4xl mx-auto px-4">
+        <div className="w-full text-center flex flex-col items-center">
+          <div className="animate-fade-in animation-delay-1000 mb-6 max-w-2xl bg-black/20 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none rounded-xl p-3">
+            <p className="text-lg md:text-xl lg:text-2xl text-white font-medium leading-relaxed drop-shadow-md">
               Comprends enfin tes cours, réussis tes devoirs et décroche ton examen.
             </p>
           </div>

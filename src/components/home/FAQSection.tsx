@@ -18,6 +18,22 @@ export function FAQSection() {
     {
       question: "Livrez-vous à l'intérieur du pays ?",
       answer: "Oui, nous livrons partout en Côte d'Ivoire. À Abidjan, la livraison se fait à domicile. À l'intérieur, nous expédions via les compagnies de transport."
+    },
+    {
+      question: "PDF ou livre physique ?",
+      answer: "Les Clés Maths et Les Clés Sciences sont disponibles en livre physique (livrés à Abidjan et à l'intérieur). Les Derniers Codes, La Voie et La Racine sont disponibles en PDF, téléchargeables immédiatement après achat sur Selar. Certaines collections proposent les deux formats — vérifie sur la page de chaque collection."
+    },
+    {
+      question: "Pour quelle série exactement ?",
+      answer: "Les Clés Maths est pensé pour les séries C et D (Terminale). Les Clés Sciences est conçu pour la Terminale D (Physique-Chimie). Les Derniers Codes couvre Terminale et 3ᵉ. La Voie et La Racine s'adressent à toutes les séries. Pour les élèves de 3ᵉ, la collection dédiée est 3e Facile."
+    },
+    {
+      question: "Combien de temps pour recevoir les livres physiques ?",
+      answer: "À Abidjan, comptez 24h à 72h après confirmation de paiement. Pour l'intérieur (San-Pédro, Bouaké, Korhogo, Daloa, etc.), la livraison se fait via une compagnie de transport, généralement sous 3 à 5 jours. On t'envoie le numéro de suivi par WhatsApp."
+    },
+    {
+      question: "Et si je suis bloqué sur un exercice après avoir lu le livre ?",
+      answer: "Tu peux nous écrire directement sur WhatsApp. On t'oriente vers la bonne fiche, ou un grand frère du réseau EDUCTOME peut t'expliquer la notion. Tu n'es jamais seul devant ton manuel."
     }
   ];
 
@@ -60,7 +76,7 @@ export function FAQSection() {
                 </button>
                 
                 <div 
-                  className={`px-6 transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-48 pb-4 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}
+                  className={`px-6 transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-[500px] pb-4 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}
                 >
                   <p className="text-gray-600 leading-relaxed">
                     {faq.answer}
