@@ -1,9 +1,9 @@
 import { ScrollReveal } from '../ui/ScrollReveal';
-import { XCircle, CheckCircle2, Frown, HelpCircle } from 'lucide-react';
+import { Frown, HelpCircle } from 'lucide-react';
 
 export function RecognizeSection() {
   return (
-    <section id="se-reconnaitre" className="py-16 md:py-24 bg-gradient-to-b from-white to-[#f4f7fb] px-4 relative overflow-hidden">
+    <section id="diagnostic" className="py-16 md:py-24 bg-gradient-to-b from-white to-[#f4f7fb] px-4 relative overflow-hidden">
       {/* Decorative Blobs */}
       <div className="absolute top-20 left-0 w-72 h-72 bg-eductome-sky/10 blur-[100px] rounded-full"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-eductome-magenta/5 blur-[100px] rounded-full"></div>
@@ -11,9 +11,9 @@ export function RecognizeSection() {
       <div className="max-w-5xl mx-auto relative z-10">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <span className="text-eductome-magenta font-bold tracking-wider uppercase text-sm mb-2 block">Diagnostic</span>
-            <h2 className="text-3xl md:text-5xl font-playfair font-bold text-eductome-marine mb-6">
-              Voici deux cas de figure très fréquents.
+            <span className="text-eductome-magenta font-bold tracking-wider uppercase text-sm mb-2 block">La vérité sur l'école en Côte d'Ivoire</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-playfair font-bold text-eductome-marine mb-6">
+              Généralement, quand un élève n'a pas de bonnes notes, c'est pour deux raisons :
             </h2>
             <p className="text-gray-600 text-lg md:text-xl font-light">
               Lequel te ressemble le plus ?
@@ -32,28 +32,14 @@ export function RecognizeSection() {
                 </div>
                 <div>
                   <span className="font-bold text-eductome-sky uppercase tracking-wider text-xs block mb-1">CAS DE FIGURE N°1</span>
-                  <h3 className="text-xl font-bold text-eductome-marine">L'élève "Perdu en classe"</h3>
+                  <h3 className="text-xl font-bold text-eductome-marine">Perdu en classe</h3>
                 </div>
               </div>
 
-              <ul className="space-y-4 mb-8 flex-grow">
-                <li className="flex items-start">
-                  <XCircle className="w-5 h-5 text-red-400 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Le prof va trop vite au tableau.</span>
-                </li>
-                <li className="flex items-start">
-                  <XCircle className="w-5 h-5 text-red-400 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Poser une question devant tout le monde ? Trop gênant.</span>
-                </li>
-                <li className="flex items-start">
-                  <XCircle className="w-5 h-5 text-red-400 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Tu rentres à la maison avec un cahier rempli de formules que tu ne comprends pas.</span>
-                </li>
-              </ul>
-
-              <div className="bg-red-50 rounded-2xl p-5 border border-red-100">
-                <p className="font-medium text-red-800 text-sm">
-                  <span className="font-bold block mb-1">Résultat :</span> Le jour du devoir, face à la feuille d'examen... c'est la panique totale.
+              <div className="mb-8 flex-grow">
+                <h4 className="font-bold text-lg mb-3 text-eductome-marine">Le prof va trop vite (ou explique mal)</h4>
+                <p className="text-gray-600 leading-relaxed">
+                  Tu recopies le tableau machinalement. Tu n'oses pas poser de questions de peur qu'on se moque de toi. Résultat : tu rentres à la maison avec un cahier rempli, mais une tête vide.
                 </p>
               </div>
             </div>
@@ -69,28 +55,14 @@ export function RecognizeSection() {
                 </div>
                 <div>
                   <span className="font-bold text-eductome-magenta uppercase tracking-wider text-xs block mb-1">CAS DE FIGURE N°2</span>
-                  <h3 className="text-xl font-bold text-eductome-marine">L'élève "Bloqué au devoir"</h3>
+                  <h3 className="text-xl font-bold text-eductome-marine">Bloqué au devoir</h3>
                 </div>
               </div>
 
-              <ul className="space-y-4 mb-8 flex-grow">
-                <li className="flex items-start">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Tu comprends bien en classe (tes amis te demandent même de l'aide).</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Tu as relu tes leçons, tu te sens prêt.</span>
-                </li>
-                <li className="flex items-start">
-                  <XCircle className="w-5 h-5 text-red-400 mr-3 shrink-0 mt-0.5" />
-                  <span className="text-gray-600">Mais devant l'exercice de l'évaluation : trou noir. Impossible d'appliquer ce que tu sais.</span>
-                </li>
-              </ul>
-
-              <div className="bg-red-50 rounded-2xl p-5 border border-red-100">
-                <p className="font-medium text-red-800 text-sm">
-                  <span className="font-bold block mb-1">Résultat :</span> Une note très décevante qui te frustre, parce que tu avais travaillé.
+              <div className="mb-8 flex-grow">
+                <h4 className="font-bold text-lg mb-3 text-eductome-marine">Tu connais ton cours, mais tu bloques</h4>
+                <p className="text-gray-600 leading-relaxed">
+                  Tu as appris tes formules par cœur. Mais devant l'exercice ou le devoir surveillé, c'est le trou noir. Tu ne sais pas par quoi commencer ni quelle formule utiliser.
                 </p>
               </div>
             </div>
@@ -105,13 +77,11 @@ export function RecognizeSection() {
             
             <p className="text-white text-xl md:text-3xl font-playfair font-medium leading-relaxed relative z-10 max-w-3xl mx-auto mb-6">
               Rassure-toi : le problème <span className="text-white border-b border-eductome-magenta font-semibold">n'est pas ton intelligence</span>. 
-              C'est juste qu'il te manque une méthode claire pour appliquer ce que tu apprends.
             </p>
             
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 max-w-4xl mx-auto relative z-10 border border-white/10 text-left md:text-center">
               <p className="text-gray-300 text-base md:text-lg font-light mb-4">
-                En général, face à ce blocage, on se met à la recherche de documents, de cours ou d'annales pour s'en sortir. 
-                Mais la plupart des livres sur le marché sont <span className="text-white font-semibold">trop classiques et basiques</span>. 
+                Le problème, ce sont les manuels classiques : <span className="text-white font-semibold">trop scolaires, sans méthode, sans empathie</span>. 
                 Tu as besoin de quelque chose de différent, de spécial, qui te prenne vraiment par la main.
               </p>
               <p className="text-eductome-magenta text-lg md:text-2xl font-playfair font-medium italic mt-6">

@@ -2,9 +2,12 @@ import { Hero } from '../components/home/Hero';
 import { RecognizeSection } from '../components/home/RecognizeSection';
 import { FounderSection } from '../components/home/FounderSection';
 import { DifferenceSection } from '../components/home/DifferenceSection';
+import { PreviewSection } from '../components/home/PreviewSection';
 import { CollectionsSection } from '../components/home/CollectionsSection';
 import { TestimonialsSection } from '../components/home/TestimonialsSection';
+import { BeforeAfterSection } from '../components/home/BeforeAfterSection';
 import { FAQSection } from '../components/home/FAQSection';
+import { ParentsSection } from '../components/home/ParentsSection';
 import { FreeResourcesSection } from '../components/home/FreeResourcesSection';
 import { CTASection } from '../components/home/CTASection';
 import { SEO } from '../components/SEO';
@@ -17,10 +20,13 @@ export function Home() {
       <RecognizeSection />
       <FounderSection />
       <DifferenceSection />
+      <PreviewSection />
       <CollectionsSection />
       <FreeResourcesSection />
       <TestimonialsSection />
+      <BeforeAfterSection />
       <FAQSection />
+      <ParentsSection />
       <CTASection />
     </div>
   );

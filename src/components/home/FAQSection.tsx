@@ -4,20 +4,20 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 export function FAQSection() {
   const faqs = [
     {
-      question: "Est-ce que les livres sont conformes au programme ivoirien ?",
-      answer: "Oui, à 100%. Nos manuels sont spécifiquement conçus pour les élèves de 3ème et Terminale en Côte d'Ivoire. Ils intègrent les derniers ajustements du Ministère de l'Éducation Nationale et reprennent les anciens sujets de BAC et BEPC."
+      question: "Mon enfant est vraiment faible (6/20), est-ce que ça peut l'aider ?",
+      answer: "Oui ! Nos manuels ne sont pas faits pour les génies, ils sont faits pour ceux qui ont des difficultés. On reprend tout depuis les bases, avec des mots simples."
     },
     {
-      question: "Comment se passe la livraison à Abidjan et à l'intérieur ?",
-      answer: "À Abidjan, la livraison se fait à domicile ou à l'école sous 24h à 48h. Pour l'intérieur du pays, nous expédions via les compagnies de transport (UTB, etc.) avec réception le lendemain."
+      question: "Combien de temps faut-il pour voir des résultats ?",
+      answer: "En général, nos élèves voient un déclic dès les 2 premières semaines d'utilisation régulière, car ils comprennent enfin comment structurer leur réflexion."
     },
     {
-      question: "Les corrigés détaillés sont-ils inclus ?",
-      answer: "Absolument. Contrairement aux annales classiques qui donnent juste la réponse finale, nous détaillons chaque étape du raisonnement. On t'explique le 'pourquoi' de chaque calcul, comme le ferait un grand frère à côté de toi."
+      question: "Est-ce que c'est conforme au programme ivoirien ?",
+      answer: "Absolument. Nos manuels sont 100% alignés sur le programme du Ministère de l'Éducation Nationale de Côte d'Ivoire."
     },
     {
-      question: "Quels sont les moyens de paiement acceptés ?",
-      answer: "Le paiement est 100% sécurisé. Tu peux payer par Mobile Money (Wave, Orange Money, MTN, Moov) directement sur notre plateforme Selar, ou payer à la livraison si tu es à Abidjan."
+      question: "Livrez-vous à l'intérieur du pays ?",
+      answer: "Oui, nous livrons partout en Côte d'Ivoire. À Abidjan, la livraison se fait à domicile. À l'intérieur, nous expédions via les compagnies de transport."
     }
   ];
 

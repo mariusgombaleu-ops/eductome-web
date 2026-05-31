@@ -10,6 +10,8 @@ export interface Collection {
   tag: string;
   color: string;
   link: string;
+  format?: string;
+  tomesCount?: number;
 }
 
 export interface Testimonial {

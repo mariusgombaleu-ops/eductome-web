@@ -71,11 +71,33 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           </h3>
           
           <p 
-            className="text-xs md:text-sm leading-relaxed transition-colors duration-400"
+            className="text-xs md:text-sm leading-relaxed transition-colors duration-400 mb-3"
             style={{ color: isHovered ? 'white' : '#4B5563' }}
           >
             {collection.description}
           </p>
+
+          <div className="flex flex-wrap gap-2 mt-1">
+            {collection.format && (
+              <span className="text-[10px] font-semibold px-2 py-1 rounded bg-gray-100 flex items-center gap-1 transition-colors duration-400" style={{ color: isHovered ? 'white' : '#4B5563', backgroundColor: isHovered ? 'rgba(255,255,255,0.1)' : '#F3F4F6' }}>
+                📚 {collection.format}
+              </span>
+            )}
+            {collection.tomesCount && collection.tomesCount > 1 && (
+              <span className="text-[10px] font-semibold px-2 py-1 rounded bg-gray-100 flex items-center gap-1 transition-colors duration-400" style={{ color: isHovered ? 'white' : '#4B5563', backgroundColor: isHovered ? 'rgba(255,255,255,0.1)' : '#F3F4F6' }}>
+                🔢 {collection.tomesCount} tomes
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t transition-colors duration-400 w-full" style={{ borderColor: isHovered ? 'rgba(255,255,255,0.2)' : '#F3F4F6' }}>
+          <span 
+            className="text-xs md:text-sm font-bold flex items-center gap-2 transition-colors duration-400"
+            style={{ color: isHovered ? 'white' : collection.color }}
+          >
+            Découvrir la collection &rarr;
+          </span>
         </div>
       </div>
     </div>

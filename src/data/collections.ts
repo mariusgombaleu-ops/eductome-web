@@ -16,7 +16,9 @@ export const collectionsData: Collection[] = [
     ],
     tag: "SÉRIES C & D",
     color: "#1976D2",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "Livre Physique & PDF",
+    tomesCount: 4
   },
   {
     id: "cles-sciences",
@@ -32,7 +34,9 @@ export const collectionsData: Collection[] = [
     ],
     tag: "SÉRIES C & D",
     color: "#6A1B9A",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "Livre Physique & PDF",
+    tomesCount: 3
   },
   {
     id: "derniers-codes",
@@ -49,7 +53,9 @@ export const collectionsData: Collection[] = [
     ],
     tag: "FICHES RÉVISION",
     color: "#B71C1C",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "PDF",
+    tomesCount: 1
   },
   {
     id: "la-voie",
@@ -65,7 +71,9 @@ export const collectionsData: Collection[] = [
     ],
     tag: "MÉTHODOLOGIE",
     color: "#1B5E20",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "PDF",
+    tomesCount: 1
   },
   {
     id: "la-racine",
@@ -81,7 +89,9 @@ export const collectionsData: Collection[] = [
     ],
     tag: "TOUTES SÉRIES",
     color: "#E65100",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "PDF",
+    tomesCount: 1
   },
   {
     id: "3e-facile",
@@ -97,6 +107,8 @@ export const collectionsData: Collection[] = [
     ],
     tag: "CLASSE DE 3E",
     color: "#37474F",
-    link: "https://selar.com/m/eductome"
+    link: "https://selar.com/m/eductome",
+    format: "Livre Physique & PDF",
+    tomesCount: 2
   }
 ];

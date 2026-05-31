@@ -5,7 +5,7 @@ import { collectionsData } from '../../data/collections';
 
 export function CollectionsSection() {
   return (
-    <section className="py-12 md:py-20 bg-[#fafafa] px-4">
+    <section id="collections" className="py-12 md:py-20 bg-[#fafafa] px-4">
       <div className="max-w-7xl mx-auto">
         <ScrollReveal>
           <div className="text-center mb-16">
