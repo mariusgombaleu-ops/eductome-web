@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT4: Exercise[] = [
   {
     id: 't4-ex1',
+    tome: 4,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Reconnaissance et calcul de termes d'une suite arithmétique et géométrique.",
@@ -53,6 +55,8 @@ $V_5 = 16 \\times \\left(\\frac{1}{2}\\right)^5 = 16 \\times \\frac{1}{32} = \\f
   },
   {
     id: 't4-ex2',
+    tome: 4,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Démonstration par récurrence (Initialisation et Hérédité).",
@@ -102,6 +106,8 @@ Parfois, on est tellement concentré sur le calcul de l'hérédité qu'on oublie
   },
   {
     id: 't4-ex3',
+    tome: 4,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Suite auxiliaire & Modélisation", serie: "Série D", dureeConseillee: 25 },

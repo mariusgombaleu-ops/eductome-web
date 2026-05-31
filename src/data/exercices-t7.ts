@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT7: Exercise[] = [
   {
     id: 't7-ex1',
+    tome: 7,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Dénombrement (Combinaisons) et probabilité d'un événement simple.",
@@ -61,6 +63,8 @@ Si on disait "tirage successif SANS remise", l'ordre compterait (A puis B, c'est
   },
   {
     id: 't7-ex2',
+    tome: 7,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Probabilités conditionnelles, arbre pondéré et probabilités totales.",
@@ -137,6 +141,8 @@ $P(T) = 0,09 + 0,045 = 0,135$.`
   },
   {
     id: 't7-ex3',
+    tome: 7,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Variable Aléatoire & Loi Binomiale", serie: "Série D", dureeConseillee: 25 },

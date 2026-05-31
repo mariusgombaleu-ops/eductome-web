@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT9: Exercise[] = [
   {
     id: 't9-ex1',
+    tome: 9,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Produit vectoriel et équation cartésienne de plan.",
@@ -78,6 +80,8 @@ La formule du produit vectoriel a un signe "MOINS" devant le déterminant du mil
   },
   {
     id: 't9-ex2',
+    tome: 9,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Distance d'un point à un plan et sphère tangente.",
@@ -105,7 +109,7 @@ $\\sqrt{1^2 + 2^2 + 1^2} = \\sqrt{1 + 4 + 1} = \\sqrt{6}$.<br/><br/>
 Donc $d(\\Omega, P) = \\frac{4}{\\sqrt{6}}$.`
             },
             {
-              type: 'ASTUCE',
+              type: 'PIEGE',
               content: `Ne laisse jamais une racine carrée au dénominateur ! Multiplie en haut et en bas par $\\sqrt{6}$ :<br/>
 $\\frac{4}{\\sqrt{6}} = \\frac{4\\sqrt{6}}{6} = \\frac{2\\sqrt{6}}{3}$.`
             },
@@ -144,6 +148,8 @@ $(x - 1)^2 + (y - 1)^2 + (z + 2)^2 = \\frac{8}{3}$.`
   },
   {
     id: 't9-ex3',
+    tome: 9,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème sur un Tétraèdre", serie: "Série D", dureeConseillee: 25 },
@@ -220,7 +226,7 @@ $SH = \\frac{|3 + 2(3) + 3 - 5|}{\\sqrt{6}}$<br/>
 $SH = \\frac{|3 + 6 + 3 - 5|}{\\sqrt{6}} = \\frac{|7|}{\\sqrt{6}} = \\frac{7}{\\sqrt{6}}$.`
             },
             {
-              type: 'ASTUCE',
+              type: 'PIEGE',
               content: `On rationalise : $\\frac{7\\sqrt{6}}{6}$. C'était beaucoup plus rapide que de faire $\\sqrt{(x_H - x_S)^2 + ...}$ !`
             }
           ]

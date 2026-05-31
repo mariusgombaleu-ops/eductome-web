@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT3: Exercise[] = [
   {
     id: 't3-ex1',
+    tome: 3,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Reconnaissance des formes u'/u et u'e^u pour déterminer une primitive.",
@@ -72,6 +74,8 @@ Donc une primitive de $g$ est $G(x) = \\frac{1}{2} e^{u(x)}$.`
   },
   {
     id: 't3-ex2',
+    tome: 3,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Technique de l'Intégration Par Parties (IPP) et règle LIATE.",
@@ -92,7 +96,7 @@ Donc une primitive de $g$ est $G(x) = \\frac{1}{2} e^{u(x)}$.`
 2. Choisir judicieusement $u(x)$ et $v'(x)$ en utilisant la règle **LIATE** (Logarithme, Inverse trigo, Algébrique, Trigo, Exponentielle).`
             },
             {
-              type: 'ASTUCE',
+              type: 'PIEGE',
               content: `**La règle LIATE :** L'ordre des lettres te dit qui doit être choisi comme $u(x)$. Ici on a un Logarithme (L) et un Algébrique (A). Le L arrive en premier dans LIATE, donc c'est lui qu'on prend pour $u(x)$ !`
             },
             {
@@ -134,6 +138,8 @@ Beaucoup d'élèves oublient de distribuer le signe $-$ devant la deuxième int�
   },
   {
     id: 't3-ex3',
+    tome: 3,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème d'Aire", serie: "Séries C & D", dureeConseillee: 20 },

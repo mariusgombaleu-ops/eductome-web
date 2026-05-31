@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT5: Exercise[] = [
   {
     id: 't5-ex1',
+    tome: 5,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Résolution d'équation logarithmique et ensemble de validité.",
@@ -64,6 +66,8 @@ Donc l'ensemble des solutions est $S = \\{ 2 \\}$.`
   },
   {
     id: 't5-ex2',
+    tome: 5,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Calcul de limites et levée d'indétermination (Croissances comparées).",
@@ -131,6 +135,8 @@ Analysons les deux termes :<br/>
   },
   {
     id: 't5-ex3',
+    tome: 5,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème de Modélisation (Biologie)", serie: "Série D", dureeConseillee: 25 },

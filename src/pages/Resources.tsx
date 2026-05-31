@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
-import { Download, Eye, EyeOff, BookOpen, PenTool, BookMarked, ArrowRight, CheckCircle, MessageCircle, X, Filter } from 'lucide-react';
+import { Download, Eye, EyeOff, BookOpen, PenTool, BookMarked, CheckCircle, MessageCircle, X, Filter } from 'lucide-react';
 import { tomesRegistry } from '../data/exercices-registry';
-import { exercicesT1, Exercise } from '../data/exercices-t1';
+import { exercicesT1, Exercise, ExerciseLevel } from '../data/exercices-t1';
 import { exercicesT2 } from '../data/exercices-t2';
 import { exercicesT3 } from '../data/exercices-t3';
 import { exercicesT4 } from '../data/exercices-t4';

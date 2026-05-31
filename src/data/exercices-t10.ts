@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT10: Exercise[] = [
   {
     id: 't10-ex1',
+    tome: 10,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Résolution d'équation du second degré à coefficients réels (Delta négatif).",
@@ -39,6 +41,8 @@ $z_2 = \\frac{-b + i\\sqrt{|\\Delta|}}{2a} = \\frac{4 + 6i}{2} = 2 + 3i$`
   },
   {
     id: 't10-ex2',
+    tome: 10,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Forme algébrique vers forme exponentielle et trigonométrique.",
@@ -83,6 +87,7 @@ Forme exponentielle : $z = 2e^{-i\\frac{\\pi}{3}}$.`
           ]
         }
       ],
+      noteGrandFrere: "A revoir",
       astuces: [
         "Un petit croquis du repère (x positif, y négatif) t'aurait permis de vérifier que l'angle pointe bien vers 'le bas et la droite' (-pi/3)."
       ]
@@ -90,6 +95,8 @@ Forme exponentielle : $z = 2e^{-i\\frac{\\pi}{3}}$.`
   },
   {
     id: 't10-ex3',
+    tome: 10,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Transformations Géométriques & Nombres Complexes", serie: "Série D", dureeConseillee: 25 },

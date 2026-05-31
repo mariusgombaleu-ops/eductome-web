@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT2: Exercise[] = [
   {
     id: 't2-ex1',
+    tome: 2,
+    numero: 1,
     level: 'BASE',
     points: 3,
     testedConcept: "Reconnaissance de la forme d'une fonction et application des formules de dérivation (Quotient et Composée).",
@@ -50,6 +52,8 @@ $f'(x) = \\frac{3x - 6x + 4}{2x^2\\sqrt{3x - 2}}$`
   },
   {
     id: 't2-ex2',
+    tome: 2,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Étude de la dérivabilité en un point et interprétation graphique (tangente).",
@@ -115,6 +119,8 @@ Ici, $g$ est tout à fait **continue** en 2 (limite à gauche = limite à droite
   },
   {
     id: 't2-ex3',
+    tome: 2,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème d'optimisation", serie: "Séries C & D", dureeConseillee: 25 },

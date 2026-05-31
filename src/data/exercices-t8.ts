@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT8: Exercise[] = [
   {
     id: 't8-ex1',
+    tome: 8,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Calcul des coordonnées du point moyen d'un nuage de points.",
@@ -57,6 +59,8 @@ $\\bar{y} = \\frac{12 + 15 + 18 + 22 + 28}{5} = \\frac{95}{5} = 19$.`
   },
   {
     id: 't8-ex2',
+    tome: 8,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Ajustement affine par la méthode des moindres carrés.",
@@ -109,6 +113,8 @@ Beaucoup écrivent $a = \\frac{V(x)}{\\text{Cov}(x,y)}$. C'est faux ! La covaria
   },
   {
     id: 't8-ex3',
+    tome: 8,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème d'Ajustement Exponentiel", serie: "Série D", dureeConseillee: 25 },

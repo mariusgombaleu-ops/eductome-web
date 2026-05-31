@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT11: Exercise[] = [
   {
     id: 't11-ex1',
+    tome: 11,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Résolution d'équation différentielle du 1er ordre y' = ay + b.",
@@ -42,11 +44,14 @@ La solution particulière cherchée est $f(x) = 7 e^{3x} - 2$.`
             }
           ]
         }
-      ]
+      ],
+      noteGrandFrere: "Cet exercice d'application directe du cours est le plus simple du chapitre. Il faut absolument le maîtriser pour assurer le minimum de points sur les équa diff."
     }
   },
   {
     id: 't11-ex2',
+    tome: 11,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Résolution d'équation différentielle du 2nd ordre y'' + w^2 y = 0.",
@@ -100,6 +105,7 @@ $0 + 2B(1) = 0 \\implies B = 0$.`
           ]
         }
       ],
+      noteGrandFrere: "A revoir",
       astuces: [
         "Tangente horizontale = Dérivée nulle. C'est une traduction absolue à mémoriser pour n'importe quel chapitre d'analyse."
       ]
@@ -107,6 +113,8 @@ $0 + 2B(1) = 0 \\implies B = 0$.`
   },
   {
     id: 't11-ex3',
+    tome: 11,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Problème de Modélisation", serie: "Série D", dureeConseillee: 25 },

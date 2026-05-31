@@ -3,6 +3,8 @@ import { Exercise } from './exercices-t1';
 export const exercicesT6: Exercise[] = [
   {
     id: 't6-ex1',
+    tome: 6,
+    numero: 1,
     level: 'BASE',
     points: 4,
     testedConcept: "Résolution d'équations trigonométriques classiques et lecture du cercle.",
@@ -61,6 +63,8 @@ Le cosinus est "pair", ce qui veut dire que la valeur en haut du cercle ($\\pi/6
   },
   {
     id: 't6-ex2',
+    tome: 6,
+    numero: 2,
     level: 'MOYEN',
     points: 6,
     testedConcept: "Dérivation de fonctions trigonométriques composées.",
@@ -94,7 +98,7 @@ $f'(x) = 4 \\cos(2x) \\sin(2x) - (-\\sin(x))$<br/>
 $f'(x) = 4 \\cos(2x) \\sin(2x) + \\sin(x)$.`
             },
             {
-              type: 'ASTUCE',
+              type: 'PIEGE',
               content: `Pour simplifier $4 \\cos(2x) \\sin(2x)$, on peut se rappeler de la formule de duplication : $\\sin(2\\alpha) = 2\\sin(\\alpha)\\cos(\\alpha)$.<br/>
 Ici avec $\\alpha = 2x$, on a $2\\sin(2x)\\cos(2x) = \\sin(4x)$.<br/>
 Donc $4 \\cos(2x) \\sin(2x) = 2 \\sin(4x)$. C'est plus joli pour la suite !`
@@ -111,6 +115,8 @@ Donc $4 \\cos(2x) \\sin(2x) = 2 \\sin(4x)$. C'est plus joli pour la suite !`
   },
   {
     id: 't6-ex3',
+    tome: 6,
+    numero: 3,
     level: 'BAC',
     points: 10,
     contextBac: { format: "Étude de Fonction", serie: "Série D", dureeConseillee: 25 },
