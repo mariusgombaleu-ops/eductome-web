@@ -1,5 +1,5 @@
 import { ScrollReveal } from '../components/ui/ScrollReveal';
-import { ArrowRight, GraduationCap, Users, BookOpen, ChevronRight } from 'lucide-react';
+import { GraduationCap, Users, BookOpen, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
 

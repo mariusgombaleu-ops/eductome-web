@@ -9,7 +9,7 @@ export function useTypewriter(texts: string | string[], speed: number = 70, dele
   useEffect(() => {
     const textArray = Array.isArray(texts) ? texts : [texts];
     const currentText = textArray[textIndex];
-    let timer: NodeJS.Timeout;
+    let timer: any;
 
     if (isDeleting) {
       if (displayText.length > 0) {

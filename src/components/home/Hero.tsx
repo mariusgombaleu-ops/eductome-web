@@ -1,5 +1,4 @@
 import { useTypewriter } from '../../hooks/useTypewriter';
-import { CTAButton } from '../ui/CTAButton';
 
 export function Hero() {
   const { displayText } = useTypewriter(['en classe de 3ème.', 'en Terminale.'], 100, 50, 2000);
