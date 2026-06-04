@@ -53,6 +53,7 @@ function App() {
             <Route path="/dashboard/courses" element={<MyCourses />} />
             <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
             <Route path="/dashboard/profile" element={<Profile />} />
+            <Route path="/dashboard/settings" element={<Profile />} />
             <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
             <Route path="/dashboard/ressources" element={<Resources />} />
             <Route path="/forum" element={<ForumHome />} />

@@ -7,10 +7,10 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Section : Multi-column */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-y-12 gap-x-6 mb-16">
           
           {/* Col 1: Brand & Socials (takes more space) */}
-          <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="col-span-2 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <div className="text-3xl font-poppins font-extrabold tracking-tight mb-4">
               <span className="text-eductome-magenta">Educ</span>
               <span className="text-white">tome</span>
@@ -33,18 +33,18 @@ export function Footer() {
           </div>
 
           {/* Col 2: Collections */}
-          <div className="lg:col-span-3 lg:col-start-6 text-center md:text-left">
+          <div className="col-span-1 lg:col-span-3 lg:col-start-6 text-left">
             <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">Collections</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li><Link to="/collections/cles-maths" className="hover:text-eductome-sky transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#1A3557]"></span>Les Clés</Link></li>
-              <li><Link to="/collections/la-voie" className="hover:text-eductome-green transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32]"></span>La Voie</Link></li>
-              <li><Link to="/collections/derniers-codes" className="hover:text-red-400 transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#C62828]"></span>Les Derniers Codes</Link></li>
-              <li><Link to="/collections/les-racines" className="hover:text-orange-400 transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E67E22]"></span>Les Racines</Link></li>
+              <li><Link to="/collections/cles-maths" className="hover:text-eductome-sky transition-colors flex items-center justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#1A3557]"></span>Les Clés</Link></li>
+              <li><Link to="/collections/la-voie" className="hover:text-eductome-green transition-colors flex items-center justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32]"></span>La Voie</Link></li>
+              <li><Link to="/collections/derniers-codes" className="hover:text-red-400 transition-colors flex items-center justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#C62828]"></span>Codes</Link></li>
+              <li><Link to="/collections/les-racines" className="hover:text-orange-400 transition-colors flex items-center justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E67E22]"></span>Racines</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Ressources */}
-          <div className="lg:col-span-2 text-center md:text-left">
+          <div className="col-span-1 lg:col-span-2 text-left">
             <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">Ressources</h4>
             <ul className="space-y-3 text-sm text-gray-400">
               <li><Link to="/ressources?tab=exercices" className="hover:text-white transition-colors">Exos Corrigés</Link></li>
@@ -55,7 +55,7 @@ export function Footer() {
           </div>
 
           {/* Col 4: Eductome */}
-          <div className="lg:col-span-2 text-center md:text-left">
+          <div className="col-span-2 lg:col-span-2 text-center md:text-left">
             <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">EDUCTOME</h4>
             <ul className="space-y-3 text-sm text-gray-400">
               <li><Link to="/a-propos" className="hover:text-white transition-colors">À propos</Link></li>
