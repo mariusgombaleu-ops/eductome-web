@@ -64,8 +64,12 @@ export const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-10 font-poppins">
       
+      <div className="md:hidden mb-4 text-center">
+        <h1 className="text-xl font-bold font-playfair text-eductome-marine dark:text-white">Mon Profil</h1>
+      </div>
+      
       {/* Banner Profil */}
-      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up">
+      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-6 md:gap-8 animate-fade-in-up">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>

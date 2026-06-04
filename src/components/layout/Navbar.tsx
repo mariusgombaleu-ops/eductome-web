@@ -134,42 +134,48 @@ export function Navbar() {
                     to={link.path}
                     onClick={closeMenu}
                     className={`group flex items-center justify-between px-4 py-4 pl-8 text-lg font-bold rounded-2xl transition-all duration-300 relative ${
-                      isActive
-                        ? 'bg-gradient-to-r from-yellow-100 to-yellow-50/20 text-eductome-marine shadow-sm'
-                        : 'text-gray-600 hover:bg-white/60 hover:text-eductome-magenta'
-                    }`}
-                  >
-                    {/* Highlighter effect active state */}
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-eductome-magenta rounded-r-full"></div>
-                    )}
-                    
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-xl transition-colors ${isActive ? 'bg-white text-eductome-magenta shadow-sm' : 'bg-gray-100 text-gray-400 group-hover:bg-pink-50 group-hover:text-eductome-magenta'}`}>
-                        <Icon size={20} strokeWidth={isActive ? 3 : 2} />
+        {isOpen && (
+          <div className="md:hidden fixed inset-0 top-[60px] md:top-[80px] bg-black/60 backdrop-blur-sm z-40 animate-in fade-in" onClick={closeMenu}>
+            <div 
+              className="absolute top-4 left-4 right-4 bg-white/95 dark:bg-[#161B22]/95 backdrop-blur-xl border border-white/20 dark:border-[#30363D] shadow-2xl rounded-3xl p-6 animate-in slide-in-from-top-8 duration-300"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex flex-col space-y-2">
+                {navLinks.map((link) => {
+                  const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={closeMenu}
+                      className={`font-semibold text-lg flex items-center gap-4 p-4 rounded-2xl transition-all ${
+                        isActive 
+                          ? 'bg-gradient-to-r from-pink-50 to-white dark:from-[#D81B60]/20 dark:to-transparent text-eductome-magenta shadow-sm border border-pink-100 dark:border-pink-900/30' 
+                          : 'text-eductome-marine dark:text-white hover:bg-gray-50 dark:hover:bg-[#30363D]'
+                      }`}
+                    >
+                      <div className={`${isActive ? 'bg-pink-100 dark:bg-[#D81B60]/30 text-[#D81B60]' : 'bg-gray-100 dark:bg-[#0D1117] text-gray-500 dark:text-gray-400'} p-2 rounded-xl`}>
+                        <Icon className="w-5 h-5" />
                       </div>
-                      <span className={isActive ? 'font-black' : ''}>{link.name}</span>
-                    </div>
-
-                    {isActive ? (
-                      <span className="text-eductome-magenta font-caveat text-xl">★</span>
-                    ) : (
-                      <ChevronRight size={18} className="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    )}
-                  </Link>
-                );
-              })}
-              {isInstallable && (
-                <button
-                  onClick={() => {
-                    closeMenu();
-                    installPWA();
-                  }}
-                  className="mt-4 w-full bg-eductome-magenta text-white px-4 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-pink-600 transition-colors shadow-md"
-                >
-                  <Download className="w-5 h-5" /> Installer l'App EDUCTOME
-                </button>
-              )}
+                      {link.name}
+                    </Link>
+                  );
+                })}
+                {isInstallable && (
+                  <div className="pt-4 mt-2 border-t border-gray-100 dark:border-[#30363D]">
+                    <button
+                      onClick={() => {
+                        closeMenu();
+                        installPWA();
+                      }}
+                      className="w-full bg-gradient-to-r from-[#D81B60] to-pink-600 text-white px-4 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:from-pink-600 hover:to-pink-700 transition-all shadow-lg shadow-pink-500/30 active:scale-95"
+                    >
+                      <Download className="w-5 h-5" /> Installer l'App EDUCTOME
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

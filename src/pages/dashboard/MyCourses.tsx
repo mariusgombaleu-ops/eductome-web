@@ -115,18 +115,18 @@ export const MyCourses = () => {
 
       {/* Course Grid */}
       {filteredCourses.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           {filteredCourses.map((course, index) => (
             <div key={course.id} className="bg-white dark:bg-[#161B22] rounded-2xl shadow-md border border-[#E1E4E8] dark:border-[#30363D] overflow-hidden flex flex-col group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 100}ms` }}>
               {/* Image / Color Header */}
-              <div className={`h-[120px] ${course.colorClass} relative p-6 flex flex-col justify-center`}>
-                <h3 className="text-xl font-bold text-white drop-shadow-md leading-tight line-clamp-2">{course.title}</h3>
-                <p className="text-xs font-bold text-white/80 uppercase tracking-wider mt-2">{course.subject} • {course.level}</p>
+              <div className={`h-[90px] sm:h-[120px] ${course.colorClass} relative p-4 sm:p-6 flex flex-col justify-center`}>
+                <h3 className="text-sm sm:text-xl font-bold text-white drop-shadow-md leading-tight line-clamp-2">{course.title}</h3>
+                <p className="text-[10px] sm:text-xs font-bold text-white/80 uppercase tracking-wider mt-1 sm:mt-2">{course.subject} • {course.level}</p>
               </div>
               
               {/* Content */}
-              <div className="p-5 flex flex-col flex-grow">
-                <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+              <div className="p-3 sm:p-5 flex flex-col flex-grow">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
                   <div className="flex gap-2">
                     {course.badge && (
                       <span className="text-xs font-bold px-2 py-1 rounded bg-[#D81B60] text-white flex items-center shadow-sm">
@@ -155,35 +155,22 @@ export const MyCourses = () => {
                     </span>
                   )}
                   </div>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">Nouveau</span>
+                  )}
                 </div>
 
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-xs text-[#6B7280] dark:text-[#8B949E] font-medium">Progression globale</span>
+                <div className="flex justify-between text-[10px] mb-1">
+                  <span className="text-[#6B7280] dark:text-[#8B949E] font-medium">Progression</span>
                   <span className="font-bold text-[#1A1A2E] dark:text-white">{course.progress}%</span>
                 </div>
                 
-                <div className="h-2 bg-[#F8F9FA] dark:bg-[#0D1117] border border-[#E1E4E8] dark:border-[#30363D] rounded-full overflow-hidden mb-6">
+                <div className="w-full bg-[#E1E4E8] dark:bg-[#30363D] rounded-full h-1.5 sm:h-2 mb-4 overflow-hidden">
                   <div 
                     className="h-full rounded-full transition-all duration-1000 bg-[#1A3557] dark:bg-[#1976D2]" 
                     style={{ width: `${course.progress}%` }}
                   ></div>
                 </div>
                 
-                <div className="mt-auto pt-2">
-                  {course.progress === 100 ? (
-                    <button 
-                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
-                      className="w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 bg-[#F8F9FA] dark:bg-[#30363D] text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#1A1A2E] transition-colors"
-                    >
-                      <PlayCircle className="w-5 h-5" />
-                      Revoir
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
-                      className="w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 bg-transparent border-2 border-[#1976D2] text-[#1976D2] hover:bg-[#1976D2] hover:text-white transition-colors"
-                    >
-                      <PlayCircle className="w-5 h-5" />
                       Continuer
                     </button>
                   )}
