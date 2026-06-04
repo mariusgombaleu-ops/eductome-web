@@ -139,24 +139,22 @@ export const MyCourses = () => {
                   </div>
                   
                   <div className="flex gap-2">
-                  {course.status === 'termine' && (
-                    <span className="text-xs font-bold px-2 py-1 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 flex items-center gap-1">
-                      Terminé <Star className="w-3 h-3 fill-current" />
-                    </span>
-                  )}
-                  {course.status === 'en_cours' && (
-                    <span className="text-xs font-bold px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                      En cours
-                    </span>
-                  )}
-                  {course.status === 'nouveau' && (
-                    <span className="text-xs font-bold px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                      Nouveau
-                    </span>
-                  )}
+                    {course.status === 'termine' && (
+                      <span className="text-xs font-bold px-2 py-1 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 flex items-center gap-1">
+                        Terminé <Star className="w-3 h-3 fill-current" />
+                      </span>
+                    )}
+                    {course.status === 'en_cours' && (
+                      <span className="text-xs font-bold px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                        En cours
+                      </span>
+                    )}
+                    {course.status === 'nouveau' && (
+                      <span className="text-xs font-bold px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+                        Nouveau
+                      </span>
+                    )}
                   </div>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">Nouveau</span>
-                  )}
                 </div>
 
                 <div className="flex justify-between text-[10px] mb-1">
@@ -171,6 +169,21 @@ export const MyCourses = () => {
                   ></div>
                 </div>
                 
+                <div className="mt-auto pt-2">
+                  {course.progress === 100 ? (
+                    <button 
+                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
+                      className="w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 bg-[#F8F9FA] dark:bg-[#30363D] text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#1A1A2E] transition-colors"
+                    >
+                      <PlayCircle className="w-5 h-5" />
+                      Revoir
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
+                      className="w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 bg-transparent border-2 border-[#1976D2] text-[#1976D2] hover:bg-[#1976D2] hover:text-white transition-colors"
+                    >
+                      <PlayCircle className="w-5 h-5" />
                       Continuer
                     </button>
                   )}

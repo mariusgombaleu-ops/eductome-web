@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, ChevronRight, User, Download, Share, PlusSquare } from 'lucide-react';
+import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, User, Download, Share, PlusSquare } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
 
 export function Navbar() {
@@ -118,26 +118,9 @@ export function Navbar() {
 
         {/* Mobile Navigation Dropdown */}
         {(isOpen || isClosing) && (
-          <div className="md:hidden absolute top-[100%] left-0 w-full px-4 pt-2 pb-6 z-40">
-            {/* Card style menu with notebook background */}
-            <div className={`bg-notebook bg-white rounded-3xl shadow-2xl border border-gray-200 p-3 flex flex-col space-y-2 relative overflow-hidden transition-all duration-300 ease-in-out transform origin-top-right ${isClosing ? 'scale-0 opacity-0 rotate-12' : 'scale-100 opacity-100 rotate-0 animate-fade-in'}`}>
-              
-              {/* Binder rings decoration */}
-              <div className="absolute top-0 bottom-0 left-4 w-1 border-l-2 border-dashed border-gray-300"></div>
-              
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    onClick={closeMenu}
-                    className={`group flex items-center justify-between px-4 py-4 pl-8 text-lg font-bold rounded-2xl transition-all duration-300 relative ${
-        {isOpen && (
           <div className="md:hidden fixed inset-0 top-[60px] md:top-[80px] bg-black/60 backdrop-blur-sm z-40 animate-in fade-in" onClick={closeMenu}>
             <div 
-              className="absolute top-4 left-4 right-4 bg-white/95 dark:bg-[#161B22]/95 backdrop-blur-xl border border-white/20 dark:border-[#30363D] shadow-2xl rounded-3xl p-6 animate-in slide-in-from-top-8 duration-300"
+              className={`absolute top-4 left-4 right-4 bg-white/95 dark:bg-[#161B22]/95 backdrop-blur-xl border border-white/20 dark:border-[#30363D] shadow-2xl rounded-3xl p-6 transition-all duration-300 ease-in-out transform origin-top ${isClosing ? 'scale-95 opacity-0 -translate-y-4' : 'scale-100 opacity-100 translate-y-0 animate-in slide-in-from-top-4'}`}
               onClick={e => e.stopPropagation()}
             >
               <div className="flex flex-col space-y-2">
@@ -155,7 +138,7 @@ export function Navbar() {
                           : 'text-eductome-marine dark:text-white hover:bg-gray-50 dark:hover:bg-[#30363D]'
                       }`}
                     >
-                      <div className={`${isActive ? 'bg-pink-100 dark:bg-[#D81B60]/30 text-[#D81B60]' : 'bg-gray-100 dark:bg-[#0D1117] text-gray-500 dark:text-gray-400'} p-2 rounded-xl`}>
+                      <div className={`${isActive ? 'bg-pink-100 dark:bg-[#D81B60]/30 text-[#D81B60]' : 'bg-gray-100 dark:bg-[#0D1117] text-gray-500 dark:text-gray-400'} p-2 rounded-xl transition-colors`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       {link.name}
