@@ -5,7 +5,7 @@ import { useInstallPWA } from '../../hooks/useInstallPWA';
 import { X, Share, PlusSquare } from 'lucide-react';
 
 export const MainLayout = () => {
-  const { isInstallable, installPWA, showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
+  const { showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
 
   return (
     <div className="min-h-screen flex flex-col font-poppins">
