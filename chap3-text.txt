@@ -1,0 +1,710 @@
+
+CHAPITRE 3 : CALCULER LES LIMITES 
+- LA MÉTHODE QUI MARCHE  
+"Devoir régional au 'Cacao', première Terminale. 
+ Dernière question (sur 3 points) : Calculer 푙푖푚 (푥² + 2푥 −
+ 푥)′ 푥→ +∞ J'ai remplacé mentalement :  +∞ + 2(+∞) − (+∞) = 
++∞ + ∞ −  ∞ Mon cerveau a dit : "C'est ∞ − ∞, forme 
+indéterminée !" J'ai paniqué. Il restait 5 minutes. Mais je me 
+suis calmé. 
+ J'ai appliqué la méthode bête et méchante  : "∞ −  ∞ avec 
+des x ?  
+→ FACTORISE par le plus grand  !" 푥² + 2푥 −  푥 = 푥²(1 + 2/푥 −
+ 1/푥)  
+Quand  푥 →  +∞ ∶ 2/푥 →  0 et 1/푥 →  0 Donc la parenthèse → 
+(1 + 0 −  0) = 1 Et 푥² →  +∞ Résultat : 푥² × 1 = +∞ J'ai écrit ça 
+proprement en 3 minutes. J'ai eu les 3 points.  
+Ce jour-là, j'ai compris : avoir une MÉTHODE qui marche vaut 
+mieux que 100 astuces. C'est cette méthode que je te donne 
+aujourd'hui." 
+Tu as compris le principe ? Super. Maintenant, on passe à 
+l'action. Le problème en maths, c'est que souvent, on panique 
+parce qu'on ne sait pas par quel bout attraper le monstre. Ici, je 
+te donne un  protocole militaire. Si tu le suis, tu ne peux pas te 
+tromper.  
+39 
+                                                                                                                  
+
+
+--- PAGE 39 ---
+
+
+3.1 Le process en 5 étapes pour calculer 
+n'importe quelle limite ) 
+Face à une limite, ne te lance pas dans des calculs savants 
+tout de suite. Respire et suis ces étapes : 
+ 
+ÉTAPE 1 : LIRE ET IDENTIFIER 
+Actions  concrètes  : 
+•      Où va 푥 ? (vers un nombre ou vers  ±∞) 
+•      Quelle est la fonction  푓(푥) ? 
+Exemple  : 
+푥2− 4
+lim    
+푥− 2
+푥→2
+•      푥 tend vers  2 
+2
+푥 −4
+•      Fonction :         
+푥−2
+ 
+ÉTAPE 2 : REMPLACER DIRECTEMENT   
+Actions  concrètes  : 
+•     Si 푥 → 푎 (nombre), remplace 푥 par 푎. 
+•     Si 푥 → +∞, imagine un "nombre très grand". 
+•     Si 푥 → −∞,, imagine un "nombre très grand négatif". 
+40 
+                                                                                                                  
+
+
+--- PAGE 40 ---
+
+
+Notre exemple : 
+2
+푥 −4
+푥 = 2 dans         
+푥−2
+2
+•     Numérateur :  (2)− 4=4− 4=0 
+•     Dénominateur :  2 −  2 = 0 
+0
+•     Résultat du remplacement :    
+0
+ 
+ÉTAPE 3 : ANALYSER LE RÉSULTAT  
+Trois possibilités  : 
+•     CAS A : Tu obtiens un NOMBRE → C'EST FINI ! ✅  
+(Exemples : 7,−3,0...) 
+•     CAS B : Tu obtiens ±∞ CLAIR → C'EST FINI ! ✅  
+(Exemples : +∞; −∞ 
+•     CAS C : Tu obtiens une FORME INDÉTERMINÉE → 
+Continue ! ⚠️ 
+Les 4 formes indéterminées : 
+0
+•        
+0
+∞
+•        
+∞
+•     ∞ −  ∞ 
+•     0 ×∞ 
+Notre exemple : 
+0
+On a obtenu   → FORME INDÉTERMINÉE ! On passe à l'étape 
+0
+4. 
+41 
+                                                                                                                  
+
+
+--- PAGE 41 ---
+
+
+ 
+ÉTAPE 4 : TRANSFORMER LA FONCTION   
+Techniques  selon la forme indéterminée : 
+ퟎ
+1.    Forme    en un point → FACTORISER numérateur et 
+ퟎ
+dénominateur. 
+2.   Forme ∞ −  ∞ → FACTORISER par le terme dominant.  
+∞
+ 
+3.   Forme       → FACTORISER haut et bas par les termes 
+∞
+dominants. 
+∞ −  ∞ 
+4.   Forme                     avec racines → Utiliser l'EXPRESSION 
+CONJUGUÉE. 
+0
+ 푒푛  푥=2
+Notre exemple :                         → On factorise ! 
+0
+2
+•     Numérateur : 푥 −4=(푥−2)(푥+2) (Identité 
+remarquable) 
+(푥−2)(푥+2)
+•     Fonction transformée :                 =푥+2 (On simplifie 
+(푥−2)
+par (푥−2)) 
+ 
+                                                     
+42 
+                                                                                                                  
+
+
+--- PAGE 42 ---
+
+
+ÉTAPE 5 : RECALCULER AVEC LA NOUVELLE FORME   
+Actions  concrètes  : 
+•    Reprends l'étape 2 avec la fonction simplifiée.  
+•    Remplace à nouveau  푥 par la valeur.  
+Notre exemple : 
+Nouvelle fonction :  푓(푥)=푥+2 
+lim(푥+2)=2+2=4 
+푥→2
+•     Réponse finale : 4 ✅  
+APPLICATION COMPLÈTE - EXERCICE GUIDÉ 
+PAS À PAS 
+2
+푥 −9
+EXERCICE  : Calculer  lim   
+푥−3
+푥→3
+TA DÉMARCHE COMPLÈTE : 
+2
+푥 −9
+1.    ÉTAPE 1 : Identifier → 푥 → 3, fonction =         
+푥−3
+9−9 0
+2.   ÉTAPE 2 : Remplacer  → 푥=3:  =  
+3−3 0
+0
+3.   ÉTAPE 3 : Analyser →    = Forme indéterminée ! Continue. 
+0
+4.   ÉTAPE 4 : Transformer → 푥2− 9=(푥− 3)(푥+3). 
+2
+푥 −9 (푥−3)(푥+3)
+Donc :        =    =푥+3 
+푥−3   (푥−3)
+5.   ÉTAPE 5 : Recalculer → lim(푥+3)=3+3=6  
+푥→3
+Réponse : 6  
+ 
+43 
+                                                                                                                  
+
+
+--- PAGE 43 ---
+
+
+EXERCICE  2 - À TOI DE JOUER 
+3
+푥 −8
+Calculer : lim   
+푥−2
+푥→2
+(Indice : 푥3− 8=(푥− 2)(푥2+2푥+4).) 
+Solution express : 
+0
+1.    Remplacer :    (F.I.) 
+0
+2
+(푥−2)(푥 +2푥+4)
+2.   Factoriser :                        =푥2+2푥+4 
+(푥−2)
+3.   Calculer : 22+2(2)+4=12 Réponse : 12  
+À RETENIR 
+Cette méthode marche TOUJOURS ! Si tu bloques, c'est que 
+tu as sauté une étape. Reviens au début et recommence 
+calmement !  
+"Vieux père, il y a trop de techniques ! Factorisation, conjugué, chefs... 
+je prends quoi pour ne pas me mélanger ?"  
+Le Grand Frère : " C'est simple petit : regarde la FORME de la limite. 
+∞ −  ∞ 
+Si tu vois 0/0 en un point    → factorisation. Si tu vois 
+푥
+avec des polynômes   → factorise par      à la plus grande 
+∞ −  ∞ 
+puissance. Si tu vois une racine avec                       → conjugué. 
+C'est comme au foot : on adapte la tactique selon l'adversaire. 
+Regarde la forme, choisis l'arme !"    
+                                        
+44 
+                                                                                                                  
+
+
+--- PAGE 44 ---
+
+
+3.2 Les formes indéterminées et comment les 
+TUER 
+Il existe 4 "Boss" qui vont essayer de te bloquer. Voici comment 
+les vaincre un par un. 
+F.I. n°1 :  ∞ −  ∞ (Le combat des Titans)  
+Pourquoi c'est indéterminé ?   
+Tu as un terme qui tire vers +∞ et un autre vers −∞. On ne sait 
+pas qui est le plus fort. Est-ce que ça s'annule ? Est-ce que l'un 
+écrase l'autre ? 
+ La Technique : FACTORISER par le "Chef"  
+ Le "Chef", c'est le terme qui a la plus grande puissance (le 
+plus haut degré). C'est lui qui commande à l'infini. En le 
+mettant en facteur, tu forces tout le monde à voir sa 
+puissance. 
+45 
+                                                                                                                  
+
+
+--- PAGE 45 ---
+
+
+ 
+ 
+  Exercice Type (Corrigé ultra -détaillé)  
+Calculer : lim(푥2− 푥) 
+푥→+∞
+Correction : 
+1.    Crash-test : 푥2 tend vers +∞.−푥 tend vers −∞. On a 
++∞ −  ∞. C'est une FI. 
+2.   Transformation :  Le chef est 푥2.  
+푥       1
+Je factorise par 푥2. 푓(푥)=푥2(1− )=푥2(1− ) 
+푥        푥2
+3.   Nouveau calcul :  
+1
+◦  Quand  푥 → +∞, le terme    tend vers 0. 
+푥
+1
+◦  Donc la parenthèse (1− ) tend vers 1 −  0 = 1. 
+푥
+◦  Le terme 푥2 tend vers +∞. Résultat : +∞ ×1 = +∞. 
+46 
+                                                                                                                  
+
+
+--- PAGE 46 ---
+
+
+      Pourquoi la parenthèse tend vers 1 et pas vers 0 ? Quand 
+푥 →  +∞ : 1/푥 →  0, donc (1 −  1/푥) →  (1 −  0) = 1 La parenthèse 
+"se calme" pendant que  푥² "explose". C'est 푥² qui décide du 
+résultat final. 
+  4 Autres exercices d'entraînement (Solutions rapides)  
+1.   lim(2푥3− 100푥2) 
+푥→+∞
+◦     Réponse : +∞ (푐푎푟 2푥3푔푎푔푛푒). 
+ 
+2.  lim(푥3+푥) 
+푥→−∞
+◦     Réponse : −∞ (car 푥3 gagne et est négatif). 
+ 
+3.  lim(푥4−2푥2+1) 
+푥→+∞
+◦     Réponse : +∞ (le chef 푥4 gagne). 
+ 
+4.  lim(−3푥2+4푥) 
+푥→−∞
+◦     Réponse : −∞ (퐴푡푡푒푛푡푖표푛,푥2→ +∞ mais multiplié par -3 
+donne  −∞). 
+ 
+ 
+47 
+                                                                                                                  
+
+
+--- PAGE 47 ---
+
+
+F.I. n°2 : 0/0 (Le bug de la calculatrice)  
+Pourquoi c'est indéterminé ?   
+Diviser rien par rien, ça peut faire n'importe quoi. 
+️ La Technique : FACTORISER et SIMPLIFIER   
+Si une fonction polynôme s'annule en  푎, c'est qu'on peut 
+factoriser par  (푥− 푎). Il y a un "facteur coupable" en haut 
+et en bas qu'il faut éliminer.  
+ 
+  Exercice Type (Corrigé ultra -détaillé)  
+2
+푥 −4
+lim 
+Calculer :      
+푥→2 푥−2
+Correction : 
+48 
+                                                                                                                  
+
+
+--- PAGE 48 ---
+
+
+1.  Crash-test : Je remplace  푥 par 2. Numérateur : 22−4=0.  
+0
+Dénominateur : 2 −  2 = 0. J'ai  .  C'est une FI. 
+0
+2. Transformation :   
+Je reconnais une identité remarquable en haut  (푎2− 푏2). 
+(푥−2)(푥+2)
+푥2− 4=(푥− 2)(푥+2) Ma fraction devient :     Je 
+(푥−2)
+simplifie par (푥− 2).  
+Il reste 푥 + 2. 
+3. Nouveau calcul :  lim(푥+2)=2+2=4 
+푥→2
+ 
+ 
+  4 Autres exercices d'entraînement  
+2
+푥 −1
+1.   lim    푅é푝표푛푠푒:2 (푐푎푟푥2− 1=(푥− 1)(푥+1)). 
+푥−1
+푥→1
+ 
+2
+푥 −2푥−3
+2.   lim      푅é푝표푛푠푒:4 (푓푎푐푡표푟푖푠푎푡푖표푛 푑푢 푡푟푖푛ô푚푒:(푥− 3)(푥+
+푥−3
+푥→3
+1)). 
+ 
+3
+푥 +푥
+3.   lim    푅é푝표푛푠푒:1(푓푎푐푡표푟푖푠푒푝푎푟푥:푥(푥2+1)/푥). 
+푥
+푥→0
+ 
+2푥+4
+4.    lim    푅é푝표푛푠푒:−0,5 (푠푖푚푝푙푖푓푖푒푟 푝푎푟 푥+2). 
+푥 −42
+푥→−2
+ 
+ 
+ 
+ 
+ 
+49 
+                                                                                                                  
+
+
+--- PAGE 49 ---
+
+
+∞
+壘  F.I. n°3 :  (La course de vitesse) 
+∞
+Pourquoi c'est indéterminé ?  Deux géants s'affrontent. Qui 
+monte le plus vite ? Celui du haut ou celui du bas ? 
+️ La Technique : LE DUEL DES CHEFS   
+En l'infini, on factorise par le terme de plus haut degré en 
+haut ET en bas, puis on simplifie.  
+  Exercice Type (Corrigé ultra -détaillé)  
+2
+3푥 +2푥
+lim 
+Calculer :         
+5푥 −푥2
+푥→+∞
+Correction: 
+Crash-test: Haut → +∞, Bas → +∞. FI. 
+Transformation :  Je factorise par les chefs (푥2 en haut, 
+2
+2
+푥 (3+)
+푥
+푥2 en bas)       
+1
+푥2(5− )
+푥
+2
+3+
+ 푥
+Je simplifie les 푥2. Il reste : 
+1
+5−
+푥
+1
+Nouveau calcul :  Les termes en    tendent vers 0. lim푓(푥)=
+푥
+푥→+∞
+3+0 3
+=  
+5−0 5
+ 
+                                                           
+50 
+                                                                                                                  
+
+
+--- PAGE 50 ---
+
+
+  4 Autres exercices d'entraînement  
+3
+푥 +1
+1.  lim       푅é푝표푛푠푒:+∞(푙푒 푑푒푔푟é 3 푒푛 ℎ푎푢푡 푔푎푔푛푒). 
+2
+푥→+∞ 푥 +푥
+ 
+2푥+5
+2.  lim     푅é푝표푛푠푒:0 (푙푒 푑푒푔푟é 2 푒푛 푏푎푠 푔푎푔푛푒). 
+2
+푥→+∞ 푥 +3
+ 
+2
+−4푥
+3.  lim   푅é푝표푛푠푒:−2(푟푎푝푝표푟푡 푑푒푠 푐표푒푓푓푖푐푖푒푛푡푠− 4/2). 
+2
+푥→−∞ 2푥 +1
+ 
+푥+1
+4.  lim  푅é푝표푛푠푒:1/3(푟푎푝푝표푟푡푑푒푠푐표푒푓푓푖푐푖푒푛푡푠). 
+푥→+∞ 3푥
+壘  F.I. n°4 : 0 ×∞ (L'alliance bizarre) 
+Plus rare mais existe. C'est souvent une fraction déguisée. 
+️ La Technique : TRANSFORMATION  
+Développe l'expression ou mets tout au même 
+dénominateur pour te ramener à une forme connue. 
+  5 Exercices corrigés 
+1
+1.  lim ×(3푥2+1) 
+푥
+푥→+∞
+•    퐹표푟푚푒∶ 0 ×∞. 
+•    푇푒푐ℎ푛푖푞푢푒∶ 퐷é푣푒푙표푝푝푒푟. 
+2
+3푥  1     1
+•        + =3푥+  
+푥  푥     푥
+•    퐿푖푚푖푡푒∶ +∞ + 0 = +∞. 
+ 
+ 
+51 
+                                                                                                                  
+
+
+--- PAGE 51 ---
+
+
+2
+2.  lim푥×  
+2
+푥→0  푥
+◦     Technique : Simplifier. 2푥/푥2=2/푥.  
+◦     Limite infinie (selon le signe de 0). 
+ 
+1
+3.  lim(푥+1)×  
+푥
+푥→+∞
+◦     Technique : (푥+1)/푥. Duel des chefs. Limite = 1. 
+ 
+4.  lim푥2푒−푥 
+푥→+∞
+◦     Note : C'est une croissance comparée (voir chapitre 
+suivant). 푒푥 gagne toujours. Limite = 0. 
+ 
+5.  lim푥ln(푥) 
+푥→0+
+◦     Note : Croissance comparée classique. Limite = 0.  
+                                                     
+52 
+                                                                                                                  
+
+
+--- PAGE 52 ---
+
+
+ 
+3.3 Les limites avec les racines carrées  (√...) 
+Dès que tu vois une racine carrée et une forme  ∞ −  ∞, ton 
+arme fatale c'est  L'EXPRESSION CONJUGUÉE . 
+Le principe : Utiliser l'identité (푎− 푏)(푎+푏)=푎2− 푏2 pour faire 
+sauter les racines. 
+  10 Exercices type BAC corrigés  
+1.  Exercice 1 : lim(√푥+1− √푥) 
+푥→+∞
+•    Correction : Multiplier par le conjugué √푥+1+√푥. 
+•    Numérateur : (푥+1)− 푥=1. 
+•    Dénominateur : √푥+1+√푥 (푡푒푛푑 푣푒푟푠+∞). 
+•    Résultat : 1 / ∞ = 0. 
+ 
+2. Exercice 2 : lim(√푥2+3− 푥) 
+푥→+∞
+•    Correction : Conjugué. Haut : (푥2+3)− 푥2=
+3.퐵푎푠:√푥2+3+푥. 
+•    Résultat : 0. 
+ 
+3. Exercice 3 : lim(푥− √푥2−1) 
+푥→+∞
+•    Correction : Conjugué. Haut : 푥2− (푥2− 1)=1. Bas : 푥+
+√푥2−1. 
+•    Résultat : 0. 
+ 
+53 
+                                                                                                                  
+
+
+--- PAGE 53 ---
+
+
+√푥−1
+4. Exercice 4 : lim   
+푥−1
+푥→+∞
+√푥−1
+Correction Exercice 4 :   lim   
+푥−1
+푥→+∞
+Méthode : On factorise le bas par x (le terme dominant).  
+√푥− 1 √푥− 1
+=     
+푥− 1    1
+푥(1− )
+푥
+Au numérateur : √푥−1→ +∞ Au dénominateur : 푥 × (1 − 0) =
+ 푥 →  +∞ 
+On a ∞/∞ → on factorise le numérateur par √푥 
+1      1
+√푥(1−  )   1−
+√푥
+√푥      √푥
+= ×    
+1  푥   1
+푥(1− )    1−
+푥       푥
+√푥  1
+Or    = → 0 quand 푥 →  +∞, et la fraction de droite → 1. 
+푥  √푥
+Résultat : 0      
+(Note : La Règle de l'Hôpital est une technique universitaire 
+plus avancée. Pas besoin d'elle ici.) 
+5. Exercice 5 (Piège) : lim(√푥− 푥) 
+푥→+∞
+•    Correction : Pas besoin de conjugué ! Factorise par le 
+plus fort (푥). 
+1
+•    푥( − 1). La parenthèse tend vers -1. Résultat : −∞. 
+√푥
+ 
+54 
+                                                                                                                  
+
+
+--- PAGE 54 ---
+
+
+√1+푥−1
+6. Exercice 6 : lim    
+푥
+푥→0
+•    Correction : Conjugué. Haut : (1+푥)− 1=푥. Bas : 
+푥(√1+푥+1). Simplifie par 푥. 
+•    Reste 1/(√1+푥+1). Tends vers 1/2. 
+ 
+√푥−2
+7. Exercice 7 : lim   
+푥−4
+푥→4
+•    Correction : Conjugué.   Résultat 1/4. 
+ 
+8. Exercice 8 (Difficile) : lim(√4푥2+푥−2푥) 
+푥→+∞
+•    Correction : Conjugué. Haut : (4푥2+푥)− 4푥2=푥. Bas : 
+√4푥2+푥+2푥. 
+•    Factorise le bas par 푥 (attention √푥2=|푥|=푥 en +∞). 
+푥
+•    On obtient     . Simplifie 푥. 
+푥(√4+1/푥+2)
+•    Reste 1/(√4+2)=1/4. 
+ 
+9. Exercice 9 : lim√푥2+1+푥 
+푥→−∞
+•    Correction : Attention, c'est une forme +∞ − ∞. Conjugué 
+nécessaire. Résultat 0. 
+ 
+푥
+10.        Exercice 10 : lim    
+2
+푥→+∞ √푥 +1
+푥
+•    Correction : Factoriser par 푥 (positif).   .  
+푥√1+1/푥2
+Résultat 1. 
+ 
+55 
+                                                                                                                  
+
+
+--- PAGE 55 ---
+
+
+3.4 Les limites de fonctions composées  
+C'est comme des poupées russes. On a une fonction dans une 
+fonction.  
+Exemple : 푓(푥)=√3푥+5.푂푛 푛표푡푒  푥→ 푋→ Résultat. 
+Explication simple : 
+1.  Regarde où va l'intérieur (le cœur). Disons qu'il va vers 퐿. 
+2. Regarde où va l'extérieur (l'enveloppe) quand la variable est 
+퐿. 
+  5 Exercices corrigés 
+1.  Facile : lim√2푥+10 
+푥→+∞
+•    Intérieur : 2푥+10 → +∞. 
+•    Extérieur :√푋푒푛+∞ → +. Résultat : +∞. 
+1
+2. Moyen : limcos() 
+푥
+푥→+∞
+1
+•    Intérieur : → 0. 
+푥
+•    Extérieur : cos(푋)푞푢푎푛푑 푋 → 0.푂푛 푠푎푖푡 푞푢푒cos(0)=1. 
+Résultat : 1. 
+ 
+                                                     
+56 
+                                                                                                                  
+
+
+--- PAGE 56 ---
+
+
+•     
+π푥+1
+3. Difficile : limsin( ) 
+2푥
+푥→+∞
+•    Intérieur : Limite de fraction rationnelle.  
+π푥  π
+= .
+Chefs :     
+2푥  2
+π            π
+•    Extérieur : sin(푋)푞푢푎푛푑 푋→ .  On sait que sin()=1.  
+2            2
+Résultat : 1. 
+ 
+2
+4. Expert : lim푒−푥 +1 
+푥→+∞
+•    Intérieur : −푥2+1→ −. 
+•    Extérieur : 푒푋 quand  푋 → −∞ donne 0. Résultat : 0. 
+ 
+5. Piège : limln(푥2+1) 
+푥→0
+•    Intérieur : 02+1→ 1. 
+•    Extérieur : ln(1)=0. Résultat : 0. 
+  Conseil du Grand Frère  
+ퟎ   ∞
+      "Champion(ne) , n'écris JAMAIS    ou    avec un signe 
+ퟎ   ∞
+égal sur ta copie. C'est une insulte pour le correcteur ! Écris 
+plutôt : 'On est en présence d'une forme indéterminée', puis 
+montre tes muscles avec ta simplification." 
+                                         
+57 
+                                                                                                                  
+
+
+--- PAGE 57 ---
+
+
+✅   Auto -évaluation —  Chapitre 3
+ 
+Là c'est le chapitre le plus long. Comment je sais que j'ai vraiment 
+tout capté ? 
+Le Grand Frère : 
+Ce chapitre, c'est le cœur du programme. Si tu coches ces 
+cases, tu peux aller dormir tranquille la veille du BAC pour 
+cette partie du cours. 
+ 
+Le test du Chapitre 3 :
+☐  Forme  ∞ −∞ : je sais factoriser par le terme dominant 
+ 
+sans me tromper de signe.
+☐  Forme  ∞/∞ : je sais identifier le « chef » en haut et en bas 
+ 
+et simplifier.
+☐  Forme  0/0 : je sais factoriser le numérateur ou 

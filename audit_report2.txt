@@ -1,0 +1,139 @@
+- **Fichier**: `t1-limites\chap3.ts`
+  - **Bloc ID**: `b13-exercices`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""1. \\( \\lim_{x \\to 3^+} \\frac{2}{x-3} \\). Raisonnement : \\( x-3 \\to 0^+ \\) donc \\( \\frac{2..."
+
+- **Fichier**: `t1-limites\chap3.ts`
+  - **Bloc ID**: `b15-exercices`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""1. \\( \\lim_{x \\to +\\infty} \\left(3 + \\frac{1}{x}\\right) \\). Raisonnement : \\( \\frac{1}{x}..."
+
+- **Fichier**: `t1-limites\chap3.ts`
+  - **Bloc ID**: `b16-exercices`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""1. \\( \\lim_{x \\to +\\infty} (x^3 + x) \\). Raisonnement : Grand + Grand = TRÈS GRAND (\\( +\\inf..."
+
+- **Fichier**: `t1-limites\chap5.ts`
+  - **Bloc ID**: `b2`
+  - **Raison**: Contient "Attention/Piège", Contient "Astuce/Conseil"
+  - **Extrait**: ""Ces astuces sont des accélérateurs. Attention : sur ta copie, tu dois toujours justifier (avec les ..."
+
+- **Fichier**: `t1-limites\chap6.ts`
+  - **Bloc ID**: `b8`
+  - **Raison**: Contient "Astuce/Conseil", Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""1. \\( \\lim_{x \\to +\\infty} (-x^3+4x^2) \\)\n2. \\( \\lim_{x \\to -\\infty} \\frac{2x+1}{x^2-3} ..."
+
+- **Fichier**: `t1-limites\chap7.ts`
+  - **Bloc ID**: `b4`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""Voici ce qui tombe à 90% :\n\n**1. Les questions classiques (Points cadeaux) 🎁**\n\n- **'Calculer ..."
+
+- **Fichier**: `t1-limites\chap7.ts`
+  - **Bloc ID**: `b6`
+  - **Raison**: Contient "Attention/Piège", Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""**2. LES PIÈGES RÉCURRENTS (POINTS DE VIGILANCE) 💣**\n\n**La rédaction interdite 1 :**\nÉcrire \\(..."
+
+- **Fichier**: `t1-limites\chap7.ts`
+  - **Bloc ID**: `b13`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""**Ce qu'il faut réviser la veille :**\n- Les Limites Usuelles (surtout \\( \\ln(x) \\) et \\( e^x \..."
+
+- **Fichier**: `t1-limites\chap7.ts`
+  - **Bloc ID**: `b15`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""**CONCLUSION :**\nChampion(ne),\nSi tu as bien travaillé, tu n'es plus le même élève qu'au début. S..."
+
+- **Fichier**: `t1-limites\chap7.ts`
+  - **Bloc ID**: `b16`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""**Formulaire des limites usuelles (À copier-coller dans ta tête !)**\n\n**Croissances Comparées (En..."
+
+- **Fichier**: `t2-derivees\chap1.ts`
+  - **Bloc ID**: `b14`
+  - **Raison**: Contient "Astuce/Conseil"
+  - **Extrait**: ""Petit(e), l'école ivoirienne est exigeante et je sais que la pression du BAC pèse lourd sur tes épa..."
+
+- **Fichier**: `t2-derivees\chap3.ts`
+  - **Bloc ID**: `b6`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""Exemple chiffré concret :\nSupposons que la position de ton gbaka soit donnée par la fonction $f(t)..."
+
+- **Fichier**: `t2-derivees\chap3.ts`
+  - **Bloc ID**: `b22`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""Interprétation pas-à-pas du tableau :\n1. La flèche qui descend (↘) : Signifie que la fonction est ..."
+
+- **Fichier**: `t2-derivees\chap3.ts`
+  - **Bloc ID**: `b24`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""Attention champion, ce n'est pas parce qu'une fonction existe qu'elle est forcément \"..."
+
+- **Fichier**: `t2-derivees\chap4.ts`
+  - **Bloc ID**: `b8`
+  - **Raison**: Contient "Règle", Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""Observons 5 exemples d'application directe immédiate :\n\n1. Si $f(x) = 1500$, alors $f'(x) = 0$ (R..."
+
+- **Fichier**: `t2-derivees\chap5.ts`
+  - **Bloc ID**: `b16`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""Analysons 3 exercices corrigés d'application immédiate :\n\n• Exercice 1 (Application directe) : So..."
+
+- **Fichier**: `t2-derivees\chap7.ts`
+  - **Bloc ID**: `b4`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""Les concepteurs des sujets du BAC utilisent toujours la même structure pour le grand problème d'ana..."
+
+- **Fichier**: `t2-derivees\chap7.ts`
+  - **Bloc ID**: `b5-q1-q5`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: "` <div class="mb-6"><div class="font-bold text-[#1976D2] dark:text-blue-400 text-lg mb-2">1. « Calc..."
+
+- **Fichier**: `t2-derivees\chap7.ts`
+  - **Bloc ID**: `b6-q6-q10`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: "` <div class="mb-6"><div class="font-bold text-[#1976D2] dark:text-blue-400 text-lg mb-2">6. « Prob..."
+
+- **Fichier**: `t2-derivees\chap7.ts`
+  - **Bloc ID**: `b27`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""Le jour J là, faut pas avoir peur ! Quand tu seras assis devant ta copie de BAC, respire un bon cou..."
+
+- **Fichier**: `t3-primitives\chap2.ts`
+  - **Bloc ID**: `b14`
+  - **Raison**: Long texte avec listes (devrait être un encadré ou table/recap)
+  - **Extrait**: ""Exemple d'application résolu : « Déterminer la primitive F de $f(x)=2x$ sachant que $F(1)=5$. »\n\n..."
+
+- **Fichier**: `t3-primitives\chap2.ts`
+  - **Bloc ID**: `b26`
+  - **Raison**: Contient "Astuce/Conseil"
+  - **Extrait**: ""Champion, s'il y a un seul conseil que tu dois encadrer et afficher au-dessus de ton lit pour toute..."
+
+- **Fichier**: `t3-primitives\chap2.ts`
+  - **Bloc ID**: `b28`
+  - **Raison**: Contient "Règle"
+  - **Extrait**: ""Analysons 3 exemples pratiques de relecture ciblée issus de notre quotidien :\n\n• Exemple 1 : Le d..."
+
+- **Fichier**: `t3-primitives\chap3.ts`
+  - **Bloc ID**: `b2`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""Faisons le calcul complet pas à pas : On cherche la primitive de $f(x)=2x$. On va utiliser notre ta..."
+
+- **Fichier**: `t3-primitives\chap4.ts`
+  - **Bloc ID**: `b14`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""SECTION 3.4 — PIÈGES À ÉVITER : La division par zéro. Champion, s'il te plaît, ouvre grand tes yeux..."
+
+- **Fichier**: `t3-primitives\chap7.ts`
+  - **Bloc ID**: `b1`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: ""📖 L'ANECDOTE DU GRAND FRÈRE (La Stratégie du Général) :\nLa veille du BAC au Lycée Classique d'Abi..."
+
+- **Fichier**: `t3-primitives\chap7.ts`
+  - **Bloc ID**: `b3-q1-q5`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: "` <div class="mb-6"><div class="font-bold text-[#1976D2] dark:text-blue-400 text-lg mb-2">1. « Calcu..."
+
+- **Fichier**: `t3-primitives\chap7.ts`
+  - **Bloc ID**: `b4-q6-q10`
+  - **Raison**: Contient "Attention/Piège"
+  - **Extrait**: "` <div class="mb-6"><div class="font-bold text-[#1976D2] dark:text-blue-400 text-lg mb-2">6. « Calcu..."

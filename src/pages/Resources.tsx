@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
-import { Download, Eye, EyeOff, BookOpen, PenTool, BookMarked, CheckCircle, MessageCircle, X, Filter } from 'lucide-react';
+import { Download, Eye, EyeOff, BookOpen, PenTool, BookMarked, CheckCircle, MessageCircle, X, Filter, ChevronLeft, ArrowRight, Calculator, FlaskConical, Dna, Globe, Brain, Languages } from 'lucide-react';
 import { tomesRegistry } from '../data/exercices-registry';
 import { exercicesT1, Exercise, ExerciseLevel } from '../data/exercices-t1';
 import { exercicesT2 } from '../data/exercices-t2';
@@ -16,6 +16,82 @@ import { exercicesT10 } from '../data/exercices-t10';
 import { exercicesT11 } from '../data/exercices-t11';
 import { SEO } from '../components/SEO';
 import { useProgress } from '../hooks/useProgress';
+import { LeadCaptureModal } from '../components/ui/LeadCaptureModal';
+
+const vitrineFiches = [
+  {
+    id: "math-1",
+    title: "Les Limites",
+    subject: "Mathématiques",
+    theme: "#1976D2",
+    level: "Terminale D",
+    content: ["Les 4 formes indéterminées", "Techniques de factorisation", "Limites usuelles à connaître"],
+    pdfFile: "FICHE_METHODE_MATHS_LIMITES.pdf"
+  },
+  {
+    id: "math-2",
+    title: "Nombres Complexes",
+    subject: "Mathématiques",
+    theme: "#1976D2",
+    level: "Terminale D",
+    content: ["Forme algébrique et trigo", "Résolution d'équations", "Interprétation géométrique"],
+    pdfFile: "FICHE_METHODE_MATHS_COMPLEXES.pdf"
+  },
+  {
+    id: "pc-1",
+    title: "Cinématique du Point",
+    subject: "Physique-Chimie",
+    theme: "#1B5E20",
+    level: "Terminale D",
+    content: ["Vecteur vitesse & accélération", "Équations horaires", "Mouvements circulaires"],
+    pdfFile: "FICHE_METHODE_PC_CINEMATIQUE.pdf"
+  },
+  {
+    id: "pc-2",
+    title: "Acides et Bases",
+    subject: "Physique-Chimie",
+    theme: "#1B5E20",
+    level: "Terminale D",
+    content: ["Calculs de pH et pKa", "Constante d'acidité", "Points d'équivalence"],
+    pdfFile: "FICHE_METHODE_PC_ACIDE_BASE.pdf"
+  },
+  {
+    id: "svt-1",
+    title: "La Génétique",
+    subject: "SVT",
+    theme: "#D81B60",
+    level: "Terminale D",
+    content: ["Lois de Mendel", "Arbres généalogiques", "Maladies héréditaires"],
+    pdfFile: "FICHE_METHODE_SVT_GENETIQUE.pdf"
+  },
+  {
+    id: "svt-2",
+    title: "Système Nerveux",
+    subject: "SVT",
+    theme: "#D81B60",
+    level: "Terminale D",
+    content: ["Potentiel d'action/repos", "Transmission synaptique", "Neurotransmetteurs"],
+    pdfFile: "FICHE_METHODE_SVT_NERVEUX.pdf"
+  },
+  {
+    id: "hg-1",
+    title: "La Dissertation",
+    subject: "Histoire-Géo",
+    theme: "#E65100",
+    level: "Toutes Séries",
+    content: ["Analyser et problématiser", "Construire un plan détaillé", "Rédiger l'introduction"],
+    pdfFile: "FICHE_METHODE_HG_DISSERTATION.pdf"
+  },
+  {
+    id: "hg-2",
+    title: "Le Commentaire",
+    subject: "Histoire-Géo",
+    theme: "#E65100",
+    level: "Toutes Séries",
+    content: ["Présenter le document", "Extraire les idées", "Critique et contexte"],
+    pdfFile: "FICHE_METHODE_HG_COMMENTAIRE.pdf"
+  }
+];
 
 const allExercises: Record<number, Exercise[]> = {
   1: exercicesT1, 2: exercicesT2, 3: exercicesT3, 4: exercicesT4, 
@@ -23,17 +99,70 @@ const allExercises: Record<number, Exercise[]> = {
   9: exercicesT9, 10: exercicesT10, 11: exercicesT11
 };
 
+const vitrineExercicesTomes = [
+  { id: 1, title: "Les Limites", subject: "Mathématiques", theme: "#1976D2", isUpcoming: false, icon: Calculator },
+  { id: 2, title: "Les Dérivées", subject: "Mathématiques", theme: "#1976D2", isUpcoming: false, icon: Calculator },
+  { id: 13, title: "Cinématique", subject: "Physique-Chimie", theme: "#1B5E20", isUpcoming: true, icon: FlaskConical },
+  { id: 14, title: "Acides et Bases", subject: "Physique-Chimie", theme: "#1B5E20", isUpcoming: true, icon: FlaskConical },
+  { id: 15, title: "La Génétique", subject: "SVT", theme: "#D81B60", isUpcoming: true, icon: Dna },
+  { id: 16, title: "Système Nerveux", subject: "SVT", theme: "#D81B60", isUpcoming: true, icon: Dna },
+  { id: 17, title: "Dissertation", subject: "Histoire-Géo", theme: "#E65100", isUpcoming: true, icon: Globe },
+  { id: 18, title: "Le Commentaire", subject: "Histoire-Géo", theme: "#E65100", isUpcoming: true, icon: Globe },
+  { id: 19, title: "Le Sujet, La Raison", subject: "Philosophie", theme: "#880E4F", isUpcoming: true, icon: Brain },
+  { id: 20, title: "L'État, Société", subject: "Philosophie", theme: "#880E4F", isUpcoming: true, icon: Brain },
+  { id: 21, title: "Reading Skills", subject: "Anglais", theme: "#00695C", isUpcoming: true, icon: Languages },
+  { id: 22, title: "Writing Skills", subject: "Anglais", theme: "#00695C", isUpcoming: true, icon: Languages }
+];
+
 export function Resources() {
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const initialTab = (searchParams.get('tab') as 'fiches' | 'exercices' | 'planning' | 'questions') || 'exercices';
   const [activeTab, setActiveTab] = useState<'fiches' | 'exercices' | 'planning' | 'questions'>(initialTab);
   const [activeTomeId, setActiveTomeId] = useState<number | null>(null);
+  
+  // Modal states
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [leadModalConfig, setLeadModalConfig] = useState({ title: '', description: '' });
+  // Contexte mémorisé avant inscription (pour la Redirection Contextuelle)
+  const [pendingExerciseId, setPendingExerciseId] = useState<string | null>(null);
+  const [pendingTomeId, setPendingTomeId] = useState<number | null>(null);
 
+  // Lire les paramètres d'URL au chargement (inclut la redirection contextuelle post-inscription)
   useEffect(() => {
-    const tab = searchParams.get('tab');
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
     if (tab === 'fiches' || tab === 'exercices' || tab === 'planning' || tab === 'questions') {
       setActiveTab(tab);
+    }
+    
+    // Redirection Contextuelle : auto-ouvrir un tome et un exercice spécifique
+    const tomeIdParam = params.get('tomeId');
+    const openExParam = params.get('openEx');
+    if (tomeIdParam && openExParam) {
+      const tomeNum = parseInt(tomeIdParam, 10);
+      if (!isNaN(tomeNum)) {
+        setActiveTomeId(tomeNum);
+        // Déployer la correction de l'exercice cible après le rendu
+        setTimeout(() => {
+          setShowCorrection(prev => ({ ...prev, [openExParam]: true }));
+          // Rendre les formules MathJax
+          if ((window as any).MathJax) {
+            (window as any).MathJax.typesetPromise();
+          }
+          // Scroller jusqu'à l'exercice cible
+          setTimeout(() => {
+            const el = document.getElementById(openExParam);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // Ajouter un highlight temporaire
+              el.classList.add('ring-4', 'ring-eductome-magenta', 'ring-offset-2');
+              setTimeout(() => el.classList.remove('ring-4', 'ring-eductome-magenta', 'ring-offset-2'), 3000);
+            }
+          }, 400);
+        }, 300);
+      }
     }
   }, [location.search]);
   const { completedExercises, evaluations, evaluateExercise, getExercisesToReview, showEmailModal, dismissModal, completeCapture, toastMessage, showToast } = useProgress();
@@ -44,6 +173,19 @@ export function Resources() {
   const exercisesContainerRef = useRef<HTMLDivElement>(null);
 
   const toggleCorrection = (exerciseId: string) => {
+    const isLoggedIn = localStorage.getItem('eductome_user_logged_in') === 'true';
+    if (!isLoggedIn) {
+      // Mémoriser le contexte pour la Redirection Contextuelle post-inscription
+      setPendingExerciseId(exerciseId);
+      setPendingTomeId(activeTomeId);
+      setLeadModalConfig({
+        title: "Débloque la correction détaillée 🔓",
+        description: "Pour voir la correction étape par étape, crée ton compte gratuit en 10 secondes."
+      });
+      setIsLeadModalOpen(true);
+      return;
+    }
+
     setShowCorrection(prev => {
       const newState = { ...prev, [exerciseId]: !prev[exerciseId] };
       if (newState[exerciseId]) {
@@ -55,6 +197,18 @@ export function Resources() {
       }
       return newState;
     });
+  };
+
+  const handleDownloadFiche = (e: React.MouseEvent<HTMLAnchorElement>, _pdfFile: string) => {
+    const isLoggedIn = localStorage.getItem('eductome_user_logged_in') === 'true';
+    if (!isLoggedIn) {
+      e.preventDefault();
+      setLeadModalConfig({
+        title: "Télécharge ta fiche méthode 📥",
+        description: "Pour télécharger le PDF et le garder sur ton téléphone, crée ton compte gratuit EDUCTOME."
+      });
+      setIsLeadModalOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -96,6 +250,8 @@ export function Resources() {
     }
   };
 
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
   return (
     <div className={`min-h-screen transition-colors duration-500 ${getBgColor()}`}>
       <SEO title="Ressources Gratuites" description="Télécharge gratuitement nos fiches méthodes et extraits de manuels Eductome." />
@@ -131,19 +287,43 @@ export function Resources() {
       )}
 
       {/* Hero Banner Premium */}
-      <div className="relative pt-20 pb-20 px-4 text-center overflow-hidden bg-eductome-marine">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-eductome-magenta/20 blur-[100px] rounded-full"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-eductome-sky/20 blur-[80px] rounded-full"></div>
-        
-        <ScrollReveal>
-          <span className="text-eductome-magenta font-bold tracking-wider text-sm md:text-base uppercase mb-4 block">TA SALLE D'ENTRAÎNEMENT</span>
-          <h1 className="font-playfair text-4xl md:text-6xl font-bold text-white mb-6 relative z-10">
-            Ressources <span className="text-eductome-magenta">Gratuites</span>
-          </h1>
-          <p className="text-gray-200 max-w-2xl mx-auto text-lg md:text-xl font-light relative z-10">
-            Bienvenue dans la salle d'entraînement du Grand Frère. Ici tu t'exerces, tu te trompes, tu corriges, tu progresses. Pas un franc à débourser — juste à toi de bosser sérieusement.
-          </p>
-        </ScrollReveal>
+      {isDashboard && (
+        <div className="max-w-6xl mx-auto px-4 pt-6 pb-2">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white">
+            <ChevronLeft className="w-4 h-4" /> Retour
+          </button>
+        </div>
+      )}
+      <div className={`relative ${isDashboard ? 'bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl mx-4 p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mt-2 mb-6' : 'pt-20 pb-20 px-4 text-center bg-eductome-marine'} overflow-hidden shadow-lg`}>
+        {isDashboard ? (
+          <>
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
+            <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
+            <div className="relative z-10 text-white flex-1">
+              <h1 className="text-3xl font-playfair font-bold mb-2 flex items-center gap-3">
+                <BookOpen className="w-8 h-8" />
+                Ressources Gratuites
+              </h1>
+              <p className="text-blue-100 max-w-lg mt-2 text-sm">
+                Bienvenue dans la salle d'entraînement du Grand Frère. Ici tu t'exerces, tu te trompes, tu corriges, tu progresses. Pas un franc à débourser.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="absolute top-0 right-0 w-80 h-80 bg-eductome-magenta/20 blur-[100px] rounded-full pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-eductome-sky/20 blur-[80px] rounded-full pointer-events-none"></div>
+            <ScrollReveal>
+              <span className="text-eductome-magenta font-bold tracking-wider text-sm md:text-base uppercase mb-4 block">TA SALLE D'ENTRAÎNEMENT</span>
+              <h1 className="font-playfair text-4xl md:text-6xl font-bold text-white mb-6 relative z-10">
+                Ressources <span className="text-eductome-magenta">Gratuites</span>
+              </h1>
+              <p className="text-gray-200 max-w-2xl mx-auto text-lg md:text-xl font-light relative z-10">
+                Bienvenue dans la salle d'entraînement du Grand Frère. Ici tu t'exerces, tu te trompes, tu corriges, tu progresses. Pas un franc à débourser — juste à toi de bosser sérieusement.
+              </p>
+            </ScrollReveal>
+          </>
+        )}
       </div>
 
       {/* Tabs Premium */}
@@ -180,28 +360,62 @@ export function Resources() {
       <div className="max-w-6xl mx-auto px-4 pb-20">
         
         {/* TAB 1: Fiches Méthode */}
+        {/* TAB 1: Fiches Méthode */}
         {activeTab === 'fiches' && (
-          <ScrollReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tomesRegistry.map(tome => (
-              <div key={tome.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="p-3 rounded-xl text-white shadow-inner" style={{ backgroundColor: tome.theme }}>
-                    <BookOpen className="w-6 h-6" />
+          <ScrollReveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {vitrineFiches.map(fiche => (
+                <div key={fiche.id} className="bg-white dark:bg-[#161B22] p-6 rounded-xl shadow-sm border border-gray-100 dark:border-[#30363D] flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 opacity-5 rounded-bl-full pointer-events-none" style={{ backgroundColor: fiche.theme }}></div>
+                  
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl text-white shadow-inner z-10" style={{ backgroundColor: fiche.theme }}>
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs font-bold px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase tracking-wider">{fiche.subject}</span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-700">Tome {tome.id}</span>
+                  
+                  <h3 className="font-bold text-[#1A1A2E] dark:text-white text-lg mb-1">{fiche.title}</h3>
+                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">{fiche.level}</p>
+                  
+                  <ul className="text-sm text-gray-600 dark:text-[#8B949E] mb-6 flex-grow space-y-2">
+                    {fiche.content.map((item, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-[#D81B60] mr-2 mt-0.5">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <button 
+                    onClick={(e) => handleDownloadFiche(e as any, fiche.pdfFile)}
+                    className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 dark:bg-[#30363D] dark:hover:bg-[#4B5563] text-[#1A1A2E] dark:text-white font-semibold py-2.5 rounded-xl border border-gray-200 dark:border-transparent transition-colors z-10"
+                  >
+                    <Download className="w-4 h-4 mr-2" /> Télécharger
+                  </button>
                 </div>
-                <h3 className="font-bold text-[#1A3557] text-lg mb-1">Fiche Méthode — {tome.title}</h3>
-                <p className="text-sm text-gray-500 mb-6 flex-grow">Terminale C & D · 3 cas BAC + 5 pièges</p>
-                <a 
-                  href={`/fiches/${tome.pdfFile}`}
-                  download={tome.pdfFile}
-                  target="_blank" rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-[#1A3557] font-semibold py-2 rounded-lg border border-gray-200 transition-colors"
+              ))}
+            </div>
+
+            {/* Levier Upsell: Le Méga-Pack */}
+            <div className="bg-gradient-to-r from-[#1A3557] to-[#1976D2] rounded-2xl p-8 relative overflow-hidden text-white shadow-xl max-w-4xl mx-auto">
+              <div className="absolute inset-0 bg-black/10 backdrop-blur-sm pointer-events-none"></div>
+              <div className="relative z-10 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-4 backdrop-blur-md">
+                  <span className="text-3xl">🔐</span>
+                </div>
+                <h3 className="text-2xl font-bold font-playfair mb-3">24 autres fiches secrètes t'attendent !</h3>
+                <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+                  Le <strong>"Méga-Pack Méthode"</strong> complet (toutes les fiches avancées de Maths, PC, SVT et HG) n'est pas en vente libre. Il t'est <strong className="text-white">OFFERT</strong> en bonus exclusif dès que tu débloques ton premier Tome complet.
+                </p>
+                <Link 
+                  to={isDashboard ? "/dashboard/boutique" : "/collections"}
+                  className="inline-flex items-center bg-[#D81B60] hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-xl transition-transform hover:scale-105 shadow-lg"
                 >
-                  <Download className="w-4 h-4 mr-2" /> Télécharger
-                </a>
+                  Débloquer un Tome & Obtenir le Bonus
+                </Link>
               </div>
-            ))}
+            </div>
           </ScrollReveal>
         )}
 
@@ -209,26 +423,29 @@ export function Resources() {
         {activeTab === 'exercices' && (
           <ScrollReveal>
             <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-              Choisis ton tome, vieux père. Les exercices vont de BASE à BAC. Tu commences doucement, tu montes en puissance, tu finis fort. On est ensemble.
+              Choisis ton tome, Champion(ne). Les exercices vont de BASE à BAC. Tu commences doucement, tu montes en puissance, tu finis fort. On est ensemble.
             </p>
             
             {/* Grid of Tomes */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-10">
-              {tomesRegistry.map(tome => {
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+              {vitrineExercicesTomes.map(tome => {
                 const isActive = activeTomeId === tome.id;
                 return (
                   <button
                     key={tome.id}
                     onClick={() => !tome.isUpcoming && handleTomeClick(tome.id)}
-                    className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 relative overflow-hidden
-                      ${tome.isUpcoming ? 'bg-gray-50 border-gray-100 cursor-not-allowed opacity-70' : 
-                        isActive ? 'border-eductome-magenta bg-eductome-magenta/5 shadow-md transform scale-105' : 'border-transparent bg-white shadow-sm hover:border-gray-200 hover:shadow-md'}`}
+                    className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden group
+                      ${tome.isUpcoming ? 'bg-gray-50 dark:bg-[#161B22]/50 border-gray-100 dark:border-[#30363D] cursor-not-allowed opacity-60' : 
+                        isActive ? 'border-[#D81B60] bg-pink-50 dark:bg-[#D81B60]/10 shadow-md transform scale-105' : 'border-gray-100 dark:border-[#30363D] bg-white dark:bg-[#161B22] shadow-sm hover:border-[#1A3557] dark:hover:border-blue-500 hover:shadow-md'}`}
                   >
                     {tome.isUpcoming && (
-                      <div className="absolute top-0 right-0 bg-gray-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                      <div className="absolute top-0 right-0 bg-gray-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg uppercase">Bientôt</div>
                     )}
-                    <span className={`text-xs font-bold mb-2 ${tome.isUpcoming ? 'text-gray-400' : isActive ? 'text-eductome-magenta' : 'text-gray-500'}`}>TOME {tome.id}</span>
-                    <span className={`text-sm font-semibold text-center ${tome.isUpcoming ? 'text-gray-400' : isActive ? 'text-eductome-magenta' : 'text-eductome-marine'}`}>{tome.title}</span>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white mb-3 shadow-inner" style={{ backgroundColor: tome.theme, opacity: tome.isUpcoming ? 0.5 : 1 }}>
+                      <tome.icon className="w-5 h-5" />
+                    </div>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${tome.isUpcoming ? 'text-gray-400 dark:text-gray-600' : isActive ? 'text-[#D81B60]' : 'text-gray-500 dark:text-gray-400'}`}>{tome.subject}</span>
+                    <span className={`text-sm font-semibold text-center leading-tight ${tome.isUpcoming ? 'text-gray-400 dark:text-gray-600' : isActive ? 'text-[#D81B60]' : 'text-[#1A1A2E] dark:text-white'}`}>{tome.title}</span>
                   </button>
                 )
               })}
@@ -247,7 +464,7 @@ export function Resources() {
                         <div className="inline-flex items-start bg-[#FFF3E0] text-[#E65100] px-4 py-3 rounded-xl text-sm font-medium leading-relaxed max-w-3xl">
                           <span className="mr-2 text-xl">💡</span>
                           <span>
-                            <strong>Conseil du Grand Frère :</strong> Cache la correction avant de commencer. Cherche d'abord — même si tu galères. Trompe-toi, c'est NORMAL : c'est comme ça qu'on apprend vraiment. Vérifie ensuite. Le tome complet (avec encore plus d'exercices, d'analogies et de méthode) est disponible sur Selar.
+                            <strong>Conseil du Grand Frère :</strong> Cache la correction avant de commencer. Cherche d'abord — même si tu galères. Trompe-toi, c'est NORMAL : c'est comme ça qu'on apprend vraiment. Vérifie ensuite.
                           </span>
                         </div>
                       </div>
@@ -301,7 +518,7 @@ export function Resources() {
                         const currentEvaluation = evaluations[ex.id]?.level;
 
                         return (
-                          <div key={ex.id} className={`border rounded-xl overflow-hidden shadow-sm transition-all ${isCompleted ? 'border-green-400 bg-green-50/30' : 'border-gray-200 bg-white'}`}>
+                          <div key={ex.id} id={ex.id} className={`border rounded-xl overflow-hidden shadow-sm transition-all duration-500 scroll-mt-24 ${isCompleted ? 'border-green-400 bg-green-50/30' : 'border-gray-200 bg-white'}`}>
                             {/* Énoncé */}
                             <div className="p-6">
                               <div className="flex items-center justify-between mb-4">
@@ -529,9 +746,34 @@ export function Resources() {
                     </a>
                   </div>
                 )}
-
               </div>
             )}
+            
+            {/* Levier Upsell: Mega-Pack Exercices */}
+            <div className="mt-12 bg-gradient-to-br from-gray-900 to-[#1A3557] rounded-3xl p-8 md:p-10 relative overflow-hidden text-white shadow-2xl max-w-5xl mx-auto border border-blue-900/50">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20 shrink-0">
+                  <span className="text-5xl block mb-2">🚀</span>
+                  <div className="text-xs font-bold text-blue-200 uppercase tracking-widest text-center">Bonus Exclusif</div>
+                </div>
+                
+                <div className="flex-grow">
+                  <h3 className="text-2xl md:text-3xl font-bold font-playfair mb-3">Tu veux t'entraîner sur +500 exercices corrigés ?</h3>
+                  <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                    Le <strong>Méga-Pack "Exos Corrigés"</strong> (couvrant l'intégralité du programme pour TOUTES les matières) est <strong className="text-white bg-[#D81B60]/20 px-2 py-0.5 rounded">OFFERT</strong> automatiquement en bonus avec ton premier achat de manuel complet !
+                  </p>
+                  <Link 
+                    to={isDashboard ? "/dashboard/boutique" : "/collections"}
+                    className="inline-flex items-center bg-[#D81B60] hover:bg-pink-600 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-lg hover:shadow-pink-500/25 hover:-translate-y-1"
+                  >
+                    Obtenir mon Bonus maintenant <ArrowRight className="w-5 h-5 ml-2" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </ScrollReveal>
         )}
 
@@ -656,19 +898,17 @@ export function Resources() {
         )}
 
         {/* Soft CTA Bottom */}
-        <ScrollReveal className="mt-12 border-t border-gray-200 pt-16 pb-8 text-center max-w-3xl mx-auto">
-          <h2 className="text-2xl font-playfair font-bold text-[#1A3557] mb-4">Envie d'aller plus loin ?</h2>
-          <p className="text-gray-600 mb-8">
+        <ScrollReveal className="mt-12 border-t border-gray-200 dark:border-[#30363D] pt-16 pb-8 text-center max-w-3xl mx-auto">
+          <h2 className="text-2xl font-playfair font-bold text-[#1A1A2E] dark:text-white mb-4">Envie d'aller plus loin ?</h2>
+          <p className="text-gray-600 dark:text-[#8B949E] mb-8">
             Si ces ressources gratuites t'ont aidé, nos manuels complets te donneront toutes les clés pour exceller. Retrouve l'intégralité du programme avec encore plus d'exercices corrigés pas-à-pas et d'astuces.
           </p>
-          <a 
-            href="https://selar.com/m/eductome" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-flex items-center bg-white text-[#D81B60] border-2 border-[#D81B60] hover:bg-[#D81B60] hover:text-white font-bold py-3 px-8 rounded-full transition-colors shadow-sm"
+          <Link 
+            to={isDashboard ? "/dashboard/boutique" : "/collections"}
+            className="inline-flex items-center bg-[#D81B60] text-white hover:bg-pink-700 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
           >
-            Découvrir les Tomes Complets sur Selar
-          </a>
+            Découvrir les Tomes Complets
+          </Link>
         </ScrollReveal>
 
       </div>
@@ -706,24 +946,38 @@ export function Resources() {
         </div>
       )}
 
-      {/* Sticky Selar Footer */}
+      {/* Sticky CTA Footer */}
       {activeTomeId && (
-        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 hidden md:block">
+        <div className="fixed bottom-0 inset-x-0 bg-white dark:bg-[#161B22] border-t border-gray-200 dark:border-[#30363D] p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 hidden md:block">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <div className="flex items-center text-sm">
-              <span className="text-eductome-magenta font-bold mr-2">📘 Le Tome complet</span>
-              <span className="text-gray-600">est disponible sur Selar → 30+ exos, analogies, astuces de pro.</span>
+              <span className="text-[#D81B60] font-bold mr-2">📘 Le Tome complet</span>
+              <span className="text-gray-600 dark:text-[#8B949E]">est disponible ! 30+ exos, analogies, astuces de pro.</span>
             </div>
-            <a 
-              href="https://selar.com/m/eductome" 
-              target="_blank" rel="noopener noreferrer"
-              className="bg-eductome-magenta text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-pink-700 transition-colors text-sm shadow-sm"
+            <Link 
+              to={isDashboard ? "/dashboard/boutique" : "/collections"}
+              className="bg-[#D81B60] text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-pink-700 transition-colors text-sm shadow-sm"
             >
-              Voir sur Selar
-            </a>
+              Débloquer le tome
+            </Link>
           </div>
         </div>
       )}
+      <LeadCaptureModal 
+        isOpen={isLeadModalOpen} 
+        onClose={() => setIsLeadModalOpen(false)} 
+        title={leadModalConfig.title}
+        description={leadModalConfig.description}
+        onSuccess={() => {
+          setIsLeadModalOpen(false);
+          if (pendingTomeId && pendingExerciseId) {
+            // Redirection Contextuelle : propulser l'élève directement sur son exercice dans le Dashboard
+            navigate(`/dashboard/ressources?tab=exercices&tomeId=${pendingTomeId}&openEx=${pendingExerciseId}`);
+          } else {
+            window.location.reload();
+          }
+        }}
+      />
     </div>
   );
 }

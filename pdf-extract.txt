@@ -1,0 +1,3119 @@
+                                                                                                                  
+1 
+ 
+pique pas, ou bien ? ). 
+Parce que je n'étais jamais prêt (Quand tu comprends pas tu 
+stressé quand on parlait d’interro ou de devoir pourquoi ? 
+notions incomprises, surtout les limites, et j’étais constamment 
+Résultat : je me retrouvais frustré avec des montagnes de 
+"maître de maison" (tu vois un peu le giga, non ?). 
+pas les moyens pour ces cours de renfos, et je n'avais pas de 
+J'ai vécu ça au Lycée Classique. Malheureusement, je n'avais 
+t'inscrire à leurs cours de renforcement payants... 
+compris. Parfois même, c'est fait exprès pour t'obliger à 
+programme qu'ils ne se soucient pas de savoir si tu as 
+la vérité : certains professeurs sont tellement pressés de finir le 
+t'explique pas les choses avec des mots simples. On va se dire 
+maths ne sont pas faites pour toi, mais parce qu'on ne 
+Tu as du mal à comprendre les notions, non pas parce que les 
+élève, intelligent et bosseur, mais qui commence à couler. 
+mêmes problèmes que j'avais il y a quelques années : un bon 
+Si tu es là, c'est probablement parce que tu as exactement les 
+Champion(ne), 
+MESSAGE DU GRAND FRÈRE 
+----------------Page (0) Break----------------
+                                                                                                                  
+2 
+ 
+ 
+spécial. On reprend tout à zéro, proprement." 
+fini, on peut toujours rattraper le tire. Ce livre est ton entraînement 
+Le Grand Frère : "Au 'Cacao', on dit que tant que le match n'est pas 
+pas trop tard pour moi ?" 
+"Mais vieux père, si j'ai déjà accumulé trop de retard, est-ce que c'est 
+frustration en victoire. 
+qu'on m'explique à l'époque. On va transformer cette 
+Aujourd'hui, je vais t'expliquer les limites comme j'aurais aimé 
+et je me demandais : "Mais ça veut dire QUOI encore !" 
+écrivait des symboles bizarres au tableau (l푖푚, →, ∞, +∞, −∞), 
+gbaka qui va à Adjamé. Moi aussi j'étais assis en classe, le prof 
+que les limites, c'est juste une histoire de direction, comme un 
+qui s'assoit avec toi, qui comprend ta galère, et qui te montre 
+Mon but est simple : être ce grand frère que je n'ai pas eu. Celui 
+Ma mission : Que personne ne reste au bord de la route 
+personne." 
+ce que j'ai appris pour que tu n'aies plus besoin de dépendre de 
+EDUCTOME. Ici, il n'y a pas de frais de renfos cachés. Je te donne tout 
+Le Grand Frère : "Je connais ce sentiment. C'est pour ça que j'ai créé 
+quoi je vais payer ?" 
+Souvent il me dit de venir au cours de renfort le samedi. Mais avec 
+quand je demande une explication, ce n’est pas claire et parfois flou. 
+"Grand Frère, c'est exactement ça ! Le prof avance comme un TGV et 
+----------------Page (1) Break----------------
+                                                                                                                  
+3 
+                                                     
+ 
+ 
+mention  ! Le crois-tu ? 
+devenir le debout de ta classe, et valider ton BAC avec 
+Tu as ce livre et ton intelligence. C'est suffisant pour 
+avenir. 
+renfort ou incompréhensions  définir la valeur de ton 
+Champion (ne), ne laisse jamais le prix d'un cours de 
+  Conseil du Grand Frère  
+     Réussir tes exercices type BAC pour assurer ta mention  
+claire 
+     Maîtriser les formes indéterminées avec une méthode 
+copie 
+     Calculer  n'importe quelle limite sans paniquer devant ta 
+exemples de notre quotidien  
+     Comprendre   enfin ce qu'est VRAIMENT une limite avec des 
+  Ce que tu vas gagner avec ce livre 
+----------------Page (2) Break----------------
+                                                                                                                  
+4 
+ 
+ 
+ 
+"petits détails" que se cachent les erreurs fatales au BAC.  
+même si tu te dis "ça je connais déjà". C'est souvent dans ces 
+pluie ! Alors prends ton temps ici . Ne saute aucune partie, 
+fondation n'est pas bonne, tout va s'écrouler dès la première 
+quand tu veux construire une maison à deux étages : si la 
+d'abord poser des fondations solides. Tu sais, c'est comme 
+Champion(ne), avant de plonger dans les limites, on va 
+perdre du temps, mais pour GAGNER du temps après."  
+C'est pour ça qu'on v a d'abord réviser les outils. Pas pour 
+OUTIL de base que tu ne maîtrises pas (ici, la factorisation). 
+bloque c'est rarement la notion elle-même. C'est souvent un 
+jour-là, j'ai compris un truc important : en maths, ce qui te 
+PERSONNE n'avait compris qu'il fallait FACTORISER d'abord. Ce 
+Sur 30 élèves, seulement 3 ont eu juste. Pourquoi ? Parce que 
+moitié a paniqué en voyant 0/0 et a laissé blanc. Résultat ? 
+directement remplacé x par 2 et écrit '0/0 = 0'. FAUX ! L'autre 
+4)/(푥− 2) quand x tend vers 2.' La moitié de la classe a 
+maths. Le prof écrit au tableau : 'Calculer la limite de (푥²−
+"C'était un mercredi matin au 'Cacao'. On avait devoir de 
+ CHAPITRE 1 : LES BASES SOLIDES 
+----------------Page (3) Break----------------
+                                                                                                                  
+5 
+ 
+ 
+Ensuite tu simplifies les x. Encore des fractions ! 
+푥      푥   푥
+ 푒푡  3+ =   
+2푥−1    1 3푥+1
+푥
+Pour lever cette forme ∞/∞, tu DOIS savoir que  : 2− =
+1
+푥    푥
+푥→+∞
+Calculer:     lim  (2− )(3+ ) 
+1    1
+EXEMPLE 2  - Forme indéterminée :  
+ 
+impossible ! 
+Maintenant tu peux analyser la limite. Sans fractions, 
+풙               푥  푥   푥
+Regarde :       La bonne réponse :          
++ퟐ=?        + =
+ퟏ               1 2푥  1+2푥
+dès le départ ! 
+Si tu ne sais pas mettre au même dénominateur, tu es BLOQUÉ   
+푥
+푥→0
+Calculer :         
+lim (+2)
+1
+EXEMPLE 1 - Limite classique au BAC  : 
+EXACTEMENT pourquoi avec des exemples concrets de limites. 
+Le Grand Frère : "Excellente question ! Laisse-moi te montrer 
+me compliquent déjà la vie ?"
+ 
+perd le temps sur les fractions de la Seconde alors que les limites là 
+Vieux père, avec tout le respect, on est en Terminale. Pourquoi on 
+     Pourquoi revenir en arrière ? 
+----------------Page (4) Break----------------
+                                                                                                                  
+6 
+ 
+là-dessus, tu vas galérer pour rien. 
+Seconde) que tu dois maîtriser les yeux fermés. Si tu b     eugues 
+sorcellerie. MAIS, il y a quelques outils de base (niveau 3ème et 
+Écoute, je ne vais pas te mentir : les limites, ce n'est pas de la 
+AVANT  
+1.1 CE QU'IL TE FAUT ABSOLUMENT SAVOIR 
+ Allons -y !"  
+"Ah d'accord ! Maintenant je comprends pourquoi c'est important.       
+sur les limites. Promis !"   
+vas VOLER   
+maison solide ?  On va affûter tes outils en 15 minutes. Après, tu 
+Si tes outils de base sont rouillés, comment tu veux construire une 
+différemment.  
+sont les MÊMES  outils (fractions, puissances, racines) utilisés 
+Le Grand frère : Les limites ne sont PAS de nouvelles maths. Ce 
+ 
+LA VÉRITÉ : 
+ 
+limites. 
+푥
+1
+Si tu ne sais pas que      Tu vas galérer sur BEAUCOUP de 
+:  =푥
+1
+EXEMPLE 3  - Division de limites : 
+----------------Page (5) Break----------------
+                                                                                                                  
+7 
+푏 푑 푏 푐
+÷ = ×  
+푎 푐 푎 푑
+par son inverse. On retourne la fraction du bas ! 
+•     Diviser (L'Astuce) : Diviser par une fraction, c'est multiplier 
+푏 푑 푏×푑
+× =   
+푎 푐 푎×푐
+•     Multiplier (Le Facile) : Haut avec Haut, Bas avec Bas. 
+푥    푥  푥   푥
++2= + =
+1    1 2푥  1+2푥
+ 
+Exemple (réduction au même dénominateur pour les limites) :  
+푏 푑  푏푑
++ =    
+푎 푐 푎푑+푏푐
+convertir en "kilos" ou en "tas".  
+pas additionner des ignames et des bananes. Il faut tout 
+DÉNOMINATEUR . C'est comme au marché : tu ne peux 
+•     Additionner (Le Piège) :  Pour additionner, il faut  MÊME 
+mauvaise gestion des fractions .. On révise express :  
+viennent d'une   
+Mais crois-moi, Beaucoup d'erreurs dans les calculs de limites 
+Oui, je sais, tu vas me dire "Grand frère, on a fait ça en 6ème !". 
+cauchemar des élèves) 
+A. Les opérations sur les fractions (Le 
+----------------Page (6) Break----------------
+                                                                                                                  
+8 
+une histoire de mouvement. 
+Bon, là on arrive au cœur du sujet. Une limite, c'est TOUJOURS 
+C. La notion de "se rapprocher" d'un nombre 
+tu montes, le signe change) 
+푥푛
+Inverse                                    =푥−푛 →    푥−2=1/푥2  (Quand 
+1
+multiplie les forces) 
+Puissance 
+(푥푛)푚 =푥푛×푚  →    (푥2)3=푥6 (On 
+soustrait les forces) 
+푥푚
+=푥      →    푥 /푥 =푥  (On 
+Division                                          푛−푚     5 2  3
+푥
+푛
+ 푥⁵ (On additionne les forces) 
+Multiplication 
+푥푛 ×푥푚 =푥푛+푚  →    푥² × 푥³ =
+Règle                                  Formule et exemple  
+Règles de survie à connaître par cœur :  
+devient très grand, x3 gagne toujours car il est plus "puissant". 
+une limite à l'infini. Imagine deux lutteurs : x2 et x3 Quand x 
+Les puissances, c'est ce qui va déterminer "qui est le chef" dans 
+B. Les puissances et exposants (Qui est le plus fort ?) 
+푥
+1
+1
+Exemple classique en limites :                              
+=1× =푥
+1    푥
+----------------Page (7) Break----------------
+                                                                                                                  
+9 
+tends. 
+C'est ça une LIMITE : PRÉDIRE vers quelle valeur tu 
+풙→ퟒퟎ
+En Maths:  퐥퐢퐦풇(풙) = 40 km 
+Réponse : À Grand-Bassam, donc à 40 km d'Adjamé. 
+être quand x tend vers 40 min ? 
+Question : Si le gbaka continue comme ça, où va-t-il 
+Bassam) 
+•    풙 = 40 min → f(40) = 40 km (tu arrives à 
+Bassam) 
+•    풙 = 30 min → f(30) = 30 km (tu approches de 
+•    풙 = 20 min → f(20) = 20 km (tu es à Treichville) 
+•    풙 = 10 min → f(10) = 10 km (tu es à Marcory) 
+•    풙 = 0 min → f(0) = 0 km (départ d'Adjamé) 
+Le gbaka roule vers Grand-Bassam (situé à 40 km). 
+SITUATION 1 : Tu vas à une destination précise 
+Limite = Prédire où tu vas ABOUTIR 
+풇(풙) = La DISTANCE parcourue depuis Adjamé (km)  
+풙 = Le TEMPS écoulé (en minutes) 
+CORRESPONDANCE MATHÉMATIQUE PRÉCISE :   
+Tu prends un gbaka d'Adjamé vers Grand-Bassam. 
+  L'ANALOGIE DU GBAKA  
+----------------Page (8) Break----------------
+                                                                                                                  
+10 
+                                                     
+C'est ça une limite : savoir où tu VAS !   
+Réponse  : Quand 풙 tend vers 10,  풇(풙) tend vers 25.  
+•    f(10) = 2(10) + 5 = 25 km (distance)  
+•    풙 = ퟏퟎ min (temps) 
+Interprétation gbaka :  
+풙→ퟏퟎ
+Question :  퐥퐢퐦풇(풙)= ? 
+Fonction : 풇(풙) = ퟐ풙 + ퟓ 
+EXEMPLE MATHÉMATIQUE CONCRET : 
+s'approche de a 
+ 
+•     lim푓(푥) = Prédire le COMPORTEMENT de f(x)  푥→ 푎  quand x 
+•    푓(푥) = Ce qu'on OBSERVE (distance, résultat)  
+•    푥 = Ce qui VARIE (le temps, la variable)   
+CE QU'IL FAUT RETENIR :  
++∞ (limite infinie) 
+•    Si la route continue sans fin :  → f(x) tend vers 
+tend vers 40 (limite finie)  
+•    Si la route finit à Bassam (40 km max) :  → 풇(풙) 
+Que se passe -t-il ? 
+(풙 → +∞).  
+Maintenant, imagine que le gbaka roule indéfiniment 
+SITUATION 2 : Le gbaka roule sans s'arrêter   
+----------------Page (9) Break----------------
+                                                                                                                  
+11 
+ 
+ 
+ 
+ 
+1,9999...) 
+x → 2⁻              x s'approche de 2 par la GAUCHE (1,999 ; 
+2,0001...) 
+x → 2⁺              x s'approche de 2 par la DROITE (2,001 ; 
+x → +∞              x grandit sans limite (devient très grand) 
+toucher)  
+x → 2                x se rapproche de 2 (sans forcément y 
+Notation         Signification 
+à droite). 
+•    푥 → +∞ se lit : " 푥 tend vers plus l'infini" ( 푥 part très loin 
+•    푥 → 2 se lit : " 푥 tend vers 2" (x se colle au 2).  
+Ce symbole  → est une flèche. Elle veut dire "tend vers".  
+correctement  
+D. Comment lire le symbole "tend vers" 
+----------------Page (10) Break----------------
+                                                                                                                  
+12 
+Transforme puis remplace à nouveau   
+3. Si ça donne 0/0 ou ∞/∞ ou ∞ − ∞ ou 0 × ∞  → 
+2. Si ça marche → C'EST FINI ! 
+1. REMPLACE toujours en premier 
+  Règle d'Or 
+FINI      
+Pour tout autre résultat (un nombre, +∞ clair, −∞ clair) → C'EST 
+•     0 × ∞ → transformer l'écriture 
+•     ∞ − ∞ → factoriser par le chef 
+•     ∞/∞  → duel des chefs 
+•     0/0 → factoriser 
+conclus pas : 
+Si ton remplacement donne l'un de ces résultats, STOP —  ne 
+ÉTAPE 2 —  Les 4 formes qui bloquent :  
+ C'est le réflexe numéro 1 : remplacer ! 
+ÉTAPE 1 : ESSAIE TOUJOURS de remplacer d'abord  
+méthode PRÉCISE en 2 étapes. 
+Le Grand Frère : "Excellente question ! Je vais te donner la 
+remplace simplement x par 2 et c'est fini ?" 
+"Vieux père, quand je vois  ′푙푖푚 푓(푥) quand x→2', est-ce que je 
+    Le secret du  풙 → ퟐ 
+----------------Page (11) Break----------------
+                                                                                                                  
+13 
+                                                     
+pas forcément égal. C'est toute la subtilité. 
+veut dire que 푥 vaut 1,9999... ou 2,0001... Il est voisin, mais il n'est 
+Quand on écrit 푥 → 2, ça ne veut PAS dire que 푥 = 2. Non ! Ça 
+⚠️ ATTENTION  ! 
+"Parfait ! Ça clarifie tout !"  
+simple d'abord !"  
+techniques (factorisation, conjugué, etc.). Mais on teste le plus 
+directe, c'est le réflexe numéro 1. Si ça passe pas, là tu sors tes 
+Le Grand Frère  : "EXACTEMENT ! Tu as tout compris. La substitution 
+je transforme ?"  
+"Ah ! Donc je commence TOUJOURS par remplacer, et si ça bloque, là 
+----------------Page (12) Break----------------
+                                                                                                                  
+14 
+푥 > 푎 (droite) 
+droite                                   (gauche) ou   
+Limite à gauche /    On s'approche de a par 푥 < 푎 
+horizontale y=b                 calme vers b quand x → ±∞  
+Asymptote        Ligne droite COUCHÉE : f(x) se 
+vers ±∞ quand 푥 →  푎 
+푥=푎 
+Asymptote verticale   Ligne droite DEBOUT : f(x) explose 
+technique 
+∞) qu'il faut lever avec une 
+Forme indéterminée         Un résultat ambigu (0/0 표푢 ∞/
+C'est le terminus.  
+stabilisent autour du nombre  퐿. 
+푓(푥)→ 퐿 
+"f(x) tend vers L" s'écrit     Les résultats de tes calculs se 
+quand x s'approche de a  
+푙푖푚 푓(푥) quand  푥→ 푎        La valeur vers laquelle tend f(x) 
+Le prof dit...                              Ça veut dire en vrai... 
+langage de quartier pour que ce soit clair dans ta tête.   
+Les profs adorent les mots compliqués. On va traduire ça en 
+SIMPLEMENT 
+1.2 LE VOCABULAIRE DES LIMITES EXPLIQUÉ 
+----------------Page (13) Break----------------
+                                                                                                                  
+15 
+                                                     
+normal, ce n'est pas une honte. 
+❌   0 cochée → Reprends le chapitre depuis le début. C'est 
+avant de continuer .
+ 
+⚠️  1 ou 2 cochées → Relis la section 1.2 et refais l'Exercice 1 
+✅   3/3 cochées  → Passe au Chapitre 2. Tu es prêt.
+ 
+ 
+☐  J'ai refait l'Exercice 1 de tête et j'ai trouvé le bon résultat.
+ 
+donne une forme indéterminée.
+ 
+☐  Je sais identifier, sans hésiter, si une substitution directe 
+limite (sans les formules).
+ 
+☐  Je sais expliquer avec mes propres mots ce qu'est une 
+Coche chaque case honnêtement, sans regarder le cours :
+ 
+ 
+trompes que toi-même. 
+et tu refais l'exercice correspondant. Pas de triche —  tu ne 
+les trois, tu avances. Si tu en rates une, tu relis la section indiquée 
+ Tu réponds à trois questions sans rouvrir le cours. Si tu coches 
+Le Grand Frère :Simple. 
+Vieux père, comment je sais si j'ai vraiment compris le chapitre 1 
+ 
+  AUTO -ÉVALUATION  —  CHAPITRE 1
+----------------Page (14) Break----------------
+                                                                                                                  
+16 
+ 
+0), alors 풇(ퟑ) N'EXISTE PAS ! 
+-    Si 풙 = ퟑ est INTERDIT (trou, division par 
+-    풇(ퟑ) = la valeur de f pile à 풙 = ퟑ 
+précis. 
+C'est comme prendre une PHOTO d'un endroit 
+IMAGE 풇(풂) = Regarder EXACTEMENT au point a 
+fois pour toutes ! 
+image" et "calculer une limite". Clarifions ça une 
+Beaucoup d'élèves confondent "calculer une 
+IMAGE  = la valeur de f pile au pont 풂 
+COMPRENDRE LA DIFFÉRENCE  une fois pour toutes  
+2.1 C'EST QUOI UNE LIMITE ? L'EXPLICATION QU'ON TE CACHE   
+60% du travail pour le BAC.  
+apprendre à marcher. Si tu comprends ce chapitre, tu as fait 
+Maintenant que tu as tes chaussures (les bases), on va 
+LIMITES COMME UN PRO  
+CHAPITRE 2 : COMPRENDRE LES 
+----------------Page (15) Break----------------
+                                                                                                                  
+17 
+o   x = 3,01 → f(3,01) = 6,01 
+o   x = 3,001 → f(3,001) = 6,001 
+o   x = 2,999 → f(2,999) = 5,999 
+o   x = 2,99 → f(2,99) = 5,99 
+o   x = 2,9 → f(2,9) = 5,9 
+Maintenant, regardons ce qui se passe AUTOUR de 3 :  
+ ퟑ) 
+Donc : 풇(풙) = (풙 −  ퟑ)(풙 + ퟑ)/(풙 −  ퟑ) = 풙 + ퟑ  (풔풊 풙 ≠
+풙² −  ퟗ = (풙 − ퟑ)(풙 + ퟑ) 
+Astuce : On peut SIMPLIFIER avant ! 
+Pour la même fonction 풇(풙) = (풙² − ퟗ)/(풙 − ퟑ) : 
+vers quelle valeur je tends ?" 
+C'est comme demander : "Si je m'APPROCHE de  풙 = ퟑ,  
+LIMITE = Regarder AUTOUR du point  풂 
+ 
+Conclusion : L'image 풇(ퟑ) N'EXISTE PAS. 
+ ퟎ/ퟎ → INTERDIT ! 
+Essaye de calculer  풇(ퟑ) : 풇(ퟑ) = (ퟗ −  ퟗ)/(ퟑ −  ퟑ) =
+풇(풙) = (풙² −  ퟗ)/(풙 −  ퟑ) 
+Exemple concret :  
+----------------Page (16) Break----------------
+                                                                                                                  
+18 
+de 2) 
+퐱→ퟐ+
+-    Mais 퐥퐢퐦퐠(퐱) = +∞ (comportement autour 
+-    품(ퟐ) n'existe pas (division par 0)  
+품(풙) = ퟏ/(풙 −  ퟐ) 
+AUTRE EXEMPLE (asymptote) :  
+퐱→퐚
+•    Notation : 퐥퐢퐦풇(풙) 
+•    Existe MÊME SI le point est interdit  
+•    Valeur vers laquelle on   
+LIMITE :   
+•    Notation : f(a)  
+•    Peut NE PAS EXISTER si a est interdit  
+•    Valeur EXACTE en  풙 = 풂  
+IMAGE 풇(풂) :  
+TABLEAU COMPARATIF :  
+DONC : La limite existe (= 6) même si f(3) n'existe pas ! 
+퐱→ퟑ     퐱→ퟑ 
+퐥퐢퐦퐟(퐱) = 퐥퐢퐦(퐱+ퟑ) = 6 
+En mathématiques :  
+On voit clairement que  f(x) s'approche de 6 !  
+o   x = 3,1  → f(3,1) = 6,1 
+----------------Page (17) Break----------------
+                                                                                                                  
+19 
+–    Tour 4 : Vendeur propose 400F, toi 300F → Écart = 100F 
+–    Tour 3 : Vendeur propose 425F, toi 275F → Écart = 150F 
+200F 
+–    Tour 2 : Vendeur propose 450F, toi 250F → Écart = 
+–    Tour 1 : Vendeur propose 500F, toi 200F → Écart = 300F 
+La négociation commence : 
+Tu veux acheter un sac d'attiéké au marché d'Adjamé. 
+Une limite te dit la TENDANCE 
+L'ANALOGIE DU MARCHÉ  
+!" 
+tendance autour. Deux choses différentes mais complémentaires 
+point lui-même. L'image f(a) = la photo exacte. La limite = la 
+la limite. Elle regarde le COMPORTEMENT AUTOUR du point, pas le 
+Le Grand Frère :  "EXACTEMENT, petit ! C'est TOUTE la puissance de 
+au point ?"  
+" Ah ! Donc la limite peut exister même si la fonction n'est pas définie 
+le point lui -même ! 
+La limite regarde le COMPORTEMENT AUTOUR du point,  PAS 
+RÈGLE D'OR  : 
+jamais ! 
+DIFFÉRENTS mais COMPLÉMENTAIRES. Ne les confonds 
+CONCLUSION : Image et limite sont deux concepts 
+----------------Page (18) Break----------------
+                                                                                                                  
+20 
+ 
+y arrives vraiment ! 
+Une limite te dit la TENDANCE (vers où tu vas), mais pas si tu 
+LA LEÇON MATHÉMATIQUE : 
+Écart ≠ 0     
+-     Cas 2 : Vous abandonnez la négociation → 
+0      
+-     Cas 1 : Vous tombez d'accord à 350F  → Écart = 
+forcément !  
+Est-ce que l'écart devient VRAIMENT 0 à la fin ?Pas 
+ATTENTION  - Nuance importante :  
+풙→+∞
+En maths :   퐥퐢퐦 (écart) = 0 
+diminue, diminue...  
+l'écart (quand x  → +∞) ? Réponse  : Vers 0 ! L'écart diminue, 
+Question  : Si vous continuez indéfiniment, vers quoi tend 
+limite = Vers quoi tend cet écart   
+(푥) = L'ÉCART entre vos deux prix  
+푥 = Numéro du tour de négociation  
+CORRESPONDANCE MATHÉMATIQUE :   
+20F... 
+–    Tour 6 : Vendeur propose 360F, toi 340F  → Écart = 
+–    Tour 5 : Vendeur propose 375F, toi 325F  → Écart = 50F 
+----------------Page (19) Break----------------
+                                                                                                                  
+21 
+En combinant ces 2 questions, tu obtiens TOUTES les situations ! 
+- Vers −∞ ?                                         - Vers −∞ ? 
+- Vers +∞ ?                                         - Vers +∞ ? 
+- Vers un nombre (ex: 푥 →  3) ?     - Vers un nombre (ex: 5) ? 
+QUESTION 1 : Où va      ?                           QUESTION 2 : Où va                ? 
+풙           풇(풙) 
+ 
+questions : 
+derrière. Pour analyser une limite, poses-toi toujours ces 2 
+Au lieu de les apprendre par cœur, comprends la LOGIQUE 
+En Terminale, tu vas rencontrer différentes situations de limites. 
+2.2 LES DIFFÉRENTS TYPES DE LIMITES 
+C'est ça une limite : la DIRECTION, pas forcément l'arrivée ! 
+-     f(10000) = 0,0001 (toujours pas 0 !) 
+0) 
+-     f(1000) = 0,001 (encore plus proche mais pas 
+-     f(100) = 0,01 (proche de 0 mais pas 0) 
+Mais f(x) n'est JAMAIS exactement 0 ! 
+Fonction :  푓(푥) = 1/푥  Quand x → +∞, f(x) → 0 
+EXEMPLE CONCRET :  
+----------------Page (20) Break----------------
+                                                                                                                  
+22 
+limite est 5. 
+•     Calcul :  Je remplace 푥 par 1. 2(1)+3=5  Résultat : La 
+푥→1
+fonction 2푥+3.lim(2푥+3) 
+•     Exemple :  On cherche la limite quand  푥 tend vers 1 de la 
+un résultat normal.  
+C'est le cas gentil. Tu remplaces  푥 par le nombre, et tu trouves 
+A. Limite FINIE en un point FINI (Tout est calme)  
+Maintenant, regardons chaque cas en détail :  
+Il n'y a que 4 scénarios possibles au cinéma des limites. 
+...) 
+푒ˣ
+illimitée (polynômes, 
+CAS 4 : Croissance 
+±∞ 푒푥:(푥→ +∞)       ±∞ (푓→ +∞) 
+horizontale      
+푒푥:(푓→ 0)                                      푦 = 퐿
+Un nombre L   CAS 3 : Asymptote 
+±∞ 푒푥:(푥→ +∞)     
+verticale     
+(푥→ 2)                                                                            푥 = 푎
+Un nombre  푎            CAS 2 : Asymptote 
+±∞ 
+directe (le plus simple) 
+푒푥:(푥→ 3)                  푒푥:(푓→ 5)      
+Un nombre  푎   Un nombre L   CAS 1 : Substitution 
+x tend vers               f(x) tend vers        INTERPRÈTATION  
+TABLEAU COMPLET DES SITUATIONS  
+----------------Page (21) Break----------------
+                                                                                                                  
+23 
+                                                     
+푥→1
+푥+1 2
+5.   lim  =  
+푥  1
+푥→π
+4.   limcos(푥)=−1 
+푥→−1
+2   2
+3.    lim  =  =1 
+푥+3 −1+3
+푥→0
+2.   lim(푒푥 +푥)=푒0+0=1 
+푥→2
+1.    lim(푥2− 1)=22− 1=3 
+           5 Exercices corrigés (Niveau Base)  
+ 
+----------------Page (22) Break----------------
+                                                                                                                  
+24 
+ 
+ 
+ 
+0+
+résultat explose vers le haut :     =+ 
+1
+(ex: 2,001), alors 푥−2 est un "zéro positif". 푥− 2→ 0+ Le 
+grand que 2  
+푥→2
+푥−2
+•     Exemple concret :  lim    Si 푥 est un tout petit peu plus 
+1
+0
+mais tout petit) donne l'Infini.     → 
+1
+•     Règle d'or :  Un nombre divisé par Zéro (qui n'est pas nul 
+par quelque chose de minuscule (proche de 0).  
+Pourquoi ça "explose" ? C'est quand tu divises un nombre réel 
+Verticale) 
+B. Limite INFINIE en un point FINI (L'Asymptote 
+----------------Page (23) Break----------------
+                                                                                                                  
+25 
+Horizontale)  
+C. Limite FINIE à l'INFINI (L'Asymptote 
+푥→0+
+5.    limln(푥)=−∞.     (푳풊풎풊풕풆 풖풔풖풆풍풍풆 à 풄풐풏풏풂î풕풓풆 풑풂풓 풄œ풖풓) 
+푥→1+
+푥−1
+4.    lim       푅푎푖푠표푛푛푒푚푒푛푡:퐻푎푢푡→ 2.퐵푎푠→ 0+.푅é푠푢푙푡푎푡+ 
+푥+1
+ 
+푥→0
+푥                            02                                   +
+3.   lim         푅푎푖푠표푛푛푒푚푒푛푡:  푥2푒푠푡 푡표푢푗표푢푟푠 0+.퐷표푛푐  =− 
+−1                            −1
+ 
+푥→3−
+푥−3                            0−
+2.    lim      푅푎푖푠표푛푛푒푚푒푛푡:  푥− 3→ 0−(푛é푔푎푡푖푓)  푑표푛푐  =− 
+2                             2
+ 
+푥→3+
+푥−3                     0+
+1.    lim     푅푎푖푠표푛푛푒푚푒푛푡:  푥− 3→ 0+푑표푛푐  =+ 
+2                      2
+           5 Exercices corrigés  
+----------------Page (24) Break----------------
+                                                                                                                  
+26 
+Alors 푓(푛) → 0 (chacun reçoit presque rien)  
+Quand n  → +∞ (énormément de spectateurs)   
+푓(푛) = 1000/n   (n = nombre de personnes)    
+EN MATHÉMATIQUES :  
+Plus il y a de monde, MOINS chaque personne reçoit !   
+Tu vois le pattern ?  
+0,001F/personne  
+-     1 000 000 personnes : 1000F ÷ 1000000 = 
+0,02F/personne  
+-     50 000 personnes : 1000F ÷ 50000 = 
+0,1F/personne  
+-     10 000 personnes : 1000F ÷ 10000 = 
+-     1 000 personnes : 1000F ÷ 1000 = 1F/personne  
+-     100 personnes : 1000F ÷ 100 = 10F/personne  
+-     10 personnes : 1000F ÷ 10 = 100F/personne  
+Ça dépend du nombre de spectateurs !  
+va recevoir ?  
+TOUS les spectateurs du stade. Combien chaque personne 
+entre  
+Tu as gagné 1000F et tu veux le partager équitablement 
+Houphouët-Boigny d'Abidjan.  
+C'est la finale CAN 2023, Côte d'Ivoire vs Nigeria, au stade    
+  PARTAGER 1000F AU STADE   
+----------------Page (25) Break----------------
+                                                                                                                  
+27 
+                                                           
+ 
+푥→+∞
+푥
+•     Exemple :    lim =0 
+1
+∞
+•     Règle d'or :  Un nombre divisé par l'Infini donne 0.      =0 
+1
+"Nombre sur Infini = 0"  
+  RÈGLE À RETENIR :  
+ 
+Ici, 푥 part très loin, mais la fonction se calme et s'aplatit.   
+ 
+푥→+∞
+-      lim(2025/푥) = 0 
+푥→+∞
+-      lim(1000/푥) = 0 
+푥→+∞
+-      lim(5/푥) = 0 
+EXEMPLES CONCRETS :  
+푥→+∞
+Pour tout nombre  푘 :    lim(k/x) = 0 
+FORMULE GÉNÉRALE :  
+→ Donne quelque chose de TRÈS PETIT (tend vers 0)   
+Un nombre FIXE divisé par quelque chose de TRÈS GRAND   
+TRADUCTION GÉNÉRALE :  
+----------------Page (26) Break----------------
+                                                                                                                  
+28 
+                                                     
+ 
+푥→+∞
+푥+1
+5.    lim  =0 
+4
+푥→+∞
+푥3
+4.    lim  =0 
+1
+푥→+∞
+3.     lim(5−푒−푥)   Raisonnement : 푒−푥 → 0. Résultat = 5. 
+푥→−∞
+푥2
+2.     lim     Raisonnement : 2 divisé par géant = 0. 
+2
+푥→+∞
+푥             푥
+1.      lim(3+ )   Raisonnement :    → 0. Résultat = 3. 
+1            1
+           5 Exercices corrigés  
+----------------Page (27) Break----------------
+                                                                                                                  
+29 
+                                                           
+ 
+푥→+∞
+•     Exemple :    lim푥 =+ 
+2
+plus elle va haut.  
+•     L'image :  Une fusée qui décolle. Plus le temps passe, 
+Là, il n'y a pas de frein. x grandit, et  푓(푥) grandit aussi.  
+D. Limite INFINIE à l'INFINI (La Fusée)  
+----------------Page (28) Break----------------
+                                                                                                                  
+30 
+                                                     
+Écoute bien : 
+donner une astuce INFAILLIBLE pour ne JAMAIS les mélanger. 
+Le Grand Frère : "Je comprends ta confusion, petit. Mais je vais te 
+confonds tout !" 
+l'asymptote horizontale. Les deux parlent d'une ligne droite, je 
+"Vieux père, j'ai vraiment peur de mélanger l'asymptote verticale et 
+     Le mystère de l'asymptote 
+푥→+∞
+5.    lim√푥=+ 
+푥→−∞
+4.    lim푥3=− 
+푥→+∞
+3.     lim(푒푥 +5)=+ 
+géant (+∞). 
+푥→−∞
+2.     lim푥2   Raisonnement : Négatif géant au carré = Positif 
+GRAND (+∞). 
+푥→+∞
+1.      lim(푥3+푥)   Raisonnement : Grand + Grand = TRÈS 
+           5 Exercices corrigés  
+----------------Page (29) Break----------------
+                                                                                                                  
+31 
+•    Horizontale → 풚 = ... → quand 풙 part LOIN  
+•    Verticale → 풙 = ... → en UN POINT précis   
+ASTUCE POUR LES DIFFÉRENCIER :  
+ 
+t'approches d'une ligne horizontale. 
+Image : C'est l'HORIZON. Plus tu vas loin, plus tu 
+stabilise vers une valeur b 
+Traduction : Quand x part très loin (vers ±∞), f(x) se 
+풙→±∞
+Ça arrive quand :  퐥퐢퐦 풇(풙)= 풃  
+Exemples : 풚 = ퟑ; 풚 = ퟎ;  풚 = −ퟐ 
+Équation : 풚 = 풃  (un nombre) 
+ASYMPTOTE HORIZONTALE = Ligne droite COUCHÉE    
+ 
+traverser le point 풙 = 풂. 
+Image : C'est un MUR VERTICAL. Tu ne peux PAS 
+f(x) explose vers l'infini 
+Traduction : Quand 풙 s'approche d'un point précis a,  
+풙→풂
+Ça arrive quand : 퐥퐢퐦 풇(풙)=±∞ 
+Exemples : 풙 = ퟐ;  풙 = −ퟓ;  풙 = ퟎ 
+Équation :  풙 = 풂  (un nombre) 
+ASYMPTOTE VERTICALE = Ligne droite DEBOUT   
+----------------Page (30) Break----------------
+                                                                                                                  
+32 
+RÉSUMÉ VISUEL  : 
+Oui ! Asymptote horizontale :  풚 = ퟎ (ligne couchée)  
+풙→+∞
+퐥퐢퐦 ퟏ/(풙 −  ퟐ) = ퟎ quand 풙 →  +∞ 
+Cherche où ça se stabilise :  
+Question 2 :  Y a-t-il une asymptote horizontale ?  
+Oui ! Asymptote verticale :  풙 = ퟐ (ligne debout)  
+풙→ퟐ
+퐥퐢퐦 ퟏ/(풙− ퟐ)=±∞ quand 풙 →  ퟐ 
+Cherche où ça "explose" :  
+Question 1  : Y a-t-il une asymptote verticale ?  
+Soit 풇(풙)=ퟏ/(풙− ퟐ) 
+EXEMPLE CONCRET avec les DEUX :  
+----------------Page (31) Break----------------
+                                                                                                                  
+33 
+                                                     
+Le Petit : "Merci vieux père ! C'est super clair maintenant !"   
+Ne les mélange plus jamais !"  
+- Horizontale  → CALME au loin (y = b)  
+- Verticale → BOOM en un point (x = a)  
+Pour résumer :  
+Le Grand Frère  : "EXACTEMENT ! Tu as tout compris !  
+part à l'infini et que f(x) se calme ?"  
+INTERDITE et que ça explose, et horizontale c'est quand x    
+"Ah ! Donc verticale c'est quand x a une valeur    
+ 
+----------------Page (32) Break----------------
+                                                                                                                  
+34 
+ 
+ 
+Sans calculer, impossible de savoir !  
+−∞. Qui gagne ? Ça dépend de  laquelle est plus puissante . 
+Imagine deux routes infinies. L'une te tire vers   +∞, l'autre vers 
+Pourquoi c'est indéterminé (et pas juste "interdit") ?    
+ 2. Écrire ∞ – ∞ = 0 ou ∞/∞ = 1 sur ta copie 
+(−∞)3=− 
+Un nombre négatif très grand au CUBE reste négatif : 
+On dit "quand  푥 →  −∞,푥² →  +∞". 
+     ATTENTION  : On ne dit JAMAIS  "(−∞)² = +" sur une copie.   
+Par contre :  풍풊풎 풙→ −∞ 풙³ = −∞ (le cube conserve le signe)  
+Donc : 풍풊풎 풙→ −∞ 풙² = +∞ (le carré efface le signe)  
+(ex : −1000, −10 000...). Or (−1000)² = 1 000 000 → positif !  
+grand  
+Quand x  → −∞, que vaut x² ?  x est un nombre négatif très 
+1. Confondre +∞ et –∞ 
+ 
+⚠️  Piège à eviter 
+points. Lis bien ça.  
+Attention champion, voici là où 90% des copies perdent des 
+2.3 LES PIÈGES MORTELS À ÉVITER  
+----------------Page (33) Break----------------
+                                                                                                                  
+35 
+ 
+ 
+ 
+ 
+change TOUT ! 
+divises par un 'zéro négatif' (0⁻) → résultat −∞ Le signe 
+Si tu divises par un 'zéro positif' (0⁺) → résultat +∞ Si tu 
+ 4. Oublier le signe du 0 dans le dénominateur 
+Chapitre 3. 
+C'est une forme indéterminée : applique les techniques du 
+Si tu obtiens 0/0 ou ∞/∞, STOP. Ne conclus pas 0 ou 1. 
+indéterminée  
+3. Remplacer directement dans une forme 
+ 
+indétermination en..."  
+indéterminée du type  ∞ −  ∞. On va lever cette 
+Sur ta copie, écris toujours :  "On obtient une forme 
+conclure sans calculer.  
+les cas. C'est pour ça qu'on dit  indéterminé : on ne peut pas 
+Le même symbole  ∞ −  ∞ peut donner  +∞, 0, ou  −∞ selon 
+•     푙푖푚 푥→ +∞ (푥 −  푥²)∶ 푥² gagne ; résultat −∞ 
+•     푙푖푚 푥→ +∞ (푥 −  푥) : égalité ; résultat 0 
+•     푙푖푚 푥→ +∞ (푥² −  푥)∶ 푥² gagne ; résultat +∞ 
+Exemples pour comprendre :  
+----------------Page (34) Break----------------
+                                                                                                                  
+36 
+Limite à droite = 1 ≠ Limite à gauche = −1 
+ −푥/푥 = −1 
+Si 푥 →  0⁻ (on s'approche de 0 par la gauche, 푥 < 0) : 푓(푥) =
+ 푥/푥 = 1 
+Si 푥 →  0⁺ (on s'approche de 0 par la droite, 푥 > 0) : 푓(푥) =
+Exemple concret :  푓(푥) = |푥|/푥 
+endroit qu'on vienne de la gauche ou de la droite.   
+Pour que  푙푖푚 푥→ 푎 푓(푥) existe, il faut que  푓(푥) arrive au même 
+Cas classique : limite à gauche ≠ limite à droite 
+n'y en a pas."  
+perdent des points en essayant de trouver une réponse là où il 
+Le Grand Frère  : "Oui, petit. Et c'est souvent là que les élèves 
+"Vieux père, est -ce qu'une limite peut ne pas exister du tout ?"  
+2.4 Quand la limite n'existe PAS  
+ 
+gardes ces 2 questions en tête, tu ne te perdras jamais ! 
+dois d'abord savoir OÙ VA  , puis déduire OÙ VA    Si tu 
+푥      푓(푥). 
+Petit(te), lire une limite c'est comme lire une carte GPS : tu 
+  Conseil du Grand Frère  
+ 
+----------------Page (35) Break----------------
+                                                                                                                  
+37 
+                                                     
+limite en  풂 n'existe pas."  
+: "Les limites à gauche et à droite sont différentes, donc la 
+Sur ta copie, si tu trouves  +∞ d'un côté et  −∞ de l'autre, tu écris 
+푎⁻ 푓(푥) 
+Règle d'or :  푙푖푚 푥→ 푎 푓(푥) existe ⟺  푙푖푚 푥→ 푎⁺ 푓(푥) = 푙푖푚 푥→
+Conclusion : La limite en 0 N'EXISTE PAS.   
+----------------Page (36) Break----------------
+                                                                                                                  
+38 
+                                                     
+ 
+2 entièrement
+ 
+❌   0 ou 1 → Le Chapitre 3 sera incompréhensible. Reprends le 
+cochée est ton point faible.
+ 
+⚠️  2 ou 3 → Relis les sections 2.2 et 2.3. La case que tu n'as pas 
+✅   4/4 → Tu maîtrises les fondations. Avance.
+ 
+ 
+trouvé le bon résultat.
+ 
+☐  J'ai refait l'Exercice 2 sans regarder la correction et 
+juste « interdit ».
+ 
+☐  Je comprends pourquoi  ∞ − ∞ est « indéterminé » et pas 
+lever l'indétermination.
+ 
+☐  Pour chaque forme, je sais quelle méthode utiliser pour 
+∞ · 0×∞) sans hésiter.
+ 
+☐  Je connais les 4 formes indéterminées (0/0 · ∞/∞ · ∞ −
+Coche chaque case honnêtement :
+ 
+indéterminées. Mais reconnaître n'est pas lever. Vérifie ça :   
+croient avoir compris parce qu'ils reconnaissent les formes 
+Le Grand Frère :  Le Chapitre 2, c'est là où beaucoup d'élèves 
+Et pour le Chapitre 2 ?  
+ 
+Auto -évaluation —  Chapitre 2
+----------------Page (37) Break----------------
+                                                                                                                  
+39 
+tromper.  
+te donne un  protocole militaire. Si tu le suis, tu ne peux pas te 
+parce qu'on ne sait pas par quel bout attraper le monstre. Ici, je 
+l'action. Le problème en maths, c'est que souvent, on panique 
+Tu as compris le principe ? Super. Maintenant, on passe à 
+aujourd'hui." 
+mieux que 100 astuces. C'est cette méthode que je te donne 
+Ce jour-là, j'ai compris : avoir une MÉTHODE qui marche vaut 
+proprement en 3 minutes. J'ai eu les 3 points.  
+(1 + 0 −  0) = 1 Et 푥² →  +∞ Résultat : 푥² × 1 = +∞ J'ai écrit ça 
+Quand  푥 →  +∞ ∶ 2/푥 →  0 et 1/푥 →  0 Donc la parenthèse → 
+ 1/푥)  
+→ FACTORISE par le plus grand  !" 푥² + 2푥 −  푥 = 푥²(1 + 2/푥 −
+des x ?  
+ J'ai appliqué la méthode bête et méchante  : "∞ −  ∞ avec 
+suis calmé. 
+indéterminée !" J'ai paniqué. Il restait 5 minutes. Mais je me 
++∞ + ∞ −  ∞ Mon cerveau a dit : "C'est ∞ − ∞, forme 
+ 푥)′ 푥→ +∞ J'ai remplacé mentalement :  +∞ + 2(+∞) − (+∞) = 
+ Dernière question (sur 3 points) : Calculer 푙푖푚 (푥² + 2푥 −
+"Devoir régional au 'Cacao', première Terminale. 
+- LA MÉTHODE QUI MARCHE  
+CHAPITRE 3 : CALCULER LES LIMITES 
+----------------Page (38) Break----------------
+                                                                                                                  
+40 
+•     Si 푥 → −∞,, imagine un "nombre très grand négatif". 
+•     Si 푥 → +∞, imagine un "nombre très grand". 
+•     Si 푥 → 푎 (nombre), remplace 푥 par 푎. 
+Actions  concrètes  : 
+ÉTAPE 2 : REMPLACER DIRECTEMENT   
+ 
+푥−2
+•      Fonction :         
+푥 −4
+2
+•      푥 tend vers  2 
+푥→2
+푥− 2
+lim    
+푥2− 4
+Exemple  : 
+•      Quelle est la fonction  푓(푥) ? 
+•      Où va 푥 ? (vers un nombre ou vers  ±∞) 
+Actions  concrètes  : 
+ÉTAPE 1 : LIRE ET IDENTIFIER 
+ 
+tout de suite. Respire et suis ces étapes : 
+Face à une limite, ne te lance pas dans des calculs savants 
+n'importe quelle limite ) 
+3.1 Le process en 5 étapes pour calculer 
+----------------Page (39) Break----------------
+                                                                                                                  
+41 
+4. 
+0
+On a obtenu   → FORME INDÉTERMINÉE ! On passe à l'étape 
+0
+Notre exemple : 
+•     0 ×∞ 
+•     ∞ −  ∞ 
+∞
+•        
+∞
+0
+•        
+0
+Les 4 formes indéterminées : 
+Continue ! ⚠️ 
+•     CAS C : Tu obtiens une FORME INDÉTERMINÉE → 
+(Exemples : +∞; −∞ 
+•     CAS B : Tu obtiens ±∞ CLAIR → C'EST FINI ! ✅  
+(Exemples : 7,−3,0...) 
+•     CAS A : Tu obtiens un NOMBRE → C'EST FINI ! ✅  
+Trois possibilités  : 
+ÉTAPE 3 : ANALYSER LE RÉSULTAT  
+ 
+0
+•     Résultat du remplacement :    
+0
+•     Dénominateur :  2 −  2 = 0 
+•     Numérateur :  (2)− 4=4− 4=0 
+2
+푥−2
+푥 = 2 dans         
+푥 −4
+2
+Notre exemple : 
+----------------Page (40) Break----------------
+                                                                                                                  
+42 
+                                                     
+ 
+par (푥−2)) 
+(푥−2)
+•     Fonction transformée :                 =푥+2 (On simplifie 
+(푥−2)(푥+2)
+remarquable) 
+•     Numérateur : 푥 −4=(푥−2)(푥+2) (Identité 
+2
+0
+Notre exemple :                         → On factorise ! 
+ 푒푛  푥=2
+0
+CONJUGUÉE. 
+4.   Forme                     avec racines → Utiliser l'EXPRESSION 
+∞ −  ∞ 
+dominants. 
+∞
+3.   Forme       → FACTORISER haut et bas par les termes 
+ 
+∞
+2.   Forme ∞ −  ∞ → FACTORISER par le terme dominant.  
+dénominateur. 
+ퟎ
+1.    Forme    en un point → FACTORISER numérateur et 
+ퟎ
+Techniques  selon la forme indéterminée : 
+ÉTAPE 4 : TRANSFORMER LA FONCTION   
+ 
+----------------Page (41) Break----------------
+                                                                                                                  
+43 
+ 
+Réponse : 6  
+푥→3
+5.   ÉTAPE 5 : Recalculer → lim(푥+3)=3+3=6  
+푥−3   (푥−3)
+Donc :        =    =푥+3 
+푥 −9 (푥−3)(푥+3)
+2
+4.   ÉTAPE 4 : Transformer → 푥2− 9=(푥− 3)(푥+3). 
+0
+3.   ÉTAPE 3 : Analyser →    = Forme indéterminée ! Continue. 
+0
+3−3 0
+2.   ÉTAPE 2 : Remplacer  → 푥=3:  =  
+9−9 0
+푥−3
+1.    ÉTAPE 1 : Identifier → 푥 → 3, fonction =         
+푥 −9
+2
+TA DÉMARCHE COMPLÈTE : 
+푥→3
+푥−3
+EXERCICE  : Calculer  lim   
+푥 −9
+2
+PAS À PAS 
+APPLICATION COMPLÈTE - EXERCICE GUIDÉ 
+•     Réponse finale : 4 ✅  
+푥→2
+lim(푥+2)=2+2=4 
+Nouvelle fonction :  푓(푥)=푥+2 
+Notre exemple : 
+•    Remplace à nouveau  푥 par la valeur.  
+•    Reprends l'étape 2 avec la fonction simplifiée.  
+Actions  concrètes  : 
+ÉTAPE 5 : RECALCULER AVEC LA NOUVELLE FORME   
+----------------Page (42) Break----------------
+                                                                                                                  
+44 
+                                        
+Regarde la forme, choisis l'arme !"    
+C'est comme au foot : on adapte la tactique selon l'adversaire. 
+puissance. Si tu vois une racine avec                       → conjugué. 
+∞ −  ∞ 
+avec des polynômes   → factorise par      à la plus grande 
+푥
+Si tu vois 0/0 en un point    → factorisation. Si tu vois 
+∞ −  ∞ 
+Le Grand Frère : " C'est simple petit : regarde la FORME de la limite. 
+je prends quoi pour ne pas me mélanger ?"  
+"Vieux père, il y a trop de techniques ! Factorisation, conjugué, chefs... 
+calmement !  
+tu as sauté une étape. Reviens au début et recommence 
+Cette méthode marche TOUJOURS ! Si tu bloques, c'est que 
+À RETENIR 
+3.   Calculer : 22+2(2)+4=12 Réponse : 12  
+(푥−2)
+2.   Factoriser :                        =푥2+2푥+4 
+(푥−2)(푥 +2푥+4)
+2
+0
+1.    Remplacer :    (F.I.) 
+0
+Solution express : 
+(Indice : 푥3− 8=(푥− 2)(푥2+2푥+4).) 
+푥→2
+푥−2
+Calculer : lim   
+푥 −8
+3
+EXERCICE  2 - À TOI DE JOUER 
+----------------Page (43) Break----------------
+                                                                                                                  
+45 
+puissance. 
+mettant en facteur, tu forces tout le monde à voir sa 
+plus haut degré). C'est lui qui commande à l'infini. En le 
+ Le "Chef", c'est le terme qui a la plus grande puissance (le 
+ La Technique : FACTORISER par le "Chef"  
+écrase l'autre ? 
+pas qui est le plus fort. Est-ce que ça s'annule ? Est-ce que l'un 
+Tu as un terme qui tire vers +∞ et un autre vers −∞. On ne sait 
+Pourquoi c'est indéterminé ?   
+F.I. n°1 :  ∞ −  ∞ (Le combat des Titans)  
+les vaincre un par un. 
+Il existe 4 "Boss" qui vont essayer de te bloquer. Voici comment 
+TUER 
+3.2 Les formes indéterminées et comment les 
+----------------Page (44) Break----------------
+                                                                                                                  
+46 
+◦  Le terme 푥2 tend vers +∞. Résultat : +∞ ×1 = +∞. 
+푥
+◦  Donc la parenthèse (1− ) tend vers 1 −  0 = 1. 
+1
+푥
+◦  Quand  푥 → +∞, le terme    tend vers 0. 
+1
+3.   Nouveau calcul :  
+푥        푥2
+Je factorise par 푥2. 푓(푥)=푥2(1− )=푥2(1− ) 
+푥       1
+2.   Transformation :  Le chef est 푥2.  
++∞ −  ∞. C'est une FI. 
+1.    Crash-test : 푥2 tend vers +∞.−푥 tend vers −∞. On a 
+Correction : 
+푥→+∞
+Calculer : lim(푥2− 푥) 
+  Exercice Type (Corrigé ultra -détaillé)  
+ 
+ 
+----------------Page (45) Break----------------
+                                                                                                                  
+47 
+ 
+ 
+donne  −∞). 
+◦     Réponse : −∞ (퐴푡푡푒푛푡푖표푛,푥2→ +∞ mais multiplié par -3 
+푥→−∞
+4.  lim(−3푥2+4푥) 
+ 
+◦     Réponse : +∞ (le chef 푥4 gagne). 
+푥→+∞
+3.  lim(푥4−2푥2+1) 
+ 
+◦     Réponse : −∞ (car 푥3 gagne et est négatif). 
+푥→−∞
+2.  lim(푥3+푥) 
+ 
+◦     Réponse : +∞ (푐푎푟 2푥3푔푎푔푛푒). 
+푥→+∞
+1.   lim(2푥3− 100푥2) 
+  4 Autres exercices d'entraînement (Solutions rapides)  
+résultat final. 
+"se calme" pendant que  푥² "explose". C'est 푥² qui décide du 
+푥 →  +∞ : 1/푥 →  0, donc (1 −  1/푥) →  (1 −  0) = 1 La parenthèse 
+      Pourquoi la parenthèse tend vers 1 et pas vers 0 ? Quand 
+----------------Page (46) Break----------------
+                                                                                                                  
+48 
+Correction : 
+푥→2 푥−2
+Calculer :      
+lim 
+푥 −4
+2
+  Exercice Type (Corrigé ultra -détaillé)  
+ 
+et en bas qu'il faut éliminer.  
+factoriser par  (푥− 푎). Il y a un "facteur coupable" en haut 
+Si une fonction polynôme s'annule en  푎, c'est qu'on peut 
+️ La Technique : FACTORISER et SIMPLIFIER   
+Diviser rien par rien, ça peut faire n'importe quoi. 
+Pourquoi c'est indéterminé ?   
+F.I. n°2 : 0/0 (Le bug de la calculatrice)  
+----------------Page (47) Break----------------
+                                                                                                                  
+49 
+ 
+ 
+ 
+ 
+ 
+푥→−2
+푥 −42
+4.    lim    푅é푝표푛푠푒:−0,5 (푠푖푚푝푙푖푓푖푒푟 푝푎푟 푥+2). 
+2푥+4
+ 
+푥→0
+푥
+3.   lim    푅é푝표푛푠푒:1(푓푎푐푡표푟푖푠푒푝푎푟푥:푥(푥2+1)/푥). 
+푥 +푥
+3
+ 
+1)). 
+푥→3
+푥−3
+2.   lim      푅é푝표푛푠푒:4 (푓푎푐푡표푟푖푠푎푡푖표푛 푑푢 푡푟푖푛ô푚푒:(푥− 3)(푥+
+푥 −2푥−3
+2
+ 
+푥→1
+푥−1
+1.   lim    푅é푝표푛푠푒:2 (푐푎푟푥2− 1=(푥− 1)(푥+1)). 
+푥 −1
+2
+  4 Autres exercices d'entraînement  
+ 
+ 
+푥→2
+3. Nouveau calcul :  lim(푥+2)=2+2=4 
+Il reste 푥 + 2. 
+simplifie par (푥− 2).  
+(푥−2)
+푥2− 4=(푥− 2)(푥+2) Ma fraction devient :     Je 
+(푥−2)(푥+2)
+Je reconnais une identité remarquable en haut  (푎2− 푏2). 
+2. Transformation :   
+0
+Dénominateur : 2 −  2 = 0. J'ai  .  C'est une FI. 
+0
+1.  Crash-test : Je remplace  푥 par 2. Numérateur : 22−4=0.  
+----------------Page (48) Break----------------
+                                                                                                                  
+50 
+                                                           
+ 
+5−0 5
+=  
+3+0 3
+푥→+∞
+푥
+Nouveau calcul :  Les termes en    tendent vers 0. lim푓(푥)=
+1
+푥
+5−
+1
+Je simplifie les 푥2. Il reste : 
+ 푥
+3+
+2
+푥
+푥2(5− )
+1
+푥2 en bas)       
+푥
+푥 (3+)
+2
+2
+Transformation :  Je factorise par les chefs (푥2 en haut, 
+Crash-test: Haut → +∞, Bas → +∞. FI. 
+Correction: 
+푥→+∞
+5푥 −푥2
+Calculer :         
+lim 
+3푥 +2푥
+2
+  Exercice Type (Corrigé ultra -détaillé)  
+haut ET en bas, puis on simplifie.  
+En l'infini, on factorise par le terme de plus haut degré en 
+️ La Technique : LE DUEL DES CHEFS   
+monte le plus vite ? Celui du haut ou celui du bas ? 
+Pourquoi c'est indéterminé ?  Deux géants s'affrontent. Qui 
+∞
+壘  F.I. n°3 :  (La course de vitesse) 
+∞
+----------------Page (49) Break----------------
+                                                                                                                  
+51 
+ 
+ 
+•    퐿푖푚푖푡푒∶ +∞ + 0 = +∞. 
+푥  푥     푥
+•        + =3푥+  
+3푥  1     1
+2
+•    푇푒푐ℎ푛푖푞푢푒∶ 퐷é푣푒푙표푝푝푒푟. 
+•    퐹표푟푚푒∶ 0 ×∞. 
+푥→+∞
+푥
+1.  lim ×(3푥2+1) 
+1
+  5 Exercices corrigés 
+dénominateur pour te ramener à une forme connue. 
+Développe l'expression ou mets tout au même 
+️ La Technique : TRANSFORMATION  
+Plus rare mais existe. C'est souvent une fraction déguisée. 
+壘  F.I. n°4 : 0 ×∞ (L'alliance bizarre) 
+푥→+∞ 3푥
+4.  lim  푅é푝표푛푠푒:1/3(푟푎푝푝표푟푡푑푒푠푐표푒푓푓푖푐푖푒푛푡푠). 
+푥+1
+ 
+푥→−∞ 2푥 +1
+2
+3.  lim   푅é푝표푛푠푒:−2(푟푎푝푝표푟푡 푑푒푠 푐표푒푓푓푖푐푖푒푛푡푠− 4/2). 
+−4푥
+2
+ 
+푥→+∞ 푥 +3
+2
+2.  lim     푅é푝표푛푠푒:0 (푙푒 푑푒푔푟é 2 푒푛 푏푎푠 푔푎푔푛푒). 
+2푥+5
+ 
+푥→+∞ 푥 +푥
+2
+1.  lim       푅é푝표푛푠푒:+∞(푙푒 푑푒푔푟é 3 푒푛 ℎ푎푢푡 푔푎푔푛푒). 
+푥 +1
+3
+  4 Autres exercices d'entraînement  
+----------------Page (50) Break----------------
+                                                                                                                  
+52 
+                                                     
+◦     Note : Croissance comparée classique. Limite = 0.  
+푥→0+
+5.  lim푥ln(푥) 
+ 
+suivant). 푒푥 gagne toujours. Limite = 0. 
+◦     Note : C'est une croissance comparée (voir chapitre 
+푥→+∞
+4.  lim푥2푒−푥 
+ 
+◦     Technique : (푥+1)/푥. Duel des chefs. Limite = 1. 
+푥→+∞
+푥
+3.  lim(푥+1)×  
+1
+ 
+◦     Limite infinie (selon le signe de 0). 
+◦     Technique : Simplifier. 2푥/푥2=2/푥.  
+푥→0  푥
+2
+2.  lim푥×  
+2
+----------------Page (51) Break----------------
+                                                                                                                  
+53 
+ 
+•    Résultat : 0. 
+√푥2−1. 
+•    Correction : Conjugué. Haut : 푥2− (푥2− 1)=1. Bas : 푥+
+푥→+∞
+3. Exercice 3 : lim(푥− √푥2−1) 
+ 
+•    Résultat : 0. 
+3.퐵푎푠:√푥2+3+푥. 
+•    Correction : Conjugué. Haut : (푥2+3)− 푥2=
+푥→+∞
+2. Exercice 2 : lim(√푥2+3− 푥) 
+ 
+•    Résultat : 1 / ∞ = 0. 
+•    Dénominateur : √푥+1+√푥 (푡푒푛푑 푣푒푟푠+∞). 
+•    Numérateur : (푥+1)− 푥=1. 
+•    Correction : Multiplier par le conjugué √푥+1+√푥. 
+푥→+∞
+1.  Exercice 1 : lim(√푥+1− √푥) 
+  10 Exercices type BAC corrigés  
+sauter les racines. 
+Le principe : Utiliser l'identité (푎− 푏)(푎+푏)=푎2− 푏2 pour faire 
+arme fatale c'est  L'EXPRESSION CONJUGUÉE . 
+Dès que tu vois une racine carrée et une forme  ∞ −  ∞, ton 
+3.3 Les limites avec les racines carrées  (√...) 
+ 
+----------------Page (52) Break----------------
+                                                                                                                  
+54 
+ 
+√푥
+•    푥( − 1). La parenthèse tend vers -1. Résultat : −∞. 
+1
+plus fort (푥). 
+•    Correction : Pas besoin de conjugué ! Factorise par le 
+푥→+∞
+5. Exercice 5 (Piège) : lim(√푥− 푥) 
+plus avancée. Pas besoin d'elle ici.) 
+(Note : La Règle de l'Hôpital est une technique universitaire 
+Résultat : 0      
+푥  √푥
+Or    = → 0 quand 푥 →  +∞, et la fraction de droite → 1. 
+√푥  1
+푥       푥
+푥(1− )    1−
+1  푥   1
+= ×    
+√푥      √푥
+√푥
+√푥(1−  )   1−
+1      1
+On a ∞/∞ → on factorise le numérateur par √푥 
+ 푥 →  +∞ 
+Au numérateur : √푥−1→ +∞ Au dénominateur : 푥 × (1 − 0) =
+푥
+푥(1− )
+푥− 1    1
+=     
+√푥− 1 √푥− 1
+Méthode : On factorise le bas par x (le terme dominant).  
+푥→+∞
+푥−1
+Correction Exercice 4 :   lim   
+√푥−1
+푥→+∞
+푥−1
+4. Exercice 4 : lim   
+√푥−1
+----------------Page (53) Break----------------
+                                                                                                                  
+55 
+ 
+Résultat 1. 
+푥√1+1/푥2
+•    Correction : Factoriser par 푥 (positif).   .  
+푥
+푥→+∞ √푥 +1
+2
+10.        Exercice 10 : lim    
+푥
+ 
+nécessaire. Résultat 0. 
+•    Correction : Attention, c'est une forme +∞ − ∞. Conjugué 
+푥→−∞
+9. Exercice 9 : lim√푥2+1+푥 
+ 
+•    Reste 1/(√4+2)=1/4. 
+푥(√4+1/푥+2)
+•    On obtient     . Simplifie 푥. 
+푥
+•    Factorise le bas par 푥 (attention √푥2=|푥|=푥 en +∞). 
+√4푥2+푥+2푥. 
+•    Correction : Conjugué. Haut : (4푥2+푥)− 4푥2=푥. Bas : 
+푥→+∞
+8. Exercice 8 (Difficile) : lim(√4푥2+푥−2푥) 
+ 
+•    Correction : Conjugué.   Résultat 1/4. 
+푥→4
+푥−4
+7. Exercice 7 : lim   
+√푥−2
+ 
+•    Reste 1/(√1+푥+1). Tends vers 1/2. 
+푥(√1+푥+1). Simplifie par 푥. 
+•    Correction : Conjugué. Haut : (1+푥)− 1=푥. Bas : 
+푥→0
+푥
+6. Exercice 6 : lim    
+√1+푥−1
+----------------Page (54) Break----------------
+                                                                                                                  
+56 
+                                                     
+ 
+Résultat : 1. 
+•    Extérieur : cos(푋)푞푢푎푛푑 푋 → 0.푂푛 푠푎푖푡 푞푢푒cos(0)=1. 
+푥
+•    Intérieur : → 0. 
+1
+푥→+∞
+푥
+2. Moyen : limcos() 
+1
+•    Extérieur :√푋푒푛+∞ → +. Résultat : +∞. 
+•    Intérieur : 2푥+10 → +∞. 
+푥→+∞
+1.  Facile : lim√2푥+10 
+  5 Exercices corrigés 
+퐿. 
+2. Regarde où va l'extérieur (l'enveloppe) quand la variable est 
+1.  Regarde où va l'intérieur (le cœur). Disons qu'il va vers 퐿. 
+Explication simple : 
+Exemple : 푓(푥)=√3푥+5.푂푛 푛표푡푒  푥→ 푋→ Résultat. 
+fonction.  
+C'est comme des poupées russes. On a une fonction dans une 
+3.4 Les limites de fonctions composées  
+----------------Page (55) Break----------------
+                                                                                                                  
+57 
+                                         
+montre tes muscles avec ta simplification." 
+plutôt : 'On est en présence d'une forme indéterminée', puis 
+égal sur ta copie. C'est une insulte pour le correcteur ! Écris 
+ퟎ   ∞
+      "Champion(ne) , n'écris JAMAIS    ou    avec un signe 
+ퟎ   ∞
+  Conseil du Grand Frère  
+•    Extérieur : ln(1)=0. Résultat : 0. 
+•    Intérieur : 02+1→ 1. 
+푥→0
+5. Piège : limln(푥2+1) 
+ 
+•    Extérieur : 푒푋 quand  푋 → −∞ donne 0. Résultat : 0. 
+•    Intérieur : −푥2+1→ −. 
+푥→+∞
+4. Expert : lim푒−푥 +1 
+2
+ 
+Résultat : 1. 
+2            2
+•    Extérieur : sin(푋)푞푢푎푛푑 푋→ .  On sait que sin()=1.  
+π            π
+2푥  2
+Chefs :     
+= .
+π푥  π
+•    Intérieur : Limite de fraction rationnelle.  
+푥→+∞
+2푥
+3. Difficile : limsin( ) 
+π푥+1
+•     
+----------------Page (56) Break----------------
+                                                                                                                  
+58 
+annotant chaque méthode à la main.
+ 
+❌   Moins de 3 → Prends un crayon. Relis le chapitre en 
+uniquement les exercices de ce type.
+ 
+⚠️  3 ou 4 → Note quelle méthode te pose problème et refais 
+✅   5/5 → Chapeau. Tu maîtrises le cœur du programme.
+ 
+ 
+regarder la correction.
+ 
+☐  J'ai fait au moins 2 exercices de chaque type sans 
+duel des chefs.
+ 
+☐  Je sais quand utiliser la factorisation ET quand utiliser le 
+dénominateur et simplifier.
+ 
+☐  Forme  0/0 : je sais factoriser le numérateur ou 
+et simplifier.
+ 
+☐  Forme  ∞/∞ : je sais identifier le « chef » en haut et en bas 
+sans me tromper de signe.
+ 
+☐  Forme  ∞ −∞ : je sais factoriser par le terme dominant 
+Le test du Chapitre 3 :
+ 
+cette partie du cours. 
+cases, tu peux aller dormir tranquille la veille du BAC pour 
+Ce chapitre, c'est le cœur du programme. Si tu coches ces 
+Le Grand Frère : 
+tout capté ? 
+Là c'est le chapitre le plus long. Comment je sais que j'ai vraiment 
+ 
+✅   Auto -évaluation —  Chapitre 3
+----------------Page (57) Break----------------
+                                                                                                                  
+59 
+majors utilisent pour aller 2x plus vite." 
+Dans ce chapitre, je te donne les raccourcis que les 
+2.  Le calcul MENTAL (pour vérifier vite au brouillon) 
+1.    Le calcul COMPLET (pour ta copie, bien justifié) 
+Ce jour-là, j'ai compris : il y a 2 types de calculs. 
+J'ai testé sur 10 exercices. Ça marchait à CHAQUE FOIS ! 
+bas. 5 > 3 donc le haut est plus fort. Résultat : +∞" 
+Il m'a dit : "Regarde juste les puissances : 5 en haut, 3 en 
+Je lui ai demandé : "Comment tu sais ?" 
+notait direct : "+∞" (sans calcul !) 
+classe. Il écrivait au brouillon :"풍풊풎 풙ퟓ/풙³ quand 풙→ +∞"Et il 
+Un jour, j'ai regardé comment travaillait le major de la 
+justification...), tu finissais à peine 3 exercices. 
+toute la rigueur (factorisation, simplification, 
+exercices de limites. Si tu calculais chaque limite avec 
+"Au 'Cacao', un devoir de 2h contenait souvent 5 
+surtout, pour vérifier tes résultats avant de rendre ta copie. 
+réflexes. Voici mes secrets pour aller plus vite que les autres et 
+temps de redémontrer que la terre est ronde. Tu as besoin de 
+de vitesse et de stratégie. Le jour de l'examen, tu n'as pas le 
+Tu as la méthode, tu as la technique. Maintenant, on va parler 
+GRAND FRÈRE 
+CHAPITRE 4 : LES ASTUCES DE 
+----------------Page (58) Break----------------
+                                                                                                                  
+60 
+plus haut degré. 
+•    Le résultat est le rapport des coefficients  des termes de 
+Cas 3 : Match Nul (Même degré)  Si les degrés sont égaux : 
+ 
+푥→+∞ 푥 +1
+2
+•    Exemple                  
+:lim  =0 (푐푎푟 2>1).
+푥
+•    Le résultat est toujours 0. 
+dénominateur est plus grand : 
+Cas 2 : Le Bas est plus fort que le Haut Si le degré du 
+ 
+푥→+∞ 푥 +2
+2
+•  Exemple :                  
+lim  =+∞( 푐푎푟 3>2).
+푥 +1
+3
+•  Le résultat est toujours l'Infini        
+(+∞ 표푢 − ∞).
+dénominateur :  
+Si le degré du numérateur est plus grand que celui du 
+Cas 1 : Le Haut est plus fort que le Bas  
+puissance la plus élevée en haut et en bas. 
+sur polynôme) quand x tend vers l'infini. On regarde juste la 
+C'est l'astuce ultime pour les fractions rationnelles (polynôme 
+  Comparer les degrés rapidement (La loi du plus fort)   
+secondes. 
+au brouillon, ces raccourcis te donnent la réponse en 2 
+dois toujours justifier (avec les phrases types du cours), mais 
+Ces astuces sont des accélérateurs. Attention : sur ta copie, tu 
+ 
+4.1 Les raccourcis qui sauvent du temps
+----------------Page (59) Break----------------
+                                                                                                                  
+61 
+ 
+푥           푥2    2
+푥→0          푥→0
+lim    =1 lim     =  
+tan(푥)        1−cos(푥) 1
+•                       
+Autres limites trigonométriques utiles (à connaître) : 
+de la fraction. 
+L'astuce : faire apparaître le MÊME argument en haut et en bas 
+3푥
+=3×1=3
+sin(3푥)
+ 
+푥→0  푥   푥→0
+Comment l'utiliser dans un exercice :  lim   =lim3×
+sin(3푥)
+0,1
+•                    ≈ 0,99998 (encore plus proche !) 
+sin(0,1)
+0,1
+•                                     .../0,1 ≈ 0,998 (proche de 1 !) 
+≈ 0,998
+sin(0,1)
+Test rapide :  
+et la corde sont presque identiques.  
+푠푖푛(푥) ≈  푥. C'est comme dire que pour un très petit angle, l'arc 
+(proche de 0),   
+Pourquoi ? L'intuition géométrique :  Quand x est très petit 
+푥→0 푥
+À connaître absolument :  lim   =1 
+sin(푥)
+  La limite trigonométrique fondamentale  
+푥→+∞
+5푥 −2 52
+•    Exemple :           
+lim   =
+3푥 +1 3
+2
+----------------Page (60) Break----------------
+                                                                                                                  
+62 
+Preuve rapide par les valeurs :  
+grandit beaucoup plus lentement.  
+devant. Mais 푒푥 double à chaque "étape", pendant que  푥² 
+Imagine une course entre  푥² et 푒푥. Au départ (푥 petit), 푥² est 
+      Pourquoi 풆풙 bat tout le monde ?  
+gagne en   ? Retiens cette hiérarchie sociale : 
++∞
+En Terminale, c'est souvent la guerre entre         Qui 
+푥, 푒푥 푒푡 ln(푥). 
+(Croissances Comparées)  
+易  Les limites à connaître par cœur 
+lent). √+∞ =+∞ 
+ 
+La racine de l'infini : Ça reste l'infini (juste un peu plus 
+• 
+∞
+donne zéro.       
+→ 0 
+푘
+•   Le gâteau pour la Chine : Un nombre divisé par l'infini 
+0
+(proche de 0) donne l'infini.      
+→ 
+푘
+•   Le gâteau pour les fourmis : Un nombre divisé par zéro 
+les voir comme des panneaux de signalisation.  
+Il y a des situations qui reviennent tout le temps. Apprends à 
+ Reconnaître les limites classiques d'un coup d'œil
+                     
+----------------Page (61) Break----------------
+                                                                                                                  
+63 
+푥ⁿ
+푙푖푚  = +∞  
+푒ˣ
+monde  
+푒ˣ
+           ROI :                                                  푙푖푚  = 0 et  
+Écrase tout le 
+푒ˣ          푥ⁿ
+Hiérarchie                 Règle                     Exemples  
+ 
+•     푙푛(푥) : grandit très très lentement → PEUPLE 
+•     푥ⁿ : grandit en puissance → NOBLESSE 
+•     푒ˣ : multiplie à vitesse exponentielle → ROI 
+l'infini. 
+La règle : Plus une fonction "multiplie vite", plus elle gagne à 
+푒ˣ
+devient infini. C'est pour ça que 푙푖푚 푥→ +∞ = 0. 
+푥² 
+À 푥 = 20,        est 1 million de fois plus grand que 푥². L'écart 
+푒푥 
+20                     400                             485 165 195  
+10                      100                                  22 026 
+5                       25                                      148 
+1                         1                                        2,7 
+풙                              풙²                                                  풆ˣ 
+----------------Page (62) Break----------------
+                                                                                                                  
+64 
+ 
+ 
+quand  푥→ +∞.' Et tu poses le résultat. C'est ça être efficace !"     
+copie, tu écris juste 'Par croissances comparées, 풍풊풎 풙³ · 풆⁻ˣ = ퟎ
+ 
+seconde : eˣ bat     , donc         gagne sur      . Résultat : 0. Sur ta 
+푥ⁿ   푒⁻ˣ             푥³
+?"Le Grand Frère : "Exactement ! Au brouillon tu as la réponse en 1 
+même pas besoin de factoriser  
+ 
+"Vieux père, donc si je vois                         quand                 je n'ai 
+푙푖푚 (푥³ · 푒⁻ˣ)           푥→ +∞,
+ 
+     La ruse du Major 
+푥→+∞
+ln(푥)
+•    Le Roi bat le Peuple (évidemment) :          
+lim  =+
+푒
+푥
+푥→+∞  푥
+ 
++∞ lim  =0
+ln(푥)
+푥→+∞ ln 푥
+()
+•    La Noblesse bat le Peuple : 
+lim  =
+푥
+푥→+∞ 푥
+•    Le Roi bat la Noblesse :        
+lim  =+
+푒
+푥
+Conséquences (à apprendre) :   
+                         tous                                    푥
+푙푛(푥)
+ 
+푙푖푚   =0
+        PEUPLE :    Perd contre 
+ln(푥)
+ln(푥)
+푙푖푚  =+∞ 
+푥ⁿ
+푥ⁿ
+푙푖푚  =0 et  
+ln(푥)
+      NOBLESSE :       Bat ln(x) 
+푥ⁿ
+----------------Page (63) Break----------------
+                                                                                                                  
+65 
+naturels. 
+푒푥, assure-toi que ton résultat final respecte leurs signes 
+Exemple : Si tu calcules une limite en −∞ et que tu as du 푥2 ou 
+퐥퐧(풙) est négatif si 풙 est entre 0 et 1 (ퟎ < 풙 < ퟏ). 
+•    Une racine carrée √푥 est TOUJOURS positive.  
+(jamais 0, jamais négatif). 
+•    Une exponentielle 푒푥 est TOUJOURS strictement positive 
+•    Un carré 푥2 est TOUJOURS positif. 
+rapide : 
+C'est l'erreur bête qui coûte des points. Fais un check-up 
+➕  La cohérence des signes  
+ 
+positive. Erreur de signe ! 
+qu'elle descend sous terre ? Non, elle est toujours 
+푥→−∞
+•    Si tu trouves lim푥2=−, visualise la parabole. Est-ce 
+elle descend vers 0. Donc ton résultat est faux. 
+ce qu'elle monte vers le ciel quand on va à droite ? Non, 
+푥→+∞
+푥
+•    Si tu trouves lim =+, visualise la courbe inverse. Est-
+1
+tête. 
+Essaie de visualiser la courbe de la fonction de base dans ta 
+  Le test du graphique mental  
++ ou - l'infini ?". Voici comment t'auto-corriger. 
+Tu as trouvé un résultat, mais tu as un doute ? "Est-ce que c'est 
+4.2 Comment vérifier ta réponse ?  
+----------------Page (64) Break----------------
+                                                                                                                  
+66 
+ 
+ 
+manquante, c'est souvent elle la coupable !"  
+valeurs. Respire, et va traquer l'erreur de signe  ou une parenthèse 
+faute de frappe quelque part. La calculatrice ne ment pas sur les 
+Le Grand Frère :  "C'est que tu as fait une erreur de signe ou une 
+calcul écrit dit autre chose, je fais quoi ?"   
+"Mais vieux père, si ma calculatrice me donne un résultat et que mon 
+    Le garde-fou 
+(ex : 0,001).  
+nombre tout petit  
+•    Tu cherches une limite en 0 ? Remplace  푥 par un 
+◦     Si le résultat est 0,00004, la limite est sûrement 0. 
+◦     Si le résultat est 4 589 623, la limite est sûrement +∞. 
+◦     Si le résultat est 2,00001, la limite est sûrement 2. 
+(ex : 10 000 ou 100 000). 
+grand nombre   
+•    Tu cherches une limite en  +∞? Remplace  푥 par un 
+à la calculatrice, utilise-la pour vérifier ! 
+C'est ma technique préférée en devoir  surveiller. Si tu as le droit 
+  Les ordres de grandeur (La technique de la calculatrice)  
+----------------Page (65) Break----------------
+                                                                                                                  
+67 
+réponse.  
+majors de promotion. Souvent, la question d'après te donne la 
+4. Passe à la question suivante et reviens C'est le secret des 
+es juste bloqué. Ça peut rapporter 0,25 point.  
+type infini moins l'infini." Ça montre que tu n'es pas nul, tu 
+"En remplaçant, on obtient une forme indéterminée du 
+mais que tu n'arrives pas à la lever, écris-le ! 
+c'est un humain. Si tu vois que c'est une forme indéterminée 
+3. Écris ce que tu sais déjà Le correcteur n'est pas un robot, 
+ 
+•    Si c'est une racine : "Expression conjuguée". 
+•    Si c'est un polynôme : "Factoriser par le chef". 
+•    Est-ce que c'est vraiment une forme indéterminée ?  
+•    Est-ce que j'ai bien remplacé ? 
+génie. Reprends la méthode bête et méchante du Chapitre 3.   
+2. Reviens au PROCESS en 5 étapes  Ne cherche pas l'idée de 
+réfléchir clairement. 
+besoin d'oxygène, pas de stress. L'adrénaline t'empêche de 
+yeux. Inspire par le nez, expire par la bouche. Ton cerveau a 
+1. Respire d'abord ! 律‍♂️ Pose ton stylo 10 secondes. Ferme les 
+indéterminée qui résiste. Pas de panique. 
+Tu es devant ta feuille, le stress monte, tu as une forme 
+4.3 Que faire si tu bloques en examen ?  
+----------------Page (66) Break----------------
+                                                                                                                  
+68 
+                                                     
+ 
+fin ! 
+elle te donnera souvent l'indice. On revient gâter le coin à la 
+d'après, 
+Si une limite te fatigue trop, 'dribble-la' : lis la question 
+points. 
+Au BAC on cherche pas le plus beau dessin, on cherche les 
+  Conseil du Grand Frère  
+tout l'exercice. 
+calcul plus tard. Ne laisse jamais un blocage te gâcher 
+utiliser ce "3" pour continuer ton devoir, et revenir faire le 
+•  BINGO ! L'énoncé vient de te dire que la limite est 3. Tu peux 
+horizontale 푦 = 3". 
+Question 2  : "En déduire que la courbe admet une asymptote 
+Question 1 : "Calculer la limite de f en +infini". (Tu bloques). 
+Exemple :  
+----------------Page (67) Break----------------
+                                                                                                                  
+69 
+                                                     
+refais les 3 exemples à voix haute. 
+⚠️  2 ou 3 → Relis la section sur les croissances comparées et 
+exercices.
+ 
+✅   4/4 → Tu gagnes du temps au BAC. Avance vers les 
+ 
+croissances comparées vs la factorisation.
+ 
+☐  Je reconnais immédiatement quand utiliser les 
+comparées en moins de 2 minutes.
+ 
+☐  Je sais poser et résoudre une limite par croissances 
+savoir, l'expliquer).
+ 
+☐  Je sais expliquer POURQUOI 푒ˣ bat 푥ⁿ à l'infini (pas juste le 
+comparées sans hésiter ( 푙푛 · 푥ⁿ · 푒ˣ).
+ 
+☐  Je peux citer l'ordre de grandeur des croissances 
+Test Chapitre 4 :
+ 
+ 
+compris, c'est une arme. Voici comment savoir où tu en es :   
+bombe à retardement au BAC. Un raccourci que tu as 
+Un raccourci que tu as mémorisé sans comprendre, c'est une 
+Le Grand Frère :  
+vraiment intégrés ?  
+Les raccourcis, c'est un peu magique. Comment je sais que je les ai 
+ 
+(Raccourcis)
+Auto -évaluation —  Chapitre 4 
+----------------Page (68) Break----------------
+                                                                                                                  
+70 
+Le reste a suivi naturellement. Résultat final : 11/12 sur l'analyse. 
+Sur 12 points du problème, j'en avais déjà 4 en 5 minutes. 
+points faciles. 
+푥→2
+Si lim 푓(푥)= 12 et 푓(2) = 12, alors il n'y a pas de trou ! Encore 2 
+Là, beaucoup ont bloqué. Moi, j'ai compris : 
+discontinuité. 
+Question 1b (2pts) : En déduire que 푥=2 n'est pas un point de 
+Résultat : 12      (2 points gagné en 2 minutes)  
+4.   Je recalcule → (2)²+2(2)+4 = 12 
+3.   Je simplifie → 푓(푥) = 푥²+2푥+4 
+2.   Je factorise → 푥³− 8 = (푥− 2)(푥²+2푥+4) 
+1.    Je remplace  → 0/0 (forme indéterminée)  
+Moi, j'ai appliqué le protocole : 
+ Il a perdu 2 points. 
+limite ERREU » ! 
+Mon voisin a regardé ça et a écrit direct : « 0/0 donc pas de 
+8)/(푥− 2)  
+푥→2
+Question 1a (2pts) : Calculer lim f(x) sachant que  푓(푥) = (푥³−
+J'ouvre le sujet. Problème d'analyse (12 points) : 
+"BAC C 2019 au 'Cacao'. Épreuve de mathématiques.  
+(La salle d'entraînement du champion)  
+CHAPITRE 5 : EXERCICES TYPE BAC  
+----------------Page (69) Break----------------
+                                                                                                                  
+71 
+                                                           
+! 
+triche pas : essaie de les faire avant de regarder ma correction 
+en réflexes. J'ai classé les exercices par niveau de difficulté. Ne 
+sur le ring. C'est ici que tu vas transformer tes connaissances 
+On a vu la théorie, on a vu la méthode. Maintenant, on monte 
+ 
+pour que tu sois prêt le jour J." 
+Dans ce chapitre, on s'entraîne sur des exercices TYPE BAC 
+vérifie que tu APPLIQUES les méthodes du cours. 
+Ce jour-là, j'ai compris : le BAC ne cherche PAS à te piéger . Il 
+----------------Page (70) Break----------------
+                                                                                                                  
+72 
+ 
+Résultat : −∞  
+ça reste −∞. 
+•    On sait que 푥3 en −∞ donne  −∞. Multiplié par 2 (positif), 
+푥→−∞           푥→−∞
+•    Calcul : lim(2푥3− 5푥+1)= lim(2푥3) 
+terme de plus haut degré (le Chef). 
+•    Règle : À l’infini, un polynôme se comporte comme son 
+•    Identification : C’est la limite d’un polynôme à l’infini. 
+Correction détaillée : 
+푥→−∞
+Exercice 1 : Le polynôme docile  Calculer : lim(2푥3− 5푥+1) 
+limites directes ou très simples. 
+Ici, on vérifie que tu sais démarrer la voiture. Ce sont des 
+5.1   Exercices niveau BASE (Échauffement)  
+ 
+muscles pour gagner."  
+commencer par l'échauffement, et tu verras que tu as déjà les 
+assemblage de petits calculs qu'on a déjà faits. On va 
+Mais regarde bien : un exercice de BAC, c'est juste un 
+Le Grand Frère :  "C'est normal petit, c'est le trac du champion. 
+hauteur."  
+mains commencent à chauffer. J'ai peur de ne pas être à la 
+"Vieux père, quand je vois 'Niveau BAC' écrit sur un exercice, mes 
+     Monter sur le ring  
+----------------Page (71) Break----------------
+                                                                                                                  
+73 
+ 
+푥→+∞
+푥2
+• Calcul : lim   Je simplifie les 푥2. Il reste -3. Résultat : -3  
+−3푥
+2
+chefs). 
+• Méthode : On garde les termes de plus haut degré (les 
+• Analyse : En haut → −∞, en bas → +∞. C'est une F.I. 
+Correction détaillée : 
+푥→+∞
+푥 +42
+Calculer : lim    
+−3푥 +푥
+2
+Exercice 3 : L'infini sur l'infini (Fonction rationnelle)  
+simple d'abord ! 
+de Forme Indéterminée. Toujours tester le remplacement 
+Chercher une factorisation compliquée alors qu'il n'y a pas 
+⚠️  ERREUR À ÉVITER  
+ 
+Résultat : 2  
+5
+•    Calcul :  =2 
+10
+•    Bas : 3 + 2 = 5 
+•    Haut : 32+1=10 
+•    Réflexe : Je remplace  푥 par 3. 
+Correction détaillée : 
+푥→3 푥+2
+Exercice 2 : La fraction sans piège Calculer :      
+lim 
+푥 +1
+2
+(ex: 푥 → 2). Cette astuce ne marche qu'à l'infini ! 
+Ne jamais appliquer cette règle si 푥 tend vers un nombre fini 
+⚠️  ERREUR À ÉVITER  
+----------------Page (72) Break----------------
+                                                                                                                  
+74 
+                                                     
+ 
+Résultat : +∞  
+•    Extérieur : La racine carrée de l'infini, c'est l'infini. 
+•    Intérieur : Quand  푥 → +∞, alors 푥2+3→ +. 
+Correction détaillée : 
+푥→+∞
+Exercice 5 : La racine simple Calculer : lim√푥2+3 
+ 
+"presque rien" donne "très gros". 
+Écrire = 0 ou ne pas préciser le signe de l'infini. Diviser par 
+⚠️  ERREUR À ÉVITER  
+ 
+Résultat : +∞  
+0+
+•    Calcul :  =+ 
+5
+Donc 푥 −  2 est un nombre positif (0+). 
+•    Signe du zéro : 푥→ 2+ signifie 푥 > 2 (par exemple 2,01). 
+type "Nombre sur Zéro". Ça va faire l'infini. 
+•    Analyse : En haut c'est 5. En bas, 2 −  2 = 0. C'est du 
+Correction détaillée : 
+푥→2+
+푥−2
+Exercice 4 : Le mur vertical Calculer : lim   
+5
+Oublier le signe "moins" du coefficient -3 
+⚠️  ERREUR À ÉVITER  
+----------------Page (73) Break----------------
+                                                                                                                  
+75 
+le ! 
+obligatoirement (푥− 1) caché en haut et en bas. Traque-
+  Astuce : Si ça s'annule en 1, c'est qu'il y a 
+Résultat : 2  
+1=2.   
+•    Recalcul : Je remplace maintenant  푥 par 1 dans 푥+1.1+
+(푥−1)
+•    Simplification             
+:     =푥+1
+(푥−1)(푥+1)
+1=(푥− 1)(푥+1) 
+•    Méthode : Factoriser. Je reconnais 푎2− 푏2 en haut. 푥2−
+1−1 0
+•    Test :     F.I. 
+= . 
+1−1 0
+Correction détaillée : 
+푥→1
+푥−1
+Exercice 1 : Le classique "0 sur 0" Calculer : lim   
+푥 −1
+2
+ouvrir le capot et utiliser les outils vus au Chapitre 3. 
+Là, le moteur tousse un peu (Formes Indéterminées). Il faut 
+5.2   Exercices niveau MOYEN (Technique)  
+ 
+Non, ça monte toujours, juste moins vite 
+Penser que la racine "ralentit" l'infini jusqu'à un nombre fini. 
+⚠️  ERREUR À ÉVITER  
+----------------Page (74) Break----------------
+                                                                                                                  
+76 
+rate pas ta mention pour ça. 
+  Astuce : Règle des signes : Moins × Moins = Plus. Ne 
+ 
+Résultat : +∞  
+•    Calcul final : Si 푥→ −∞,푎푙표푟푠− 2푥→ −2×(−∞)=+∞. 
+signe moins du bas !). 
+푥2
+•    Simplification :  =푥. Donc il reste −2푥 (Attention au 
+푥
+3
+−푥2
+•    Méthode : Termes de plus haut degré. lim   
+2푥
+3
+∞
+•    Test : . F.I. 
+∞
+Correction détaillée : 
+푥→−∞
+−푥 +푥2
+Calculer :        
+lim 
+2푥 +1
+3
+Exercice 3 : Polynôme vs Polynôme (Piège de signe)    
+Résultat : 0 
+•    Conclusion :  Un nombre divisé par l'infini donne 0. 
++∞++∞  +∞
+•    Analyse : On a    = . 
+2    2
+bas, il reste (√푥+2+√푥). 
+(√푥+2+√푥). En haut, ça fait 퐴2− 퐵2:(푥+2)− 푥=2. En 
+qui se soustraient). On multiplie haut et bas par 
+•    Méthode : Expression conjuguée (car on a des racines 
+•    Test : +∞ −  ∞. F.I. 
+Correction détaillée : 
+푥→+∞
+lim(√푥+2− √푥) 
+Exercice 2 : La bagarre des infinis avec Racine Calculer : 
+----------------Page (75) Break----------------
+                                                                                                                  
+77 
+                                                     
+2
+•    Savoir : On sait que cos()=0.  Résultat : 0 
+π
+2
+résultat. cos() 
+π
+•    Extérieur : Maintenant, on applique le cosinus au 
+2푥  2
+On garde les chefs :  = . 
+π푥  π
+2푥
+parenthèse :  . C'est une fraction rationnelle en l'infini. 
+π푥+1
+•    Intérieur : On regarde d'abord ce qu'il y a dans la 
+Correction détaillée : 
+ 
+푥→+∞
+2푥
+Calculer : limcos( ) 
+π푥+1
+Exercice 5 : Fonction composée (Trigo)   
+Résultat : Pas de limite unique. +∞ à droite, −∞ à gauche. 
+−∞. 
+0−
+◦  Si 푥 < 1 (gauche) : 푥− 1 est négatif (0−). Limite =   =
+3
+0+
+◦   Si 푥 > 1 (droite) : 푥−1 est positif (0+). Limite =   =+∞ 
+3
+•    Tableau de signe de  풙− ퟏ : 
+faut le signe du zéro. 
+•    Bas : 1 −  1 = 0. C'est une asymptote verticale, mais il 
+•    Haut : 2(1)+1=3 
+Correction détaillée : 
+푥−1
+Étudier la limite en 1 de : 푓(푥)=   
+2푥+1
+Exercice 4 : Limite à gauche et à droite (Tableau de signes)  
+----------------Page (76) Break----------------
+                                                                                                                  
+78 
+courbe colle à la droite. C'est gagné.  
+푥→+∞ 푥+1
+reste.        . Puisque la différence tend vers 0, la 
+lim  =0
+1
+•    Étape 3 (Conclusion) : Maintenant, calcule la limite de ce 
+푥+1         푥+1
+Calcul : (2푥− 3+ )−(2푥− 3)= . 
+1          1
+푥→+∞
+Formule à utiliser : lim[푓(푥)− (푎푥+푏)]  
+droite.  
+prouver, tu dois calculer la distance  entre la courbe et la 
+oblique, c'est une droite dont la courbe se rapproche. Pour le 
+•   Étape 2 (L'Asymptote) : La définition d'une asymptote 
+quoi ? L'infini (à cause de 2푥). Donc lim푓(푥)=+∞. 
+푥+1
+(+∞), le bout  devient minuscule (il tend vers 0). Il reste 
+ 
+1
+•   Étape 1 (Calcul de limite) : Regarde     Quand  푥 est géant 
+푓(푥). 
+Correction : 
+la droite (퐷):푦=2푥− 3 est asymptote oblique.  
+푥+1
+Soit 푓(푥)=2푥− 3+  Calculer la limite en +∞ et montrer que 
+1  
+Exercice 1 : Asymptote Oblique   
+étude de fonction. 
+C'est ce qui tombe le jour J. C'est souvent mélangé à une 
+5.3   Exercices niveau BAC (Problème type)  
+----------------Page (77) Break----------------
+                                                                                                                  
+79 
+                                                     
+soustraction, 0.5pt pour la conclusion. Total 1.5pt. 
+Barème indicatif : 0.5pt pour la limite, 0.5pt pour la 
+----------------Page (78) Break----------------
+                                                                                                                  
+80 
+ 
+ 
+ 
+ 
+ 
+0.5pt par interprétation correcte. 
+d'asymptote horizontale (ce n'est pas un plafond). Barème :  
+Pour la limite en l'infini : Le résultat est l'infini. Donc pas 
+Verticale. 
+•  => Donc, la droite d'équation 풙 = ퟏ est Asymptote 
+1.  
+dessin : ta courbe bute contre un mur vertical placé à 
+nombre  (ici 1), le résultat explose (∞). Imagine le 
+•  Pour la limite en 1 : Tu vois que quand  푥 se rapproche d'un 
+Correction 2 : 
+Quelles sont les asymptotes ? 
+푥→1        푥→∞
+푥−1
+On a 푓(푥)=   On a trouvé : lim푓(푥)=∞ 푒푡lim푓(푥)= ∞ 
+2푥 +3
+2
+Exercice 2 : Interprétation graphique complète   
+----------------Page (79) Break----------------
+                                                                                                                  
+81 
+3.   Si elles sont égales → c'est la limite de f 
+2.   Calculer les limites de g et h  
+1.    Encadrer f(x) entre g(x) et h(x)  
+Méthode en 3 étapes :  
+•     −1 ≤  푐표푠(푥) ≤  1 (toujours !) 
+•     −1 ≤  푠푖푛(푥) ≤  1 (toujours !) 
+Les inégalités de base à connaître :  
+tout terme qui "oscille" sans avoir de limite à l'infini.  
+Quand l'utiliser ?  Dès que ta fonction contient sin(x), cos(x), ou 
+choix ! 
+endroit, le prisonnier est obligé d'aller au même endroit. Pas le 
+entre deux gendarmes qui vont tous les deux au même 
+Traduction en langage de quartier :  Si tu coinces quelqu'un 
+Alors
+          : 푙푖푚 푓(푥) = 퐿 
+Et si 
+ 푔(푥)≤ 푓(푥)≤ ℎ(푥)        : 푙푖푚푔(푥)=푙푖푚ℎ(푥)=퐿 
+Énoncé (à connaître) :  Si pour tout  x : 
+     Le Théorème des Gendarmes  —  Ce qu'il faut savoir  
+푥→+∞
+푥
+Calculer : 
+lim   
+sin(푥)
+Exercice 3 : Théorème des Gendarmes (ou de comparaison)     
+----------------Page (80) Break----------------
+                                                                                                                  
+82 
+Par le Théorème des Gendarmes : 풍풊풎 풄풐풔(풙²)/풙 = ퟎ      
+Or 푙푖푚 푥→ +∞ (−1/푥) = 0 et 푙푖푚 푥→ +∞ (1/푥) = 0 
+En divisant par 푥 (positif car 푥 →  +∞) : −1/푥 ≤  푐표푠(푥²)/푥 ≤  1/푥 
+Correction : On sait que −1 ≤  푐표푠(푥²) ≤  1  
+Exercice 3bis : Calculer 푙푖푚 푥→ +∞ 푐표푠(푥²)/푥 
+ 
+Résultat : 0 
+l'obligent à aller vers 0.  
+Ta fonction est coincée entre 0 et 0. Les gendarmes 
+푥               푥
+Le verdict : À gauche,   tend vers 0. À droite,  tend vers 0. 
+−1              1
+푥   푥   푥
+ 
+  ≤   ≤
+−1 sin(푥) 1
+car on va vers +∞). 
+•  L'action : On divise tout le monde par 푥 (qui est positif 
+sin(푥)≤ 1. C'est toujours vrai. 
+•  L'idée : On va l'encadrer (le coincer). Tu sais que −1≤
+pas dire "ça fait un nombre". On est bloqué. 
+(ça oscille tout le temps entre -1 et 1). Tu ne peux 
+•  Le problème : sin(푥) n'a pas de limite en l'infini  
+Correction exo 3: 
+----------------Page (81) Break----------------
+                                                                                                                  
+83 
+ 
+ 
+Résultat : 푎 = 4 
+2
+=2 ce qui implique 푎 = 4.  
+푎
+•  Équation : On veut que cette limite soit égale à 2. Donc  
+√1+1 2
+est   = . 
+푎   푎
+푥(√...+1)
+•  Calcul : On a    . On barre les 푥. La limite quand 푥 → ∞ 
+푎푥
+푥
+Le bas devient 푥(√1+ +1). 
+푎
+√푥2=푥).  
+•  Simplification : En bas, on factorise par 푥 (car 푥>0 et 
+√...+푥    √푥2+푎푥+푥  √푥2+푎푥+푥
+=       =       
+(√...− 푥)(√...+푥) (푥2+푎푥)− 푥2     푎푥
+•  Analyse : C'est une forme ∞ −  ∞. On utilise le conjugué.  
+Correction 4: 
+푥→+∞
+Déterminer le réel a pour que : lim(√푥2+푎푥−푥)=2 
+Exercice 4 : Paramètre réel (Niveau Expert)  
+ 
+ 
+----------------Page (82) Break----------------
+                                                                                                                  
+84 
+La fonction 푓 est-elle continue en 1 ? 
+푥−1
+Soit 푓 définie par 푓(푥)=   si 푥≠ 1 푒푡 푓(1)=3.  
+푥 −1
+2
+Exercice 6 : Continuité en un point  
+ 
+Total : 0 −  0 = 0. Résultat : 0 
+푥→0+
+(Croissance comparée). On sait que  lim푥ln푥=0. 
+◦     −푥ln(푥) : Ah ! C'est une limite de référence du cours 
+0 ×0 = 0. 
+◦     푥ln(푥2+1) : Quand 푥 → 0, 푥 vaut 0 et ln(1) vaut 0. 
+•  Calcul par morceaux :  
+푥[ln(푥2+1)− ln(푥)]=푥ln(푥2+1)− 푥ln(푥) 
+•  Distribution : Donc on cherche la limite de   
+푥  푥       푥    푥
+푥+ =   퐷표푛푐ln(푥+ )=ln(  )=ln(푥2+1)−ln(푥). 
+1 푥2+1     1   푥2+1
+Transformons l'intérieur du ln.  
+•  Transformation :  C'est compliqué écrit comme ça.   
+Correction 5: 
+푥→0+
+푥
+Calculer :          
+lim푥ln(푥+ )
+1
+Exercice 5 : La limite composée avec Logarithme  :  
+ 
+----------------Page (83) Break----------------
+                                                                                                                  
+85 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Résultat : Non, 푓 n'est pas continue en 1. 
+Il y a une cassure.  
+•  Conclusion :  La limite (2) est différente de l'image (3).  
+푥−1
+. La limite est donc 1+1 = 2. 
+ = 푥+1
+(푥−1)(푥+1)
+푥→1 푥−1
+•  La limite : Calculons       C'est 0/0. On factorise : 
+lim  .
+푥 −1
+2
+•  L'image : L'énoncé dit 푓(1)=3. 
+quand  푥 → 1 soit égale à l'image 푓(1). 
+•  La règle : Pour être continue en 1, il faut que la limite 
+Correction 6: 
+----------------Page (84) Break----------------
+                                                                                                                  
+86 
+                                                     
+ 
+1+0
+Final      .  Résultat : 1 
+:  =1
+1+0
+푒푥
+ 
+→ 0.
+1
+푒푥
+•  Limites usuelles :  → 0 (l'exponentielle gagne toujours). 
+푥
+푒
+푥
+1+
+1
+•  Simplification : On barre les 푒푥. Il reste  
+푒
+푥
+1+
+푥
+푒푥            푒푥
+Haut :                 
+푒푥(1+ ) Bas : 푒푥(1+ )
+푥          1
+et en bas.  
+•  Méthode : Factoriser par le terme dominant ( 푒푥) en haut 
+polynômes car il y a des 푒푥. 
+∞
+•  Analyse : . On ne peut pas appliquer la règle des 
+∞
+Correction 7 : 
+푥→+∞ 푒 +1
+푥
+Calculer :       
+lim 
+푒 +푥
+푥
+Exercice 7 : Croissance comparée avec  exponentielle   
+----------------Page (85) Break----------------
+                                                                                                                  
+87 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Calcul : 푓′(0)=−sin0=0. Résultat : 0 
+•  Dérivée : Si 푓(푥)=cos푥, alors 푓′(푥)=−sin푥. 
+•  Propriété : Cette limite est égale à 푓′(0). 
+푥−0
+•  Vérification : 푓(0)=cos0=1. Donc on a bien    . 
+푓(푥)−푓(0)
+푥−푎
+  avec 푎=0 et 푓(푥)=cos푥. 
+푓(푥)−푓(푎)
+Ça ressemble à la définition du nombre dérivé  
+•  Reconnaissance :   
+Correction 8 : 
+푥→0
+푥
+Calculer :        
+lim 
+cos푥−1
+Exercice 8 : Limite par taux d'accroissement   
+----------------Page (86) Break----------------
+                                                                                                                  
+88 
+                                                     
+ 
+ Résultat : −1 
+−푥(√...+1)          −(√1+1) −2
+Final :    . On barre les 푥.    = =−1. 
+2푥              2    2
+−푥(√1+2/푥+1). 
+Bas = √푥2(1+2/푥)−푥=−푥√1+2/푥− 푥=
+est négatif).  
+•  Factorisation du bas : Attention !! √푥2=|푥|=−푥 (car 푥 
+Haut : (푥2+2푥)− 푥2=2푥. Bas : √푥2+2푥− 푥. 
+−푥 dans le conjugué).  
+•  Conjugué :  On multiplie par (√...−푥). (Rappel : +푥 devient 
+négatif ! 
+•  Piège : Attention, c'est ∞ −  ∞. Et comme 푥 → −∞, 푥 est 
+Correction 9: 
+푥→−∞
+Calculer :lim√푥2+2푥+푥 
+Exercice 9 : Fonction racine et infini  
+----------------Page (87) Break----------------
+                                                                                                                  
+89 
+푥→3+
+푥−3
+4.   Calculer : lim   
+2
+푥→1
+푥−1
+3.   Calculer : lim    
+푥 +푥−2
+2
+푥→−∞
+푥 −32
+2.   Calculer : lim   
+2푥+1
+푥→+∞
+1.    Calculer : lim(−푥3+4푥2) 
+question max). Vérifie juste avec la réponse finale. 
+Fais-les sur une feuille, chronomètre-toi (2 minutes par 
+5.4 ⏱️ Exercices pour t'entraîner seul 
+Résultat : 3 
+•  Conclusion : La fonction composée tend vers 3. 
+푔(−2) = √(−2)2+5=√4+5=√9=3. 
+•  Étape 2 : On regarde l'extérieur 푔(푋) quand  푋 → −2. 
++∞,푓(푥)→ −2. Posons 푋 = −2. 
+•  Étape 1 : On regarde l'intérieur 푓(푥). Quand  푥→
+Correction 10 : 
+푥→+∞
+ 
+lim푔(푓(푥)).
+푥→+∞
+On donne                     . Calculer 
+lim푓(푥)=−2 et 푔(푥)=√푥2+5
+Exercice 10 : Limite composée graphique   
+----------------Page (88) Break----------------
+                                                                                                                  
+90 
+ 
+ 
+quand tu es plus frais !" 
+Saute-le, va prendre les points ailleurs, et reviens le 'gâter' 
+là à regarder les mouches.  
+pas 'taper poto' le jour J. Si tu cales sur un exo, ne reste pas 
+    "Petit, faut dja le pion (maîtriser) à l'entraînement pour ne 
+  Conseil de Gand Frère 
+ 
+2.                                        
+퐷푟표푖푡푒 푥=2 | 10.3
+1.                                                                                                    
+−∞| 2.0 | 3.3 | 4.+∞| 5.+∞| 6.+∞| 7.0 | 8.0 | 9. 
+RÉPONSES FINALES (Pour vérifier)   
+푥→0 푥
+10.  Calculer :       (Astuce: faire apparaître 3x en bas) 
+lim 
+sin3푥
+9.   Quelle est l'asymptote verticale de 푓(푥)=ln(푥− 2) ? 
+푥→+∞
+8.   Calculer : lim√4푥2+1−2푥 (Forme conjuguée subtile) 
+푥→−∞
+푥3
+7.   Calculer : lim  
+5
+푥→+∞
+6.   Calculer : lim(푥− ln푥) (Factorise par x) 
+푥→+∞
+푥
+5.   Calculer : lim  (Croissance comparée)  
+푒
+푥
+----------------Page (89) Break----------------
+                                                                                                                  
+91 
+?) et je sais sur quoi travailler.
+ 
+☐  J'ai identifié mon point faible (calcul ? rédaction ? signe 
+questions.
+ 
+☐  Mes résultats finaux sont corrects sur au moins 70% des 
+indéterminée à chaque fois.
+ 
+☐  Sur mes copies, j'ai rédigé la phrase de la forme 
+réelles.
+ 
+☐  J'ai fait au moins 2 exercices complets en conditions 
+Après avoir fait les exercices :
+ 
+ 
+•     Tu compares avec la correction APRÈS. Pas pendant.
+ 
+papier).
+ 
+•     Tu écrits ta solution sur papier (pas dans ta tête, sur 
+complet de BAC.
+ 
+•     Tu te chronomètres : 20 minutes maximum par exercice 
+•     Aucun cours ouvert pendant que tu fais l'exercice.
+ 
+Les conditions du vrai test : 
+ 
+ce que je les ai faits seul, sous conditions ?'  
+question n'est pas 'est -ce que j'ai lu les exercices ?' mais 'est -
+Ce chapitre ne se « révise » pas, il se FAIT. La seule vraie 
+Le Grand Frère :  
+me teste sérieusement ?  
+Vieux père c'est le chapitre des vrais exercices de BAC. Comment je 
+ 
+(Exercices BAC)
+Auto -évaluation —  Chapitre 5  
+----------------Page (90) Break----------------
+                                                                                                                  
+92 
+                                                     
+d'abord. Ce livre ne sert à rien sans ça.
+ 
+❌   Tu n'as pas encore fait les exercices → Stop. Fais-les 
+✅   4/4 → Tu es prêt pour le Chapitre 6 : la stratégie d'examen.
+ 
+ 
+----------------Page (91) Break----------------
+                                                                                                                  
+93 
+ 
+ 
+ 
+ 
+points le jour J. 
+gestion de stress et du temps. Voici comment braquer les 
+malin. Le BAC, ce n'est pas seulement des maths, c'est de la 
+Tu as la technique, tu as l'entraînement. Maintenant, il faut être 
+l'analyse avec 30 minutes d'avance pour tout vérifier." 
+chronomètre suisse, et c'est ce qui m'a permis de finir 
+oublier ce que tu sais. J'ai géré mon temps comme un 
+de savoir exactement quoi faire quand le stress veut te faire 
+force'. Le secret des majors, ce n'est pas de tout savoir, c'est 
+: 'Demain, ce n'est pas un examen, c'est une démonstration  de 
+les situations possibles de limites dans ma tête. Je me suis dit 
+calcul. J'ai juste pris une feuille blanche et j'ai dessiné toutes 
+"La veille du BAC au 'Cacao', je n'ai pas ouvert un seul livre de 
+ 
+(La stratégie du Général) 
+LES LIMITES 
+CHAPITRE 6 : RÉUSSIR LE BAC SUR 
+----------------Page (92) Break----------------
+                                                                                                                  
+94 
+de montrer que l'équation 푓(푥)=0 admet une solution 
+•  Le Théorème de la Bijection (TVI) On te demandera souvent 
+classique absolu.  
+푥→∞
+appliquer la formule : lim[푓(푥)− (푎푥+푏)]=0 C'est un 
+asymptote oblique"  Ici, tu ne dois pas inventer. Tu dois 
+•  "Montrer que la droite (D) d'équation y = ax + b est 
+ 
+•    Résultat infini en un point -> Asymptote Verticale . 
+•    Résultat fini en l'infini -> Asymptote Horizontale . 
+phrase géométrique.  
+du calcul précédent. Tu dois traduire ton résultat en 
+•  "En déduire l'existence d'asymptotes" C'est la suite logique 
+en −∞, en 2 (gauche et droite) et en +∞. 
+Exemple : Si 퐷_푓 = ]− ∞; 2[ ∪]2 ; +∞[, attends-toi à calculer 
+fonction (Problème).  
+C'est souvent la première question de l'étude de 
+•  "Calculer les limites aux bornes de l'ensemble de définition" 
+1. Les questions classiques (Points cadeaux)    
+tu as compris les bases. Voici ce qui tombe à 90% : 
+etc.) se ressemblent souvent. Les inspecteurs aiment vérifier si 
+Les sujets de BAC (en Côte d'Ivoire, au Sénégal, au Cameroun, 
+6.1 Ce qui tombe souvent au BAC  
+----------------Page (93) Break----------------
+                                                                                                                  
+95 
+ 
+ 
+ 
+ 
+ 
+→ Vérifier si 푙푖푚 = ±∞ 
+5. 'Déterminer si 풙=풂 est une asymptote verticale '  
+ou croissances comparées   
+4. 'Calculer 풍풊풎 풇(풙)/품(풙) quand  풙→ +∞′ → Duel des chefs 
+3. 'Étudier la continuité en a' → Comparer  푙푖푚 et 푓(푎) 
+trouvées  
+2. 'Déterminer les asymptotes'  → Interpréter les limites 
+Substitution directe + 5 étapes 
+1. 'Calculer les limites aux bornes du domaine'  → 
+  Résumé  
+abscisses (changement de signe).   
+bornes pour montrer que la courbe "traverse" l'axe des 
+unique α. Pour cela, tu dois calculer les limites aux 
+----------------Page (94) Break----------------
+                                                                                                                  
+96 
+                           
+jamais 0.  
+autour de 푎푥+푏, tu vas te tromper de signe et tu ne trouveras 
+Dans le calcul          si tu oublies les parenthèses 
+푓(푥)− (푎푥+푏), 
+L'oubli des parenthèses dans l'Asymptote Oblique  :  
+indéterminée", puis fais ta transformation. 
+Le correcteur va te saquer. Écris plutôt : "On a une forme 
+∞
+Écrire ce genre de chose sur ta copie :       
+푓(푥)= .
+∞
+La rédaction interdite :  
+ 
+dénominateur !  
+Correction : Fais toujours ton tableau de signes du 
+0
+Écrire lim = sans préciser si c'est   ou    
+1                +∞  −∞.
+La rédaction interdite 
+PERSONNEL)   
+2. LES PIEGES RECURRENTS (MINES ANTI -
+----------------Page (95) Break----------------
+                                                                                                                  
+97 
+ 
+ 
+mur, on cherche la porte à côté." 
+résultat que tu cherchais. Au BAC, on ne pleure pas devant un 
+Regarde la question 2 : elle te donne souvent l'indice ou le 
+Le Grand Frère : "Petit, respire ! Si la question 1 est dure, saute-la. 
+première question, je fais quoi ? Mon cœur va lâcher !"  
+"Vieux père, si le sujet tombe et que c'est 'serré' (très difficile) dès la 
+     La peur du "Sujet Serré" 
+4. Confondre  푙푖푚 푓(푥) et 푓(푎) → deux choses différentes ! 
+fondamentale  
+3. Conclure directement sans vérifier si c'est une FI → erreur 
+mauvais signe de l'infini 
+2. Oublier le signe du 0 au dénominateur (0 ⁺ vs 0⁻) → 
+points ! 
+1. Écrire = 0/0 sans chercher la forme indéterminée → –2 
+ Mines anti -personnel (pièges récurrents)  : 
+⚠️  Résumé  
+ 
+----------------Page (96) Break----------------
+                                                                                                                  
+98 
+                                                           
+Étude complète avec tableau                       10–12 minutes 
+Identification asymptote                                1 minute 
+Forme indéterminée (conjugué)                  5–7 minutes 
+simple) 
+Forme indéterminée (factorisation     3–5 minutes 
+Limite par substitution directe                      1–2 minutes 
+recommandé   
+Type de calcul                                                   Temps 
+limites ne sont qu'une partie du problème. 
+L'épreuve de Maths dure 4 heures, mais ça passe très vite. Les 
+6.2 Stratégie Temps  ⏱️ 
+----------------Page (97) Break----------------
+                                                                                                                  
+99 
+haut degré  (le "Chef"). 
+•     La technique de Factorisation par le terme de plus 
+•     Les Limites Usuelles  (surtout ln(푥) et 푒푥 en l'infini). 
+Ce qu'il faut réviser la veille : 
+juste que ton "sac à dos" est prêt. 
+La veille de l'examen, ne fais pas de calculs compliqués. Vérifie 
+6.3 Check-list avant l'épreuve  ✅  
+même si tu n'as pas réussi le calcul. 
+2. Tu peux utiliser ce résultat pour continuer le problème, 
+푦=2, c'est que ta limite à la question 1 DOIT  être égale à 
+•    Astuce de chef : Si la question 2 parle d'une asymptote 
+asymptote d'équation y=2".  
+Question 2 : "Montrer que la courbe admet une 
+•    Exemple : Question 1 : "Calculer la limite en +infini". 
+réponse ! 
+•    Pourquoi ?  Souvent, la question d'après te donne la 
+•    Laisse un espace vide de 5 à 6 lignes sur ta copie. 
+ARRÊTE . 
+•    Si tu bloques plus de 5 minutes sur un calcul de limite : 
+minutes) 
+Quand passer à la suite ? (La règle des 5 
+----------------Page (98) Break----------------
+                                                                                                                  
+100 
+                                                           
+vérification. 
+•    N'oublie pas ta calculatrice : c'est ton meilleur outil de 
+derrière une factorisation. 
+juste un jeu de cache-cache. La réponse est là, cachée 
+•    Si tu tombes sur une Forme Indéterminée, souris. C'est 
+j'applique une méthode".  
+•    Dis-toi : "Je ne cherche pas la réponse au hasard, 
+L'état d'esprit gagnant : 
+•    Les croissances comparées :  푒푥 bat 푥푛, qui bat ln푥. 
+푥→0
+푥
+•    La limite trigonométrique : lim  =1. 
+sin푥
+sauveur pour les factorisations). 
+•    L'identité remarquable : 푎2− 푏2=(푎− 푏)(푎+푏) (Ton 
+Les formules à avoir en tête : 
+ 
+√... et une soustraction). 
+•    L'expression Conjuguée  (dès qu'il y a une racine carrée 
+----------------Page (99) Break----------------
+                                                                                                                  
+101 
+en y = L 
+(réel)                           à gauche                                            horizontale 
+lim x→−∞ f(x) = L  La courbe se rapproche de y = L  Asymptote 
+en y = L 
+(réel)                           droite y = L                                        horizontale 
+lim x→+∞ f(x) = L  La courbe se rapproche de la   Asymptote 
+sur la copie 
+à utiliser 
+Ce que tu calcules         Ce que ça dit sur la courbe        Vocabulaire 
+exactement l'outil qui te permet de les trouver. 
+indéfiniment sans la toucher (en général). Les limites sont 
+Une asymptote, c'est une droite dont la courbe se rapproche 
+directe 
+Les limites et les asymptotes —  La connexion 
+connais déjà. 
+la courbe. Je t'explique le lien que les profs supposent que tu 
+calculer la limite, mais parce qu'ils n'ont pas su l'interpréter sur 
+l'ignorent perdent des points, non pas parce qu'ils n'ont pas su 
+Elles font partie d'une étude de fonction complète. Ceux qui 
+Presque. Mais au BAC, les limites ne viennent jamais seules. 
+Le Grand Frère : 
+exactement à ce qu'on a vu dans ce livre ? 
+Vieux père, au BAC, les questions sur les limites ressemblent 
+ 
+—  CE QUI T'ATTEND VRAIMENT AU BAC
+   LES LIMITES DANS L'ÉTUDE DE FONCTION 
+----------------Page (100) Break----------------
+                                                                                                                  
+102 
+ 
+ 
+ 
+asymptote verticale à la courbe de f. » 
+ퟑ⁺ 
+풙→
+                                  = +∞, donc la droite d'équation 풙 = ퟑ est une 
+퐥퐢퐦  풇(풙)
+Sur la copie, tu rédiges : 
+3−3  0+     +
+푥→3
++
+lim  푓(푥)=   = =+ → Asymptote verticale en x = 3. 
+2×9−1 17
+dénominateur ) 
+Étape 2 : Chercher la limite en 풙 = ퟑ (valeur qui annule le 
+oblique. 
+d'asymptote horizontale, mais cherchons une asymptote 
+푥
+푥→+∞       푥→+∞       푥→+∞
+lim  푓(푥)=lim    =lim  2푥=+ → Pas 
+2푥
+2
+Étape 1 : Chercher les limites en +∞ et −∞ 
+푥−3
+Soit        Étudier les branches infinies. 
+푓(푥)=   
+2푥 −1
+2
+   Exemple type BAC :  
+= ax + b 
+d'équation y 
+(ax+b)] = 0                 droite oblique                                   oblique 
+lim x→+∞ [f(x) −  La courbe se rapproche d'une   Asymptote 
+x = a 
+droite verticale                                 verticale en 
+lim x→a f(x) = ±∞       La courbe 'explose' en a →    Asymptote 
+----------------Page (101) Break----------------
+                                                                                                                  
+103 
+ 
+ 
+continuité → appliquer le TVI. 
+toujours : calculer les limites aux bornes → déduire la 
+équation f(x) = k a une solution sur un intervalle, le chemin est 
+continuité → TVI.Au BAC, si on te demande de montrer qu'une 
+utilises souvent les limites. C'est une chaîne : limites → 
+le TVI, tu dois d'abord démontrer la continuité —  et pour ça, tu 
+Le TVI s'applique aux fonctions continues. Donc avant d'utiliser 
+Le Grand Frère : 
+rapport avec les limites ? 
+Et le Théorème des Valeurs Intermédiaires, c'est quoi le 
+a. 
+Si l'une de ces 3 conditions manque   → f n'est PAS continue en 
+→  푙푖푚 푥→ 푎 푓(푥) = 푓(푎) (la limite est égale à la valeur)
+ 
+→  푙푖푚 푥→ 푎 푓(푥) existe (et est un nombre réel L)
+ 
+→  f est définie en a (f(a) existe)
+ 
+réunies :
+ 
+f est continue en a si et seulement si les 3 conditions sont 
+   Définition (à connaître par cœur) :
+ 
+aux limites. Voici la définition que tu dois connaître : 
+La continuité d'une fonction en un point a est liée directement 
+Les limites et la continuité  
+----------------Page (102) Break----------------
+                                                                                                                  
+104 
+ 
+ 
+formé !" 
+au BAC, assieds-toi, et montre-leur que Le Grand Frère t'a bien 
+d'EDUCTOME. Tu as la technique, tu as la ruse, et tu as le cœur. Va 
+Le Grand Frère : "Tu es plus qu'un Major, petit. Tu es un guerrier 
+sorcellerie pour moi. Je peux dire que je suis un Major ?"  
+"Vieux père, je me sens prêt. Les limites là, ce n'est plus de la 
+     La confiance finale 
+3 phrases → points assurés. C'est mécanique.
+ 
+un réel c ∈ [1 ; 3] tel que f(c) = 0. »
+ 
+« Par le Théorème des Valeurs Intermédiaires, il existe au moins 
+Étape 3 :
+ 
+0 est compris entre f(1) et f(3). »
+ 
+« f(1) = ... et f(3) = ... Or f(1) et f(3) sont de signes opposés, donc 
+Étape 2 :
+ 
+/ fraction sans pôle sur cet intervalle / etc.]. »
+ 
+« f est continue sur [1 ; 3] car elle est définie comme [polynôme 
+Étape 1 :
+ 
+'Montrer que l'équation f(x) = 0 a une solution sur [1 ; 3]' :
+ 
+   Structure type au BAC —   
+----------------Page (103) Break----------------
+                                                                                                                  
+105 
+ 
+ 
+calme. Respire. Aie confiance en ta tête.   
+Le BAC sera une formalité si tu gardes cette rigueur et ce 
+calculer des aires). 
+la courbe monte ou descend) et pour les  Intégrales  (pour 
+suite. Les limites vont te servir pour les Dérivées  (pour savoir où 
+Maintenant, tu as les fondations solides pour construire la 
+cœur. C'est ça la méthode EDUCTOME.  
+Les limites ne te font plus peur. Tu as compris , pas appris par 
+•    L'infini n'est pas un monstre, c'est juste une direction. 
+arbitrer en changeant la forme des joueurs. 
+•    Une forme indéterminée, c'est juste un match qu'il faut 
+•    Une limite, c'est regarder le terminus du voyage. 
+Tu as compris que : 
+de mouvement, de gbaka qui avance ou de prix au marché.   
+cette flèche →. Aujourd'hui, tu sais que ce n'est qu'une histoire 
+début. Souviens-toi de tes premières frayeurs face à ce  푙푖푚 et 
+Si tu as bien travaillé ce livre, tu n'es plus le même élève qu'au 
+Champion(ne),  
+  CONCLUSION 
+----------------Page (104) Break----------------
+                                                                                                                  
+106 
+푘/푥  quand  푥→ +∞                                          Direct 
+0 
+Type de limite                   Résultat               Technique si FI 
+ 
+N'existe pas        −∞ (en 0+) 
+ln푥(퐿표푔)                  +∞ 
+0                  1 
+푒푥(퐸푥푝표)                  +∞ 
+√푥                                               N'existe pas        0 
++∞ 
+−∞ (en 0−) 
+푥
+ 
+0                             0                  +∞ (en 0+) 
+1
+0 
+푥3                        +∞                          −∞ 
+0 
+푥2                        +∞                          +∞ 
+Fonction 풇(풙)      Limite en +∞         Limite en −∞        Limite en ퟎ 
+Formulaire des limites usuelles (À copier -coller dans ta tête !)
+A                                                                               
+ ANNEXES  
+EDUCTOME.  
+Je crois en toi !                                                                      Ton grand frère 
+t'attend au quartier pour fêter ça !" 
+concentré, sois vif, et ramène-nous la mention. On 
+est devant toi, mais la solution est déjà dans ta tête. Sois 
+         "Petit, le jour J là, faut pas 'gnan' (avoir peur). Le sujet 
+  À Retenir 
+----------------Page (105) Break----------------
+                                                                                                                  
+107 
+                                                     
+푥→0+
+•     lim푥ln푥=0 (푥 gagne et tire vers 0) 
+푥→+∞
+푥
+•      lim  =0 (푥 gagne)  
+ln푥
+푥→+∞
+푥
+•      lim  =+ (푒푥 gagne)  
+푒
+푥
+C'est la loi du plus fort : 
+  Les Croissances Comparées (En   +∞ uniquement)   
+comparées  
++∞ 
+푙푛(푥) vs 푥ⁿ quand  푥→  푥ⁿ gagne              Croissances 
+comparées  
+푒ˣ vs 푥ⁿ quand  푥→ +∞     푒ˣ gagne               Croissances 
+À calculer             Factoriser par chef 
+(∞ − ∞) 
+À calculer             Duel des chefs 
+(∞/∞) 
+(0/0) en a                           À calculer             Factoriser 
+dénominateur  
+푎⁺ 
+1/(푥−푎)  quand  푥→           Signe du 
++∞ 
+푥ⁿ  quand  푥→ +∞                                             Direct 
++∞ 
+----------------Page (106) Break----------------
+                                                                                                                  
+108 
+ 
+ 
+ 
+ 
+ramener à une autre forme.  
+mettre au même dénominateur)   pour se 
+TRANSFORMER   l'écriture (développer, 
+0 ×∞ 
+conjuguée . 
+Si racines carrées : Expression 
+nombre dérivé.  
+0
+ 
+FACTORISER  par (푥− 푎) ou utiliser le 
+0
+respectifs et simplifier. 
+dénominateur par  leurs "Chefs" 
+∞
+ 
+FACTORISER  numérateur et 
+∞
+degré (le "Chef"). 
+FACTORISER  par le terme de plus haut 
+∞ −  ∞ 
+(FI) 
+Indéterminée  Technique   
+Forme 
+Utilise la technique associée. 
+Si tu tombes sur ça, INTERDIT DE CONCLURE DIRECTEMENT !   
+Indéterminées (FI)  
+B. Tableau récapitulatif des Formes 
+----------------Page (107) Break----------------
+                                                                                                                  
+109 
+                                                     
+Fin de l'Ebook. 
+ 
+erreur ! 
+s'arrête à 3, tu sais immédiatement que tu as fait une 
+limite infinie mais que tu vois sur l'écran que la courbe 
+◦     Pourquoi ? Pour VOIR  l'asymptote. Si tu calcules une 
+Trace les fonctions de tes exercices. 
+comme  GeoGebra  ou Desmos  (gratuites sur téléphone). 
+•    Applications graphiques :  Utilise une application 
+problème d'analyse. 
+Fais uniquement la partie "Calcul de limites" de chaque 
+années de ton pays (Côte d'Ivoire, Sénégal, Cameroun). 
+•    Annales du BAC :  Prends les sujets des 3 dernières 
+solution. C'est le meilleur test. 
+•    Refaire les exercices du Chapitre 5 sans regarder la 
+Pour t'entraîner encore plus, voici ce que tu peux faire : 
+C. Ressources pour aller plus loin  
+----------------Page (108) Break----------------
+                                                                                                                  
+110 
+•    Photocopie pour autrui  
+•    Publication en ligne 
+•    Revente ou distribution gratuite 
+•    Partage avec d'autres élèves  
+  UTILISATION INTERDITE : 
+•    Annotations et surlignages personnels  
+•    Impression d'UNE copie papier pour usage personnel   
+•    Lecture personnelle sur vos appareils 
+: 
+     UTILISATION AUTORISÉE 
+Les contrevenants s'exposent à des poursuites  judiciaires 
+est STRICTEMENT INTERDIT  
+•    Le partage sur WhatsApp, Telegram ou réseaux sociaux 
+•    Toute reproduction, distribution ou revente est INTERDITE 
+•    L'achat donne droit à un usage PERSONNEL uniquement   
+d'auteur  
+•    Ce document est  protégé par les lois sur le droit 
+     AVERTISSEMENT LÉGAL :  
+ 
+Ce document est la propriété exclusive de EDUCTOME  
+                          
+ DROITS D'AUTEUR ET UTILISATION
+ 
+Tome 1 | Terminale C & D | © 2025  
+EDUCTOME - COMPRENDRE LES LIMITES  
+----------------Page (109) Break----------------
+                                                                                                                  
+111 
+Merci de respecter le travail de l'auteur !       
+ 
+Email : info.eductome@gmail.com   
+WhatsApp   : 07 99 50 63 00 
+Pour toute question sur les droits d'utilisation : 
+     CONTACT :  
+----------------Page (110) Break----------------

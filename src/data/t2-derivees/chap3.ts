@@ -1,0 +1,367 @@
+// src/data/t2-derivees/chap3.ts
+import { Chapitre } from '../../types/course';
+
+export const chapitre2: Chapitre = {
+  id: 't2-chap3',
+  titre: 'Comprendre les Dérivées comme un Pro',
+  duree: 35,
+  niveau: 'BASE',
+  xpGain: 60,
+  gratuit: false,
+  objectifs: [
+    'Saisir la définition mathématique et concrète du nombre dérivé',
+    'Visualiser la différence entre vitesse moyenne et vitesse instantanée',
+    'Maîtriser la formule de l\'équation d\'une tangente et savoir l\'appliquer',
+    'Dresser et interpréter un tableau de variations complet grâce au signe de la dérivée',
+    'Identifier les 4 situations de dérivabilité et comprendre le lien avec la continuité',
+  ],
+  sections: [
+    {
+      id: 's1',
+      titre: '2.1 C\'est quoi une dérivée ? L\'explication qu\'on te cache',
+      blocs: [
+        {
+          type: 'text',
+          id: 'b1-accroche',
+          contenu: 'Champion(ne), voici le secret le mieux gardé de l\'analyse : avant de calculer des dérivées au km, prenons 5 minutes pour comprendre ce qu\'elles mesurent réellement dans la vraie vie.',
+        },
+        {
+          type: 'recap',
+          id: 'b1',
+          contenu: "Maintenant que tu as tes outils bien affûtés (grâce au Chapitre 1), on va pouvoir entrer dans le vif du sujet. On va comprendre CE QU'EST vraiment une dérivée. Trop d'élèves appliquent des formules machinalement sans jamais saisir ce qui se cache derrière. Résultat ? Au moindre exercice un peu original au BAC, c'est la panique. Ici, on va d'abord visualiser la chose, la comprendre avec des images de chez nous, avant même de faire le moindre calcul compliqué. Tu es prêt, champion ? Allons-y !",
+        },
+        {
+          type: 'warning',
+          id: 'b2',
+          contenu: "Tu te souviens du taux d'accroissement vu dans le chapitre précédent ? C'est lui qui donne naissance à la dérivée. Mathématiquement, le nombre dérivé d'une fonction $f$ en un point $a$, noté $f'(a)$, est défini par cette formule fondamentale :",
+        },
+        {
+          type: 'math',
+          id: 'b3-formule-def',
+          formule: "f'(a) = \\lim_{x \\to a} \\frac{f(x) - f(a)}{x - a}",
+          explication: "Ne fuis pas en voyant cette formule ! On va la décortiquer mot à mot, élément par élément, pour que tu voies à quel point c'est logique.",
+        },
+        {
+          type: 'recap',
+          id: 'b4',
+          contenu: "• Le numérateur : $f(x) - f(a)$ : Cela représente la variation de la variable dépendante (l'axe des $y$). C'est la différence de \"hauteur\" ou d'arrivée entre ton point de départ et ton point d'arrivée.\n\n• Le dénominateur : $x - a$ : Cela représente la variation de la variable indépendante (l'axe des $x$). C'est la différence de distance horizontale ou de temps écoulé.\n\n• Le quotient : $\\frac{f(x)-f(a)}{x-a}$ : C'est ce qu'on appelle le taux de variation moyen. C'est une moyenne calculée sur un intervalle.\n\n• La limite : $\\lim_{x \\to a}$ : C'est ici que la magie opère. Au lieu de regarder une moyenne sur une grande distance, on \"zoom\" à l'extrême. On rapproche $x$ de $a$ jusqu'à ce que la distance entre les deux devienne microscopique (presque zéro). La moyenne devient alors une valeur instantanée ou exacte en ce point précis. Si cette limite existe et donne un nombre réel fini, c'est ce nombre qu'on appelle $f'(a)$.",
+        },
+        {
+          type: 'recap',
+          id: 'b4-recap',
+          titre: 'Ce qu\'il faut retenir de la définition',
+          contenu: [
+            '✅ Le taux d\'accroissement mesure un changement MOYEN.',
+            '✅ La limite fait tendre l\'intervalle vers ZÉRO pour obtenir un changement INSTANTANÉ.',
+            '✅ Le résultat f\'(a) est un nombre réel précis appelé le nombre dérivé.',
+          ],
+        },
+        {
+          type: 'analogy',
+          id: 'b5-analogie-gbaka',
+          titre: 'B. L\'ANALOGIE DU GBAKA (La vitesse instantanée)',
+          contenu: "Imagine que tu prends un gbaka (minicar) à la Gare Nord d'Adjamé pour te rendre au campus de Cocody. Appelons $t$ le temps (en heures) et $f(t)$ la position exacte de ton gbaka (la distance parcourue en kilomètres).\n\nLe taux d'accroissement (La Vitesse Moyenne) : Si tu quittes Adjamé à $t = 0$ et que tu arrives au campus à $t = 0,5$ heure (30 minutes) après avoir parcouru $15$ km. Ta vitesse moyenne est de $\\frac{15-0}{0,5-0} = 30$ km/h. Ça, c'est le quotient global. C'est une moyenne. Mais tu sais très bien que le chauffeur n'a pas roulé à 30 km/h tout le long ! Il a freiné au carrefour, il a accéléré sur la voie expresse, il a évité un nid-de-poule.\n\nLa Dérivée (La Vitesse Instantanée) : Supposons qu'au bout de 15 minutes de trajet (instant $t_0$), le gbaka passe devant le Lycée Classique et qu'un radar de police flashe le véhicule à cet instant précis. Le radar ne calcule pas une moyenne sur tout le trajet. Il calcule la vitesse à la fraction de seconde près !",
+          conceptMath: "La vitesse instantanée $v(t_0)$ est la limite des vitesses moyennes lorsque l'intervalle de temps tend vers zéro : $v(t_0) = \\lim_{t \\to t_0} \\frac{f(t)-f(t_0)}{t-t_0} = f'(t_0)$. La dérivée de la position, c'est la vitesse !",
+        },
+        {
+          type: 'recap',
+          id: 'b6',
+          contenu: "Exemple chiffré concret :\nSupposons que la position de ton gbaka soit donnée par la fonction $f(t) = 50t^2$ (où $t$ est en heures et $f(t)$ en kilomètres). Quelle est la vitesse exacte du gbaka à l'instant $t_0 = 1$ heure ?\n\n1. Position à $t = 1$ : $f(1) = 50(1)^2 = 50$ km.\n2. Position à un instant $t$ : $f(t) = 50t^2$.\n3. Taux d'accroissement : $\\frac{f(t)-f(1)}{t-1} = \\frac{50t^2-50}{t-1}$.\n4. Factorisation (en utilisant les outils du Chap. 1) : $\\frac{50(t^2-1)}{t-1} = \\frac{50(t-1)(t+1)}{t-1} = 50(t + 1)$.\n5. Passage à la limite : $\\lim_{t \\to 1} 50(t + 1) = 50(1 + 1) = 100$.",
+        },
+        {
+          type: 'exercise',
+          id: 'ex-vitesse-gbaka',
+          niveau: 'BASE',
+          enonce: 'En utilisant l\'exemple chiffré précédent où $f\'(t) = \\lim_{t \\to 1} 50(t+1)$, valide la conclusion mathématique. Quelle est la vitesse instantanée du gbaka à l\'instant exact $t = 1$ heure ?',
+          etapes: [
+            'Étape 1 : Reprends l\'expression simplifiée du taux d\'accroissement : $50(t + 1)$.',
+            'Étape 2 : Fais tendre $t$ vers $1$ en remplaçant $t$ par $1$ dans l\'expression.',
+            'Étape 3 : Calcule le résultat : $50 \\times (1 + 1) = 50 \\times 2 = 100$.',
+          ],
+          reponse: '100',
+          conseil: 'Le nombre dérivé $f\'(1) = 100$ signifie qu\'à cette fraction de seconde précise, le compteur du gbaka affichait 100 km/h.',
+        },
+        {
+          type: 'analogy',
+          id: 'b7-analogie-pente',
+          titre: 'C. L\'ANALOGIE DU MONT TONPKUI (La pente)',
+          contenu: "Imagine que tu fasses une randonnée pour grimper le Mont Tonpkui, dans la région de Man. La courbe de la montagne représente ta fonction $f(x)$. L'axe horizontal, c'est la distance parcourue sur la carte, et l'axe vertical, c'est ton altitude. La dérivée $f'(a)$, c'est la pente exacte du sol sous tes pieds à l'instant précis où tu te trouves à la position $a$.\n\n• Si c'est plat, tu ne forces pas, la pente est nulle : la dérivée vaut 0.\n• Si ça grimpe doucement, la pente est faible : la dérivée est un petit nombre positif (ex: 0,5).\n• Si tu es face à un mur qui te fait transpirer, la pente est raide : la dérivée est un grand nombre positif (ex: 5).\n• Si tu redescends vers la vallée, la pente plonge : la dérivée est négative (ex: -2).",
+          conceptMath: "Le nombre dérivé $f'(a)$ traduit l'effort que tu devez fournir pour avancer à ce point précis ! C'est le coefficient directeur (l'inclinaison) de la courbe représentative en ce point.",
+        },
+        {
+          type: 'analogy',
+          id: 'b8-analogie-bidon',
+          titre: '🚰 L\'ANALOGIE DU BIDON D\'EAU (Le débit instantané)',
+          contenu: "Tu remplis un grand bidon d'eau au robinet. Au début, le débit est fort, l'eau coule vite. Puis le robinet faiblit et l'eau coule de plus en plus doucement. La quantité d'eau dans le bidon, c'est ta fonction $f(t)$. Le débit à un instant précis — combien de litres coulent par seconde À CET INSTANT — c'est la dérivée $f'(t)$.\n\n• Si le débit est fort ($f'(t)$ grand), le bidon se remplit vite.\n• Si le débit est faible ($f'(t)$ petit), ça met du temps.\n• Si le robinet est fermé ($f'(t) = 0$), le niveau ne bouge plus.",
+          conceptMath: "En mathématiques : Quantité d'eau accumulée dans le bidon = $f(t)$ ; Débit instantané à l'instant t = $f'(t)$.",
+        },
+        {
+          type: 'dialogue',
+          id: 'b9-dialogue-pente',
+          pf: "Vieux père, y a un truc qui m'échappe. En classe de troisième, on m'a fatigué avec les droites $y = ax + b$, et on m'a dit que $a$, c'était la pente. Et là, en Terminale, tu me dicte que c'est la dérivée qui est la pente. Pourquoi changer de nom pour embrouiller les gens ? Dérivée, pente... c'est la même chose non ?",
+          gf: "C'est une excellente question, petit(e) ! Laisse-moi t'éclairer. Pour une droite (ta fonction affine $y = ax + b$), la pente est la même partout. Si tu es sur une route droite qui monte de 2 mètres chaque fois que tu avances d'1 mètre, l'inclinaison ne change jamais. Ta pente est de 2, du début à la fin. Pas besoin de calculs compliqués.",
+        },
+        {
+          type: 'dialogue',
+          id: 'b10-dialogue-pente-suite',
+          pf: "D'accord, et pour une courbe alors ?",
+          gf: "Voilà la différence ! Une courbe (comme le Mont Tonpkui ou une parabole $x^2$), ça change d'inclinaison tout le temps ! Au début tu descends, après c'est plat, ensuite tu montes un peu, puis tu montes très fort. Tu ne peux pas donner UN SEUL nombre pour décrire la pente de toute la montagne. La pente varie à chaque pas !",
+        },
+        {
+          type: 'dialogue',
+          id: 'b11-dialogue-pente-fin',
+          pf: "Ahhh... Donc la pente dépend de l'endroit exact où je me trouve ($x$) ?",
+          gf: "Exactement ! La dérivée, c'est l'outil mathématique qui te permet de calculer la pente en chaque point spécifique de la courbe. Le nombre dérivé $f'(a)$, c'est la pente au point $a$. Et la fonction dérivée $f'(x)$, c'est la formule magique qui te crache la pente peu importe le point $x$ que tu lui donnes. La dérivée, c'est la version 'évoluée' de la pente pour les courbes ! Lissa !",
+        },
+        {
+          type: 'warning',
+          id: 'b12-transition',
+          contenu: 'Puisque nous avons compris l\'image géométrique de la pente, voyons maintenant comment traduire cela sur un graphique réel, avec l\'outil préféré du BAC : la tangente.',
+        },
+      ],
+    },
+    {
+      id: 's2',
+      titre: '2.2 Interprétation Graphique — Tangente et Sens de Variation',
+      blocs: [
+        {
+          type: 'text',
+          id: 'b13-accroche',
+          contenu: 'Champion(ne), l\'équation de la tangente est une question cadeau qui tombe à 95% au BAC. Découvrons le protocole pour ne plus jamais rater ce demi-point.',
+        },
+        {
+          type: 'text',
+          id: 'b13',
+          contenu: "Maintenant qu'on a l'image en tête, on va la traduire sur un graphique (le plan cartésien), car c'est là que le prof t'attend au tournant au BAC. Visuellement, la tangente à une courbe en un point $A$, c'est la ligne droite qui \"colle\" le mieux à la courbe autour de ce point, sans la transpercer brutalement. Elle vient juste \"effleurer\" ou \"embrasser\" la courbe.",
+        },
+        {
+          type: 'tip',
+          id: 'b14',
+          titre: '💡 LE LIEN MAGIQUE',
+          contenu: [
+            'La pente de cette droite tangente au point d\'abscisse a est EXACTEMENT ÉGALE au nombre dérivé f\'(a).',
+            'Puisque la tangente est une droite, elle possède une équation linéaire.',
+          ],
+        },
+        {
+          type: 'rule',
+          id: 'b15-regle-tangente',
+          titre: '📌 RÈGLE D\'OR : ÉQUATION DE LA TANGENTE',
+          contenu: [
+            'L\'équation de la tangente (T) à la courbe représentative de f au point d\'abscisse a est :',
+            '$$y = f\'(a)(x - a) + f(a)$$',
+            'Cette formule est blindée, elle doit être sue par cœur comme les paroles de ton morceau préféré !',
+          ],
+        },
+        {
+          type: 'text',
+          id: 'b16',
+          contenu: "Exemple d'application ultra-classique :\nSoit la fonction $f(x) = x^2$. Déterminons l'équation de la tangente au point d'abscisse $a = 3$. (On admet ici que la fonction dérivée de $x^2$ est $f'(x) = 2x$, ce qu'on apprendra à calculer à la vitesse de l'éclair au chapitre suivant).\n\n• Étape 1 : On calcule $f(a)$, c'est-à-dire l'image de 3 : $f(3) = 3^2 = 9$. Le point de contact est donc $A(3; 9)$.\n• Étape 2 : On calcule le nombre dérivé $f'(a)$ : $f'(3) = 2 \\times 3 = 6$. La pente de notre tangente est donc 6.\n• Étape 3 : On applique la formule blindée : $y = f'(3)(x - 3) + f(3) \\implies y = 6(x - 3) + 9 \\implies y = 6x - 18 + 9 \\implies y = 6x - 9$.",
+        },
+        {
+          type: 'exercise',
+          id: 'ex-tangente-calc',
+          niveau: 'BASE',
+          enonce: 'Entraîne-toi sur le cas vu ci-dessus. Si $y = 6(x - 3) + 9$, effectue le développement final. Quelle est l\'expression réduite sous la forme $ax + b$ ?',
+          etapes: [
+            'Étape 1 : Distribue le nombre 6 dans la parenthèse : $6 \\times x - 6 \\times 3 = 6x - 18$.',
+            'Étape 2 : Ajoute le terme restant : $6x - 18 + 9$.',
+            'Étape 3 : Réduis les nombres constants : $-18 + 9 = -9$. Tu obtiens $6x - 9$.',
+          ],
+          reponse: '6x - 9',
+          conseil: 'Fais attention aux signes lors du développement, un -18 + 9 mal calculé gâche tout le travail.',
+        },
+        {
+          type: 'text',
+          id: 'b17',
+          contenu: "B. Sens de variation et signe de $f'$\nC'est l'utilité numéro 1 des dérivées dans tout le programme de Terminale. La dérivée est le \"détecteur de mensonges\" de ta fonction. En étudiant simplement le SIGNE (positif ou négatif) de la dérivée, tu connais la DIRECTION (montée ou descente) de la courbe. C'est un théorème fondamental que tu devez graver dans ton esprit :",
+        },
+        {
+          type: 'rule',
+          id: 'b18-theoreme-signe',
+          titre: '📌 THÉORÈME : SIGNE ET VARIATION',
+          contenu: [
+            '• Si f\'(x) > 0 sur un intervalle, alors la fonction f est strictement CROISSANTE sur cet intervalle. La pente est positive, on monte !',
+            '• Si f\'(x) < 0 sur un intervalle, alors la fonction f est strictement DÉCROISSANTE sur cet intervalle. La pente est négative, on descend !',
+            '• Si f\'(x) = 0 sur un intervalle, la fonction est constante. C\'est du plat parfait.',
+          ],
+        },
+        {
+          type: 'text',
+          id: 'b19',
+          contenu: "Et que se passe-t-il si $f'(x) = 0$ juste en un point précis $c$ ? Cela signifie qu'en ce point, la tangente est parfaitement horizontale (parallèle à l'axe des abscisses). Très souvent, cela correspond à un Extremum (un sommet ou un creux) :\n\n• Si la dérivée s'annule en passant du positif (+) au négatif (−), tu as grimpé puis tu redescends : c'est un Maximum relatif (le sommet de la colline).\n• Si la dérivée s'annule en passant du négatif (−) au positif (+), tu as plongé puis tu remontes : c'est un Minimum relatif (le fond du cratère).",
+        },
+        {
+          type: 'text',
+          id: 'b20',
+          contenu: "Exemple complet de lecture et d'étude :\n\nÉtape 1 : Trouver où la dérivée s'annule. Si l'on trouve que la dérivée d'une fonction est $f'(x) = 2x - 4$, la première étape consiste à déterminer la valeur pour laquelle elle s'annule (le point de bascule). Pour cela, on résout l'équation : $2x - 4 = 0 \\implies 2x = 4 \\implies x = 2$.\n\nÉtape 2 : Étudier le signe selon les intervalles.\n• Pour $x < 2$ : Prenons par exemple $x = 0$. On a $f'(0) = -4$. Le résultat est négatif. On en déduit que $f'(x) < 0$ sur l'intervalle $]-\\infty; 2[$.\n• Pour $x > 2$ : Prenons par exemple $x = 3$. On a $f'(3) = 2 \\times 3 - 4 = 2$. Le résultat est positif. On en déduit que $f'(x) > 0$ sur l'intervalle $]2; +\\infty[$.",
+        },
+        {
+          type: 'table',
+          id: 'b21-tableau-variation',
+          titre: 'Étape 3 : Le Tableau de Variation (L\'outil du Major)',
+          headers: ['x', '$-\\infty$', '2', '$+\\infty$'],
+          rows: [
+            ['Signe de f\'(x)', '', '−  |  0  |  +', ''],
+            ['Variations de f(x)', '↘ (décroît)', 'f(2) [Minimum]', '↗ (croît)'],
+          ],
+        },
+        {
+          type: 'text',
+          id: 'b22',
+          contenu: "Interprétation pas-à-pas du tableau :\n1. La flèche qui descend (↘) : Signifie que la fonction est décroissante sur l'intervalle $]-\\infty; 2[$.\n2. La flèche qui monte (↗) : Signifie que la fonction est croissante sur l'intervalle $]2; +\\infty[$.\n3. Le point de bascule : En $x = 2$, la dérivée s'annule et change de signe (elle passe de négatif à positif). Ce changement indique que la fonction atteint un minimum.\n\nConclusion : La fonction $f$ admet un minimum atteint en $x = 2$. La valeur de ce minimum est $f(2)$. Graphiquement, cela correspond à un point où la courbe se stabilise et où la tangente est horizontale (elle \"se repose\") avant de changer de sens.",
+        },
+        {
+          type: 'text',
+          id: 'b23-transition',
+          contenu: 'Le lien entre calcul et graphique est désormais scellé dans ton esprit. Mais fais attention, champion(ne) ! Ce ne sont pas toutes les fonctions qui ont le privilège d\'être lisses et dérivables partout. Analysons les points de vigilance.',
+        },
+      ],
+    },
+    {
+      id: 's3',
+      titre: '2.3 Les 4 Situations de Dérivabilité à Connaître',
+      blocs: [
+        {
+          type: 'text',
+          id: 'b24-accroche',
+          contenu: 'Attention, zone de pièges ! Une courbe peut avoir des cassures ou des murs verticaux. Découvrons les 4 visages de la dérivabilité.',
+        },
+        {
+          type: 'text',
+          id: 'b24',
+          contenu: "Attention champion, ce n'est pas parce qu'une fonction existe qu'elle est forcément \"dérivable\" (c'est-à-dire qu'elle possède une tangente claire) partout. Il y a des pièges à éviter. Pour qu'une fonction soit dérivable en un point, il faut que sa courbe y soit \"lisse\", sans cassure, et qu'on puisse y poser une règle de façon unique. Voici les 4 cas de figure que tu vas rencontrer dans ta vie de lycéen :",
+        },
+        {
+          type: 'text',
+          id: 'b25',
+          contenu: "• CAS 1 : Fonction dérivable partout (La courbe lisse) : C'est le cas idéal, celui des fonctions polynômes (comme $x^2, x^3$...). La courbe est belle, arrondie, lisse comme l'autoroute du Nord fraîchement bitumée. Tu peux tracer une tangente parfaite en chaque point. Mathématiquement, la limite du taux d'accroissement existe et donne un nombre fini unique.",
+        },
+        {
+          type: 'text',
+          id: 'b26',
+          contenu: "• CAS 2 : Fonction non dérivable en un point (Le point anguleux) : Pense à un dos d'âne (gendarme couché) fait de briques cassées avec une pointe aiguë au sommet. À ce sommet pointu, ta voiture va cogner fort. Mathématiquement, c'est ce qui se passe par exemple avec la fonction Valeur Absolue $f(x) = |x|$ au point $x = 0$.\n  - Si tu t'approches par la gauche (nombres négatifs), la pente est de -1. La dérivée à gauche vaut -1.\n  - Si tu t'approches par la droite (nombres positifs), la pente est de +1. La dérivée à droite vaut +1.\nComme la dérivée à gauche est différente de la dérivée à droite, les mathématiques disent : « On n'arrive pas à se mettre d'accord, donc la fonction n'est pas dérivable en ce point ! ». Graphiquement, ça fait une cassure, un pic. On appelle ça un point anguleux. Tu y as deux \"demi-tangentes\".",
+        },
+        {
+          type: 'text',
+          id: 'b27',
+          contenu: "• CAS 3 : Fonction non dérivable (La tangente verticale) : Prends la fonction racine carrée $f(x) = \\sqrt{x}$ en $x = 0$. Si on calcule la limite du taux d'accroissement en 0, on tombe sur $+\\infty$ (plus l'infini). La limite n'est pas un nombre fini. La fonction n'est donc pas dérivable en 0. Graphiquement, que signifie une pente infinie ? Ça signifie que la courbe démarre comme un mur totalement vertical ! La tangente existe visuellement, mais elle est verticale (parallèle à l'axe des ordonnées). Comme une droite verticale n'a pas de coefficient directeur calculable (division par zéro impossible), la dérivée n'existe pas.",
+        },
+        {
+          type: 'text',
+          id: 'b28',
+          contenu: "• CAS 4 : Fonction non continue (Pas de route, pas de pente) : C'est le pont coupé. Si une fonction a un \"trou\" ou un \"saut\" (elle n'est pas continue), il est logiquement impossible d'y tracer une tangente. Pour avoir une pente, il faut d'abord que le chemin existe ! Si tu dois lever ton stylo pour tracer la courbe, oublie la dérivée à cet endroit, elle n'existe pas.",
+        },
+        {
+          type: 'dialogue',
+          id: 'b29-dialogue-sage',
+          pf: "Vieux père, mon professeur m'a fait un jeu de mots bizarre. Il a dit : 'Toute fonction dérivable est continue, mais toute fonction continue n'est pas forcément dérivable'. Ça ressemble à un proverbe de sage au village, mais je n'ai rien compris.",
+          gf: "Ah, le fameux piège classique des professeurs ! C'est très simple pourtant. Visualise les choses. Première partie de la phrase : 'Toute fonction dérivable est continue'. Ça veut dire que si tu peux calculer une pente (dérivée) sur un bout de route, c'est que la route existe et qu'elle n'est pas coupée en deux. Logique, non ? S'il y a une pente, c'est qu'il y a du goudron (continuité).",
+        },
+        {
+          type: 'dialogue',
+          id: 'b30-dialogue-sage-suite',
+          pf: "Oui, ça je valide. Sans goudron, on ne peut pas parler de l'inclinaison du goudron.",
+          gf: "Bien. Maintenant, deuxième partie : 'Toute fonction continue n'est pas forcément dérivable'. Repense au CAS 2 qu'on vient de voir : le point anguleux (comme la fonction $|x|$ en 0). La courbe est attachée, continue. Tu peux la tracer sans lever le stylo. Le goudron est là. Mais à la pointe aiguë, la pente est indéfinissable parce qu'elle est brisée brutalement. Tu as une pente à gauche et une pente différente à droite.",
+        },
+        {
+          type: 'dialogue',
+          id: 'b31-dialogue-sage-fin',
+          pf: "Je capte ! Donc, être continue (la route existe), c'est le minimum syndical exigé. Mais pour être dérivable, il faut être un niveau au-dessus : la route doit exister ET elle doit être bien lisse, sans pointe piquante et sans mur vertical !",
+          gf: "Tu deviens un vrai mathématicien, champion ! Au BAC, si on te demande d'étudier la dérivabilité en un point $x_0$, tu dois calculer la limite du taux d'accroissement à gauche et à droite. Si tu trouves la même valeur finie des deux côtés, c'est validé, c'est dérivable ! Si les valeurs sont différentes, ou que ça donne l'infini, c'est mort, mais ça te donne quand même des indices précieux sur la géométrie de la courbe.",
+        },
+        {
+          type: 'tip',
+          id: 'b32-motivation-fin',
+          titre: 'Grand Frère te dit',
+          contenu: [
+            'Te voilà maintenant un expert de la philosophie de la dérivée !',
+            'Tu sais que c\'est une histoire de mouvement, de vitesse instantanée, et d\'inclinaison.',
+            'Maintenant que tu as capté l\'idée visuelle, il est temps d\'apprendre à faire tourner le moteur.',
+            'Dans le prochain chapitre, on va passer au calcul pur et rapide grâce aux formules magiques. On avance ensemble, on va gâter le coin !',
+          ],
+        },
+      ],
+    },
+  ],
+  quiz: [
+    {
+      type: 'quiz',
+      id: 'q1',
+      question: 'Qu\'est-ce que représente concrètement la dérivée seconde ou première d\'une fonction de position par rapport au temps ?',
+      options: [
+        'La distance totale parcourue depuis le point de départ',
+        'Le temps écoulé sur la montre du chauffeur',
+        'La vitesse exacte et instantanée à une fraction de seconde près',
+        'La consommation de carburant du gbaka',
+      ],
+      bonneReponse: 2,
+      explication: 'L\'analogie officielle du gbaka montre que le taux d\'accroissement global donne la vitesse moyenne, tandis que la limite de ce taux (la dérivée) donne la vitesse instantanée mesurée par un radar.',
+    },
+    {
+      type: 'quiz',
+      id: 'q2',
+      question: 'Si tu te trouves sur un chemin parfaitement plat au sommet du Mont Tonpkui, que vaut ta dérivée à cet endroit précis ?',
+      options: [
+        'Elle vaut +5 (pente raide)',
+        'Elle vaut strictement 0 (pente nulle)',
+        'Elle est négative car on est en altitude',
+        'Elle est égale à +∞',
+      ],
+      bonneReponse: 1,
+      explication: 'La dérivée mesure la pente d\'une courbe. Si le sol est complètement horizontal et plat, l\'inclinaison est nulle, donc le nombre dérivé vaut 0.',
+    },
+    {
+      type: 'quiz',
+      id: 'q3',
+      question: 'Quelle est la pente de la droite tangente à la courbe de $f(x) = x^2$ au point d\'abscisse $a = 3$ sachant que $f\'(x) = 2x$ ?',
+      options: [
+        'La pente vaut 3',
+        'La pente vaut 9',
+        'La pente vaut 6',
+        'La pente vaut -9',
+      ],
+      bonneReponse: 2,
+      explication: 'La pente de la tangente au point d\'abscisse a est égale au nombre dérivé $f\'(a)$. Ici, $a = 3$, donc $f\'(3) = 2 \\times 3 = 6$.',
+    },
+    {
+      type: 'quiz',
+      id: 'q4',
+      question: 'Si le signe de la fonction dérivée $f\'(x)$ est strictement négatif (–) sur un intervalle, comment se comporte la courbe ?',
+      options: [
+        'La courbe est strictement croissante (on monte)',
+        'La courbe s\'arrête et fait un trou',
+        'La courbe est strictement décroissante (on descend)',
+        'La courbe est une ligne droite horizontale',
+      ],
+      bonneReponse: 2,
+      explication: 'Le signe de la dérivée dicte le sens de variation. Une dérivée négative signifie une pente descendante, donc la fonction f est strictement décroissante.',
+    },
+    {
+      type: 'quiz',
+      id: 'q5',
+      question: 'Que se passe-t-il graphiquement au niveau du point de rebroussement ou sommet pointu de la fonction valeur absolue $|x|$ en 0 ?',
+      options: [
+        'C\'est une courbe lisse dérivable partout',
+        'C\'est un point anguleux où la dérivée à gauche (-1) est différente de la dérivée à droite (+1), donc non dérivable',
+        'La tangente y est parfaitement verticale',
+        'La route est coupée (fonction discontinue)',
+      ],
+      bonneReponse: 1,
+      explication: 'Le CAS 2 (point anguleux) montre que la fonction est continue (la route existe), mais qu\'à la pointe aiguë, les pentes à gauche et à droite ne sont pas égales. Elle n\'est donc pas dérivable à cet endroit.',
+    },
+    {
+      type: 'quiz',
+      id: 'q6',
+      question: 'Complète la phrase du Grand Frère : \"Toute fonction dérivable est ________, mais toute fonction ________ n\'est pas forcément dérivable.\"',
+      options: [
+        'rationnelle / polynôme',
+        'continue / continue',
+        'abstraite / concrète',
+        'positive / négative',
+      ],
+      bonneReponse: 1,
+      explication: 'S\'il y a une pente, c\'est qu\'il y a du goudron (dérivable ⇒ continue). Mais avoir du goudron ne suffit pas si la route fait une pointe aiguë ou un mur vertical (continue ⇏ dérivable).',
+    },
+  ],
+};

@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1A3557" />
+    <link rel="apple-touch-icon" href="/logo-pwa.png" sizes="192x192" />
     <meta name="pinterest" content="nopin" />
     <title>EDUCTOME — Manuels BAC & BEPC Côte d'Ivoire | Le grand frère qui t'explique</title>
     <meta name="description" content="Manuels scolaires pour lycéens et collégiens ivoiriens. Terminale C, D et 3ᵉ. Comprends avant de calculer, avec la méthode du grand frère. +2000 élèves nous font déjà confiance." />
@@ -43,6 +45,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body>
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('eductome_theme');
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script>
       window.MathJax = {

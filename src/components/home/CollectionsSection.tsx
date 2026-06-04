@@ -26,11 +26,6 @@ export function CollectionsSection() {
           ))}
         </div>
 
-        <ScrollReveal delay={0.3} className="text-center">
-          <CTAButton to="/collections" variant="primary">
-            Voir toutes les collections &rarr;
-          </CTAButton>
-        </ScrollReveal>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { MainLayout } from './components/layout/MainLayout';
+import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Home } from './pages/Home';
 import { Collections } from './pages/Collections';
 import { CollectionDetails } from './pages/CollectionDetails';
@@ -12,17 +12,31 @@ import { BecomeRelay } from './pages/BecomeRelay';
 import { NotFound } from './pages/NotFound';
 import { Quiz } from './pages/Quiz';
 import { ScrollToTop } from './components/layout/ScrollToTop';
+import { Overview as DashboardOverview } from './pages/dashboard/Overview';
+import { ForumHome } from './pages/forum/ForumHome';
+import { ForumThread } from './pages/forum/ForumThread';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { MyCourses } from './pages/dashboard/MyCourses';
+import { Profile } from './pages/dashboard/Profile';
+import { CourseReader } from './pages/dashboard/CourseReader';
+import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
+import { StarterPack } from './pages/dashboard/StarterPack';
+
+import { UserProvider } from './contexts/UserContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <div className="min-h-screen flex flex-col font-poppins">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
+    <UserProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          {/* Public Routes */}
+          <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/collections" element={<Collections />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/collections" element={<Navigate to="/#collections" replace />} />
             <Route path="/collections/:slug" element={<CollectionDetails />} />
             <Route path="/ressources" element={<Resources />} />
             <Route path="/quiz" element={<Quiz />} />
@@ -31,11 +45,23 @@ function App() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/devenir-relais" element={<BecomeRelay />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </BrowserRouter>
+          </Route>
+
+          {/* Private Routes (Espace Élève & Forum) */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<DashboardOverview />} />
+            <Route path="/dashboard/starter-pack" element={<StarterPack />} />
+            <Route path="/dashboard/courses" element={<MyCourses />} />
+            <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
+            <Route path="/dashboard/profile" element={<Profile />} />
+            <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
+            <Route path="/dashboard/ressources" element={<Resources />} />
+            <Route path="/forum" element={<ForumHome />} />
+            <Route path="/forum/thread/:id" element={<ForumThread />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

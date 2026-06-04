@@ -1,3 +1,5 @@
+import { Tome as CourseTome, AnyBlock } from './course';
+
 export interface Tome {
   id: string;
   number?: number;
@@ -39,8 +41,9 @@ export interface TestimonialItem {
 }
 
 export interface PreviewItem {
-  image: string;
+  image?: string;
   caption: string;
+  blocks?: AnyBlock[];
 }
 
 export interface Collection {

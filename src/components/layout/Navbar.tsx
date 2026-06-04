@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, ChevronRight } from 'lucide-react';
+import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, ChevronRight, User } from 'lucide-react';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,13 +34,18 @@ export function Navbar() {
     }, 300); // 300ms pour correspondre à la durée de la transition
   };
 
+  const isLoggedIn = localStorage.getItem('eductome_user_logged_in') === 'true';
+  const lastChapter = localStorage.getItem('eductome_last_chapter_read');
+  const espaceUrl = isLoggedIn ? (lastChapter ? `/dashboard/course/${lastChapter}` : '/dashboard') : '/login';
+
   const navLinks = [
     { name: 'Accueil', path: '/', icon: Home },
-    { name: 'Collections', path: '/collections', icon: BookOpen },
+    { name: 'Nos Manuels', path: '/collections/cles-maths', icon: BookOpen },
     { name: 'Ressources', path: '/ressources', icon: FileText },
     { name: 'À propos', path: '/a-propos', icon: Info },
     { name: 'Blog', path: '/blog', icon: Edit3 },
     { name: 'Devenir Relais', path: '/devenir-relais', icon: HeartHandshake },
+    { name: 'Mon Espace', path: espaceUrl, icon: User },
   ];
 
   const isTransparent = isHome && !scrolled && !isOpen && !isClosing;

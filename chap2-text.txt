@@ -1,0 +1,635 @@
+--- PAGE 15 ---
+
+
+CHAPITRE 2 : COMPRENDRE LES 
+LIMITES COMME UN PRO  
+Maintenant que tu as tes chaussures (les bases), on va 
+apprendre à marcher. Si tu comprends ce chapitre, tu as fait 
+60% du travail pour le BAC.  
+2.1 C'EST QUOI UNE LIMITE ? L'EXPLICATION QU'ON TE CACHE   
+COMPRENDRE LA DIFFÉRENCE  une fois pour toutes  
+IMAGE  = la valeur de f pile au pont 풂 
+Beaucoup d'élèves confondent "calculer une 
+image" et "calculer une limite". Clarifions ça une 
+fois pour toutes ! 
+IMAGE 풇(풂) = Regarder EXACTEMENT au point a 
+C'est comme prendre une PHOTO d'un endroit 
+précis. 
+-    풇(ퟑ) = la valeur de f pile à 풙 = ퟑ 
+-    Si 풙 = ퟑ est INTERDIT (trou, division par 
+0), alors 풇(ퟑ) N'EXISTE PAS ! 
+ 
+16 
+                                                                                                                  
+
+
+--- PAGE 16 ---
+
+
+Exemple concret :  
+풇(풙) = (풙² −  ퟗ)/(풙 −  ퟑ) 
+Essaye de calculer  풇(ퟑ) : 풇(ퟑ) = (ퟗ −  ퟗ)/(ퟑ −  ퟑ) =
+ ퟎ/ퟎ → INTERDIT ! 
+Conclusion : L'image 풇(ퟑ) N'EXISTE PAS. 
+ 
+LIMITE = Regarder AUTOUR du point  풂 
+C'est comme demander : "Si je m'APPROCHE de  풙 = ퟑ,  
+vers quelle valeur je tends ?" 
+Pour la même fonction 풇(풙) = (풙² − ퟗ)/(풙 − ퟑ) : 
+Astuce : On peut SIMPLIFIER avant ! 
+풙² −  ퟗ = (풙 − ퟑ)(풙 + ퟑ) 
+Donc : 풇(풙) = (풙 −  ퟑ)(풙 + ퟑ)/(풙 −  ퟑ) = 풙 + ퟑ  (풔풊 풙 ≠
+ ퟑ) 
+Maintenant, regardons ce qui se passe AUTOUR de 3 :  
+o   x = 2,9 → f(2,9) = 5,9 
+o   x = 2,99 → f(2,99) = 5,99 
+o   x = 2,999 → f(2,999) = 5,999 
+o   x = 3,001 → f(3,001) = 6,001 
+o   x = 3,01 → f(3,01) = 6,01 
+17 
+                                                                                                                  
+
+
+--- PAGE 17 ---
+
+
+o   x = 3,1  → f(3,1) = 6,1 
+On voit clairement que  f(x) s'approche de 6 !  
+En mathématiques :  
+퐥퐢퐦퐟(퐱) = 퐥퐢퐦(퐱+ퟑ) = 6 
+퐱→ퟑ     퐱→ퟑ 
+DONC : La limite existe (= 6) même si f(3) n'existe pas ! 
+TABLEAU COMPARATIF :  
+IMAGE 풇(풂) :  
+•    Valeur EXACTE en  풙 = 풂  
+•    Peut NE PAS EXISTER si a est interdit  
+•    Notation : f(a)  
+LIMITE :   
+•    Valeur vers laquelle on   
+•    Existe MÊME SI le point est interdit  
+•    Notation : 퐥퐢퐦풇(풙) 
+퐱→퐚
+AUTRE EXEMPLE (asymptote) :  
+품(풙) = ퟏ/(풙 −  ퟐ) 
+-    품(ퟐ) n'existe pas (division par 0)  
+-    Mais 퐥퐢퐦퐠(퐱) = +∞ (comportement autour 
+퐱→ퟐ+
+de 2) 
+18 
+                                                                                                                  
+
+
+--- PAGE 18 ---
+
+
+CONCLUSION : Image et limite sont deux concepts 
+DIFFÉRENTS mais COMPLÉMENTAIRES. Ne les confonds 
+jamais ! 
+RÈGLE D'OR  : 
+La limite regarde le COMPORTEMENT AUTOUR du point,  PAS 
+le point lui -même ! 
+" Ah ! Donc la limite peut exister même si la fonction n'est pas définie 
+au point ?"  
+Le Grand Frère :  "EXACTEMENT, petit ! C'est TOUTE la puissance de 
+la limite. Elle regarde le COMPORTEMENT AUTOUR du point, pas le 
+point lui-même. L'image f(a) = la photo exacte. La limite = la 
+tendance autour. Deux choses différentes mais complémentaires 
+!" 
+L'ANALOGIE DU MARCHÉ  
+Une limite te dit la TENDANCE 
+Tu veux acheter un sac d'attiéké au marché d'Adjamé. 
+La négociation commence : 
+–    Tour 1 : Vendeur propose 500F, toi 200F → Écart = 300F 
+–    Tour 2 : Vendeur propose 450F, toi 250F → Écart = 
+200F 
+–    Tour 3 : Vendeur propose 425F, toi 275F → Écart = 150F 
+–    Tour 4 : Vendeur propose 400F, toi 300F → Écart = 100F 
+19 
+                                                                                                                  
+
+
+--- PAGE 19 ---
+
+
+–    Tour 5 : Vendeur propose 375F, toi 325F  → Écart = 50F 
+–    Tour 6 : Vendeur propose 360F, toi 340F  → Écart = 
+20F... 
+CORRESPONDANCE MATHÉMATIQUE :   
+푥 = Numéro du tour de négociation  
+(푥) = L'ÉCART entre vos deux prix  
+limite = Vers quoi tend cet écart   
+Question  : Si vous continuez indéfiniment, vers quoi tend 
+l'écart (quand x  → +∞) ? Réponse  : Vers 0 ! L'écart diminue, 
+diminue, diminue...  
+En maths :   퐥퐢퐦 (écart) = 0 
+풙→+∞
+ATTENTION  - Nuance importante :  
+Est-ce que l'écart devient VRAIMENT 0 à la fin ?Pas 
+forcément !  
+-     Cas 1 : Vous tombez d'accord à 350F  → Écart = 
+0      
+-     Cas 2 : Vous abandonnez la négociation → 
+Écart ≠ 0     
+LA LEÇON MATHÉMATIQUE : 
+Une limite te dit la TENDANCE (vers où tu vas), mais pas si tu 
+y arrives vraiment ! 
+ 
+20 
+                                                                                                                  
+
+
+--- PAGE 20 ---
+
+
+EXEMPLE CONCRET :  
+Fonction :  푓(푥) = 1/푥  Quand x → +∞, f(x) → 0 
+Mais f(x) n'est JAMAIS exactement 0 ! 
+-     f(100) = 0,01 (proche de 0 mais pas 0) 
+-     f(1000) = 0,001 (encore plus proche mais pas 
+0) 
+-     f(10000) = 0,0001 (toujours pas 0 !) 
+C'est ça une limite : la DIRECTION, pas forcément l'arrivée ! 
+2.2 LES DIFFÉRENTS TYPES DE LIMITES 
+En Terminale, tu vas rencontrer différentes situations de limites. 
+Au lieu de les apprendre par cœur, comprends la LOGIQUE 
+derrière. Pour analyser une limite, poses-toi toujours ces 2 
+questions : 
+ 
+풙           풇(풙) 
+QUESTION 1 : Où va      ?                           QUESTION 2 : Où va                ? 
+- Vers un nombre (ex: 푥 →  3) ?     - Vers un nombre (ex: 5) ? 
+- Vers +∞ ?                                         - Vers +∞ ? 
+- Vers −∞ ?                                         - Vers −∞ ? 
+En combinant ces 2 questions, tu obtiens TOUTES les situations ! 
+21 
+                                                                                                                  
+
+
+--- PAGE 21 ---
+
+
+TABLEAU COMPLET DES SITUATIONS  
+x tend vers               f(x) tend vers        INTERPRÈTATION  
+Un nombre  푎   Un nombre L   CAS 1 : Substitution 
+푒푥:(푥→ 3)                  푒푥:(푓→ 5)      
+directe (le plus simple) 
+±∞ 
+Un nombre  푎            CAS 2 : Asymptote 
+(푥→ 2)                                                                            푥 = 푎
+verticale     
+±∞ 푒푥:(푥→ +∞)     
+Un nombre L   CAS 3 : Asymptote 
+푒푥:(푓→ 0)                                      푦 = 퐿
+horizontale      
+±∞ 푒푥:(푥→ +∞)       ±∞ (푓→ +∞) 
+CAS 4 : Croissance 
+illimitée (polynômes, 
+푒ˣ
+...) 
+Il n'y a que 4 scénarios possibles au cinéma des limites. 
+Maintenant, regardons chaque cas en détail :  
+A. Limite FINIE en un point FINI (Tout est calme)  
+C'est le cas gentil. Tu remplaces  푥 par le nombre, et tu trouves 
+un résultat normal.  
+•     Exemple :  On cherche la limite quand  푥 tend vers 1 de la 
+fonction 2푥+3.lim(2푥+3) 
+푥→1
+•     Calcul :  Je remplace 푥 par 1. 2(1)+3=5  Résultat : La 
+limite est 5. 
+22 
+                                                                                                                  
+
+
+--- PAGE 22 ---
+
+
+ 
+           5 Exercices corrigés (Niveau Base)  
+1.    lim(푥2− 1)=22− 1=3 
+푥→2
+2.   lim(푒푥 +푥)=푒0+0=1 
+푥→0
+푥+3 −1+3
+3.    lim  =  =1 
+2   2
+푥→−1
+4.   limcos(푥)=−1 
+푥→π
+푥  1
+5.   lim  =  
+푥+1 2
+푥→1
+                                                     
+23 
+                                                                                                                  
+
+
+--- PAGE 23 ---
+
+
+B. Limite INFINIE en un point FINI (L'Asymptote 
+Verticale) 
+Pourquoi ça "explose" ? C'est quand tu divises un nombre réel 
+par quelque chose de minuscule (proche de 0).  
+•     Règle d'or :  Un nombre divisé par Zéro (qui n'est pas nul 
+1
+mais tout petit) donne l'Infini.     → 
+0
+1
+•     Exemple concret :  lim    Si 푥 est un tout petit peu plus 
+푥−2
+푥→2
+grand que 2  
+(ex: 2,001), alors 푥−2 est un "zéro positif". 푥− 2→ 0+ Le 
+1
+résultat explose vers le haut :     =+ 
+0+
+ 
+ 
+ 
+24 
+                                                                                                                  
+
+
+--- PAGE 24 ---
+
+
+           5 Exercices corrigés  
+2                      2
+1.    lim     푅푎푖푠표푛푛푒푚푒푛푡:  푥− 3→ 0+푑표푛푐  =+ 
+푥−3                     0+
+푥→3+
+ 
+2                             2
+2.    lim      푅푎푖푠표푛푛푒푚푒푛푡:  푥− 3→ 0−(푛é푔푎푡푖푓)  푑표푛푐  =− 
+푥−3                            0−
+푥→3−
+ 
+−1                            −1
+3.   lim         푅푎푖푠표푛푛푒푚푒푛푡:  푥2푒푠푡 푡표푢푗표푢푟푠 0+.퐷표푛푐  =− 
+푥                            02                                   +
+푥→0
+ 
+푥+1
+4.    lim       푅푎푖푠표푛푛푒푚푒푛푡:퐻푎푢푡→ 2.퐵푎푠→ 0+.푅é푠푢푙푡푎푡+ 
+푥−1
+푥→1+
+5.    limln(푥)=−∞.     (푳풊풎풊풕풆 풖풔풖풆풍풍풆 à 풄풐풏풏풂î풕풓풆 풑풂풓 풄œ풖풓) 
+푥→0+
+C. Limite FINIE à l'INFINI (L'Asymptote 
+Horizontale)  
+25 
+                                                                                                                  
+
+
+--- PAGE 25 ---
+
+
+  PARTAGER 1000F AU STADE   
+C'est la finale CAN 2023, Côte d'Ivoire vs Nigeria, au stade    
+Houphouët-Boigny d'Abidjan.  
+Tu as gagné 1000F et tu veux le partager équitablement 
+entre  
+TOUS les spectateurs du stade. Combien chaque personne 
+va recevoir ?  
+Ça dépend du nombre de spectateurs !  
+-     10 personnes : 1000F ÷ 10 = 100F/personne  
+-     100 personnes : 1000F ÷ 100 = 10F/personne  
+-     1 000 personnes : 1000F ÷ 1000 = 1F/personne  
+-     10 000 personnes : 1000F ÷ 10000 = 
+0,1F/personne  
+-     50 000 personnes : 1000F ÷ 50000 = 
+0,02F/personne  
+-     1 000 000 personnes : 1000F ÷ 1000000 = 
+0,001F/personne  
+Tu vois le pattern ?  
+Plus il y a de monde, MOINS chaque personne reçoit !   
+EN MATHÉMATIQUES :  
+푓(푛) = 1000/n   (n = nombre de personnes)    
+Quand n  → +∞ (énormément de spectateurs)   
+Alors 푓(푛) → 0 (chacun reçoit presque rien)  
+26 
+                                                                                                                  
+
+
+--- PAGE 26 ---
+
+
+TRADUCTION GÉNÉRALE :  
+Un nombre FIXE divisé par quelque chose de TRÈS GRAND   
+→ Donne quelque chose de TRÈS PETIT (tend vers 0)   
+FORMULE GÉNÉRALE :  
+Pour tout nombre  푘 :    lim(k/x) = 0 
+푥→+∞
+EXEMPLES CONCRETS :  
+-      lim(5/푥) = 0 
+푥→+∞
+-      lim(1000/푥) = 0 
+푥→+∞
+-      lim(2025/푥) = 0 
+푥→+∞
+ 
+Ici, 푥 part très loin, mais la fonction se calme et s'aplatit.   
+ 
+  RÈGLE À RETENIR :  
+"Nombre sur Infini = 0"  
+1
+•     Règle d'or :  Un nombre divisé par l'Infini donne 0.      =0 
+∞
+1
+•     Exemple :    lim =0 
+푥
+푥→+∞
+ 
+                                                           
+27 
+                                                                                                                  
+
+
+--- PAGE 27 ---
+
+
+           5 Exercices corrigés  
+1            1
+1.      lim(3+ )   Raisonnement :    → 0. Résultat = 3. 
+푥             푥
+푥→+∞
+2
+2.     lim     Raisonnement : 2 divisé par géant = 0. 
+푥2
+푥→−∞
+3.     lim(5−푒−푥)   Raisonnement : 푒−푥 → 0. Résultat = 5. 
+푥→+∞
+1
+4.    lim  =0 
+푥3
+푥→+∞
+4
+5.    lim  =0 
+푥+1
+푥→+∞
+ 
+                                                     
+28 
+                                                                                                                  
+
+
+--- PAGE 28 ---
+
+
+D. Limite INFINIE à l'INFINI (La Fusée)  
+Là, il n'y a pas de frein. x grandit, et  푓(푥) grandit aussi.  
+•     L'image :  Une fusée qui décolle. Plus le temps passe, 
+plus elle va haut.  
+2
+•     Exemple :    lim푥 =+ 
+푥→+∞
+ 
+                                                           
+29 
+                                                                                                                  
+
+
+--- PAGE 29 ---
+
+
+           5 Exercices corrigés  
+1.      lim(푥3+푥)   Raisonnement : Grand + Grand = TRÈS 
+푥→+∞
+GRAND (+∞). 
+2.     lim푥2   Raisonnement : Négatif géant au carré = Positif 
+푥→−∞
+géant (+∞). 
+3.     lim(푒푥 +5)=+ 
+푥→+∞
+4.    lim푥3=− 
+푥→−∞
+5.    lim√푥=+ 
+푥→+∞
+     Le mystère de l'asymptote 
+"Vieux père, j'ai vraiment peur de mélanger l'asymptote verticale et 
+l'asymptote horizontale. Les deux parlent d'une ligne droite, je 
+confonds tout !" 
+Le Grand Frère : "Je comprends ta confusion, petit. Mais je vais te 
+donner une astuce INFAILLIBLE pour ne JAMAIS les mélanger. 
+Écoute bien : 
+                                                     
+30 
+                                                                                                                  
+
+
+--- PAGE 30 ---
+
+
+ASYMPTOTE VERTICALE = Ligne droite DEBOUT   
+Équation :  풙 = 풂  (un nombre) 
+Exemples : 풙 = ퟐ;  풙 = −ퟓ;  풙 = ퟎ 
+Ça arrive quand : 퐥퐢퐦 풇(풙)=±∞ 
+풙→풂
+Traduction : Quand 풙 s'approche d'un point précis a,  
+f(x) explose vers l'infini 
+Image : C'est un MUR VERTICAL. Tu ne peux PAS 
+traverser le point 풙 = 풂. 
+ 
+ASYMPTOTE HORIZONTALE = Ligne droite COUCHÉE    
+Équation : 풚 = 풃  (un nombre) 
+Exemples : 풚 = ퟑ; 풚 = ퟎ;  풚 = −ퟐ 
+Ça arrive quand :  퐥퐢퐦 풇(풙)= 풃  
+풙→±∞
+Traduction : Quand x part très loin (vers ±∞), f(x) se 
+stabilise vers une valeur b 
+Image : C'est l'HORIZON. Plus tu vas loin, plus tu 
+t'approches d'une ligne horizontale. 
+ 
+ASTUCE POUR LES DIFFÉRENCIER :  
+•    Verticale → 풙 = ... → en UN POINT précis   
+•    Horizontale → 풚 = ... → quand 풙 part LOIN  
+31 
+                                                                                                                  
+
+
+--- PAGE 31 ---
+
+
+EXEMPLE CONCRET avec les DEUX :  
+Soit 풇(풙)=ퟏ/(풙− ퟐ) 
+Question 1  : Y a-t-il une asymptote verticale ?  
+Cherche où ça "explose" :  
+퐥퐢퐦 ퟏ/(풙− ퟐ)=±∞ quand 풙 →  ퟐ 
+풙→ퟐ
+Oui ! Asymptote verticale :  풙 = ퟐ (ligne debout)  
+Question 2 :  Y a-t-il une asymptote horizontale ?  
+Cherche où ça se stabilise :  
+퐥퐢퐦 ퟏ/(풙 −  ퟐ) = ퟎ quand 풙 →  +∞ 
+풙→+∞
+Oui ! Asymptote horizontale :  풚 = ퟎ (ligne couchée)  
+RÉSUMÉ VISUEL  : 
+32 
+                                                                                                                  
+
+
+--- PAGE 32 ---
+
+
+ 
+"Ah ! Donc verticale c'est quand x a une valeur    
+INTERDITE et que ça explose, et horizontale c'est quand x    
+part à l'infini et que f(x) se calme ?"  
+Le Grand Frère  : "EXACTEMENT ! Tu as tout compris !  
+Pour résumer :  
+- Verticale → BOOM en un point (x = a)  
+- Horizontale  → CALME au loin (y = b)  
+Ne les mélange plus jamais !"  
+Le Petit : "Merci vieux père ! C'est super clair maintenant !"   
+                                                     
+33 
+                                                                                                                  
+
+
+--- PAGE 33 ---
+
+
+2.3 LES PIÈGES MORTELS À ÉVITER  
+Attention champion, voici là où 90% des copies perdent des 
+points. Lis bien ça.  
+⚠️  Piège à eviter 
+ 
+1. Confondre +∞ et –∞ 
+Quand x  → −∞, que vaut x² ?  x est un nombre négatif très 
+grand  
+(ex : −1000, −10 000...). Or (−1000)² = 1 000 000 → positif !  
+Donc : 풍풊풎 풙→ −∞ 풙² = +∞ (le carré efface le signe)  
+Par contre :  풍풊풎 풙→ −∞ 풙³ = −∞ (le cube conserve le signe)  
+     ATTENTION  : On ne dit JAMAIS  "(−∞)² = +" sur une copie.   
+On dit "quand  푥 →  −∞,푥² →  +∞". 
+Un nombre négatif très grand au CUBE reste négatif : 
+(−∞)3=− 
+ 2. Écrire ∞ – ∞ = 0 ou ∞/∞ = 1 sur ta copie 
+Pourquoi c'est indéterminé (et pas juste "interdit") ?    
+Imagine deux routes infinies. L'une te tire vers   +∞, l'autre vers 
+−∞. Qui gagne ? Ça dépend de  laquelle est plus puissante . 
+Sans calculer, impossible de savoir !  
+ 
+ 
+34 
+                                                                                                                  
+
+
+--- PAGE 34 ---
+
+
+Exemples pour comprendre :  
+•     푙푖푚 푥→ +∞ (푥² −  푥)∶ 푥² gagne ; résultat +∞ 
+•     푙푖푚 푥→ +∞ (푥 −  푥) : égalité ; résultat 0 
+•     푙푖푚 푥→ +∞ (푥 −  푥²)∶ 푥² gagne ; résultat −∞ 
+Le même symbole  ∞ −  ∞ peut donner  +∞, 0, ou  −∞ selon 
+les cas. C'est pour ça qu'on dit  indéterminé : on ne peut pas 
+conclure sans calculer.  
+Sur ta copie, écris toujours :  "On obtient une forme 
+indéterminée du type  ∞ −  ∞. On va lever cette 
+indétermination en..."  
+ 
+3. Remplacer directement dans une forme 
+indéterminée  
+Si tu obtiens 0/0 ou ∞/∞, STOP. Ne conclus pas 0 ou 1. 
+C'est une forme indéterminée : applique les techniques du 
+Chapitre 3. 
+ 4. Oublier le signe du 0 dans le dénominateur 
+Si tu divises par un 'zéro positif' (0⁺) → résultat +∞ Si tu 
+divises par un 'zéro négatif' (0⁻) → résultat −∞ Le signe 
+change TOUT ! 
+ 
+ 
+ 
+ 
+35 
+                                                                                                                  
+
+
+--- PAGE 35 ---
+
+
+ 
+  Conseil du Grand Frère  
+Petit(te), lire une limite c'est comme lire une carte GPS : tu 
+푥      푓(푥). 
+dois d'abord savoir OÙ VA  , puis déduire OÙ VA    Si tu 
+gardes ces 2 questions en tête, tu ne te perdras jamais ! 
+ 
+2.4 Quand la limite n'existe PAS  
+"Vieux père, est -ce qu'une limite peut ne pas exister du tout ?"  
+Le Grand Frère  : "Oui, petit. Et c'est souvent là que les élèves 
+perdent des points en essayant de trouver une réponse là où il 
+n'y en a pas."  
+Cas classique : limite à gauche ≠ limite à droite 
+Pour que  푙푖푚 푥→ 푎 푓(푥) existe, il faut que  푓(푥) arrive au même 
+endroit qu'on vienne de la gauche ou de la droite.   
+Exemple concret :  푓(푥) = |푥|/푥 
+Si 푥 →  0⁺ (on s'approche de 0 par la droite, 푥 > 0) : 푓(푥) =
+ 푥/푥 = 1 
+Si 푥 →  0⁻ (on s'approche de 0 par la gauche, 푥 < 0) : 푓(푥) =
+ −푥/푥 = −1 
+Limite à droite = 1 ≠ Limite à gauche = −1 
+36 
+                                                                                                                  
+
+
+--- PAGE 36 ---
+
+
+Conclusion : La limite en 0 N'EXISTE PAS.   
+Règle d'or :  푙푖푚 푥→ 푎 푓(푥) existe ⟺  푙푖푚 푥→ 푎⁺ 푓(푥) = 푙푖푚 푥→
+푎⁻ 푓(푥) 
+Sur ta copie, si tu trouves  +∞ d'un côté et  −∞ de l'autre, tu écris 
+: "Les limites à gauche et à droite sont différentes, donc la 
+limite en  풂 n'existe pas."  
+                                                     
+37 
+                                                                                                                  
+
+
+--- PAGE 37 ---
+
+
+Auto -évaluation —  Chapitre 2
+ 
+Et pour le Chapitre 2 ?  
+Le Grand Frère :  Le Chapitre 2, c'est là où beaucoup d'élèves 
+croient avoir compris parce qu'ils reconnaissent les formes 
+indéterminées. Mais reconnaître n'est pas lever. Vérifie ça :   
+ 
+Coche chaque case honnêtement :
+☐  Je connais les 4 formes indéterminées (0/0 · ∞/∞ · ∞ −
+ 
+∞ · 0×∞) sans hésiter.
+☐  Pour chaque forme, je sais quelle méthode utiliser pour 
+ 
+lever l'indétermination.
+☐  Je comprends pourquoi  ∞ − ∞ est « indéterminé » et pas 
+ 
+juste « interdit ».
+☐  J'ai refait l'Exercice 2 sans regarder la correction et 
+ 
+trouvé le bon résultat.
+ 
+ 
+✅   4/4 → Tu maîtrises les fondations. Avance.
+⚠️  2 ou 3 → Relis les sections 2.2 et 2.3. La case que tu n'as pas 
+ 
+cochée est ton point faible.
+❌   0 ou 1 → Le Chapitre 3 sera incompréhensible. Reprends le 
+ 
+2 entièrement
+ 
+                                                     
+38 
+                                                                                                                  
+
+
+--- PAGE 38 ---
+
+
+CHAPITRE 3 : CALCULER LES LIMITES 
+- LA MÉTHODE QUI MARCHE  
+"Devoir régional au 'Cacao', première Terminale. 
+ Dernière question (sur 3 points) : Calculer 푙푖푚 (푥² + 2푥 −

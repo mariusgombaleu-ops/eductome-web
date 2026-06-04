@@ -1,60 +1,96 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, MessageCircle } from 'lucide-react';
+import { Facebook, Instagram, MessageCircle, MapPin, BookOpen, Heart } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-eductome-dark text-white pt-12 pb-8 border-t border-white/10">
+    <footer className="bg-eductome-dark text-white pt-16 pb-8 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+        
+        {/* Top Section : Multi-column */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="text-3xl font-poppins font-extrabold tracking-tight">
+          {/* Col 1: Brand & Socials (takes more space) */}
+          <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="text-3xl font-poppins font-extrabold tracking-tight mb-4">
               <span className="text-eductome-magenta">Educ</span>
               <span className="text-white">tome</span>
             </div>
-            <p className="italic text-gray-400 mt-2 text-sm font-playfair">
-              "Le manuel qui t'explique comme un grand frère."
+            <p className="italic text-gray-400 text-sm font-playfair mb-6 leading-relaxed">
+              "Le manuel qui t'explique comme un grand frère. Comprendre avant de calculer, le sens avant la formule."
             </p>
             
-            <div className="flex gap-4 mt-6 text-gray-400">
-              <a href="#" className="hover:text-eductome-magenta transition-colors" aria-label="Facebook EDUCTOME">
-                <Facebook size={20} />
+            <div className="flex gap-4 mb-8">
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-eductome-magenta hover:text-white transition-all duration-300" aria-label="Facebook">
+                <Facebook size={18} />
               </a>
-              <a href="https://wa.me/2250799506300" target="_blank" rel="noopener noreferrer" className="hover:text-eductome-magenta transition-colors" aria-label="WhatsApp EDUCTOME">
-                <MessageCircle size={20} />
+              <a href="https://wa.me/2250799506300" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-[#25D366] hover:text-white transition-all duration-300" aria-label="WhatsApp">
+                <MessageCircle size={18} />
               </a>
-              <a href="#" className="hover:text-eductome-magenta transition-colors" aria-label="Instagram EDUCTOME">
-                <Instagram size={20} />
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-500 hover:text-white transition-all duration-300 border-transparent" aria-label="Instagram">
+                <Instagram size={18} />
               </a>
-            </div>
-            
-            <div className="mt-6 text-sm text-gray-400 font-medium space-y-2">
-              <p className="flex items-center justify-center md:justify-start gap-2"><span aria-hidden="true">📘</span> Conforme au programme officiel ivoirien</p>
-              <p className="flex items-center justify-center md:justify-start gap-2"><span aria-hidden="true">🇨🇮</span> Conçu à Abidjan, pour les élèves ivoiriens</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-3 text-sm font-semibold text-gray-300 md:mt-2">
-            <Link to="/collections" className="hover:text-white transition-colors">Collections</Link>
-            <Link to="/ressources" className="hover:text-white transition-colors">Ressources</Link>
-            <Link to="/a-propos" className="hover:text-white transition-colors">À propos</Link>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <Link to="/devenir-relais" className="hover:text-white transition-colors">Devenir Relais</Link>
+          {/* Col 2: Collections */}
+          <div className="lg:col-span-3 lg:col-start-6 text-center md:text-left">
+            <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">Collections</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link to="/collections/cles-maths" className="hover:text-eductome-sky transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#1A3557]"></span>Les Clés</Link></li>
+              <li><Link to="/collections/la-voie" className="hover:text-eductome-green transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32]"></span>La Voie</Link></li>
+              <li><Link to="/collections/derniers-codes" className="hover:text-red-400 transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#C62828]"></span>Les Derniers Codes</Link></li>
+              <li><Link to="/collections/les-racines" className="hover:text-orange-400 transition-colors flex items-center justify-center md:justify-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#E67E22]"></span>Les Racines</Link></li>
+            </ul>
           </div>
+
+          {/* Col 3: Ressources */}
+          <div className="lg:col-span-2 text-center md:text-left">
+            <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">Ressources</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link to="/ressources?tab=exercices" className="hover:text-white transition-colors">Exos Corrigés</Link></li>
+              <li><Link to="/ressources?tab=fiches" className="hover:text-white transition-colors">Fiches Méthode</Link></li>
+              <li><Link to="/ressources?tab=planning" className="hover:text-white transition-colors">Le Planning</Link></li>
+              <li><Link to="/ressources?tab=questions" className="hover:text-white transition-colors">10 Pièges</Link></li>
+            </ul>
+          </div>
+
+          {/* Col 4: Eductome */}
+          <div className="lg:col-span-2 text-center md:text-left">
+            <h4 className="text-white font-bold mb-5 tracking-wider uppercase text-sm">EDUCTOME</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link to="/a-propos" className="hover:text-white transition-colors">À propos</Link></li>
+              <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link to="/devenir-relais" className="hover:text-white transition-colors">Devenir Relais</Link></li>
+              <li><Link to="/login" className="hover:text-eductome-magenta transition-colors mt-2 inline-block">Connexion</Link></li>
+            </ul>
+          </div>
+
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-gray-500 text-center md:text-left">
-          <p>© {new Date().getFullYear()} EDUCTOME — Gombaleu Marius</p>
+        {/* Bottom Section */}
+        <div className="pt-8 border-t border-white/10 flex flex-col lg:flex-row justify-between items-center gap-6 text-xs text-gray-500">
+          
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 text-center md:text-left">
+            <p className="flex items-center gap-1.5 text-gray-400 font-medium">
+              <BookOpen className="w-3.5 h-3.5" /> Conforme au programme officiel ivoirien
+            </p>
+            <p className="flex items-center gap-1.5 text-gray-400 font-medium">
+              <Heart className="w-3.5 h-3.5 text-eductome-magenta" /> Conçu à Abidjan pour les élèves
+            </p>
+          </div>
           
           <div className="flex gap-4 md:gap-6 flex-wrap justify-center">
             <Link to="#" className="hover:text-white transition-colors">Mentions légales</Link>
-            <Link to="#" className="hover:text-white transition-colors">Politique de confidentialité</Link>
+            <Link to="#" className="hover:text-white transition-colors">Confidentialité</Link>
             <Link to="#" className="hover:text-white transition-colors">CGV</Link>
           </div>
 
-          <div className="flex gap-4 justify-center">
-            <p>Abidjan, Côte d'Ivoire</p>
+          <div className="flex items-center gap-2 justify-center text-gray-400">
+            <span>© {new Date().getFullYear()} EDUCTOME</span>
+            <span className="hidden md:inline">•</span>
+            <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> Abidjan, CI</span>
           </div>
+
         </div>
       </div>
     </footer>

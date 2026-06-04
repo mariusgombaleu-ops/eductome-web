@@ -1,0 +1,1 @@
+[chap3.ts] Section 1: Le dernier bloc n'a pas l'ID "transition" (ID: b4)

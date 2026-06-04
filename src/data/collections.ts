@@ -12,7 +12,7 @@ export const collectionsData: Collection[] = [
     
     badges: [
       { label: 'BEST-SELLER', color: 'magenta' },
-      { label: 'SÉRIES C & D', color: 'gray' }
+      { label: 'SÉRIE D', color: 'gray' }
     ],
     
     shortDescription: "Tout le programme de Terminale, tome par tome. Comprends enfin les notions qui te bloquent.",
@@ -20,7 +20,7 @@ export const collectionsData: Collection[] = [
     
     format: 'Livre physique + PDF',
     tomeCount: 11,
-    targetClass: 'Terminale C/D',
+    targetClass: 'Terminale D',
     
     objective: "Te faire maîtriser l'intégralité du programme de Mathématiques de Terminale, un chapitre à la fois, sans sauter d'étapes. 12 tomes pour transformer ta façon de penser les maths, de la première limite jusqu'aux équations différentielles.",
     
@@ -31,7 +31,7 @@ export const collectionsData: Collection[] = [
     ],
     
     idealFor: [
-      "Tu es en Terminale C ou D et tu prépares le BAC ivoirien",
+      "Tu es en Terminale D et tu prépares le BAC ivoirien",
       "Tu veux comprendre tes cours en profondeur, pas juste les réviser à la veille",
       "Tu as au moins 3 mois devant toi pour bosser sérieusement"
     ],
@@ -49,6 +49,68 @@ export const collectionsData: Collection[] = [
     
     placeholderTestimonial: "Avec le Tome 1 sur Les Limites, j'ai enfin compris ce qu'était une forme indéterminée. Le déclic. Je suis passé de 9/20 à 14/20 en deux mois.",
     
+    previews: [
+      {
+        caption: 'Extrait Tome 1 : Limites',
+        blocks: [
+          {
+            type: 'text',
+            id: 'p1',
+            contenu: "Champion(ne), voici la notion qui fait la différence entre ceux qui comprennent les maths et ceux qui les subissent. Accroche-toi — dans 5 minutes tu vas voir pourquoi."
+          },
+          {
+            type: 'analogy',
+            id: 'p2',
+            titre: 'La limite expliquée avec un gbaka',
+            contenu: "Imagine un gbaka qui part d'Adjamé. Le chargeur crie « Yopougon Siporex ! ». La direction est claire. Le mouvement est lancé.\n\nMais attention : que le gbaka arrive VRAIMENT à Siporex, ou qu'il tombe en panne juste avant à la Gesco, sa TENDANCE était d'aller à Siporex.\n\nEn maths, c'est ça une limite. On ne te demande pas si la fonction arrive à destination. On te demande vers où elle se dirige quand $x$ s'approche d'un point.",
+            conceptMath: "La limite est une tendance, pas forcément une valeur atteinte."
+          }
+        ]
+      },
+      {
+        caption: 'Extrait Tome 2 : Dérivées',
+        blocks: [
+          {
+            type: 'text',
+            id: 'p3',
+            contenu: "Tu connais maintenant les limites. Mais comment mesurer la VITESSE à laquelle une fonction change ? C'est là qu'intervient la dérivée."
+          },
+          {
+            type: 'tip',
+            id: 'p4',
+            titre: 'Grand Frère te dit',
+            contenu: [
+              "La dérivée n'est pas juste une formule à apprendre par cœur.",
+              "C'est la boussole de la fonction : si la dérivée est positive, la fonction monte. Si elle est négative, elle descend."
+            ]
+          },
+          {
+            type: 'math',
+            id: 'p5',
+            formule: "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
+            explication: "Le fameux taux d'accroissement vu à la loupe microscopique."
+          }
+        ]
+      },
+      {
+        caption: 'Extrait Tome 3 : Primitives',
+        blocks: [
+          {
+            type: 'dialogue',
+            id: 'p6',
+            pf: "Vieux père, pourquoi on s'embête avec les primitives si on sait déjà dériver ? C'est juste pour nous compliquer la vie au BAC ou bien ?",
+            gf: "Bonne question ! En fait, la primitive, c'est la machine à remonter le temps. Si la dérivée te donne la vitesse, la primitive te redonne la distance parcourue. Sans primitive, tu ne peux pas calculer d'aires ni de volumes."
+          },
+          {
+            type: 'rule',
+            id: 'p7',
+            titre: 'Règle d\'or',
+            contenu: "Dériver, c'est casser. Primitiver, c'est reconstruire. Pour trouver la primitive de $f(x) = x^n$, tu augmentes la puissance de 1, et tu divises par cette nouvelle puissance : $F(x) = \\frac{x^{n+1}}{n+1}$."
+          }
+        ]
+      }
+    ],
+
     tomes: [
       { id: "cm-1", number: 1, title: 'Les Limites', chapters: ['Continuité', 'Asymptotes', 'Calculs', 'BAC'], coverImage: "/covers/tomes/cover-t1.png", image: "/covers/tomes/cover-t1.png" },
       { id: "cm-2", number: 2, title: 'Les Dérivées', chapters: ['Tangentes', 'Variations', 'Optimisation', 'BAC'], coverImage: "/covers/tomes/cover-t2.png", image: "/covers/tomes/cover-t2.png" },
@@ -66,7 +128,7 @@ export const collectionsData: Collection[] = [
     faq: [
       {
         question: "Les manuels sont-ils conformes au programme officiel ivoirien ?",
-        answer: "Oui, 100%. Chaque tome est aligné sur le programme du DPFC-CI pour la Terminale C et D. Les exercices type BAC suivent le format officiel des annales ivoiriennes."
+        answer: "Oui, 100%. Chaque tome est aligné sur le programme du DPFC-CI pour la Terminale D. Les exercices type BAC suivent le format officiel des annales ivoiriennes."
       },
       {
         question: "Faut-il acheter tous les tomes en même temps ?",

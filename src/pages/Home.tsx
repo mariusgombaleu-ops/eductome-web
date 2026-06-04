@@ -4,6 +4,7 @@ import { FounderSection } from '../components/home/FounderSection';
 import { DifferenceSection } from '../components/home/DifferenceSection';
 import { PreviewSection } from '../components/home/PreviewSection';
 import { CollectionsSection } from '../components/home/CollectionsSection';
+import { DeliveryFormatsSection } from '../components/home/DeliveryFormatsSection';
 import { TestimonialsSection } from '../components/home/TestimonialsSection';
 import { BeforeAfterSection } from '../components/home/BeforeAfterSection';
 import { FAQSection } from '../components/home/FAQSection';
@@ -22,6 +23,7 @@ export function Home() {
       <DifferenceSection />
       <PreviewSection />
       <CollectionsSection />
+      <DeliveryFormatsSection />
       <FreeResourcesSection />
       <TestimonialsSection />
       <BeforeAfterSection />
