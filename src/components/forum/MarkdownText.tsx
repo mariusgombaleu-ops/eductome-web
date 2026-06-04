@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const MarkdownText = ({ text, className = "" }: { text: string; className?: string }) => {
   if (!text) return null;

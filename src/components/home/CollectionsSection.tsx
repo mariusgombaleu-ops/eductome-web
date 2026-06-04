@@ -1,6 +1,5 @@
 import { ScrollReveal } from '../ui/ScrollReveal';
 import { CollectionCard } from '../ui/CollectionCard';
-import { CTAButton } from '../ui/CTAButton';
 import { collectionsData } from '../../data/collections';
 
 export function CollectionsSection() {

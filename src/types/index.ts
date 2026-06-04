@@ -1,4 +1,4 @@
-import { Tome as CourseTome, AnyBlock } from './course';
+import { AnyBlock } from './course';
 
 export interface Tome {
   id: string;

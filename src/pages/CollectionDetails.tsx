@@ -5,7 +5,6 @@ import { SEO } from '../components/SEO';
 import { useState } from 'react';
 import { ChevronRight, ArrowLeft, Target, Lightbulb, UserCheck, CheckCircle2 } from 'lucide-react';
 import { BlockRenderer } from '../components/blocks/BlockRenderer';
-import { CollectionCard } from '../components/ui/CollectionCard';
 import { PreviewItem } from '../types';
 
 export function CollectionDetails() {

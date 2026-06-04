@@ -1,6 +1,5 @@
 import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen } from 'lucide-react';
 import { StudyChart } from '../../components/dashboard/StudyChart';
-import { fireConfetti } from '../../utils/confetti';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link } from 'react-router-dom';

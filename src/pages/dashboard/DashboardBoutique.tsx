@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { collectionsData } from '../../data/collections';
-import { ShoppingBag, Lock, Unlock, ChevronRight } from 'lucide-react';
+import { ShoppingBag, Lock, Unlock } from 'lucide-react';
 import { CinetPayModal } from '../../components/checkout/CinetPayModal';
 
 export const DashboardBoutique = () => {

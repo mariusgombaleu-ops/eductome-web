@@ -3,7 +3,7 @@ import { MessageSquare, Users, Search, Plus, Crown, X, Tag, Lightbulb, Heart, Bo
 import { Link } from 'react-router-dom';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
-import { XP } from '../../constants/xp';
+
 import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
 
@@ -194,7 +194,7 @@ export const ForumHome = () => {
                     </div>
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex flex-wrap gap-2">
-                        {disc.tags.map(tag => (
+                        {disc.tags.map((tag: any) => (
                           <span key={tag} className="px-2.5 py-1 text-xs font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
                             {tag}
                           </span>

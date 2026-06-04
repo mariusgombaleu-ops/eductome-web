@@ -1,6 +1,6 @@
 import { User, Mail, Shield, Save, Camera, Target, Book, Trophy, Flame, Eye, EyeOff, Star, Edit3, ChevronRight, Key, CheckCircle, Heart, Lock, Trash2, Settings, Zap, RefreshCw, Unlock } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useUser, USER_LEVELS } from '../../contexts/UserContext';
+import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
 import { useState, useEffect } from 'react';
 

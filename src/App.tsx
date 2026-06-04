@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Home } from './pages/Home';
-import { Collections } from './pages/Collections';
 import { CollectionDetails } from './pages/CollectionDetails';
 import { Resources } from './pages/Resources';
 import { About } from './pages/About';

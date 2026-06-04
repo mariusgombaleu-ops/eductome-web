@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CreditCard, Loader2, CheckCircle } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -11,7 +11,7 @@ interface CinetPayMockModalProps {
 
 export const CinetPayMockModal: React.FC<CinetPayMockModalProps> = ({ amount, itemName, onSuccess, onClose }) => {
   const [step, setStep] = useState<'initial' | 'loading' | 'success'>('initial');
-  const { theme } = useTheme();
+  useTheme();
 
   const handlePay = () => {
     setStep('loading');

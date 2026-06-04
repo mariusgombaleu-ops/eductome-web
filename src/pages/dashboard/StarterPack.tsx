@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { BookOpen, PlayCircle, Target, ArrowLeft } from 'lucide-react';
+import { PlayCircle, Target, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const StarterPack = () => {

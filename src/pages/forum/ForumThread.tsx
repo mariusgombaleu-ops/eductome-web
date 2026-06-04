@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, CheckCircle, Heart, User, Send, Share2 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, Heart, Send, Share2 } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
@@ -10,7 +10,7 @@ import { MarkdownText } from '../../components/forum/MarkdownText';
 export const ForumThread = () => {
   const { id } = useParams();
   const { addToast } = useToast();
-  const { gainXp, hasActionBeenRewarded } = useUser();
+  const { gainXp } = useUser();
   
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);

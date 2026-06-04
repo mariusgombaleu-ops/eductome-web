@@ -41,7 +41,7 @@ export const StudyChart = () => {
           />
           <Tooltip 
             cursor={{ fill: isDark ? '#30363D' : '#F8F9FA' }}
-            formatter={(value: number) => [`${value} XP`, 'Gains']}
+            formatter={(value: any) => [`${value} XP`, 'Gains']}
             contentStyle={{ 
               borderRadius: '8px', 
               border: 'none', 
