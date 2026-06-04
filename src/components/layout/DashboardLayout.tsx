@@ -227,7 +227,7 @@ export const DashboardLayout = () => {
             </button>
             <div className="text-center space-y-4 pt-2">
               <div className="w-16 h-16 bg-[#D81B60]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <img src="/logo-pwa.png" alt="Eductome App" className="w-10 h-10 object-contain" />
+                <img src="/logo-pwa.png?v=2" alt="Eductome App" className="w-10 h-10 object-contain" />
               </div>
               <h3 className="text-xl font-bold text-[#1A1A2E] dark:text-white font-playfair">Installer EDUCTOME</h3>
               <p className="text-sm text-[#6B7280] dark:text-[#8B949E]">Installez cette application sur votre écran d'accueil pour un accès rapide et facile, sans passer par le navigateur.</p>

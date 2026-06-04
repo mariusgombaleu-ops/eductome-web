@@ -60,7 +60,7 @@ export function Navbar() {
             {/* Logo */}
             <Link to="/" className="flex flex-shrink-0 items-center py-2" onClick={closeMenu} aria-label="Accueil EDUCTOME">
               <img 
-                src="/images/logo.png" 
+                src="/images/logo.png?v=2" 
                 alt="Eductome Logo" 
                 className={`transition-all duration-300 object-contain ${isTransparent ? 'h-16 md:h-20 drop-shadow-lg bg-white/20 p-2 rounded-xl backdrop-blur-sm' : 'h-12 md:h-14'}`} 
               />
@@ -190,7 +190,7 @@ export function Navbar() {
             </button>
             <div className="text-center space-y-4 pt-2">
               <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <img src="/logo-pwa.png" alt="Eductome App" className="w-10 h-10 object-contain" />
+                <img src="/logo-pwa.png?v=2" alt="Eductome App" className="w-10 h-10 object-contain" />
               </div>
               <h3 className="text-xl font-bold text-eductome-marine font-playfair">Installer EDUCTOME</h3>
               <p className="text-sm text-gray-600">Installez cette application sur votre écran d'accueil pour un accès rapide et facile, sans passer par le navigateur.</p>
