@@ -58,67 +58,77 @@ export const Overview = () => {
       </div>
 
       {/* Stats Grid - Toujours visible pour l'aspect psychologique */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {/* Card 1: Leçons terminées */}
-        <div className="bg-white dark:bg-[#161B22] p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-blue-500 transition-colors duration-300">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500">
-              <BookOpen className="w-5 h-5" />
+        <div className="bg-white dark:bg-[#161B22] p-3 sm:p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-blue-500 transition-colors duration-300 flex flex-col justify-between">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500 w-fit">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-500">
+            <span className="text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-500 text-center">
               Total Validé
             </span>
           </div>
-          <p className="text-sm font-medium text-[#6B7280] dark:text-[#8B949E]">Leçons terminées</p>
-          <p className="text-3xl font-bold mt-1 text-[#1A1A2E] dark:text-white">
-            <AnimatedCounter value={completedQuizzes} duration={1500} />
-          </p>
+          <div>
+            <p className="text-[11px] sm:text-sm font-medium text-[#6B7280] dark:text-[#8B949E] leading-tight">Leçons terminées</p>
+            <p className="text-xl sm:text-3xl font-bold mt-0.5 text-[#1A1A2E] dark:text-white">
+              <AnimatedCounter value={completedQuizzes} duration={1500} />
+            </p>
+          </div>
         </div>
         
         {/* Card 2: Moyenne Quiz */}
-        <div className="bg-white dark:bg-[#161B22] p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-[#D81B60] transition-colors duration-300">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 rounded-lg bg-pink-50 dark:bg-pink-900/20 text-[#D81B60]">
-              <Target className="w-5 h-5" />
+        <div className="bg-white dark:bg-[#161B22] p-3 sm:p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-[#D81B60] transition-colors duration-300 flex flex-col justify-between">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-pink-50 dark:bg-pink-900/20 text-[#D81B60] w-fit">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded bg-pink-50 dark:bg-pink-900/20 text-[#D81B60]">Objectif 80%</span>
+            <span className="text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-pink-50 dark:bg-pink-900/20 text-[#D81B60] text-center">
+              Objectif 80%
+            </span>
           </div>
-          <p className="text-sm font-medium text-[#6B7280] dark:text-[#8B949E]">Moyenne Quiz</p>
-          <p className="text-3xl font-bold mt-1 text-[#1A1A2E] dark:text-white">
-            <AnimatedCounter value={isNewUser ? 0 : 85} suffix="%" duration={1800} />
-          </p>
+          <div>
+            <p className="text-[11px] sm:text-sm font-medium text-[#6B7280] dark:text-[#8B949E] leading-tight">Moyenne Quiz</p>
+            <p className="text-xl sm:text-3xl font-bold mt-0.5 text-[#1A1A2E] dark:text-white">
+              <AnimatedCounter value={isNewUser ? 0 : 85} suffix="%" duration={1800} />
+            </p>
+          </div>
         </div>
 
         {/* Card 3: Points d'XP */}
-        <div className="bg-white dark:bg-[#161B22] p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-yellow-500 transition-colors duration-300">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-500">
-              <Star className="w-5 h-5" />
+        <div className="bg-white dark:bg-[#161B22] p-3 sm:p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-yellow-500 transition-colors duration-300 flex flex-col justify-between">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-500 w-fit">
+              <Star className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded bg-yellow-50 dark:bg-yellow-900/20 text-yellow-500">
+            <span className="text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-yellow-50 dark:bg-yellow-900/20 text-yellow-500 text-center">
               Niveau {level.level}
             </span>
           </div>
-          <p className="text-sm font-medium text-[#6B7280] dark:text-[#8B949E]">Points d'XP</p>
-          <p className="text-3xl font-bold mt-1 text-[#1A1A2E] dark:text-white">
-            <AnimatedCounter value={xp} duration={2000} />
-          </p>
+          <div>
+            <p className="text-[11px] sm:text-sm font-medium text-[#6B7280] dark:text-[#8B949E] leading-tight">Points d'XP</p>
+            <p className="text-xl sm:text-3xl font-bold mt-0.5 text-[#1A1A2E] dark:text-white">
+              <AnimatedCounter value={xp} duration={2000} />
+            </p>
+          </div>
         </div>
 
         {/* Card 4: Objectif BAC */}
-        <div className="bg-white dark:bg-[#161B22] p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-green-500 transition-colors duration-300">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500">
-              <Trophy className="w-5 h-5" />
+        <div className="bg-white dark:bg-[#161B22] p-3 sm:p-4 md:p-6 rounded-xl shadow-sm border border-[#E1E4E8] dark:border-[#30363D] border-b-4 border-b-green-500 transition-colors duration-300 flex flex-col justify-between">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 w-fit">
+              <Trophy className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded bg-green-50 dark:bg-green-900/20 text-green-500">
+            <span className="text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-green-50 dark:bg-green-900/20 text-green-500 text-center">
               Objectif Atteignable
             </span>
           </div>
-          <p className="text-sm font-medium text-[#6B7280] dark:text-[#8B949E]">Objectif BAC</p>
-          <p className="text-3xl font-bold mt-1 text-[#1A1A2E] dark:text-white">
-            <AnimatedCounter value={isNewUser ? 0 : Math.min(50 + level.level * 5, 99)} suffix="%" duration={1500} />
-          </p>
+          <div>
+            <p className="text-[11px] sm:text-sm font-medium text-[#6B7280] dark:text-[#8B949E] leading-tight">Objectif BAC</p>
+            <p className="text-xl sm:text-3xl font-bold mt-0.5 text-[#1A1A2E] dark:text-white">
+              <AnimatedCounter value={isNewUser ? 0 : Math.min(50 + level.level * 5, 99)} suffix="%" duration={1500} />
+            </p>
+          </div>
         </div>
       </div>
 
