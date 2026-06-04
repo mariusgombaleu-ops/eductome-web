@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'EDUCTOME - Apprendre sans limites',
         short_name: 'EDUCTOME',
         start_url: '/',
-        description: 'La meilleure plateforme e-learning de Côte d\\'Ivoire',
+        description: "La meilleure plateforme e-learning de Côte d'Ivoire",
         theme_color: '#1A3557',
         background_color: '#0D1117',
         display: 'standalone',
