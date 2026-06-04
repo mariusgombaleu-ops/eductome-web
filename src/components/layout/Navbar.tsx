@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, ChevronRight, User } from 'lucide-react';
+import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, ChevronRight, User, Download, Share, PlusSquare } from 'lucide-react';
+import { useInstallPWA } from '../../hooks/useInstallPWA';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +9,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const { isInstallable, installPWA, showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,6 +86,14 @@ export function Navbar() {
                   </Link>
                 );
               })}
+              {isInstallable && (
+                <button
+                  onClick={installPWA}
+                  className="bg-eductome-magenta text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-pink-600 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <Download className="w-4 h-4" /> Installer l'App
+                </button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -149,12 +159,61 @@ export function Navbar() {
                   </Link>
                 );
               })}
+              {isInstallable && (
+                <button
+                  onClick={() => {
+                    closeMenu();
+                    installPWA();
+                  }}
+                  className="mt-4 w-full bg-eductome-magenta text-white px-4 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-pink-600 transition-colors shadow-md"
+                >
+                  <Download className="w-5 h-5" /> Installer l'App EDUCTOME
+                </button>
+              )}
             </div>
           </div>
         )}
       </nav>
       {/* Spacer pour empêcher le contenu de passer sous la navbar fixe sur les autres pages */}
       {!isHome && <div className="h-16 md:h-20" />}
+
+      {/* iOS Install Prompt Modal */}
+      {showIOSPrompt && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 pb-10">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowIOSPrompt(false)} />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95">
+            <button 
+              onClick={() => setShowIOSPrompt(false)} 
+              className="absolute top-4 right-4 p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="text-center space-y-4 pt-2">
+              <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <img src="/logo-pwa.png" alt="Eductome App" className="w-10 h-10 object-contain" />
+              </div>
+              <h3 className="text-xl font-bold text-eductome-marine font-playfair">Installer EDUCTOME</h3>
+              <p className="text-sm text-gray-600">Installez cette application sur votre écran d'accueil pour un accès rapide et facile, sans passer par le navigateur.</p>
+              
+              <div className="bg-gray-50 rounded-xl p-4 text-left mt-6 border border-gray-100">
+                <ol className="space-y-4 text-sm text-gray-700 font-medium">
+                  <li className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-eductome-marine text-white text-xs shrink-0">1</span>
+                    Appuyez sur <Share className="w-5 h-5 text-blue-500 mx-1" /> dans la barre Safari
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-eductome-marine text-white text-xs shrink-0">2</span>
+                    Faites défiler et appuyez sur <br /> <span className="font-bold flex items-center gap-1 mt-1">"Sur l'écran d'accueil" <PlusSquare className="w-4 h-4" /></span>
+                  </li>
+                </ol>
+              </div>
+              <button onClick={() => setShowIOSPrompt(false)} className="w-full py-3 bg-eductome-marine text-white rounded-xl font-bold mt-4 hover:bg-blue-900 transition-colors">
+                J'ai compris
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
