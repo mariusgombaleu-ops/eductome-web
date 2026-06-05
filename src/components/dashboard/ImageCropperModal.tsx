@@ -27,8 +27,8 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> 
     throw new Error('No 2d context');
   }
 
-  canvas.width = 256;
-  canvas.height = 256;
+  canvas.width = 128;
+  canvas.height = 128;
 
   ctx.drawImage(
     image,
@@ -38,11 +38,11 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height,
     0,
     0,
-    256,
-    256
+    128,
+    128
   );
 
-  return canvas.toDataURL('image/jpeg', 0.8);
+  return canvas.toDataURL('image/jpeg', 0.5);
 };
 
 export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, onClose, onCropComplete }) => {

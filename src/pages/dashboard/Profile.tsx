@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { useRef } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
@@ -95,12 +95,12 @@ export const Profile = () => {
       setUploadingPhoto(true);
 
       // Update firestore document
-      await updateDoc(doc(db, 'users', currentUser.uid), { photoURL: croppedBase64 });
+      await setDoc(doc(db, 'users', currentUser.uid), { photoURL: croppedBase64 }, { merge: true });
       
       addToast({ type: 'success', title: 'Photo de profil mise à jour', message: 'Ta photo de profil a été mise à jour avec succès.' });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving photo:", error);
-      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de mettre à jour ta photo de profil.' });
+      addToast({ type: 'error', title: 'Erreur', message: `Impossible de mettre à jour: ${error.message || 'Erreur inconnue'}` });
     } finally {
       setUploadingPhoto(false);
       setSelectedImage(null);
