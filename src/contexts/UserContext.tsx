@@ -30,6 +30,23 @@ export const getLevelFromXp = (xp: number): UserLevel => {
   return USER_LEVELS[0];
 };
 
+export interface UserGoals {
+  bacPoints?: number;
+  generalAverage?: number;
+  subjectTargets?: Record<string, number>;
+  trimesterTargets?: {
+    t1?: number;
+    t2?: number;
+    t3?: number;
+  };
+}
+
+export interface UserGrades {
+  t1?: Record<string, number[]>;
+  t2?: Record<string, number[]>;
+  t3?: Record<string, number[]>;
+}
+
 interface UserContextType {
   xp: number;
   level: UserLevel;
@@ -45,8 +62,12 @@ interface UserContextType {
   highschool: string;
   favoriteSubject: string;
   goal: string;
+  goals: UserGoals;
+  grades: UserGrades;
   createdAt: string;
   photoURL: string | null;
+  updateGoals: (newGoals: UserGoals) => Promise<void>;
+  updateGrades: (newGrades: UserGrades) => Promise<void>;
   gainXp: (amount: number, reason: string, actionId?: string) => void;
   hasActionBeenRewarded: (actionId: string) => boolean;
   unlockCourse: (courseId: string) => void;
@@ -68,12 +89,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activityHistory, setActivityHistory] = useState<Record<string, number>>({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [userRole, setUserRole] = useState<'student' | 'grand_frere' | 'admin' | 'equipe'>('student');
-  const [pseudo, setPseudo] = useState('');
+  const [pseudo, setPseudo] = useState('Champion(ne)');
   const [sexe, setSexe] = useState<'M' | 'F' | undefined>(undefined);
-  const [levelString, setLevelString] = useState('');
+  const [levelString, setLevelString] = useState('terminale-d');
   const [highschool, setHighschool] = useState('');
   const [favoriteSubject, setFavoriteSubject] = useState('');
   const [goal, setGoal] = useState('');
+  const [goals, setGoals] = useState<UserGoals>({});
+  const [grades, setGrades] = useState<UserGrades>({});
   const [createdAt, setCreatedAt] = useState('');
   const [photoURL, setPhotoURL] = useState<string | null>(null);
 
@@ -126,6 +149,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setHighschool(data.highschool || '');
         setFavoriteSubject(data.favoriteSubject || '');
         setGoal(data.goal || '');
+        setGoals(data.goals || {});
+        setGrades(data.grades || {});
         setPhotoURL(data.photoURL || currentUser.photoURL || null);
         
         if (data.createdAt) {
@@ -328,18 +353,40 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     addToast({ type: 'info', title: 'Test', message: 'Profil réinitialisé dans Firebase : Nouvel Élève.' });
   };
 
-  const unlockEverything = async () => {
-    if (!currentUser) return;
-    const userRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(userRef, {
-      xp: 5000,
-      unlockedCourses: arrayUnion('t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff')
-    });
-    addToast({ type: 'success', title: 'Mode Caïman activé', message: 'Tomes débloqués et XP max enregistrés dans Firebase.' });
+  const unlockEverything = () => {
+    // Dev only
   };
 
-  const addXpDev = (amount: number) => {
-    gainXp(amount, 'Mode Testeur');
+  const addXpDev = async (amount: number) => {
+    await gainXp(amount, 'Dev boost', 'dev_boost');
+  };
+
+  const updateGoals = async (newGoals: UserGoals) => {
+    if (!currentUser) return;
+    try {
+      const db = getFirestore();
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        goals: newGoals
+      });
+      setGoals(newGoals);
+    } catch (err) {
+      console.error("Failed to update goals", err);
+      throw err;
+    }
+  };
+
+  const updateGrades = async (newGrades: UserGrades) => {
+    if (!currentUser) return;
+    try {
+      const db = getFirestore();
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        grades: newGrades
+      });
+      setGrades(newGrades);
+    } catch (err) {
+      console.error("Failed to update grades", err);
+      throw err;
+    }
   };
 
   return (
@@ -358,6 +405,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       highschool,
       favoriteSubject,
       goal,
+      goals,
+      grades,
       createdAt,
       photoURL,
       gainXp, 
@@ -365,7 +414,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       unlockCourse,
       resetUser,
       unlockEverything,
-      addXpDev
+      addXpDev,
+      updateGoals,
+      updateGrades
     }}>
       {children}
     </UserContext.Provider>

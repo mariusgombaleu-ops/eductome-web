@@ -24,6 +24,7 @@ import {
   Newspaper,
   Megaphone,
   PlusSquare, 
+  Calculator,
   X 
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
@@ -39,11 +40,11 @@ export const DashboardLayout = () => {
   const outlet = useOutlet();
   const { theme, toggleTheme } = useTheme();
   const { isInstallable, installPWA, showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
-
   const navigation = [
     { name: 'Vue d\'ensemble', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Mon Profil', href: '/dashboard/profile', icon: User },
     { name: 'Mes Cours', href: '/dashboard/courses', icon: BookOpen },
+    { name: 'Mes Notes & Objectifs', href: '/dashboard/objectifs', icon: Calculator },
     { name: 'Forum d\'Entraide', href: '/forum', icon: MessageSquare },
     { name: 'Ressources Gratuites', href: '/dashboard/ressources', icon: FileText },
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },

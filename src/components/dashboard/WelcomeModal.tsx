@@ -3,7 +3,11 @@ import { X } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import { useAuth } from '../../contexts/AuthContext';
 
-export function WelcomeModal() {
+interface WelcomeModalProps {
+  onComplete?: () => void;
+}
+
+export function WelcomeModal({ onComplete }: WelcomeModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [showButton, setShowButton] = useState(false);
@@ -176,10 +180,13 @@ export function WelcomeModal() {
 
           <div className={`mt-6 transition-all duration-500 transform ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
             <button 
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (onComplete) onComplete();
+              }}
               className="w-full py-3.5 bg-[#D81B60] hover:bg-[#C2185B] text-white rounded-xl font-bold transition-all shadow-lg shadow-pink-900/20 active:scale-95 text-base md:text-lg flex items-center justify-center gap-2"
             >
-              C'est parti ! 🚀
+              Commençons par tes objectifs 🎯
             </button>
           </div>
         </div>

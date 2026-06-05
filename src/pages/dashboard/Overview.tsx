@@ -4,6 +4,7 @@ import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link } from 'react-router-dom';
 import { useUser, USER_LEVELS } from '../../contexts/UserContext';
 import { WelcomeModal } from '../../components/dashboard/WelcomeModal';
+import { GoalsOnboardingModal } from '../../components/dashboard/GoalsOnboardingModal';
 
 const QUOTES = [
   "Chaque minute d'étude est un pas de plus vers ton but.",
@@ -17,6 +18,7 @@ export const Overview = () => {
   const { xp, level, rewardedActions, pseudo } = useUser();
   const [quote, setQuote] = useState(QUOTES[0]);
   const [greeting, setGreeting] = useState("Bonjour");
+  const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
   
   const isNewUser = xp === 0;
   let completedQuizzes = 0;
@@ -33,9 +35,14 @@ export const Overview = () => {
     else setGreeting("Bonsoir");
   }, []);
 
+  const handleWelcomeComplete = () => {
+    setIsGoalsModalOpen(true);
+  };
+
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
-      <WelcomeModal />
+      <WelcomeModal onComplete={handleWelcomeComplete} />
+      <GoalsOnboardingModal isOpen={isGoalsModalOpen} onClose={() => setIsGoalsModalOpen(false)} />
       {/* Welcome Banner */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg h-[140px] md:h-[160px] flex items-center justify-between animate-fade-in-up">
         {/* Decorative elements */}

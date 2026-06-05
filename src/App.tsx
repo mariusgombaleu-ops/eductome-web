@@ -23,6 +23,7 @@ import { CourseReader } from './pages/dashboard/CourseReader';
 import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
 import { StarterPack } from './pages/dashboard/StarterPack';
 import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
+import { GradesCalculator } from './pages/dashboard/GradesCalculator';
 
 import { UserProvider } from './contexts/UserContext';
 
@@ -57,6 +58,7 @@ function App() {
               <Route path="/dashboard/starter-pack" element={<StarterPack />} />
               <Route path="/dashboard/courses" element={<MyCourses />} />
               <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
+              <Route path="/dashboard/objectifs" element={<GradesCalculator />} />
               <Route path="/dashboard/profile" element={<Profile />} />
               <Route path="/dashboard/settings" element={<Settings />} />
               <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
