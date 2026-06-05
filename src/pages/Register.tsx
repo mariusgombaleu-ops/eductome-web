@@ -69,7 +69,12 @@ export const Register = () => {
         setStep(3);
       } catch (err: any) {
         console.error("Code verification error:", err);
-        setError("Le code est incorrect ou a expiré.");
+        // Si l'erreur vient de la création de compte et non du code SMS
+        if (err.code === 'auth/email-already-in-use') {
+          setError("Ce numéro est déjà inscrit. Retourne à la page de connexion.");
+        } else {
+          setError(`Erreur: ${err.message || "Le code est incorrect ou a expiré."}`);
+        }
       } finally {
         setIsLoading(false);
       }
