@@ -50,7 +50,7 @@ export const Register = () => {
         setStep(2);
       } catch (err: any) {
         console.error("SMS Error:", err);
-        setError("Erreur lors de l'envoi du SMS. Vérifie le numéro.");
+        setError(`Erreur: ${err.message || "Impossible d'envoyer le SMS"}`);
       } finally {
         setIsLoading(false);
       }
