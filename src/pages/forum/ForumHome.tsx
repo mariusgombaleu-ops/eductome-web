@@ -200,7 +200,7 @@ export const ForumHome = () => {
                           }}
                           className={`flex items-center gap-1.5 transition-colors ${hasActionBeenRewarded(`forum_like_${disc.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] hover:text-[#D81B60]'}`}
                         >
-                          <Heart className="w-4 h-4" /> 
+                          <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${disc.id}`) ? "currentColor" : "none"} /> 
                           Aimer
                         </button>
                         <div className="flex items-center gap-1.5 text-[#1976D2]">

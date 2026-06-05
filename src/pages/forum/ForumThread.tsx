@@ -34,14 +34,20 @@ export const ForumThread = () => {
       setLoading(false);
     });
 
-    // Load replies
+    // Load replies (without orderBy to avoid missing index error)
     const q = query(
       collection(db, 'forum_replies'),
-      where('discussionId', '==', id),
-      orderBy('createdAt', 'asc')
+      where('discussionId', '==', id)
     );
     const unsubReplies = onSnapshot(q, (snapshot) => {
-      setReplies(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Client-side sorting
+      fetched.sort((a: any, b: any) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return timeA - timeB;
+      });
+      setReplies(fetched);
     });
 
     return () => {
@@ -177,10 +183,30 @@ export const ForumThread = () => {
         </div>
 
         <div className="mt-6 ml-16 flex gap-4">
-          <button className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60] transition-colors">
-            <Heart className="w-4 h-4" /> Aimer
+          <button 
+            onClick={() => {
+              const actionId = `forum_like_${discussion.id}`;
+              if (!hasActionBeenRewarded(actionId)) {
+                fireConfetti();
+                gainXp(10, 'Tu as aidé la communauté !', actionId);
+              }
+            }}
+            className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${discussion.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+          >
+            <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${discussion.id}`) ? "currentColor" : "none"} /> Aimer
           </button>
-          <button className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] transition-colors">
+          <button 
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: discussion.title,
+                  text: "Regarde cette discussion sur Eductome !",
+                  url: window.location.href,
+                }).catch(console.error);
+              }
+            }}
+            className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] transition-colors"
+          >
             <Share2 className="w-4 h-4" /> Partager
           </button>
           {!discussion.isPertinent && (
@@ -222,8 +248,17 @@ export const ForumThread = () => {
                 </div>
 
                 <div className="mt-4 flex gap-4">
-                  <button className="flex items-center gap-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60] transition-colors">
-                    <Heart className="w-3 h-3" /> Aimer
+                  <button 
+                    onClick={() => {
+                      const actionId = `forum_reply_like_${reply.id}`;
+                      if (!hasActionBeenRewarded(actionId)) {
+                        fireConfetti();
+                        gainXp(5, 'Tu as encouragé un membre', actionId);
+                      }
+                    }}
+                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+                  >
+                    <Heart className="w-3 h-3" fill={hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? "currentColor" : "none"} /> Aimer
                   </button>
                   {!reply.isCorrect && (
                     <button 

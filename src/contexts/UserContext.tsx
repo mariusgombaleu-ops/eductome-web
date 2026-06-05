@@ -104,10 +104,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setActivityHistory(data.activityHistory || {});
         
         let computedRole = data.role || 'student';
-        const phone = currentUser.phoneNumber || '';
-        if (phone.includes('0715811398')) {
+        const identifier = currentUser.phoneNumber || currentUser.email || '';
+        if (identifier.includes('0715811398')) {
           computedRole = 'grand_frere';
-        } else if (phone.includes('0799506300')) {
+        } else if (identifier.includes('0799506300')) {
           computedRole = 'admin';
         }
 
