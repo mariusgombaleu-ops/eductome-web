@@ -68,6 +68,7 @@ export const pollSelarSales = onSchedule({
           amount: sale.amount,
           currency: sale.currency,
           customerPhone: customerPhone,
+          customerEmail: sale.customer?.email || "",
           productId: productId,
           status: "SUCCESS",
           provider: "Selar (Polling)",
@@ -90,19 +91,25 @@ export const pollSelarSales = onSchedule({
 
 // 2. Endpoint HTTP pour le frontend (Polling côté client)
 export const checkTransaction = onRequest({ cors: true }, async (req, res) => {
-  const reference = req.query.reference as string;
+  const email = req.query.email as string;
   
-  if (!reference) {
-    res.status(400).json({ error: "Reference is required" });
+  if (!email) {
+    res.status(400).json({ error: "Email is required" });
     return;
   }
 
   try {
     const db = admin.firestore();
-    const purchaseDoc = await db.collection("purchases").doc(reference).get();
+    // Query the latest purchase by this email
+    const snapshot = await db.collection("purchases")
+      .where("customerEmail", "==", email)
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .get();
 
-    if (purchaseDoc.exists) {
-      const data = purchaseDoc.data();
+    if (!snapshot.empty) {
+      const doc = snapshot.docs[0];
+      const data = doc.data();
       res.status(200).json({ 
         success: true, 
         status: data?.status,

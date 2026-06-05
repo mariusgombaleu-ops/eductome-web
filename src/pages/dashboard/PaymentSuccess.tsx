@@ -6,7 +6,7 @@ import { useUser } from '../../contexts/UserContext';
 export const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const reference = searchParams.get('reference') || searchParams.get('ref') || searchParams.get('tx_ref');
+  const email = searchParams.get('email');
   
   const [status, setStatus] = useState<'polling' | 'success' | 'error' | 'timeout'>('polling');
   const [unlockedProduct, setUnlockedProduct] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export const PaymentSuccess = () => {
   const maxPolls = 36; // 3 minutes maximum (36 * 5s)
 
   useEffect(() => {
-    if (!reference) {
+    if (!email) {
       setDebugUrl(window.location.href);
       setStatus('error');
       return;
@@ -24,7 +24,7 @@ export const PaymentSuccess = () => {
 
     const checkPayment = async () => {
       try {
-        const response = await fetch(`https://us-central1-eductome-web.cloudfunctions.net/checkTransaction?reference=${reference}`);
+        const response = await fetch(`https://us-central1-eductome-web.cloudfunctions.net/checkTransaction?email=${encodeURIComponent(email)}`);
         const data = await response.json();
 
         if (data.success && data.productId) {

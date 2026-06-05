@@ -50,7 +50,7 @@ exports.pollSelarSales = (0, scheduler_1.onSchedule)({
     secrets: [selarApiKey],
     timeZone: "Africa/Abidjan",
 }, async (event) => {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
     const db = admin.firestore();
     try {
         const key = selarApiKey.value();
@@ -94,6 +94,7 @@ exports.pollSelarSales = (0, scheduler_1.onSchedule)({
                     amount: sale.amount,
                     currency: sale.currency,
                     customerPhone: customerPhone,
+                    customerEmail: ((_g = sale.customer) === null || _g === void 0 ? void 0 : _g.email) || "",
                     productId: productId,
                     status: "SUCCESS",
                     provider: "Selar (Polling)",
@@ -113,16 +114,22 @@ exports.pollSelarSales = (0, scheduler_1.onSchedule)({
 });
 // 2. Endpoint HTTP pour le frontend (Polling côté client)
 exports.checkTransaction = (0, https_1.onRequest)({ cors: true }, async (req, res) => {
-    const reference = req.query.reference;
-    if (!reference) {
-        res.status(400).json({ error: "Reference is required" });
+    const email = req.query.email;
+    if (!email) {
+        res.status(400).json({ error: "Email is required" });
         return;
     }
     try {
         const db = admin.firestore();
-        const purchaseDoc = await db.collection("purchases").doc(reference).get();
-        if (purchaseDoc.exists) {
-            const data = purchaseDoc.data();
+        // Query the latest purchase by this email
+        const snapshot = await db.collection("purchases")
+            .where("customerEmail", "==", email)
+            .orderBy("createdAt", "desc")
+            .limit(1)
+            .get();
+        if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            const data = doc.data();
             res.status(200).json({
                 success: true,
                 status: data === null || data === void 0 ? void 0 : data.status,
