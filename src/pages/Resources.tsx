@@ -304,7 +304,7 @@ export function Resources() {
                 <BookOpen className="w-8 h-8" />
                 Ressources Gratuites
               </h1>
-              <p className="text-blue-100 max-w-lg mt-2 text-sm">
+              <p className="text-blue-100 mt-2 text-sm">
                 Bienvenue dans la salle d'entraînement du Grand Frère. Ici tu t'exerces, tu te trompes, tu corriges, tu progresses. Pas un franc à débourser.
               </p>
             </div>
@@ -318,7 +318,7 @@ export function Resources() {
               <h1 className="font-playfair text-4xl md:text-6xl font-bold text-white mb-6 relative z-10">
                 Ressources <span className="text-eductome-magenta">Gratuites</span>
               </h1>
-              <p className="text-gray-200 max-w-2xl mx-auto text-lg md:text-xl font-light relative z-10">
+              <p className="text-gray-200 mx-auto text-lg md:text-xl font-light relative z-10">
                 Bienvenue dans la salle d'entraînement du Grand Frère. Ici tu t'exerces, tu te trompes, tu corriges, tu progresses. Pas un franc à débourser — juste à toi de bosser sérieusement.
               </p>
             </ScrollReveal>
@@ -405,7 +405,7 @@ export function Resources() {
                   <span className="text-3xl">🔐</span>
                 </div>
                 <h3 className="text-2xl font-bold font-playfair mb-3">24 autres fiches secrètes t'attendent !</h3>
-                <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+                <p className="text-blue-100 mb-6 mx-auto">
                   Le <strong>"Méga-Pack Méthode"</strong> complet (toutes les fiches avancées de Maths, PC, SVT et HG) n'est pas en vente libre. Il t'est <strong className="text-white">OFFERT</strong> en bonus exclusif dès que tu débloques ton premier Tome complet.
                 </p>
                 <Link 
@@ -422,7 +422,7 @@ export function Resources() {
         {/* TAB 2: Exercices Corrigés */}
         {activeTab === 'exercices' && (
           <ScrollReveal>
-            <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-center text-gray-600 mb-8 mx-auto">
               Choisis ton tome, Champion(ne). Les exercices vont de BASE à BAC. Tu commences doucement, tu montes en puissance, tu finis fort. On est ensemble.
             </p>
             
@@ -740,7 +740,7 @@ export function Resources() {
                       <PenTool className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#1A3557] mb-2">Bientôt disponible</h3>
-                    <p className="text-gray-600 mb-6 max-w-md mx-auto">Les exercices corrigés de ce tome sont en cours de rédaction par notre équipe pédagogique.</p>
+                    <p className="text-gray-600 mb-6 mx-auto">Les exercices corrigés de ce tome sont en cours de rédaction par notre équipe pédagogique.</p>
                     <a href="https://wa.me/2250715811398" target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">
                       Préviens-moi sur WhatsApp
                     </a>
@@ -762,7 +762,7 @@ export function Resources() {
                 
                 <div className="flex-grow">
                   <h3 className="text-2xl md:text-3xl font-bold font-playfair mb-3">Tu veux t'entraîner sur +500 exercices corrigés ?</h3>
-                  <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                  <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-6">
                     Le <strong>Méga-Pack "Exos Corrigés"</strong> (couvrant l'intégralité du programme pour TOUTES les matières) est <strong className="text-white bg-[#D81B60]/20 px-2 py-0.5 rounded">OFFERT</strong> automatiquement en bonus avec ton premier achat de manuel complet !
                   </p>
                   <Link 
