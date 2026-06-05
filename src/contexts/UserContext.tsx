@@ -40,6 +40,7 @@ interface UserContextType {
   isAdmin: boolean;
   userRole: 'student' | 'grand_frere' | 'admin' | 'equipe';
   pseudo: string;
+  sexe?: 'M' | 'F';
   levelString: string;
   highschool: string;
   favoriteSubject: string;
@@ -68,6 +69,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [userRole, setUserRole] = useState<'student' | 'grand_frere' | 'admin' | 'equipe'>('student');
   const [pseudo, setPseudo] = useState('');
+  const [sexe, setSexe] = useState<'M' | 'F' | undefined>(undefined);
   const [levelString, setLevelString] = useState('');
   const [highschool, setHighschool] = useState('');
   const [favoriteSubject, setFavoriteSubject] = useState('');
@@ -87,6 +89,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAdmin(false);
       setUserRole('student');
       setPseudo('');
+      setSexe(undefined);
       setLevelString('');
       setHighschool('');
       setFavoriteSubject('');
@@ -118,6 +121,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(computedRole));
         
         setPseudo(data.pseudo || 'Champion');
+        setSexe(data.sexe);
         setLevelString(data.level || 'Terminale');
         setHighschool(data.highschool || '');
         setFavoriteSubject(data.favoriteSubject || '');
@@ -349,6 +353,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAdmin,
       userRole,
       pseudo,
+      sexe,
       levelString,
       highschool,
       favoriteSubject,

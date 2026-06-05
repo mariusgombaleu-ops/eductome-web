@@ -82,6 +82,7 @@ export const Register = () => {
     } else {
       const levelSelect = document.getElementById('level') as HTMLSelectElement;
       const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
+      const sexe = (document.getElementById('sexe') as HTMLSelectElement).value;
       const highschool = (document.getElementById('highschool') as HTMLInputElement).value;
       const subject = (document.getElementById('subject') as HTMLSelectElement).value;
       const goal = (document.getElementById('goal') as HTMLSelectElement).value;
@@ -96,6 +97,7 @@ export const Register = () => {
           // Initialize their profile in Firestore
           await setDoc(doc(db, 'users', currentUser.uid), {
             pseudo: firstName,
+            sexe: sexe,
             level: levelSelect.value,
             highschool: highschool,
             favoriteSubject: subject,
@@ -296,6 +298,25 @@ export const Register = () => {
                     className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-[#30363D] rounded-lg placeholder-gray-400 dark:placeholder-[#6E7681] bg-white dark:bg-[#0D1117] text-gray-900 dark:text-white focus:outline-none focus:ring-eductome-magenta focus:border-eductome-magenta sm:text-sm transition-colors"
                     placeholder="Ex: Marius"
                   />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="sexe" className="block text-sm font-medium text-gray-700 dark:text-[#E6EDF3]">Sexe</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <UserIcon className="h-5 w-5 text-gray-400 dark:text-[#6E7681]" />
+                  </div>
+                  <select
+                    id="sexe"
+                    required
+                    defaultValue=""
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-[#30363D] rounded-lg focus:outline-none focus:ring-eductome-magenta focus:border-eductome-magenta sm:text-sm bg-white dark:bg-[#0D1117] text-gray-900 dark:text-white transition-colors"
+                  >
+                    <option value="" disabled className="text-gray-400">Es-tu un garçon ou une fille ?</option>
+                    <option value="M">Garçon</option>
+                    <option value="F">Fille</option>
+                  </select>
                 </div>
               </div>
 

@@ -6,21 +6,22 @@ export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [showButton, setShowButton] = useState(false);
-  const { pseudo } = useUser();
+  const { pseudo, sexe } = useUser();
   
-  const fullText = `Bienvenue ${pseudo || 'Champion(ne)'} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
+  const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
+  const fullText = `Bienvenue ${pseudo || championWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
 
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('eductome_welcome_seen');
-    if (!hasSeenWelcome) {
+    if (!hasSeenWelcome && pseudo) { // Only trigger when pseudo is loaded
       // Small delay before showing modal
       const timer = setTimeout(() => {
         setIsOpen(true);
         localStorage.setItem('eductome_welcome_seen', 'true');
-      }, 1000);
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [pseudo]);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,7 +33,7 @@ export function WelcomeModal() {
           clearInterval(typingInterval);
           setTimeout(() => setShowButton(true), 500);
         }
-      }, 55); // Typing speed (slower)
+      }, 80); // Typing speed (slower)
       return () => clearInterval(typingInterval);
     }
   }, [isOpen, fullText]);
@@ -82,7 +83,7 @@ export function WelcomeModal() {
           </div>
 
           <div className="min-h-[160px] md:min-h-[220px]">
-            <p className="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium leading-relaxed font-playfair italic">
+            <p className="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium leading-relaxed font-poppins">
               "{displayedText}"
               <span className="animate-pulse inline-block w-[3px] h-5 bg-gray-500 ml-1 translate-y-1"></span>
             </p>
