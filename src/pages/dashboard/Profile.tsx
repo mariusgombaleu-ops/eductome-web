@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { useRef } from 'react';
-import { updateProfile } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
@@ -95,9 +94,6 @@ export const Profile = () => {
       setShowCropModal(false);
       setUploadingPhoto(true);
 
-      // Update auth profile
-      await updateProfile(currentUser, { photoURL: croppedBase64 });
-      
       // Update firestore document
       await updateDoc(doc(db, 'users', currentUser.uid), { photoURL: croppedBase64 });
       
