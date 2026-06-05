@@ -14,12 +14,36 @@ export function Blog() {
   const [activeCategory, setActiveCategory] = useState('Tous');
 
   const categories = [
-    { id: 'Tous', icon: Newspaper, label: 'Tous les articles' },
-    { id: 'Spécial BAC / BEPC', icon: GraduationCap, label: 'Spécial BAC / BEPC' },
-    { id: 'Actualités Scolaires', icon: Calendar, label: 'Actualités Scolaires' },
-    { id: 'Grands Frères', icon: Users, label: 'Grands Frères' },
-    { id: 'Astuces & Conseils', icon: Lightbulb, label: 'Astuces & Conseils' },
-    { id: 'Orientation', icon: Compass, label: 'Orientation' }
+    { 
+      id: 'Tous', icon: Newspaper, label: 'Tous les articles', 
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-eductome-marine hover:text-eductome-marine dark:hover:text-white',
+      activeClass: 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' 
+    },
+    { 
+      id: 'Spécial BAC / BEPC', icon: GraduationCap, label: 'Spécial BAC / BEPC', 
+      unselectedClass: 'border-[#D81B60] text-[#D81B60] hover:bg-[#D81B60]/10',
+      activeClass: 'bg-[#D81B60] text-white border-[#D81B60] shadow-md transform scale-[1.02]' 
+    },
+    { 
+      id: 'Actualités Scolaires', icon: Calendar, label: 'Actualités Scolaires', 
+      unselectedClass: 'border-[#1976D2] text-[#1976D2] hover:bg-[#1976D2]/10',
+      activeClass: 'bg-[#1976D2] text-white border-[#1976D2] shadow-md transform scale-[1.02]' 
+    },
+    { 
+      id: 'Grands Frères', icon: Users, label: 'Grands Frères', 
+      unselectedClass: 'border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-green-600/10',
+      activeClass: 'bg-green-600 dark:bg-green-500 text-white border-green-600 dark:border-green-500 shadow-md transform scale-[1.02]' 
+    },
+    { 
+      id: 'Astuces & Conseils', icon: Lightbulb, label: 'Astuces & Conseils', 
+      unselectedClass: 'border-[#E65100] text-[#E65100] hover:bg-[#E65100]/10',
+      activeClass: 'bg-[#E65100] text-white border-[#E65100] shadow-md transform scale-[1.02]' 
+    },
+    { 
+      id: 'Orientation', icon: Compass, label: 'Orientation', 
+      unselectedClass: 'border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 hover:bg-purple-600/10',
+      activeClass: 'bg-purple-600 dark:bg-purple-500 text-white border-purple-600 dark:border-purple-500 shadow-md transform scale-[1.02]' 
+    }
   ];
 
   const filteredPosts = activeCategory === 'Tous' 
@@ -79,8 +103,8 @@ export function Blog() {
               onClick={() => setActiveCategory(cat.id)}
               className={`flex-1 min-w-[120px] md:min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${
                 activeCategory === cat.id 
-                  ? 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' 
-                  : `border-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-[#30363D] hover:text-eductome-marine dark:hover:text-white`
+                  ? cat.activeClass
+                  : cat.unselectedClass
               }`}
             >
               <cat.icon className={`w-4 h-4 md:w-5 md:h-5 mr-2 ${activeCategory === cat.id && cat.id !== 'Tous' ? 'animate-bounce' : ''}`} /> 
