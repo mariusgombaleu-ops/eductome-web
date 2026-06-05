@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useUser, UserGrades } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, Calculator, ChevronDown, ChevronUp, Plus, TrendingUp, AlertCircle } from 'lucide-react';
+import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X } from 'lucide-react';
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades } = useUser();

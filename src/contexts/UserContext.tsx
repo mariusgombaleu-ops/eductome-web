@@ -364,7 +364,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateGoals = async (newGoals: UserGoals) => {
     if (!currentUser) return;
     try {
-      const db = getFirestore();
       await updateDoc(doc(db, 'users', currentUser.uid), {
         goals: newGoals
       });
@@ -378,7 +377,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateGrades = async (newGrades: UserGrades) => {
     if (!currentUser) return;
     try {
-      const db = getFirestore();
       await updateDoc(doc(db, 'users', currentUser.uid), {
         grades: newGrades
       });
