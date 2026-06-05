@@ -1,5 +1,6 @@
 import React from 'react';
 import { Lock, CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 // TODO: Intégrer AuthContext Firebase plus tard quand on mettra la base de données
 // import { useAuth } from '../../contexts/AuthContext';
 
@@ -19,6 +20,7 @@ const SELAR_CHAPTER_LINK = "https://selar.com/09b17bf2f1";
 const SELAR_COLLECTION_LINK = "https://selar.com/27v5n07o20";
 
 export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, onClose, tomeTitle, price, isChapter = false, isCollection = false, courseId }) => {
+  const navigate = useNavigate();
   // Pour l'instant, un numéro fictif puisqu'on n'a pas encore de vraie BDD branchée
   const user = { phoneNumber: "0700000000" };
   
@@ -30,6 +32,7 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
 
   const handlePaymentRedirect = () => {
     let finalLink = paymentLink;
+    let paymentEmail = '';
     
     // Sauvegarder le courseId pour le déblocage après paiement
     if (courseId) {
@@ -39,21 +42,25 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
     if (user?.phoneNumber) {
       // Nettoyer le numéro pour l'email (enlever les + et espaces)
       const cleanPhone = user.phoneNumber.replace(/[^0-9]/g, '');
-      const email = `${cleanPhone}@eductome.app`;
+      paymentEmail = `${cleanPhone}@eductome.app`;
       
       const encodedPhone = encodeURIComponent(user.phoneNumber);
       const separator = finalLink.includes('?') ? '&' : '?';
       
-      finalLink = `${finalLink}${separator}email=${encodeURIComponent(email)}&phone=${encodedPhone}`;
+      finalLink = `${finalLink}${separator}email=${encodeURIComponent(paymentEmail)}&phone=${encodedPhone}`;
       
       // Enregistrer l'email dans le storage pour que le Vigile background prenne le relais
-      localStorage.setItem('eductome_waiting_payment_email', email);
+      localStorage.setItem('eductome_waiting_payment_email', paymentEmail);
       localStorage.setItem('eductome_waiting_payment_time', Date.now().toString());
     }
 
     // Redirection vers le lien Selar avec paramètres
     window.open(finalLink, '_blank');
     onClose();
+    
+    if (paymentEmail) {
+      navigate(`/dashboard/paiement-confirme?email=${encodeURIComponent(paymentEmail)}`);
+    }
   };
 
   return (
