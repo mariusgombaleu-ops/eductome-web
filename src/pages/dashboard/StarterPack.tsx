@@ -74,7 +74,7 @@ export const StarterPack = () => {
   });
 
   return (
-    <div className="space-y-6 pb-10 font-poppins">
+    <div className="space-y-6 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white transition-colors">
         <ArrowLeft className="w-4 h-4" /> Retour au Dashboard
       </button>

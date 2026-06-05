@@ -32,7 +32,7 @@ export const Overview = () => {
   }, []);
 
   return (
-    <div className="space-y-8 pb-10 font-poppins">
+    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       {/* Welcome Banner */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg h-[140px] md:h-[160px] flex items-center justify-between animate-fade-in-up">
         {/* Decorative elements */}

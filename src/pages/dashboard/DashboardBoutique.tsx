@@ -23,7 +23,7 @@ export const DashboardBoutique = () => {
   };
 
   return (
-    <div className="space-y-8 pb-10 font-poppins">
+    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       {/* Banner */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
         {/* Decorative elements */}
