@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { collectionsData } from '../../data/collections';
-import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp } from 'lucide-react';
-import { CinetPayModal } from '../../components/checkout/CinetPayModal';
+import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
+import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 
 export const DashboardBoutique = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<{ title: string, price: number, isChapter: boolean } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ title: string, price: number, isChapter: boolean, isCollection?: boolean } | null>(null);
   const [openCollections, setOpenCollections] = useState<Record<string, boolean>>({
     'cles-maths': true // Ouvrir la première collection par défaut
   });
@@ -17,8 +17,8 @@ export const DashboardBoutique = () => {
     }));
   };
 
-  const openCheckout = (title: string, price: number, isChapter: boolean) => {
-    setSelectedItem({ title, price, isChapter });
+  const openCheckout = (title: string, price: number, isChapter: boolean, isCollection: boolean = false) => {
+    setSelectedItem({ title, price, isChapter, isCollection });
     setModalOpen(true);
   };
 
@@ -42,6 +42,33 @@ export const DashboardBoutique = () => {
         </div>
       </div>
 
+      {/* VIP Collection Complete Banner */}
+      <div 
+        onClick={() => openCheckout('Collection Mathématiques (Tous les tomes)', 10000, false, true)}
+        className="relative bg-gradient-to-r from-amber-500 to-yellow-400 rounded-2xl p-1 overflow-hidden shadow-lg hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 mb-8"
+      >
+        <div className="bg-white dark:bg-[#161B22] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">OFFRE VIP RENTABLE</span>
+              <span className="text-amber-500 font-bold flex items-center"><Lock className="w-4 h-4 mr-1" /> Accès total</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-[#1A1A2E] dark:text-white mb-2">La Collection Mathématiques</h2>
+            <p className="text-gray-600 dark:text-[#8B949E] text-sm md:text-base">
+              Ne choisis plus. Débloque <strong>absolument tous les tomes de Mathématiques</strong> en un seul clic, pour toute l'année scolaire.
+            </p>
+          </div>
+          <div className="flex flex-col items-center md:items-end w-full md:w-auto">
+            <div className="text-gray-400 line-through text-sm font-bold mb-1">Valeur: +15 000 FCFA</div>
+            <div className="text-4xl md:text-5xl font-black text-amber-500 font-poppins mb-3">10 000 F</div>
+            <button className="w-full md:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
+              <Unlock className="w-5 h-5" />
+              Tout débloquer
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Grid of Tomes by Collection */}
       <div className="space-y-6">
         {collectionsData.filter(c => c.tomes && c.tomes.length > 0).map((collection) => {
@@ -62,60 +89,55 @@ export const DashboardBoutique = () => {
               <div className="p-4 sm:p-6 border-t border-[#E1E4E8] dark:border-[#30363D]">
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                   {collection.tomes?.map((tome, index) => (
-                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-2xl shadow-md border border-[#E1E4E8] dark:border-[#30363D] overflow-hidden flex flex-col group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
+                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group relative overflow-hidden animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
                       
-                      {/* Image / Header */}
-                      <div className="h-[90px] sm:h-[140px] relative p-3 sm:p-6 flex flex-col justify-end overflow-hidden" style={{ backgroundColor: collection.primaryColor }}>
-                        <div className="absolute inset-0 opacity-20">
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -mr-16 -mt-16"></div>
-                          <div className="absolute bottom-0 left-0 w-24 h-24 bg-black rounded-full -ml-12 -mb-12"></div>
-                        </div>
-                        <div className="relative z-10">
-                          <span className="text-[10px] sm:text-xs font-bold text-white/80 uppercase tracking-wider mb-0.5 sm:mb-1 block truncate">
-                            {collection.name}
+                      {/* Top Accent Line */}
+                      <div className="h-1 w-full" style={{ backgroundColor: collection.primaryColor }}></div>
+
+                      {/* Header Section */}
+                      <div className="p-3 sm:p-5 pb-0 flex-grow">
+                        <div className="flex items-start justify-between mb-2 sm:mb-3">
+                          <span className="inline-flex items-center px-2 py-0.5 sm:py-1 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md border border-gray-100 dark:border-gray-700">
+                            Tome {tome.number}
                           </span>
-                          <h3 className="text-sm sm:text-xl font-bold text-white drop-shadow-md leading-tight line-clamp-2">
-                            Tome {tome.number} : {tome.title}
-                          </h3>
+                          <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-300 dark:text-gray-600" />
+                        </div>
+                        
+                        <h3 className="text-xs sm:text-[15px] font-bold text-[#1A1A2E] dark:text-white leading-snug line-clamp-2 mb-2">
+                          {tome.title}
+                        </h3>
+                        
+                        <div className="flex items-baseline gap-1 mt-auto pt-1 sm:pt-2">
+                          <span className="text-sm sm:text-lg font-black text-[#1A3557] dark:text-white">
+                            1.500
+                          </span>
+                          <span className="text-[9px] sm:text-[10px] font-bold text-gray-400">
+                            FCFA
+                          </span>
                         </div>
                       </div>
-                      
-                      {/* Content & Actions */}
-                      <div className="p-3 sm:p-5 flex flex-col flex-grow">
-                        <div className="mb-3 sm:mb-4 hidden sm:block">
-                          <h4 className="text-xs sm:text-sm font-bold text-[#1A1A2E] dark:text-white mb-1 sm:mb-2 flex items-center gap-2">
-                            <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" /> Ce que contient ce tome :
-                          </h4>
-                          <ul className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-4 sm:ml-6 list-disc">
-                            {tome.chapters ? tome.chapters.map((chap, i) => (
-                              <li key={i}>{chap}</li>
-                            )) : (
-                              <>
-                                <li>Cours détaillé</li>
-                                <li>Méthode de résolution</li>
-                                <li>Exercices corrigés type BAC</li>
-                              </>
-                            )}
-                          </ul>
-                        </div>
 
-                        <div className="mt-auto space-y-2 sm:space-y-3 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-800">
-                          <button 
-                            onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false)}
-                            className="w-full py-2 sm:py-3 bg-[#1A3557] hover:bg-[#1976D2] text-white rounded-xl font-bold flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 transition-colors shadow-sm text-[11px] sm:text-base gap-1 sm:gap-0"
-                          >
-                            <span className="flex items-center gap-1 sm:gap-2">
-                              <Unlock className="w-3 h-3 sm:w-4 sm:h-4" /> Tome Complet
-                            </span>
-                            <span className="bg-white/20 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-sm">1.500 FCFA</span>
-                          </button>
-                          
+                      {/* Actions Section */}
+                      <div className="p-2 sm:p-4 bg-gray-50/50 dark:bg-[#0D1117]/50 border-t border-gray-100 dark:border-gray-800 mt-2 sm:mt-3">
+                        <button 
+                          onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false)}
+                          className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 mb-1.5 sm:mb-2"
+                        >
+                          <Unlock className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Débloquer le Tome
+                        </button>
+                        
+                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                           <button 
                             onClick={() => openCheckout(`Chapitre au choix - Tome ${tome.number}`, 300, true)}
-                            className="w-full py-2 sm:py-2.5 bg-transparent border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-600 dark:text-gray-300 rounded-xl font-medium flex items-center justify-center gap-1 sm:gap-2 transition-colors text-[10px] sm:text-sm leading-tight text-center"
+                            className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
                           >
-                            <span className="hidden sm:inline">Ou débloquer par chapitre (300 FCFA)</span>
-                            <span className="sm:hidden flex items-center gap-1"><Lock className="w-3 h-3" /> Chapitre (300 F)</span>
+                            <Lock className="w-2.5 h-2.5 text-gray-400" /> 1 Chapitre (300F)
+                          </button>
+                          <button 
+                            onClick={() => openCheckout(`Collection ${collection.name}`, collection.id === 'cles-maths' ? 10000 : 8000, false, true)}
+                            className="w-full bg-amber-50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-700 dark:text-amber-500 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
+                          >
+                            <Unlock className="w-2.5 h-2.5" /> Collection compl.
                           </button>
                         </div>
                       </div>
@@ -129,12 +151,13 @@ export const DashboardBoutique = () => {
       </div>
 
       {selectedItem && (
-        <CinetPayModal 
+        <SelarPaymentModal 
           isOpen={modalOpen} 
           onClose={() => setModalOpen(false)} 
           tomeTitle={selectedItem.title} 
           price={selectedItem.price} 
           isChapter={selectedItem.isChapter} 
+          isCollection={selectedItem.isCollection}
         />
       )}
     </div>

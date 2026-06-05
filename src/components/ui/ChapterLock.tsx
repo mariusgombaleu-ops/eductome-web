@@ -4,9 +4,10 @@ interface ChapterLockProps {
   chapterTitle: string;
   onUnlockChapter: () => void;
   onUnlockTome: () => void;
+  onUnlockCollection?: () => void;
 }
 
-export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome }: ChapterLockProps) => {
+export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome, onUnlockCollection }: ChapterLockProps) => {
 
   return (
     <div className="my-8 max-w-2xl mx-auto border-2 border-eductome-magenta rounded-2xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 relative">
@@ -50,10 +51,36 @@ export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome }: Cha
           </div>
         </div>
 
+        {/* Option 3: Collection Complète */}
+        {onUnlockCollection && (
+          <div 
+            className="mt-4 w-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-xl p-1 shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
+            onClick={onUnlockCollection}
+          >
+            <div className="bg-white dark:bg-[#161B22] rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-left flex-grow">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide text-sm">Offre VIP</h4>
+                  <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">RECOMMANDÉ</span>
+                </div>
+                <h3 className="font-black text-xl text-[#1A1A2E] dark:text-white mb-1">La Collection Complète</h3>
+                <p className="text-sm text-gray-600 dark:text-[#8B949E]">Débloque absolument TOUT. Accès à tous les tomes de Terminale D pendant 1 an.</p>
+              </div>
+              <div className="flex flex-col items-center sm:items-end min-w-[120px]">
+                <div className="text-xs text-gray-400 line-through mb-1">Au lieu de 15 000 F</div>
+                <div className="text-2xl font-black text-amber-500 mb-2">10 000 F</div>
+                <button className="w-full sm:w-auto px-6 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm text-sm">
+                  Devenir VIP
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
           <span>Paiement sécurisé via</span>
-          <span className="font-bold text-gray-500">CinetPay</span>
-          <span>(Mobile Money, Wave, Orange, MTN)</span>
+          <span className="font-bold text-[#1A3557] dark:text-[#E6EDF3]">Selar</span>
+          <span>(Wave, Orange, MTN, Visa)</span>
         </div>
       </div>
     </div>

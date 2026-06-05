@@ -14,7 +14,7 @@ import { courseT11 } from '../../data/course-t11';
 import { QuizBlock, Tome } from '../../types/course';
 import { BlockRenderer } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
-import { CinetPayMockModal } from '../../components/payment/CinetPayMockModal';
+import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { fireConfetti } from '../../utils/confetti';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
@@ -217,11 +217,11 @@ export const CourseReader = () => {
   const [reportContent, setReportContent] = useState('');
 
   // Payment state
-  const { unlockedCourses, unlockCourse } = useUser();
+  const { unlockedCourses } = useUser();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [paymentItemName, setPaymentItemName] = useState('');
-  const [paymentType, setPaymentType] = useState<'chapter' | 'tome'>('chapter');
+  const [paymentType, setPaymentType] = useState<'chapter' | 'tome' | 'collection'>('chapter');
 
   useEffect(() => {
     if (isNotesOpen && courseId) {
@@ -261,24 +261,14 @@ export const CourseReader = () => {
     setIsPaymentModalOpen(true);
   };
 
-  const handlePaymentSuccess = () => {
-    setIsPaymentModalOpen(false);
-    fireConfetti();
-    if (paymentType === 'chapter') {
-      const unlocked = JSON.parse(localStorage.getItem('eductome_unlocked_chapters') || '[]');
-      if (!unlocked.includes(chapter.id)) unlocked.push(chapter.id);
-      localStorage.setItem('eductome_unlocked_chapters', JSON.stringify(unlocked));
-      addToast({ type: 'success', title: 'Chapitre débloqué !', message: 'Tu as maintenant accès à tout ce chapitre.' });
-    } else {
-      if (courseId) {
-        unlockCourse(courseId);
-        const unlocked = JSON.parse(localStorage.getItem('eductome_unlocked_tomes') || '[]');
-        if (!unlocked.includes(courseId)) unlocked.push(courseId);
-        localStorage.setItem('eductome_unlocked_tomes', JSON.stringify(unlocked));
-      }
-      addToast({ type: 'success', title: 'Tome complet débloqué !', message: 'Tu es maintenant un vrai Caïman.' });
-    }
+  const handleUnlockCollection = () => {
+    setPaymentAmount(10000);
+    setPaymentItemName('La Collection Complète EDUCTOME');
+    setPaymentType('collection');
+    setIsPaymentModalOpen(true);
   };
+
+  // Ancienne fonction de succès de paiement retirée car c'est géré via Selar et Firebase maintenant
 
   useEffect(() => { const t = setTimeout(() => renderMathJax(), 200); return () => clearTimeout(t); }, [activeChapterIndex]);
 
@@ -470,6 +460,7 @@ export const CourseReader = () => {
                 chapterTitle={chapter.titre}
                 onUnlockChapter={handleUnlockChapter}
                 onUnlockTome={handleUnlockTome}
+                onUnlockCollection={handleUnlockCollection}
               />
             ) : (
               <>
@@ -628,10 +619,12 @@ export const CourseReader = () => {
       )}
 
       {isPaymentModalOpen && (
-        <CinetPayMockModal
-          amount={paymentAmount}
-          itemName={paymentItemName}
-          onSuccess={handlePaymentSuccess}
+        <SelarPaymentModal
+          isOpen={isPaymentModalOpen}
+          tomeTitle={paymentItemName}
+          price={paymentAmount}
+          isChapter={paymentType === 'chapter'}
+          isCollection={paymentType === 'collection'}
           onClose={() => setIsPaymentModalOpen(false)}
         />
       )}

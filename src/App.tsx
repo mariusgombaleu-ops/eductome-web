@@ -21,6 +21,7 @@ import { Profile } from './pages/dashboard/Profile';
 import { CourseReader } from './pages/dashboard/CourseReader';
 import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
 import { StarterPack } from './pages/dashboard/StarterPack';
+import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
 
 import { UserProvider } from './contexts/UserContext';
 
@@ -59,6 +60,9 @@ function App() {
             <Route path="/forum" element={<ForumHome />} />
             <Route path="/forum/thread/:id" element={<ForumThread />} />
           </Route>
+
+          {/* Standalone Route for Payment Success */}
+          <Route path="/paiement-confirme" element={<PaymentSuccess />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>
