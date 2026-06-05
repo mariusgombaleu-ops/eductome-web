@@ -8,6 +8,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 export const Register = () => {
   const { setupRecaptcha, sendVerificationCode, verifyCodeAndCreateAccount, currentUser } = useAuth();
+  const [password, setPassword] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +48,7 @@ export const Register = () => {
         setIsLoading(true);
         const confirmation = await sendVerificationCode(phoneInput);
         setConfirmationResult(confirmation);
+        setPassword(pass); // Save password for step 2
         setStep(2);
       } catch (err: any) {
         console.error("SMS Error:", err);
@@ -64,8 +66,7 @@ export const Register = () => {
 
       try {
         setIsLoading(true);
-        const pass = (document.getElementById('password') as HTMLInputElement).value;
-        await verifyCodeAndCreateAccount(confirmationResult, code, pass);
+        await verifyCodeAndCreateAccount(confirmationResult, code, password);
         setStep(3);
       } catch (err: any) {
         console.error("Code verification error:", err);
