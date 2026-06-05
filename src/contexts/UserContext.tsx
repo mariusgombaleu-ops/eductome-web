@@ -42,9 +42,9 @@ export interface UserGoals {
 }
 
 export interface UserGrades {
-  t1?: Record<string, number[]>;
-  t2?: Record<string, number[]>;
-  t3?: Record<string, number[]>;
+  t1?: Record<string, (number | string)[]>;
+  t2?: Record<string, (number | string)[]>;
+  t3?: Record<string, (number | string)[]>;
 }
 
 interface UserContextType {
