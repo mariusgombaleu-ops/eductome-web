@@ -129,7 +129,7 @@ export const ForumThread = () => {
   if (!discussion) return <div className="p-8 text-center">Chargement...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 font-poppins pb-20 animate-fade-in-up">
+    <div className="max-w-4xl mx-auto space-y-6 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 animate-fade-in-up">
       
       {/* Header / Retour */}
       <div className="flex items-center gap-4 mb-8">

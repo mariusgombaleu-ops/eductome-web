@@ -288,13 +288,13 @@ export function Resources() {
 
       {/* Hero Banner Premium */}
       {isDashboard && (
-        <div className="max-w-6xl mx-auto px-4 pt-6 pb-2">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-2">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white">
             <ChevronLeft className="w-4 h-4" /> Retour
           </button>
         </div>
       )}
-      <div className={`relative ${isDashboard ? 'bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl mx-4 p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mt-2 mb-6' : 'pt-20 pb-20 px-4 text-center bg-eductome-marine'} overflow-hidden shadow-lg`}>
+      <div className={`relative ${isDashboard ? 'bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl mx-4 md:mx-6 lg:mx-8 p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mt-2 mb-6' : 'pt-20 pb-20 px-4 md:px-6 lg:px-8 text-center bg-eductome-marine'} overflow-hidden shadow-lg`}>
         {isDashboard ? (
           <>
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
@@ -327,7 +327,7 @@ export function Resources() {
       </div>
 
       {/* Tabs Premium */}
-      <div className="max-w-5xl mx-auto px-4 -mt-8 relative z-20 mb-12">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8 -mt-8 relative z-20 mb-12">
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 bg-white p-2 rounded-2xl shadow-lg border border-gray-100">
           <button 
             onClick={() => setActiveTab('exercices')}
@@ -357,7 +357,7 @@ export function Resources() {
       </div>
 
       {/* Content Area */}
-      <div className="max-w-6xl mx-auto px-4 pb-20">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pb-20">
         
         {/* TAB 1: Fiches Méthode */}
         {/* TAB 1: Fiches Méthode */}

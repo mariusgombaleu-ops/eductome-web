@@ -119,7 +119,7 @@ export const ForumHome = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 font-poppins pb-20 transition-colors duration-300">
+    <div className="max-w-6xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 transition-colors duration-300">
       
       {/* Header Section (Hero Banner) */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
