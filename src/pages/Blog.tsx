@@ -16,32 +16,32 @@ export function Blog() {
   const categories = [
     { 
       id: 'Tous', icon: Newspaper, label: 'Tous les articles', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-eductome-marine hover:text-eductome-marine dark:hover:text-white',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-eductome-marine hover:text-eductome-marine dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Spécial BAC / BEPC', icon: GraduationCap, label: 'Spécial BAC / BEPC', 
-      unselectedClass: 'border-[#D81B60] text-[#D81B60] hover:bg-[#D81B60]/10',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#D81B60] hover:text-[#D81B60] hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-[#D81B60] text-white border-[#D81B60] shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Actualités Scolaires', icon: Calendar, label: 'Actualités Scolaires', 
-      unselectedClass: 'border-[#1976D2] text-[#1976D2] hover:bg-[#1976D2]/10',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#1976D2] hover:text-[#1976D2] hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-[#1976D2] text-white border-[#1976D2] shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Grands Frères', icon: Users, label: 'Grands Frères', 
-      unselectedClass: 'border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-green-600/10',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-green-600 dark:hover:border-green-500 hover:text-green-600 dark:hover:text-green-500 hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-green-600 dark:bg-green-500 text-white border-green-600 dark:border-green-500 shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Astuces & Conseils', icon: Lightbulb, label: 'Astuces & Conseils', 
-      unselectedClass: 'border-[#E65100] text-[#E65100] hover:bg-[#E65100]/10',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#E65100] hover:text-[#E65100] hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-[#E65100] text-white border-[#E65100] shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Orientation', icon: Compass, label: 'Orientation', 
-      unselectedClass: 'border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 hover:bg-purple-600/10',
+      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-[#161B22]',
       activeClass: 'bg-purple-600 dark:bg-purple-500 text-white border-purple-600 dark:border-purple-500 shadow-md transform scale-[1.02]' 
     }
   ];
