@@ -1,5 +1,4 @@
-import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen } from 'lucide-react';
-import { StudyChart } from '../../components/dashboard/StudyChart';
+import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link } from 'react-router-dom';
@@ -21,6 +20,8 @@ export const Overview = () => {
   const isNewUser = xp === 0;
   let completedQuizzes = 0;
   rewardedActions.forEach(a => { if (a.startsWith('quiz_')) completedQuizzes++; });
+  const unlockedTomes = JSON.parse(localStorage.getItem('eductome_unlocked_tomes') || '[]');
+  const hasPurchased = unlockedTomes.length > 0;
 
   useEffect(() => {
     setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
@@ -220,10 +221,35 @@ export const Overview = () => {
             
             {/* Main Content Area: Ce que tu dois faire aujourd'hui */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Chart Section */}
-              <div className="bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] rounded-xl shadow-sm p-6 transition-colors duration-300">
-                <h2 className="text-lg font-bold text-[#1A1A2E] dark:text-white mb-6">Temps d'étude</h2>
-                <StudyChart />
+              {/* Marketing Funnel Section */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-6 md:p-8 transition-colors duration-300 relative overflow-hidden">
+                <div className="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
+                  <div className="w-16 h-16 shrink-0 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center">
+                    {hasPurchased ? <Unlock className="w-8 h-8" /> : <ShoppingBag className="w-8 h-8" />}
+                  </div>
+                  
+                  <div className="flex-1 text-center md:text-left">
+                    <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] dark:text-white mb-2">
+                      {hasPurchased 
+                        ? "Continue sur ta lancée ! 🚀" 
+                        : "Passe à la vitesse supérieure ⚡"}
+                    </h2>
+                    <p className="text-[#6B7280] dark:text-[#8B949E] mb-6">
+                      {hasPurchased 
+                        ? "Tu as déjà débloqué des tomes. Pour maximiser tes chances au BAC, découvre nos autres collections (Méthodologie, Philosophie) et deviens incollable." 
+                        : "Tu as testé les bases, il est temps de débloquer les tomes complets ! Accède à 100% des exercices, corrections détaillées et astuces de Grand Frère."}
+                    </p>
+                    
+                    <Link 
+                      to="/dashboard/boutique" 
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-blue-500/20"
+                    >
+                      {hasPurchased ? "Découvrir la suite" : "Voir la boutique"} <ChevronRight className="w-5 h-5" />
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
 

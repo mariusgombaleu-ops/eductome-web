@@ -5,6 +5,7 @@ import { BADGES } from '../../constants/badges';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
+import { StudyChart } from '../../components/dashboard/StudyChart';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
@@ -232,6 +233,13 @@ export const Profile = () => {
           </div>
 
           <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-150`}>
+            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-6 flex items-center gap-2`}>
+              <Flame className="w-5 h-5 text-orange-500" /> Temps d'étude
+            </h2>
+            <StudyChart />
+          </div>
+
+          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-200`}>
             <div className="flex items-center justify-between mb-6">
               <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} flex items-center gap-2`}>
                 <Edit3 className="w-5 h-5 text-eductome-blue" /> Mon Carnet de Notes
