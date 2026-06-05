@@ -20,7 +20,7 @@ export function WelcomeModal() {
   }
 
   const determineWord = sexe === 'M' ? 'déterminé' : sexe === 'F' ? 'déterminée' : 'déterminé(e)';
-  const fullText = `Bienvenue ${pseudo}, ${titleWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à t'engager pour de vrai pour réussir ton examen. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont de véritables armes pour ta réussite. On est ensemble ! 💪`;
+  const fullText = `Bienvenue ${pseudo}, ${titleWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à t'engager pour de vrai pour réussir ton examen. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont de véritables alliés pour ta réussite. On est ensemble ! 💪`;
 
   useEffect(() => {
     if (!pseudo || !currentUser) return; // Wait for user data to load
