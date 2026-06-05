@@ -11,7 +11,8 @@ export function WelcomeModal() {
   const { currentUser } = useAuth();
   
   const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
-  const fullText = `Bienvenue ${pseudo || championWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
+  const determineWord = sexe === 'M' ? 'déterminé' : sexe === 'F' ? 'déterminée' : 'déterminé(e)';
+  const fullText = `Bienvenue ${pseudo || championWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
 
   useEffect(() => {
     if (!pseudo || !currentUser) return; // Wait for user data to load
