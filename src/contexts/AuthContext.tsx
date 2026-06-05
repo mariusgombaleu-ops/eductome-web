@@ -65,7 +65,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const sendVerificationCode = async (phoneNumber: string) => {
-    const appVerifier = (window as any).recaptchaVerifier;
+    if ((window as any).recaptchaVerifier) {
+      try {
+        (window as any).recaptchaVerifier.clear();
+      } catch (e) {}
+    }
+    
+    const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+    });
+    (window as any).recaptchaVerifier = appVerifier;
+
     let cleanPhone = phoneNumber.replace(/\s+/g, '');
     if (!cleanPhone.startsWith('+')) {
       cleanPhone = '+225' + cleanPhone;
