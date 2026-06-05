@@ -7,7 +7,7 @@ import { db } from '../../config/firebase';
 import { collection, onSnapshot, addDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { useEffect } from 'react';
 
-import { fireConfetti } from '../../utils/confetti';
+
 import { MarkdownText } from '../../components/forum/MarkdownText';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 
