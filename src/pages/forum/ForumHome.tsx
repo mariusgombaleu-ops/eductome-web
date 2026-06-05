@@ -163,7 +163,7 @@ export const ForumHome = () => {
                     {disc.initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
                       <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center flex-wrap gap-x-2">{disc.author} <RoleBadge role={disc.role} /></span>
                       <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center shrink-0">
                         • {disc.time}
@@ -194,7 +194,6 @@ export const ForumHome = () => {
                             e.stopPropagation();
                             const actionId = `forum_like_${disc.id}`;
                             if (!hasActionBeenRewarded(actionId)) {
-                              fireConfetti();
                               gainXp(10, 'Tu as aidé la communauté !', actionId);
                             }
                           }}

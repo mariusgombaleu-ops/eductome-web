@@ -156,7 +156,12 @@ export const ForumThread = () => {
             {discussion.initials}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-1 flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E] mb-2">
+              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
+              <span className="hidden md:inline">•</span>
+              <span className="shrink-0">{discussion.time}</span>
+            </div>
+            <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-2 flex flex-wrap items-center gap-2">
               <span className="break-words w-full md:w-auto">{discussion.title}</span>
               {discussion.isResolved && (
                 <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 shrink-0">
@@ -164,16 +169,10 @@ export const ForumThread = () => {
                 </span>
               )}
             </h2>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E]">
-              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
-              <span className="hidden md:inline">•</span>
-              <span className="shrink-0">{discussion.time}</span>
-              <span className="hidden md:inline">•</span>
-              <div className="flex flex-wrap gap-2">
-                {discussion.tags && discussion.tags.map((t: string) => (
-                  <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-xs border border-[#E1E4E8] dark:border-[#30363D]">{t}</span>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-2">
+              {discussion.tags && discussion.tags.map((t: string) => (
+                <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-xs border border-[#E1E4E8] dark:border-[#30363D] font-bold">{t}</span>
+              ))}
             </div>
           </div>
         </div>
@@ -187,7 +186,6 @@ export const ForumThread = () => {
             onClick={() => {
               const actionId = `forum_like_${discussion.id}`;
               if (!hasActionBeenRewarded(actionId)) {
-                fireConfetti();
                 gainXp(10, 'Tu as aidé la communauté !', actionId);
               }
             }}
@@ -252,7 +250,6 @@ export const ForumThread = () => {
                     onClick={() => {
                       const actionId = `forum_reply_like_${reply.id}`;
                       if (!hasActionBeenRewarded(actionId)) {
-                        fireConfetti();
                         gainXp(5, 'Tu as encouragé un membre', actionId);
                       }
                     }}
