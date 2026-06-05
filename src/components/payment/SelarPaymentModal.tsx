@@ -10,6 +10,7 @@ interface SelarPaymentModalProps {
   price: number;
   isChapter?: boolean;
   isCollection?: boolean;
+  courseId?: string;
 }
 
 // Liens réels vers les produits Selar de EDUCTOME
@@ -17,7 +18,7 @@ const SELAR_TOME_LINK = "https://selar.com/xm589dmmi9";
 const SELAR_CHAPTER_LINK = "https://selar.com/09b17bf2f1";
 const SELAR_COLLECTION_LINK = "https://selar.com/27v5n07o20";
 
-export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, onClose, tomeTitle, price, isChapter = false, isCollection = false }) => {
+export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, onClose, tomeTitle, price, isChapter = false, isCollection = false, courseId }) => {
   // Pour l'instant, un numéro fictif puisqu'on n'a pas encore de vraie BDD branchée
   const user = { phoneNumber: "0700000000" };
   
@@ -29,6 +30,11 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
 
   const handlePaymentRedirect = () => {
     let finalLink = paymentLink;
+    
+    // Sauvegarder le courseId pour le déblocage après paiement
+    if (courseId) {
+      localStorage.setItem('eductome_pending_course', courseId);
+    }
     
     if (user?.phoneNumber) {
       // Nettoyer le numéro pour l'email (enlever les + et espaces)

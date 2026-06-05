@@ -5,7 +5,7 @@ import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 
 export const DashboardBoutique = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<{ title: string, price: number, isChapter: boolean, isCollection?: boolean } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ title: string, price: number, isChapter: boolean, isCollection?: boolean, courseId?: string } | null>(null);
   const [openCollections, setOpenCollections] = useState<Record<string, boolean>>({
     'cles-maths': true // Ouvrir la première collection par défaut
   });
@@ -17,8 +17,8 @@ export const DashboardBoutique = () => {
     }));
   };
 
-  const openCheckout = (title: string, price: number, isChapter: boolean, isCollection: boolean = false) => {
-    setSelectedItem({ title, price, isChapter, isCollection });
+  const openCheckout = (title: string, price: number, isChapter: boolean, isCollection: boolean = false, courseId?: string) => {
+    setSelectedItem({ title, price, isChapter, isCollection, courseId });
     setModalOpen(true);
   };
 
@@ -44,7 +44,7 @@ export const DashboardBoutique = () => {
 
       {/* VIP Collection Complete Banner */}
       <div 
-        onClick={() => openCheckout('Collection Mathématiques (Tous les tomes)', 10000, false, true)}
+        onClick={() => openCheckout('Collection Mathématiques (Tous les tomes)', 10000, false, true, 'cles-maths')}
         className="relative bg-gradient-to-r from-amber-500 to-yellow-400 rounded-2xl p-1 overflow-hidden shadow-lg hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 mb-8"
       >
         <div className="bg-white dark:bg-[#161B22] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
@@ -120,7 +120,7 @@ export const DashboardBoutique = () => {
                       {/* Actions Section */}
                       <div className="p-2 sm:p-4 bg-gray-50/50 dark:bg-[#0D1117]/50 border-t border-gray-100 dark:border-gray-800 mt-2 sm:mt-3">
                         <button 
-                          onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false)}
+                          onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false, false, tome.id)}
                           className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 mb-1.5 sm:mb-2"
                         >
                           <Unlock className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Débloquer le Tome
@@ -128,13 +128,13 @@ export const DashboardBoutique = () => {
                         
                         <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                           <button 
-                            onClick={() => openCheckout(`Chapitre au choix - Tome ${tome.number}`, 300, true)}
+                            onClick={() => openCheckout(`Chapitre au choix - Tome ${tome.number}`, 300, true, false, tome.id)}
                             className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
                           >
                             <Lock className="w-2.5 h-2.5 text-gray-400" /> 1 Chapitre (300F)
                           </button>
                           <button 
-                            onClick={() => openCheckout(`Collection ${collection.name}`, collection.id === 'cles-maths' ? 10000 : 8000, false, true)}
+                            onClick={() => openCheckout(`Collection ${collection.name}`, collection.id === 'cles-maths' ? 10000 : 8000, false, true, collection.id)}
                             className="w-full bg-amber-50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-700 dark:text-amber-500 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
                           >
                             <Unlock className="w-2.5 h-2.5" /> Collection compl.
@@ -158,6 +158,7 @@ export const DashboardBoutique = () => {
           price={selectedItem.price} 
           isChapter={selectedItem.isChapter} 
           isCollection={selectedItem.isCollection}
+          courseId={selectedItem.courseId}
         />
       )}
     </div>

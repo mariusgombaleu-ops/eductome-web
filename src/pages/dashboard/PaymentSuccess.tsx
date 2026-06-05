@@ -28,9 +28,28 @@ export const PaymentSuccess = () => {
         const data = await response.json();
 
         if (data.success && data.productId) {
-          // Paiement validé par le Vigile
-          unlockCourse(data.productId);
-          setUnlockedProduct(data.productId);
+          // On vérifie d'abord si on a un courseId précis enregistré localement
+          const pendingCourseId = localStorage.getItem('eductome_pending_course');
+          
+          if (pendingCourseId) {
+            // Si on a acheté une collection complète
+            if (pendingCourseId === 'cles-maths' || pendingCourseId.includes('cles')) {
+               // Pour l'instant on débloque ces 4 tomes en dur si c'est la collection
+               const tomesMaths = ['t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff'];
+               tomesMaths.forEach(t => unlockCourse(t));
+               setUnlockedProduct(pendingCourseId);
+            } else {
+               unlockCourse(pendingCourseId);
+               setUnlockedProduct(pendingCourseId);
+            }
+            // On nettoie
+            localStorage.removeItem('eductome_pending_course');
+          } else {
+            // Fallback (ex: le nom renvoyé par Selar)
+            unlockCourse(data.productId);
+            setUnlockedProduct(data.productId);
+          }
+          
           setStatus('success');
         } else {
           // Paiement pas encore traité, on continue
