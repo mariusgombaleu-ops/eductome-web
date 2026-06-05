@@ -22,6 +22,7 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
   const [subjectTargets, setSubjectTargets] = useState<Record<string, string>>({});
 
   const subjects = getSubjectsForLevel(levelString);
+  const topSubjects = [...subjects].sort((a, b) => b.coeff - a.coeff).slice(0, 3);
   const isCollege = levelString === '3eme';
   const examName = isCollege ? 'BEPC' : 'BAC';
 
@@ -207,10 +208,10 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
                 <h3 className="text-xl font-bold">Stratégie par Matière</h3>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
-                Fixe tes objectifs dans chaque matière selon leurs coefficients pour ta série.
+                Concentre-toi d'abord sur tes matières majeures à fort coefficient. Tu pourras définir les autres plus tard.
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {subjects.map((sub) => (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {topSubjects.map((sub) => (
                   <div key={sub.id} className="bg-gray-50 dark:bg-[#0D1117] p-3 rounded-xl border border-gray-100 dark:border-gray-800">
                     <div className="flex justify-between items-center mb-2">
                       <label className="text-xs font-bold text-gray-700 dark:text-gray-300 truncate pr-2">{sub.name}</label>

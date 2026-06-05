@@ -186,7 +186,7 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
               }}
               className="w-full py-3.5 bg-[#D81B60] hover:bg-[#C2185B] text-white rounded-xl font-bold transition-all shadow-lg shadow-pink-900/20 active:scale-95 text-base md:text-lg flex items-center justify-center gap-2"
             >
-              Commençons par tes objectifs 🎯
+              Je m'engage pour mon {isCollege ? 'BEPC' : 'BAC'} 🎯
             </button>
           </div>
         </div>

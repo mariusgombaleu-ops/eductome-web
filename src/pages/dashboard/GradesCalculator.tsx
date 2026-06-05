@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useUser, UserGrades } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X } from 'lucide-react';
+import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades } = useUser();
@@ -30,6 +31,10 @@ export function GradesCalculator() {
       }
     }
     
+    // Check if it's the first ever grade to trigger confetti
+    const allGradesFlat = Object.values(grades).flatMap(trim => Object.values(trim || {}).flatMap(sub => sub));
+    const hadNoValidGrades = allGradesFlat.filter(g => g !== '' && !isNaN(Number(g))).length === 0;
+    
     const newGradesObj: UserGrades = { ...grades };
     const currentGrades = [...(grades[activeTab]?.[subjectId] || [])];
     currentGrades[index] = finalValue as any;
@@ -38,6 +43,15 @@ export function GradesCalculator() {
     newGradesObj[activeTab]![subjectId] = currentGrades;
     
     await updateGrades(newGradesObj);
+    
+    if (hadNoValidGrades && finalValue !== '' && !isNaN(Number(finalValue))) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#D81B60', '#1A3557', '#1976D2', '#FACC15']
+      });
+    }
   };
 
   const handleRemoveGrade = async (subjectId: string, index: number) => {
@@ -78,6 +92,11 @@ export function GradesCalculator() {
 
   const trimesterAvg = calculateTrimesterAverage();
   const targetTrimester = goals.trimesterTargets?.[activeTab];
+  
+  const hasGradesForTrimester = subjects.some(sub => {
+    const subGrades = grades[activeTab]?.[sub.id] || [];
+    return subGrades.some(g => g !== '' && !isNaN(Number(g)));
+  });
 
   return (
     <div className="space-y-6 px-4 md:px-6 lg:px-8 pt-6 pb-20 font-poppins">
@@ -158,6 +177,19 @@ export function GradesCalculator() {
         </div>
       </div>
 
+      {/* Empty State */}
+      {!hasGradesForTrimester && (
+        <div className="bg-[#D81B60]/10 border-2 border-[#D81B60]/20 rounded-2xl p-6 md:p-8 text-center animate-in fade-in zoom-in-95 duration-500">
+          <div className="bg-white dark:bg-[#161B22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-[#D81B60]/30">
+            <Sparkles className="w-8 h-8 text-[#D81B60]" />
+          </div>
+          <h3 className="text-xl font-bold text-[#1A3557] dark:text-white mb-2">Ton carnet est encore vierge Champion !</h3>
+          <p className="text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
+            Dès que tu as ta première note de devoir pour ce trimestre, viens la glisser ici pour voir la magie opérer ✨
+          </p>
+        </div>
+      )}
+
       {/* Subjects Accordion */}
       <div className="space-y-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Détails par matière</h3>
@@ -188,8 +220,8 @@ export function GradesCalculator() {
                 </div>
                 <div className="flex items-center gap-4">
                   {avg !== null && target && (
-                    <div className="hidden md:flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-md bg-gray-100 dark:bg-[#0D1117]">
-                      {avg >= target ? <span className="text-green-500">↑ Avance</span> : <span className="text-orange-500">↓ Retard</span>}
+                    <div className="hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md bg-gray-100 dark:bg-[#0D1117]">
+                      {avg >= target ? <span className="text-green-500">C'est ça qu'on veut voir ! 🔥</span> : <span className="text-orange-500">Pas de panique, on ajuste le tir ! 💪</span>}
                     </div>
                   )}
                   {isOpen ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
