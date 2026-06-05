@@ -73,7 +73,7 @@ export const PaymentSuccess = () => {
     };
 
     checkPayment();
-  }, [reference, unlockCourse]);
+  }, [email, unlockCourse]);
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#0D1117] flex items-center justify-center p-4">
