@@ -1,11 +1,10 @@
-import { User, Mail, Shield, Save, Camera, Target, Book, Trophy, Flame, Eye, EyeOff, Star, Edit3, ChevronRight, Key, CheckCircle, Heart, Lock, Trash2, Settings, Zap, RefreshCw, Unlock } from 'lucide-react';
+import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
-import { useRef } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
@@ -23,9 +22,6 @@ export const Profile = () => {
   const [showCropModal, setShowCropModal] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(0); // 0-3
   const [savedNotes, setSavedNotes] = useState<{courseId: string, content: string}[]>([]);
   const [couponCode, setCouponCode] = useState('');
   const [couponStatus, setCouponStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -61,13 +57,6 @@ export const Profile = () => {
     setSavedNotes(notes);
   }, []);
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    if (val.length === 0) setPasswordStrength(0);
-    else if (val.length < 6) setPasswordStrength(1);
-    else if (val.length < 10 || !/\d/.test(val)) setPasswordStrength(2);
-    else setPasswordStrength(3);
-  };
   const handleDeleteNote = (courseId: string) => {
     localStorage.removeItem(`eductome_course_notes_${courseId}`);
     const courses = JSON.parse(localStorage.getItem('eductome_courses_with_notes') || '[]');
@@ -291,42 +280,7 @@ export const Profile = () => {
             )}
           </div>
 
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-200`}>
-            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-6 flex items-center gap-2`}>
-              <Shield className="w-5 h-5 text-gray-400" /> Sécurité
-            </h2>
-            <form className="space-y-5">
-              <div>
-                <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Mot de passe actuel</label>
-                <div className="relative">
-                  <input type={showPassword ? "text" : "password"} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors pr-10 ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Nouveau mot de passe</label>
-                <div className="relative">
-                  <input type={showNewPassword ? "text" : "password"} onChange={handlePasswordChange} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors pr-10 ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
-                  <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
-                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {/* Strength Indicator */}
-                <div className="mt-2 flex gap-1 h-1.5">
-                  <div className={`flex-1 rounded-full ${passwordStrength >= 1 ? 'bg-red-500' : d ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
-                  <div className={`flex-1 rounded-full ${passwordStrength >= 2 ? 'bg-yellow-500' : d ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
-                  <div className={`flex-1 rounded-full ${passwordStrength >= 3 ? 'bg-green-500' : d ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
-                </div>
-              </div>
-              <div className="pt-2">
-                <button type="button" className="text-sm font-bold text-eductome-sky hover:text-eductome-marine transition-colors">
-                  Mettre à jour le mot de passe
-                </button>
-              </div>
-            </form>
-          </div>
+
 
           {/* Code Livre Physique */}
           <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-250`}>

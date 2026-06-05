@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Moon, Sun, Bell, Shield, Smartphone, Trash2, Save, Monitor } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, Smartphone, Trash2, Save, Monitor, Eye, EyeOff } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../contexts/ToastContext';
 
@@ -9,6 +9,22 @@ export function Settings() {
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailUpdates, setEmailUpdates] = useState(false);
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    let strength = 0;
+    if (val.length >= 8) strength += 1;
+    if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength += 1;
+    if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) strength += 1;
+    setPasswordStrength(strength);
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,16 +128,35 @@ export function Settings() {
             <Shield className="w-5 h-5 text-green-500" /> Sécurité du Compte
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-[#8B949E]' : 'text-[#6B7280]'}`}>Nouveau mot de passe</label>
-              <input 
-                type="password" 
-                placeholder="Laissez vide pour ne pas changer"
-                className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-[#D81B60] focus:border-[#D81B60] transition-colors outline-none ${
-                  isDark ? 'bg-[#0D1117] border-[#30363D] text-white placeholder-[#6E7681]' : 'bg-[#F8F9FA] border-[#E1E4E8] text-[#1A1A2E] placeholder-[#9CA3AF]'
-                }`}
-              />
+              <label className={`block text-sm font-medium ${isDark ? 'text-[#8B949E]' : 'text-[#6B7280]'} mb-1`}>Mot de passe actuel</label>
+              <div className="relative">
+                <input type={showPassword ? "text" : "password"} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-[#D81B60] focus:border-[#D81B60] transition-colors outline-none pr-10 ${isDark ? 'bg-[#0D1117] border-[#30363D] text-white placeholder-[#6E7681]' : 'bg-[#F8F9FA] border-[#E1E4E8] text-[#1A1A2E] placeholder-[#9CA3AF]'}`} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-[#9CA3AF] dark:text-[#6E7681] hover:text-[#1A1A2E] dark:hover:text-white">
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className={`block text-sm font-medium ${isDark ? 'text-[#8B949E]' : 'text-[#6B7280]'} mb-1`}>Nouveau mot de passe</label>
+              <div className="relative">
+                <input type={showNewPassword ? "text" : "password"} onChange={handlePasswordChange} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-[#D81B60] focus:border-[#D81B60] transition-colors outline-none pr-10 ${isDark ? 'bg-[#0D1117] border-[#30363D] text-white placeholder-[#6E7681]' : 'bg-[#F8F9FA] border-[#E1E4E8] text-[#1A1A2E] placeholder-[#9CA3AF]'}`} />
+                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-2.5 text-[#9CA3AF] dark:text-[#6E7681] hover:text-[#1A1A2E] dark:hover:text-white">
+                  {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {/* Strength Indicator */}
+              <div className="mt-2 flex gap-1 h-1.5">
+                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 1 ? 'bg-red-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
+                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 2 ? 'bg-yellow-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
+                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 3 ? 'bg-green-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
+              </div>
+            </div>
+            <div className="pt-2">
+              <button type="button" className="text-sm font-bold text-[#1976D2] hover:text-blue-700 transition-colors">
+                Mettre à jour le mot de passe
+              </button>
             </div>
           </div>
         </div>
@@ -135,28 +170,63 @@ export function Settings() {
           </button>
         </div>
 
-        {/* Zone de Danger */}
-        <div className="mt-12 pt-8 border-t border-red-200 dark:border-red-900/30">
-          <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-4 flex items-center gap-2">
-            <Trash2 className="w-5 h-5" /> Zone de danger
+        {/* Zone de Danger (Discrète) */}
+        <div className="mt-16 pt-8 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity">
+          <h2 className="text-sm font-bold text-[#6B7280] dark:text-[#8B949E] mb-2 flex items-center gap-1.5">
+            <Trash2 className="w-4 h-4" /> Zone de danger
           </h2>
-          <div className={`p-6 rounded-2xl border border-red-200 dark:border-red-900/50 ${isDark ? 'bg-red-900/10' : 'bg-red-50'}`}>
-            <h3 className="font-bold text-red-800 dark:text-red-300 mb-2">Supprimer le compte</h3>
-            <p className="text-red-600 dark:text-red-400 text-sm mb-4">
-              La suppression de votre compte entraînera la perte définitive de votre progression, de vos achats et de vos badges. Cette action est irréversible.
-            </p>
+          
+          {!showDeleteConfirm ? (
             <button 
               type="button" 
-              onClick={() => {
-                if (window.confirm("Êtes-vous sûr de vouloir supprimer définitivement votre compte ? Cette action est irréversible.")) {
-                  addToast({ type: 'error', title: 'Action non disponible', message: 'Veuillez contacter le support pour supprimer votre compte.' });
-                }
-              }}
-              className="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 font-bold rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors text-sm"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors underline underline-offset-2"
             >
-              Supprimer mon compte
+              Supprimer définitivement mon compte
             </button>
-          </div>
+          ) : (
+            <div className="w-full max-w-sm mt-2 p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/10 flex flex-col gap-3">
+              <p className="text-xs text-red-600 dark:text-red-400 font-medium text-center">
+                Action irréversible. Pour confirmer, veuillez entrer votre mot de passe :
+              </p>
+              <input 
+                type="password"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                placeholder="Votre mot de passe"
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none ${
+                  isDark ? 'bg-[#0D1117] border-red-900/50 text-white placeholder-[#6E7681]' : 'bg-white border-red-200 text-[#1A1A2E] placeholder-[#9CA3AF]'
+                }`}
+              />
+              <div className="flex gap-2 justify-center mt-1">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeletePassword('');
+                  }}
+                  className="px-3 py-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#30363D] rounded-lg transition-colors"
+                >
+                  Annuler
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    if (deletePassword) {
+                      addToast({ type: 'error', title: 'Action non disponible', message: 'Veuillez contacter le support pour supprimer votre compte.' });
+                      setShowDeleteConfirm(false);
+                      setDeletePassword('');
+                    } else {
+                      addToast({ type: 'error', title: 'Erreur', message: 'Mot de passe requis.' });
+                    }
+                  }}
+                  className="px-3 py-1.5 text-xs font-bold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                >
+                  Confirmer la suppression
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
       </form>
