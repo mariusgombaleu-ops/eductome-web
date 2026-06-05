@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [displayedText, setDisplayedText] = useState('');
+  const [charCount, setCharCount] = useState(0);
   const [showButton, setShowButton] = useState(false);
   const { pseudo, sexe, levelString } = useUser();
   const { currentUser } = useAuth();
@@ -20,7 +20,28 @@ export function WelcomeModal() {
   }
 
   const determineWord = sexe === 'M' ? 'déterminé' : sexe === 'F' ? 'déterminée' : 'déterminé(e)';
-  const fullText = `Bienvenue ${pseudo}, ${titleWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à t'engager pour de vrai et à réussir ton examen. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont de véritables alliés pour ta réussite. On est ensemble ! 💪`;
+  const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
+  const parts = [
+    { text: 'Bienvenue ', bold: false },
+    { text: pseudo || championWord, bold: true },
+    { text: ', ', bold: false },
+    { text: titleWord, bold: true },
+    { text: ' ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c\'est que tu es ' + determineWord + ' à t\'engager pour de vrai et ', bold: false },
+    { text: 'à réussir ton examen', bold: true },
+    { text: '. Nous avons conçu ', bold: false },
+    { text: 'le système parfait', bold: true },
+    { text: ' pour t\'accompagner jusqu\'à ', bold: false },
+    { text: 'la victoire', bold: true },
+    { text: '. Ne t\'inquiète surtout pas, je serai là pour ', bold: false },
+    { text: 'te guider', bold: true },
+    { text: ' chaque fois que tu auras besoin d\'aide. N\'hésite pas à explorer tes ', bold: false },
+    { text: 'cours et tes ressources', bold: true },
+    { text: ' dès maintenant : ce sont de ', bold: false },
+    { text: 'véritables alliés', bold: true },
+    { text: ' pour ta réussite. On est ensemble ! 💪', bold: false }
+  ];
+
+  const totalLength = parts.reduce((acc, part) => acc + part.text.length, 0);
 
   useEffect(() => {
     if (!pseudo || !currentUser) return; // Wait for user data to load
@@ -40,18 +61,32 @@ export function WelcomeModal() {
 
   useEffect(() => {
     if (isOpen) {
-      let index = 0;
+      let currentCount = 0;
       const typingInterval = setInterval(() => {
-        setDisplayedText(fullText.substring(0, index));
-        index++;
-        if (index > fullText.length) {
+        currentCount++;
+        setCharCount(currentCount);
+        if (currentCount >= totalLength) {
           clearInterval(typingInterval);
           setTimeout(() => setShowButton(true), 500);
         }
-      }, 100); // Typing speed (very slow for better readability)
+      }, 60); // Typing speed
       return () => clearInterval(typingInterval);
     }
-  }, [isOpen, fullText]);
+  }, [isOpen, totalLength]);
+
+  const renderAnimatedText = () => {
+    let remainingChars = charCount;
+    return parts.map((part, index) => {
+      if (remainingChars <= 0) return null;
+      const currentText = part.text.substring(0, remainingChars);
+      remainingChars -= part.text.length;
+      
+      if (part.bold) {
+        return <strong key={index} className="font-bold text-gray-900 dark:text-white">{currentText}</strong>;
+      }
+      return <span key={index}>{currentText}</span>;
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -99,7 +134,7 @@ export function WelcomeModal() {
 
           <div className="min-h-[160px] md:min-h-[220px]">
             <p className="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium leading-relaxed font-poppins">
-              "{displayedText}"
+              "{renderAnimatedText()}"
               <span className="animate-pulse inline-block w-[3px] h-5 bg-gray-500 ml-1 translate-y-1"></span>
             </p>
           </div>
