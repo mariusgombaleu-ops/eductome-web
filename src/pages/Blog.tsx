@@ -1,9 +1,13 @@
 import { ScrollReveal } from '../components/ui/ScrollReveal';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { blogPosts } from '../data/blogPosts';
 import { SEO } from '../components/SEO';
 
 export function Blog() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+  const basePath = isDashboard ? '/dashboard/blog' : '/blog';
+
   return (
     <div className="min-h-screen bg-gray-50 font-poppins pb-20">
       <SEO title="Le Blog" description="Conseils, méthodologie et astuces pour réussir ton BAC et BEPC en Côte d'Ivoire." />
@@ -22,7 +26,7 @@ export function Blog() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post, index) => (
             <ScrollReveal key={post.id} delay={index * 100} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
-              <Link to={`/blog/${post.slug}`} className="block relative h-48 overflow-hidden group">
+              <Link to={`${basePath}/${post.slug}`} className="block relative h-48 overflow-hidden group">
                 <img 
                   src={post.coverImage} 
                   alt={post.title} 
@@ -41,7 +45,7 @@ export function Blog() {
                 </div>
                 
                 <h2 className="text-xl font-bold text-eductome-marine mb-3 line-clamp-2 hover:text-eductome-magenta transition-colors">
-                  <Link to={`/blog/${post.slug}`}>
+                  <Link to={`${basePath}/${post.slug}`}>
                     {post.title}
                   </Link>
                 </h2>
@@ -51,7 +55,7 @@ export function Blog() {
                 </p>
                 
                 <Link 
-                  to={`/blog/${post.slug}`}
+                  to={`${basePath}/${post.slug}`}
                   className="inline-flex items-center font-semibold text-eductome-magenta hover:text-eductome-marine transition-colors mt-auto"
                 >
                   Lire l'article <span className="ml-2">&rarr;</span>

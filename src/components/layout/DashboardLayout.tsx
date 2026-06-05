@@ -47,8 +47,8 @@ export const DashboardLayout = () => {
     { name: 'Forum d\'Entraide', href: '/forum', icon: MessageSquare },
     { name: 'Ressources Gratuites', href: '/dashboard/ressources', icon: FileText },
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },
-    { name: 'Le Blog', href: '/blog', icon: Newspaper },
-    { name: 'Devenir Relais', href: '/devenir-relais', icon: Megaphone },
+    { name: 'Le Blog', href: '/dashboard/blog', icon: Newspaper },
+    { name: 'Devenir Relais', href: '/dashboard/devenir-relais', icon: Megaphone },
   ];
 
   if (loading) {

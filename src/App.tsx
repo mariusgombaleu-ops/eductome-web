@@ -60,6 +60,9 @@ function App() {
               <Route path="/dashboard/settings" element={<Profile />} />
               <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
               <Route path="/dashboard/ressources" element={<Resources />} />
+              <Route path="/dashboard/blog" element={<Blog />} />
+              <Route path="/dashboard/blog/:slug" element={<BlogPost />} />
+              <Route path="/dashboard/devenir-relais" element={<BecomeRelay />} />
               <Route path="/forum" element={<ForumHome />} />
               <Route path="/forum/thread/:id" element={<ForumThread />} />
             </Route>

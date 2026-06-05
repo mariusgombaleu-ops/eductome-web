@@ -1,4 +1,4 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link, Navigate, useLocation } from 'react-router-dom';
 import { blogPosts, BlogContentElement } from '../data/blogPosts';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { SEO } from '../components/SEO';
@@ -6,9 +6,12 @@ import { SEO } from '../components/SEO';
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find(p => p.slug === slug);
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+  const basePath = isDashboard ? '/dashboard/blog' : '/blog';
 
   if (!post) {
-    return <Navigate to="/blog" replace />;
+    return <Navigate to={basePath} replace />;
   }
 
   const renderContentElement = (element: BlogContentElement, index: number) => {
@@ -55,7 +58,7 @@ export function BlogPost() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/90 via-[#0a1628]/50 to-transparent"></div>
         <div className="absolute inset-0 flex items-end pb-12">
           <div className="max-w-4xl mx-auto px-4 w-full">
-            <Link to="/blog" className="inline-flex items-center text-gray-300 hover:text-white mb-6 text-sm font-semibold transition-colors">
+            <Link to={basePath} className="inline-flex items-center text-gray-300 hover:text-white mb-6 text-sm font-semibold transition-colors">
               &larr; Retour au blog
             </Link>
             <div className="flex items-center space-x-3 mb-4">
