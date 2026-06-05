@@ -181,7 +181,7 @@ export const ForumThread = () => {
           <MarkdownText text={discussion.content} />
         </div>
 
-        <div className="mt-6 ml-16 flex gap-4">
+        <div className="mt-6 ml-16 flex flex-wrap gap-y-3 gap-x-4">
           <button 
             onClick={() => {
               const actionId = `forum_like_${discussion.id}`;
@@ -227,11 +227,6 @@ export const ForumThread = () => {
       <div className="space-y-4">
         {replies.map((reply) => (
           <div key={reply.id} className={`bg-white dark:bg-[#161B22] border ${reply.isCorrect ? 'border-green-400 dark:border-green-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative`}>
-            {reply.isCorrect && (
-              <div className="absolute top-4 right-4 flex items-center gap-1.5 text-green-600 dark:text-green-500 text-sm font-bold bg-green-50 dark:bg-green-900/20 px-3 py-1 rounded-full border border-green-200 dark:border-green-800">
-                <CheckCircle className="w-4 h-4" /> Solution Validée
-              </div>
-            )}
             <div className="flex items-start gap-4">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
                 {reply.initials}
@@ -245,7 +240,7 @@ export const ForumThread = () => {
                   <MarkdownText text={reply.content} />
                 </div>
 
-                <div className="mt-4 flex gap-4">
+                <div className="mt-4 flex flex-wrap gap-y-3 gap-x-4">
                   <button 
                     onClick={() => {
                       const actionId = `forum_reply_like_${reply.id}`;
@@ -264,6 +259,11 @@ export const ForumThread = () => {
                     >
                       <CheckCircle className="w-3 h-3" /> Marquer comme solution
                     </button>
+                  )}
+                  {reply.isCorrect && (
+                    <div className="flex items-center gap-1.5 text-green-600 dark:text-green-500 text-xs font-bold bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md border border-green-200 dark:border-green-800">
+                      <CheckCircle className="w-3 h-3" /> Solution Validée
+                    </div>
                   )}
                 </div>
               </div>
