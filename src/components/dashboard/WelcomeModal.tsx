@@ -8,7 +8,7 @@ export function WelcomeModal() {
   const [showButton, setShowButton] = useState(false);
   const { pseudo } = useUser();
   
-  const fullText = `Champion(ne) ${pseudo || ''}, bienvenue ! Tu as fait le bon choix de nous rejoindre. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons tout mis en place pour t'accompagner vers la victoire. N'hésite pas à explorer tes cours et tes ressources. Ne t'inquiète surtout pas, je serai là pour t'accompagner chaque fois que tu auras besoin d'aide. On avance ensemble ! 💪`;
+  const fullText = `Champion(ne) ${pseudo || ''}, bienvenue ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
 
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('eductome_welcome_seen');
