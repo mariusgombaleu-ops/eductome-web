@@ -6,10 +6,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { useRef } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { updateProfile } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
-import { storage, db } from '../../config/firebase';
+import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
 
@@ -90,24 +89,21 @@ export const Profile = () => {
     }
   };
 
-  const handleCropComplete = async (croppedBlob: Blob) => {
+  const handleCropComplete = async (croppedBase64: string) => {
     if (!currentUser) return;
     try {
       setShowCropModal(false);
       setUploadingPhoto(true);
-      const fileRef = ref(storage, `profile_photos/${currentUser.uid}_${Date.now()}.jpg`);
-      await uploadBytes(fileRef, croppedBlob);
-      const downloadURL = await getDownloadURL(fileRef);
 
       // Update auth profile
-      await updateProfile(currentUser, { photoURL: downloadURL });
+      await updateProfile(currentUser, { photoURL: croppedBase64 });
       
       // Update firestore document
-      await updateDoc(doc(db, 'users', currentUser.uid), { photoURL: downloadURL });
+      await updateDoc(doc(db, 'users', currentUser.uid), { photoURL: croppedBase64 });
       
       addToast({ type: 'success', title: 'Photo de profil mise à jour', message: 'Ta photo de profil a été mise à jour avec succès.' });
     } catch (error) {
-      console.error("Error uploading photo:", error);
+      console.error("Error saving photo:", error);
       addToast({ type: 'error', title: 'Erreur', message: 'Impossible de mettre à jour ta photo de profil.' });
     } finally {
       setUploadingPhoto(false);

@@ -6,7 +6,7 @@ import { useToast } from '../../contexts/ToastContext';
 interface ImageCropperModalProps {
   imageSrc: string;
   onClose: () => void;
-  onCropComplete: (croppedBlob: Blob) => void;
+  onCropComplete: (croppedBase64: string) => void;
 }
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
@@ -18,7 +18,7 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
     image.src = url;
   });
 
-const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<Blob> => {
+const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -42,11 +42,7 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<Blob> =>
     256
   );
 
-  return new Promise((resolve) => {
-    canvas.toBlob((file) => {
-      resolve(file!);
-    }, 'image/jpeg');
-  });
+  return canvas.toDataURL('image/jpeg', 0.8);
 };
 
 export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, onClose, onCropComplete }) => {
@@ -63,8 +59,8 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, 
   const handleSave = async () => {
     try {
       setLoading(true);
-      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-      onCropComplete(croppedBlob);
+      const croppedBase64 = await getCroppedImg(imageSrc, croppedAreaPixels);
+      onCropComplete(croppedBase64);
     } catch (e) {
       console.error(e);
       addToast({ type: 'error', title: 'Erreur', message: 'Impossible de recadrer l\'image.' });
