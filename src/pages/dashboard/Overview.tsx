@@ -41,7 +41,7 @@ export const Overview = () => {
         
         <div className="relative z-10 text-white flex-1 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <h1 className="text-2xl md:text-3xl font-playfair font-bold mb-1">
-            {greeting}, Marius 👋
+            {greeting}, {pseudo} 👋
           </h1>
           <p className="text-blue-100 text-sm md:text-base italic max-w-lg">
             "{quote}"
