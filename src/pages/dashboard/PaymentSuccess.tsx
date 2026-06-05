@@ -6,16 +6,18 @@ import { useUser } from '../../contexts/UserContext';
 export const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const reference = searchParams.get('reference');
+  const reference = searchParams.get('reference') || searchParams.get('ref') || searchParams.get('tx_ref');
   
   const [status, setStatus] = useState<'polling' | 'success' | 'error' | 'timeout'>('polling');
   const [unlockedProduct, setUnlockedProduct] = useState<string | null>(null);
+  const [debugUrl, setDebugUrl] = useState<string>('');
   const { unlockCourse } = useUser();
   const pollCountRef = useRef(0);
   const maxPolls = 36; // 3 minutes maximum (36 * 5s)
 
   useEffect(() => {
     if (!reference) {
+      setDebugUrl(window.location.href);
       setStatus('error');
       return;
     }
@@ -100,9 +102,14 @@ export const PaymentSuccess = () => {
           )}
 
           {status === 'error' && (
-            <p>
-              Nous n'avons pas pu retrouver la référence de ta transaction. Si tu as été débité, contacte le support avec ton numéro de téléphone.
-            </p>
+            <div className="space-y-4">
+              <p>
+                Nous n'avons pas pu retrouver la référence de ta transaction. Si tu as été débité, contacte le support avec ton numéro de téléphone.
+              </p>
+              <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs text-left break-all overflow-hidden border border-red-200">
+                <span className="font-bold text-red-500">Debug Info:</span> {debugUrl}
+              </div>
+            </div>
           )}
         </div>
 
