@@ -7,12 +7,20 @@ export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [showButton, setShowButton] = useState(false);
-  const { pseudo, sexe } = useUser();
+  const { pseudo, sexe, levelString } = useUser();
   const { currentUser } = useAuth();
   
-  const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
+  const isCollege = levelString === '3eme';
+
+  let titleWord = '';
+  if (isCollege) {
+    titleWord = sexe === 'M' ? 'futur lycéen' : sexe === 'F' ? 'future lycéenne' : 'futur(e) lycéen(ne)';
+  } else {
+    titleWord = sexe === 'M' ? 'futur bachelier' : sexe === 'F' ? 'future bachelière' : 'futur(e) bachelier(ère)';
+  }
+
   const determineWord = sexe === 'M' ? 'déterminé' : sexe === 'F' ? 'déterminée' : 'déterminé(e)';
-  const fullText = `Bienvenue ${pseudo || championWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
+  const fullText = `Bienvenue ${pseudo}, ${titleWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es ${determineWord} à t'engager pour de vrai pour réussir ton examen. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont de véritables armes pour ta réussite. On est ensemble ! 💪`;
 
   useEffect(() => {
     if (!pseudo || !currentUser) return; // Wait for user data to load
