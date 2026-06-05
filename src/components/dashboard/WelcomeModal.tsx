@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [showButton, setShowButton] = useState(false);
   const { pseudo, sexe } = useUser();
+  const { currentUser } = useAuth();
   
   const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
   const fullText = `Bienvenue ${pseudo || championWord} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
 
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('eductome_welcome_seen');
-    if (!hasSeenWelcome && pseudo) { // Only trigger when pseudo is loaded
-      // Small delay before showing modal
+    if (!pseudo || !currentUser) return; // Wait for user data to load
+    
+    const storageKey = `eductome_welcome_seen_${currentUser.uid}`;
+    const hasSeenWelcome = localStorage.getItem(storageKey);
+    
+    if (!hasSeenWelcome) {
+      // Show modal after 1.5s delay to make it feel natural when landing on dashboard
       const timer = setTimeout(() => {
         setIsOpen(true);
-        localStorage.setItem('eductome_welcome_seen', 'true');
-      }, 500);
+        localStorage.setItem(storageKey, 'true');
+      }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [pseudo]);
+  }, [pseudo, currentUser]);
 
   useEffect(() => {
     if (isOpen) {
@@ -33,7 +39,7 @@ export function WelcomeModal() {
           clearInterval(typingInterval);
           setTimeout(() => setShowButton(true), 500);
         }
-      }, 80); // Typing speed (slower)
+      }, 100); // Typing speed (very slow for better readability)
       return () => clearInterval(typingInterval);
     }
   }, [isOpen, fullText]);
