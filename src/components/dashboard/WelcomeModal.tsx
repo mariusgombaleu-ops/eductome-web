@@ -8,7 +8,7 @@ export function WelcomeModal() {
   const [showButton, setShowButton] = useState(false);
   const { pseudo } = useUser();
   
-  const fullText = `Champion(ne) ${pseudo || ''}, bienvenue ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
+  const fullText = `Bienvenue ${pseudo || 'Champion(ne)'} ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c'est que tu es déterminé(e) à réussir et à t'engager pour de vrai. Nous avons conçu le système parfait pour t'accompagner jusqu'à la victoire. Ne t'inquiète surtout pas, je serai là pour te guider chaque fois que tu auras besoin d'aide. N'hésite pas à explorer tes cours et tes ressources dès maintenant : ce sont tes véritables armes de guerre. On est ensemble ! 💪`;
 
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('eductome_welcome_seen');
@@ -32,7 +32,7 @@ export function WelcomeModal() {
           clearInterval(typingInterval);
           setTimeout(() => setShowButton(true), 500);
         }
-      }, 30); // Typing speed
+      }, 55); // Typing speed (slower)
       return () => clearInterval(typingInterval);
     }
   }, [isOpen, fullText]);
@@ -41,36 +41,50 @@ export function WelcomeModal() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-500">
-      <div className="bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] w-full max-w-2xl rounded-3xl shadow-2xl relative overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-500 delay-150">
+      <div className="w-full max-w-2xl flex flex-col md:flex-row items-start justify-center gap-4 animate-in slide-in-from-bottom-10 duration-500 delay-150 relative">
         
-        {/* Left/Top Side: Photo */}
-        <div className="md:w-2/5 bg-gradient-to-br from-blue-900 to-[#1A3557] relative flex flex-col items-center justify-end">
-           <img src="/images/marius.jpeg" alt="Grand Frère" className="w-full h-[200px] md:h-full object-cover object-top border-b-4 md:border-b-0 md:border-r-4 border-[#D81B60]" />
-           <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-md rounded-xl p-2 text-center border border-white/10 shadow-xl">
-             <p className="text-white font-bold text-sm">Le Grand Frère</p>
-             <p className="text-[#D81B60] text-[10px] font-bold uppercase tracking-wider">Gombaleu Marius</p>
-           </div>
+        {/* Close Button - positioned outside or top right of the message */}
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="absolute -top-12 right-0 md:-top-4 md:-right-12 text-white/70 hover:text-white transition-colors bg-black/30 hover:bg-black/50 rounded-full p-2"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        {/* Photo Profil Circle */}
+        <div className="shrink-0 flex flex-col items-center gap-2 mx-auto md:mx-0">
+          <div className="relative">
+            <img src="/images/marius.jpeg" alt="Grand Frère" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-[#D81B60] shadow-xl" />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+          </div>
+          <div className="bg-black/60 backdrop-blur-md rounded-xl px-3 py-1 mt-1 text-center border border-white/10 shadow-xl">
+             <p className="text-white font-bold text-xs md:text-sm">Le Grand Frère</p>
+          </div>
         </div>
 
-        {/* Right/Bottom Side: Message */}
-        <div className="md:w-3/5 p-6 md:p-8 flex flex-col justify-center relative">
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors bg-gray-100 dark:bg-gray-800 rounded-full p-1"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        {/* Message Bubble */}
+        <div className="flex-1 bg-white dark:bg-[#161B22] p-6 md:p-8 rounded-3xl md:rounded-tl-none shadow-2xl relative mt-4 md:mt-0 w-full max-w-lg mx-auto md:mx-0">
           
-          <div className="mb-2 inline-flex">
-            <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-              Nouveau Message 💬
+          {/* Chat bubble pointer (triangle) - Desktop (Left) */}
+          <div className="hidden md:block absolute top-6 -left-4 w-0 h-0 border-y-[12px] border-y-transparent border-r-[16px] border-r-white dark:border-r-[#161B22] z-10"></div>
+          
+          {/* Chat bubble pointer (triangle) - Mobile (Up) */}
+          <div className="md:hidden absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-x-[12px] border-x-transparent border-b-[16px] border-b-white dark:border-b-[#161B22] z-10"></div>
+          
+          <div className="mb-4 inline-flex">
+            <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+              <span>Message du Grand Frère</span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
             </span>
           </div>
 
-          <div className="min-h-[150px] md:min-h-[220px] mt-4 flex items-center">
-            <p className="text-base md:text-lg text-gray-700 dark:text-gray-200 font-medium leading-relaxed font-playfair italic">
+          <div className="min-h-[160px] md:min-h-[220px]">
+            <p className="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium leading-relaxed font-playfair italic">
               "{displayedText}"
-              <span className="animate-pulse inline-block w-1 h-5 bg-gray-400 ml-1 translate-y-1"></span>
+              <span className="animate-pulse inline-block w-[3px] h-5 bg-gray-500 ml-1 translate-y-1"></span>
             </p>
           </div>
 
