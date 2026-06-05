@@ -6,11 +6,12 @@ import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
 import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
+import { RoleBadge } from '../../components/forum/RoleBadge';
 
 export const ForumThread = () => {
   const { id } = useParams();
   const { addToast } = useToast();
-  const { gainXp } = useUser();
+  const { gainXp, userRole, pseudo } = useUser();
   
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
@@ -61,12 +62,13 @@ export const ForumThread = () => {
     
     const reply = {
       id: Date.now(),
-      author: "Marius",
-      avatar: "bg-[#D81B60]",
-      initials: "MA",
+      author: pseudo,
+      avatar: userRole === 'grand_frere' || userRole === 'admin' ? "bg-[#1A3557]" : userRole === 'equipe' ? "bg-[#D81B60]" : "bg-gray-400",
+      initials: pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH",
       content: newReply,
       time: "À l'instant",
-      isCorrect: false
+      isCorrect: false,
+      role: userRole
     };
     
     const updatedReplies = [...replies, reply];
@@ -163,7 +165,7 @@ export const ForumThread = () => {
               )}
             </h2>
             <div className="flex items-center gap-3 text-sm text-[#6B7280] dark:text-[#8B949E]">
-              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3]">{discussion.author}</span>
+              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex items-center">{discussion.author} <RoleBadge role={discussion.role} /></span>
               <span>•</span>
               <span>{discussion.time}</span>
               <span>•</span>
@@ -218,7 +220,7 @@ export const ForumThread = () => {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm">{reply.author}</span>
+                  <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center">{reply.author} <RoleBadge role={reply.role} /></span>
                   <span className="text-xs text-[#6B7280] dark:text-[#8B949E]">• {reply.time}</span>
                 </div>
                 <div className="text-[#1A1A2E] dark:text-[#E6EDF3] text-sm leading-relaxed whitespace-pre-wrap">
@@ -246,8 +248,8 @@ export const ForumThread = () => {
 
       {/* Reply Input */}
       <div className="bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] rounded-2xl p-4 shadow-sm mt-8 flex gap-4 items-start">
-        <div className="w-10 h-10 rounded-full bg-[#D81B60] flex items-center justify-center text-white font-bold shrink-0">
-          MA
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${userRole === 'grand_frere' || userRole === 'admin' ? "bg-[#1A3557]" : userRole === 'equipe' ? "bg-[#D81B60]" : "bg-gray-400"}`}>
+          {pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH"}
         </div>
         <div className="flex-1 border border-[#E1E4E8] dark:border-[#30363D] rounded-xl overflow-hidden focus-within:border-[#1976D2] focus-within:ring-1 focus-within:ring-[#1976D2] transition-colors bg-[#F8F9FA] dark:bg-[#0D1117]">
           <textarea

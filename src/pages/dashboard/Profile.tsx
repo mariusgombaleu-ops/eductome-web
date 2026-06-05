@@ -4,11 +4,12 @@ import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { RoleBadge } from '../../components/forum/RoleBadge';
 
 export const Profile = () => {
   const { theme } = useTheme();
   const d = theme === 'dark';
-  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt } = useUser();
+  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole } = useUser();
   const { currentUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -91,7 +92,7 @@ export const Profile = () => {
         <div className="relative z-10 text-center md:text-left text-white flex-1 w-full">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-playfair font-bold mb-1">{pseudo}</h1>
+              <h1 className="text-3xl font-playfair font-bold mb-1 flex items-center">{pseudo} <RoleBadge role={userRole} /></h1>
               <p className="text-blue-100">{levelString} • Inscrit(e) depuis {createdAt}</p>
               <div className="mt-3 inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 backdrop-blur-sm text-yellow-300 border border-yellow-400/30 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
                 <Star className="w-4 h-4 fill-yellow-400" /> Compte {level.level > 1 ? 'Premium' : 'Gratuit'}

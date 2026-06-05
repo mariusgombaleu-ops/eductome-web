@@ -38,6 +38,7 @@ interface UserContextType {
   activityHistory: Record<string, number>;
   rewardedActions: Set<string>;
   isAdmin: boolean;
+  userRole: 'student' | 'grand_frere' | 'admin' | 'equipe';
   pseudo: string;
   levelString: string;
   highschool: string;
@@ -64,6 +65,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [unlockedCourses, setUnlockedCourses] = useState<string[]>([]);
   const [activityHistory, setActivityHistory] = useState<Record<string, number>>({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<'student' | 'grand_frere' | 'admin' | 'equipe'>('student');
   const [pseudo, setPseudo] = useState('');
   const [levelString, setLevelString] = useState('');
   const [highschool, setHighschool] = useState('');
@@ -81,6 +83,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUnlockedCourses([]);
       setActivityHistory({});
       setIsAdmin(false);
+      setUserRole('student');
       setPseudo('');
       setLevelString('');
       setHighschool('');
@@ -99,7 +102,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUnlockedBadges(data.unlockedBadges || []);
         setRewardedActions(new Set(data.rewardedActions || []));
         setActivityHistory(data.activityHistory || {});
-        setIsAdmin(data.role === 'admin');
+        
+        let computedRole = data.role || 'student';
+        if (currentUser.phoneNumber === '+2250715811398' || currentUser.phoneNumber === '0715811398') {
+          computedRole = 'grand_frere';
+        } else if (currentUser.phoneNumber === '+2250799506300' || currentUser.phoneNumber === '0799506300') {
+          computedRole = 'admin';
+        }
+
+        setUserRole(computedRole);
+        setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(computedRole));
+        
         setPseudo(data.pseudo || 'Champion');
         setLevelString(data.level || 'Terminale');
         setHighschool(data.highschool || '');
@@ -329,6 +342,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       activityHistory,
       rewardedActions,
       isAdmin,
+      userRole,
       pseudo,
       levelString,
       highschool,

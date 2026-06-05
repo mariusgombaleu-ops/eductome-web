@@ -6,10 +6,11 @@ import { useUser } from '../../contexts/UserContext';
 
 import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
+import { RoleBadge } from '../../components/forum/RoleBadge';
 
 export const ForumHome = () => {
   const { addToast } = useToast();
-  const { gainXp, hasActionBeenRewarded } = useUser();
+  const { gainXp, hasActionBeenRewarded, pseudo, userRole } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [newTopicTitle, setNewTopicTitle] = useState("");
@@ -88,12 +89,13 @@ export const ForumHome = () => {
       id: Date.now(),
       title: newTopicTitle,
       content: newTopicContent,
-      author: "Marius", 
-      avatar: "bg-[#D81B60]",
-      initials: "MA",
+      author: pseudo, 
+      avatar: userRole === 'grand_frere' || userRole === 'admin' ? "bg-[#1A3557]" : userRole === 'equipe' ? "bg-[#D81B60]" : "bg-gray-400",
+      initials: pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH",
       replies: 0,
       time: "À l'instant",
       tags: [newTopicTag === 'maths' ? 'Mathématiques' : newTopicTag === 'pc' ? 'Physique-Chimie' : newTopicTag === 'svt' ? 'SVT' : newTopicTag === 'philo' ? 'Philosophie' : 'Histoire'],
+      role: userRole
     };
     if (newTopicTome) {
       newDiscussion.tags.push(newTopicTome);
@@ -176,7 +178,7 @@ export const ForumHome = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm">{disc.author}</span>
+                      <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center">{disc.author} <RoleBadge role={disc.role} /></span>
                       <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center gap-1">
                         • {disc.time}
                       </span>
