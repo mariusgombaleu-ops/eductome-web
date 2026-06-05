@@ -7,6 +7,8 @@ import { XP } from '../../constants/xp';
 import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
 import { RoleBadge } from '../../components/forum/RoleBadge';
+import { db } from '../../config/firebase';
+import { doc, onSnapshot, collection, query, where, orderBy, addDoc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
 
 export const ForumThread = () => {
   const { id } = useParams();
@@ -16,119 +18,111 @@ export const ForumThread = () => {
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
   const [newReply, setNewReply] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load discussion from local storage
-    const saved = localStorage.getItem('eductome_forum_discussions');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const found = parsed.find((d: any) => d.id.toString() === id);
-      if (found) setDiscussion(found);
-    }
-    
-    // Load replies
-    const savedReplies = localStorage.getItem(`eductome_forum_replies_${id}`);
-    if (savedReplies) {
-      setReplies(JSON.parse(savedReplies));
-    } else {
-      // Mock replies for existing discussions
-      if (id === "1") {
-        setReplies([
-          {
-            id: 101,
-            author: "Prof_Koffi",
-            avatar: "bg-[#1976D2]",
-            initials: "PK",
-            content: "Salut Alexandre. Quand le second membre est un polynôme de degré n, tu dois chercher une solution particulière qui est aussi un polynôme de degré n. Par exemple si c'est ax + b, tu poses y0 = cx + d.",
-            time: "Il y a 1h",
-            isCorrect: true
-          },
-          {
-            id: 102,
-            author: "Marie_L",
-            avatar: "bg-[#D81B60]",
-            initials: "ML",
-            content: "Merci Prof ! Et si on a un second membre avec une exponentielle ?",
-            time: "Il y a 30m",
-            isCorrect: false
-          }
-        ]);
+    if (!id) return;
+
+    // Load discussion
+    const discussionRef = doc(db, 'forum_posts', id);
+    const unsubDiscussion = onSnapshot(discussionRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setDiscussion({ id: docSnap.id, ...docSnap.data() });
+      } else {
+        setDiscussion(null);
       }
-    }
+      setLoading(false);
+    });
+
+    // Load replies
+    const q = query(
+      collection(db, 'forum_replies'),
+      where('discussionId', '==', id),
+      orderBy('createdAt', 'asc')
+    );
+    const unsubReplies = onSnapshot(q, (snapshot) => {
+      setReplies(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return () => {
+      unsubDiscussion();
+      unsubReplies();
+    };
   }, [id]);
 
-  const handlePostReply = () => {
-    if (!newReply.trim()) return;
+  const handlePostReply = async () => {
+    if (!newReply.trim() || !id) return;
     
     const reply = {
-      id: Date.now(),
+      discussionId: id,
       author: pseudo,
       avatar: userRole === 'grand_frere' || userRole === 'admin' ? "bg-[#1A3557]" : userRole === 'equipe' ? "bg-[#D81B60]" : "bg-gray-400",
       initials: pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH",
       content: newReply,
       time: "À l'instant",
+      createdAt: serverTimestamp(),
       isCorrect: false,
       role: userRole
     };
     
-    const updatedReplies = [...replies, reply];
-    setReplies(updatedReplies);
-    localStorage.setItem(`eductome_forum_replies_${id}`, JSON.stringify(updatedReplies));
-    
-    // Mettre à jour le compteur de réponses
-    const saved = localStorage.getItem('eductome_forum_discussions');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const updatedDiscussions = parsed.map((d: any) => 
-        d.id.toString() === id ? { ...d, replies: d.replies + 1 } : d
-      );
-      localStorage.setItem('eductome_forum_discussions', JSON.stringify(updatedDiscussions));
-    }
+    try {
+      await addDoc(collection(db, 'forum_replies'), reply);
+      
+      // Update replies count in discussion
+      const discussionRef = doc(db, 'forum_posts', id);
+      await updateDoc(discussionRef, {
+        replies: increment(1)
+      });
 
-    setNewReply("");
-    addToast({ type: 'success', title: 'Réponse publiée', message: 'En attente de validation pour gagner tes XP !' });
+      setNewReply("");
+      addToast({ type: 'success', title: 'Réponse publiée', message: 'En attente de validation pour gagner tes XP !' });
+    } catch (e) {
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de publier la réponse.' });
+    }
   };
 
-  const markAsCorrect = (replyId: number) => {
-    const updatedReplies = replies.map(r => 
-      r.id === replyId ? { ...r, isCorrect: true } : { ...r, isCorrect: false }
-    );
-    setReplies(updatedReplies);
-    localStorage.setItem(`eductome_forum_replies_${id}`, JSON.stringify(updatedReplies));
-    
-    const updatedDiscussion = { ...discussion, isResolved: true };
-    setDiscussion(updatedDiscussion);
-    
-    const savedDiscussions = localStorage.getItem('eductome_forum_discussions');
-    if (savedDiscussions) {
-      const parsed = JSON.parse(savedDiscussions);
-      const updatedList = parsed.map((d: any) => d.id === discussion.id ? updatedDiscussion : d);
-      localStorage.setItem('eductome_forum_discussions', JSON.stringify(updatedList));
+  const markAsCorrect = async (replyId: string) => {
+    if (!discussion) return;
+    const canMark = userRole === 'admin' || userRole === 'grand_frere' || userRole === 'equipe' || pseudo === discussion.author;
+    if (!canMark) {
+      addToast({ type: 'error', title: 'Action non autorisée', message: 'Seul l\'auteur de la question peut valider la solution.' });
+      return;
     }
-    
-    fireConfetti();
-    addToast({ type: 'success', title: 'Réponse validée !', message: 'Cette réponse a été marquée comme la meilleure solution.' });
-    gainXp(XP.FORUM_SOLUTION, 'Réponse validée comme solution', `forum_solution_${replyId}`);
+
+    try {
+      // Update reply
+      await updateDoc(doc(db, 'forum_replies', replyId), { isCorrect: true });
+      // Update discussion
+      await updateDoc(doc(db, 'forum_posts', id as string), { isResolved: true });
+      
+      fireConfetti();
+      addToast({ type: 'success', title: 'Réponse validée !', message: 'Cette réponse a été marquée comme la meilleure solution.' });
+      gainXp(XP.FORUM_SOLUTION, 'Réponse validée comme solution', `forum_solution_${replyId}`);
+    } catch (e) {
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de valider la réponse.' });
+    }
   };
 
-  const markDiscussionAsPertinent = () => {
-    const updated = { ...discussion, isPertinent: true };
-    setDiscussion(updated);
-    
-    // update localStorage
-    const saved = localStorage.getItem('eductome_forum_discussions');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const updatedList = parsed.map((d: any) => d.id === discussion.id ? updated : d);
-      localStorage.setItem('eductome_forum_discussions', JSON.stringify(updatedList));
+  const markDiscussionAsPertinent = async () => {
+    if (!discussion) return;
+    const canMark = userRole === 'admin' || userRole === 'grand_frere';
+    if (!canMark) {
+      addToast({ type: 'error', title: 'Action non autorisée', message: 'Seuls les Grands Frères peuvent marquer une question comme pertinente.' });
+      return;
     }
-    
-    fireConfetti();
-    addToast({ type: 'success', title: 'Question validée !', message: 'Cette question a été marquée comme pertinente.' });
-    gainXp(10, 'Question pertinente', `forum_question_pertinent_${discussion.id}`);
+
+    try {
+      await updateDoc(doc(db, 'forum_posts', id as string), { isPertinent: true });
+      fireConfetti();
+      addToast({ type: 'success', title: 'Question validée !', message: 'Cette question a été marquée comme pertinente.' });
+      gainXp(10, 'Question pertinente', `forum_question_pertinent_${discussion.id}`);
+    } catch (e) {
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de marquer la question.' });
+    }
   };
 
-  if (!discussion) return <div className="p-8 text-center">Chargement...</div>;
+  if (loading) return <div className="p-8 text-center text-gray-500">Chargement...</div>;
+  if (!discussion) return <div className="p-8 text-center text-gray-500">Discussion introuvable.</div>;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 animate-fade-in-up">
@@ -155,22 +149,22 @@ export const ForumThread = () => {
           <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
             {discussion.initials}
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-1 flex items-center gap-2">
-              {discussion.title}
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-1 flex flex-wrap items-center gap-2">
+              <span className="break-words w-full md:w-auto">{discussion.title}</span>
               {discussion.isResolved && (
-                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1">
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 shrink-0">
                   <CheckCircle className="w-3 h-3" /> Résolu
                 </span>
               )}
             </h2>
-            <div className="flex items-center gap-3 text-sm text-[#6B7280] dark:text-[#8B949E]">
-              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex items-center">{discussion.author} <RoleBadge role={discussion.role} /></span>
-              <span>•</span>
-              <span>{discussion.time}</span>
-              <span>•</span>
-              <div className="flex gap-2">
-                {discussion.tags.map((t: string) => (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E]">
+              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
+              <span className="hidden md:inline">•</span>
+              <span className="shrink-0">{discussion.time}</span>
+              <span className="hidden md:inline">•</span>
+              <div className="flex flex-wrap gap-2">
+                {discussion.tags && discussion.tags.map((t: string) => (
                   <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-xs border border-[#E1E4E8] dark:border-[#30363D]">{t}</span>
                 ))}
               </div>
@@ -218,10 +212,10 @@ export const ForumThread = () => {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
                 {reply.initials}
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center">{reply.author} <RoleBadge role={reply.role} /></span>
-                  <span className="text-xs text-[#6B7280] dark:text-[#8B949E]">• {reply.time}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
+                  <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex flex-wrap items-center gap-x-2">{reply.author} <RoleBadge role={reply.role} /></span>
+                  <span className="text-xs text-[#6B7280] dark:text-[#8B949E] shrink-0">• {reply.time}</span>
                 </div>
                 <div className="text-[#1A1A2E] dark:text-[#E6EDF3] text-sm leading-relaxed whitespace-pre-wrap">
                   <MarkdownText text={reply.content} />

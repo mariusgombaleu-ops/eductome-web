@@ -3,6 +3,9 @@ import { MessageSquare, Users, Search, Plus, Crown, X, Tag, Lightbulb, Heart, Bo
 import { Link } from 'react-router-dom';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
+import { db } from '../../config/firebase';
+import { collection, onSnapshot, addDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { useEffect } from 'react';
 
 import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
@@ -18,47 +21,28 @@ export const ForumHome = () => {
   const [newTopicTome, setNewTopicTome] = useState("");
   const [newTopicContent, setNewTopicContent] = useState("");
 
-  const initialDiscussions = [
-    {
-      id: 1,
-      title: "Besoin d'aide sur une équation différentielle (Terminale Spé Maths)",
-      content: "Bonjour à tous, je bloque sur l'exercice 4 du Tome 11. Comment on détermine la solution particulière quand le second membre est un polynôme ? Merci d'avance !",
-      author: "Alexandre",
-      avatar: "bg-[#1976D2]",
-      initials: "AL",
-      replies: 4,
-      time: "Il y a 2h",
-      tags: ["Maths", "Tome 11"],
-    },
-    {
-      id: 2,
-      title: "Comment retenir les dates en Histoire sans se mélanger ?",
-      content: "La Guerre Froide a trop de dates, j'ai l'impression que je vais tout oublier le jour J. Vous avez des astuces mnémotechniques ?",
-      author: "Marie_L",
-      avatar: "bg-[#D81B60]",
-      initials: "ML",
-      replies: 12,
-      time: "Il y a 5h",
-      tags: ["Histoire", "Méthode"],
-    },
-    {
-      id: 3,
-      title: "Différence entre Acide Fort et Faible - Physique-Chimie",
-      content: "Est-ce qu'on peut toujours négliger l'autoprotolyse de l'eau ? Dans quels cas ce n'est plus valable ?",
-      author: "Jean_Marc",
-      avatar: "bg-[#4CAF50]",
-      initials: "JM",
-      replies: 2,
-      time: "Hier",
-      tags: ["Physique-Chimie"],
-    }
-  ];
+  const [discussions, setDiscussions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [discussions, setDiscussions] = useState<any[]>(() => {
-    const saved = localStorage.getItem('eductome_forum_discussions');
-    if (saved) return JSON.parse(saved);
-    return initialDiscussions;
-  });
+  useEffect(() => {
+    const q = query(collection(db, 'forum_posts'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedDiscussions = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        // Format relative time if needed, or just use the saved time string for now
+        time: doc.data().time || "À l'instant",
+        replies: doc.data().replies || 0,
+        tags: doc.data().tags || [],
+        isResolved: doc.data().isResolved || false,
+        isPertinent: doc.data().isPertinent || false
+      }));
+      setDiscussions(fetchedDiscussions);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const insertMarkdown = (prefix: string, suffix: string, placeholder: string) => {
     const textarea = document.getElementById('forum-textarea') as HTMLTextAreaElement;
@@ -79,14 +63,18 @@ export const ForumHome = () => {
     }
   };
 
-  const handlePostQuestion = () => {
+  const handlePostQuestion = async () => {
     if (!newTopicTitle.trim() || !newTopicContent.trim() || !newTopicTag) {
       addToast({ type: 'error', title: 'Erreur', message: 'Veuillez remplir tous les champs.' });
       return;
     }
     
+    const tags = [newTopicTag === 'maths' ? 'Mathématiques' : newTopicTag === 'pc' ? 'Physique-Chimie' : newTopicTag === 'svt' ? 'SVT' : newTopicTag === 'philo' ? 'Philosophie' : 'Histoire'];
+    if (newTopicTome) {
+      tags.push(newTopicTome);
+    }
+    
     const newDiscussion = {
-      id: Date.now(),
       title: newTopicTitle,
       content: newTopicContent,
       author: pseudo, 
@@ -94,24 +82,24 @@ export const ForumHome = () => {
       initials: pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH",
       replies: 0,
       time: "À l'instant",
-      tags: [newTopicTag === 'maths' ? 'Mathématiques' : newTopicTag === 'pc' ? 'Physique-Chimie' : newTopicTag === 'svt' ? 'SVT' : newTopicTag === 'philo' ? 'Philosophie' : 'Histoire'],
-      role: userRole
+      createdAt: serverTimestamp(),
+      tags: tags,
+      role: userRole,
+      isResolved: false,
+      isPertinent: false
     };
-    if (newTopicTome) {
-      newDiscussion.tags.push(newTopicTome);
+
+    try {
+      await addDoc(collection(db, 'forum_posts'), newDiscussion);
+      setIsModalOpen(false);
+      setNewTopicTitle("");
+      setNewTopicTag("");
+      setNewTopicTome("");
+      setNewTopicContent("");
+      addToast({ type: 'success', title: 'Question publiée', message: 'Ta question sera examinée. Si elle est pertinente, tu gagneras 10 XP !' });
+    } catch (e) {
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de publier la question.' });
     }
-    
-    const updated = [newDiscussion, ...discussions];
-    setDiscussions(updated);
-    localStorage.setItem('eductome_forum_discussions', JSON.stringify(updated));
-    
-    setIsModalOpen(false);
-    setNewTopicTitle("");
-    setNewTopicTag("");
-    setNewTopicTome("");
-    setNewTopicContent("");
-    
-    addToast({ type: 'success', title: 'Question publiée', message: 'Ta question sera examinée. Si elle est pertinente, tu gagneras 10 XP !' });
   };
 
   const topContributors = [
@@ -177,13 +165,13 @@ export const ForumHome = () => {
                     {disc.initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center">{disc.author} <RoleBadge role={disc.role} /></span>
-                      <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+                      <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center flex-wrap gap-x-2">{disc.author} <RoleBadge role={disc.role} /></span>
+                      <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center shrink-0">
                         • {disc.time}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white mb-2 group-hover:text-[#1976D2] transition-colors flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white mb-2 group-hover:text-[#1976D2] transition-colors flex items-center flex-wrap gap-2">
                       {disc.title}
                       {disc.isResolved && (
                         <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0">
