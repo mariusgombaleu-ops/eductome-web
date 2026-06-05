@@ -116,7 +116,7 @@ export const Register = () => {
         navigate(redirect);
       } catch (err: any) {
         console.error("Profile save error:", err);
-        setError("Erreur lors de l'enregistrement du profil.");
+        setError(`Erreur lors de l'enregistrement du profil: ${err.message || err}`);
       } finally {
         setIsLoading(false);
       }
