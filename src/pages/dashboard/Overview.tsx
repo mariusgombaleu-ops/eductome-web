@@ -14,7 +14,7 @@ const QUOTES = [
 ];
 
 export const Overview = () => {
-  const { xp, level, rewardedActions } = useUser();
+  const { xp, level, rewardedActions, pseudo } = useUser();
   const [quote, setQuote] = useState(QUOTES[0]);
   const [greeting, setGreeting] = useState("Bonjour");
   
