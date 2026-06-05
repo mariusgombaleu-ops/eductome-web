@@ -22,7 +22,6 @@ export const ForumHome = () => {
   const [newTopicContent, setNewTopicContent] = useState("");
 
   const [discussions, setDiscussions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const q = query(collection(db, 'forum_posts'), orderBy('createdAt', 'desc'));
@@ -38,7 +37,6 @@ export const ForumHome = () => {
         isPertinent: doc.data().isPertinent || false
       }));
       setDiscussions(fetchedDiscussions);
-      setLoading(false);
     });
 
     return () => unsubscribe();
