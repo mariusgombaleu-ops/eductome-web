@@ -18,6 +18,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { MyCourses } from './pages/dashboard/MyCourses';
 import { Profile } from './pages/dashboard/Profile';
+import { Settings } from './pages/dashboard/Settings';
 import { CourseReader } from './pages/dashboard/CourseReader';
 import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
 import { StarterPack } from './pages/dashboard/StarterPack';
@@ -57,7 +58,7 @@ function App() {
               <Route path="/dashboard/courses" element={<MyCourses />} />
               <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
               <Route path="/dashboard/profile" element={<Profile />} />
-              <Route path="/dashboard/settings" element={<Profile />} />
+              <Route path="/dashboard/settings" element={<Settings />} />
               <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
               <Route path="/dashboard/ressources" element={<Resources />} />
               <Route path="/dashboard/blog" element={<Blog />} />

@@ -183,13 +183,11 @@ export const ForumHome = () => {
                       
                       <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white group-hover:text-[#1976D2] transition-colors leading-snug flex flex-wrap items-center gap-2 mb-1">
                         <span>{disc.title}</span>
-                        <div className="flex flex-wrap gap-2">
-                          {disc.tags.map((tag: any) => (
-                            <span key={tag} className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                        {disc.tags.map((tag: any) => (
+                          <span key={tag} className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
+                            {tag}
+                          </span>
+                        ))}
                       </h3>
                       
                       <div className="mb-2">

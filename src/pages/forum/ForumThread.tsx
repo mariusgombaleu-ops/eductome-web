@@ -169,11 +169,9 @@ export const ForumThread = () => {
               </div>
               <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white flex flex-wrap items-center gap-2 leading-snug mb-1">
                 <span className="break-words max-w-full">{discussion.title}</span>
-                <div className="flex flex-wrap gap-2">
-                  {discussion.tags && discussion.tags.map((t: string) => (
-                    <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold text-[#6B7280] dark:text-[#8B949E]">{t}</span>
-                  ))}
-                </div>
+                {discussion.tags && discussion.tags.map((t: string) => (
+                  <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold text-[#6B7280] dark:text-[#8B949E]">{t}</span>
+                ))}
               </h2>
               <div className="mb-2">
                 {discussion.isResolved ? (

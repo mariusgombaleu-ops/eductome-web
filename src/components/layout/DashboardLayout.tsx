@@ -49,6 +49,7 @@ export const DashboardLayout = () => {
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },
     { name: 'Le Blog', href: '/dashboard/blog', icon: Newspaper },
     { name: 'Devenir Relais', href: '/dashboard/devenir-relais', icon: Megaphone },
+    { name: 'Paramètres', href: '/dashboard/settings', icon: Settings },
   ];
 
   if (loading) {
