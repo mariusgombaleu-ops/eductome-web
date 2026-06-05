@@ -32,7 +32,7 @@ import { useUser } from '../../contexts/UserContext';
 
 export const DashboardLayout = () => {
   const { currentUser, loading, logout } = useAuth();
-  const { pseudo, levelString } = useUser();
+  const { pseudo, levelString, photoURL } = useUser();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -210,8 +210,12 @@ export const DashboardLayout = () => {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <Link to="/dashboard/profile" className="flex items-center space-x-2 p-1 pr-2 sm:pr-3 rounded-full sm:rounded-xl transition-colors hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]">
-              <div className="w-8 h-8 rounded-full bg-eductome-magenta flex items-center justify-center text-white font-bold text-sm shadow-sm uppercase">
-                {pseudo ? pseudo.substring(0, 2) : 'GM'}
+              <div className="w-8 h-8 rounded-full bg-eductome-magenta flex items-center justify-center text-white font-bold text-sm shadow-sm uppercase overflow-hidden">
+                {photoURL ? (
+                  <img src={photoURL} alt="Profil" className="w-full h-full object-cover" />
+                ) : (
+                  pseudo ? pseudo.substring(0, 2) : 'GM'
+                )}
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-bold text-[#1A1A2E] dark:text-[#E6EDF3] leading-tight truncate max-w-[120px]">{pseudo || 'Champion'}</p>
