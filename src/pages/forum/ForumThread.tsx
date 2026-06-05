@@ -8,12 +8,12 @@ import { fireConfetti } from '../../utils/confetti';
 import { MarkdownText } from '../../components/forum/MarkdownText';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { db } from '../../config/firebase';
-import { doc, onSnapshot, collection, query, where, orderBy, addDoc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, where, addDoc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
 
 export const ForumThread = () => {
   const { id } = useParams();
   const { addToast } = useToast();
-  const { gainXp, userRole, pseudo } = useUser();
+  const { gainXp, userRole, pseudo, hasActionBeenRewarded } = useUser();
   
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
