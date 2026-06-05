@@ -45,6 +45,10 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
       const separator = finalLink.includes('?') ? '&' : '?';
       
       finalLink = `${finalLink}${separator}email=${encodeURIComponent(email)}&phone=${encodedPhone}`;
+      
+      // Enregistrer l'email dans le storage pour que le Vigile background prenne le relais
+      localStorage.setItem('eductome_waiting_payment_email', email);
+      localStorage.setItem('eductome_waiting_payment_time', Date.now().toString());
     }
 
     // Redirection vers le lien Selar avec paramètres

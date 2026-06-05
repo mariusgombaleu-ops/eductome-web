@@ -88,6 +88,68 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('eductome_activity_history', JSON.stringify(activityHistory));
   }, [activityHistory]);
 
+  // --- SYSTÈME DE VIGILE FRONTEND (POLLING EN ARRIÈRE-PLAN) ---
+  useEffect(() => {
+    const checkBackgroundPayment = async () => {
+      const waitingEmail = localStorage.getItem('eductome_waiting_payment_email');
+      const waitingTimeStr = localStorage.getItem('eductome_waiting_payment_time');
+      
+      if (!waitingEmail || !waitingTimeStr) return;
+
+      const waitingTime = parseInt(waitingTimeStr, 10);
+      // Si l'attente dure depuis plus de 15 minutes, on abandonne
+      if (Date.now() - waitingTime > 15 * 60 * 1000) {
+        localStorage.removeItem('eductome_waiting_payment_email');
+        localStorage.removeItem('eductome_waiting_payment_time');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://us-central1-eductome-web.cloudfunctions.net/checkTransaction?email=${encodeURIComponent(waitingEmail)}`);
+        const data = await response.json();
+        
+        if (data.success && data.productId) {
+          const pendingCourseId = localStorage.getItem('eductome_pending_course');
+          
+          if (pendingCourseId) {
+            if (pendingCourseId === 'cles-maths' || pendingCourseId.includes('cles')) {
+               const tomesMaths = ['t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff'];
+               setUnlockedCourses(prev => {
+                 const newCourses = [...prev];
+                 tomesMaths.forEach(t => { if (!newCourses.includes(t)) newCourses.push(t); });
+                 return newCourses;
+               });
+            } else {
+               setUnlockedCourses(prev => prev.includes(pendingCourseId) ? prev : [...prev, pendingCourseId]);
+            }
+          } else {
+            setUnlockedCourses(prev => prev.includes(data.productId) ? prev : [...prev, data.productId]);
+          }
+          
+          // Nettoyage
+          localStorage.removeItem('eductome_waiting_payment_email');
+          localStorage.removeItem('eductome_pending_course');
+          localStorage.removeItem('eductome_waiting_payment_time');
+          
+          addToast({
+            type: 'success',
+            title: 'Paiement Validé ! 🎉',
+            message: 'Le Vigile a détecté ton paiement. Ton cours est débloqué !'
+          });
+        }
+      } catch (error) {
+        console.error("Erreur du Vigile frontend:", error);
+      }
+    };
+
+    // Vérifier immédiatement au chargement
+    checkBackgroundPayment();
+
+    // Puis vérifier toutes les 5 secondes
+    const interval = setInterval(checkBackgroundPayment, 5000);
+    return () => clearInterval(interval);
+  }, []); // Exécuté une seule fois au montage du provider
+
   const hasActionBeenRewarded = (actionId: string) => rewardedActions.has(actionId);
 
   const gainXp = (amount: number, reason: string, actionId?: string) => {
