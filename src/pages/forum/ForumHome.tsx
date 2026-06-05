@@ -171,28 +171,28 @@ export const ForumHome = () => {
                         </span>
                       </div>
                       
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {disc.isResolved ? (
-                          <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-green-200 dark:border-green-800">
-                            <CheckCircle className="w-3 h-3" /> Résolu
-                          </span>
-                        ) : (
-                          <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-orange-200 dark:border-orange-800">
-                            <Clock className="w-3 h-3" /> En attente
-                          </span>
-                        )}
+                      <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white group-hover:text-[#1976D2] transition-colors leading-snug flex flex-wrap items-center gap-2 mb-1">
+                        <span>{disc.title}</span>
                         <div className="flex flex-wrap gap-2">
                           {disc.tags.map((tag: any) => (
-                            <span key={tag} className="px-2 py-0.5 text-xs font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
+                            <span key={tag} className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
                               {tag}
                             </span>
                           ))}
                         </div>
-                      </div>
-                      
-                      <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white group-hover:text-[#1976D2] transition-colors leading-snug">
-                        {disc.title}
                       </h3>
+                      
+                      <div className="mb-2">
+                        {disc.isResolved ? (
+                          <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold border border-green-200 dark:border-green-800">
+                            <CheckCircle className="w-3 h-3" /> Résolu
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold border border-orange-200 dark:border-orange-800">
+                            <Clock className="w-3 h-3" /> En attente
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   

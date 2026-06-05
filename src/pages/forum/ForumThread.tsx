@@ -162,25 +162,25 @@ export const ForumThread = () => {
                 <span className="hidden md:inline">•</span>
                 <span className="shrink-0">{discussion.time}</span>
               </div>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white flex flex-wrap items-center gap-2 leading-snug mb-1">
+                <span className="break-words max-w-full">{discussion.title}</span>
+                <div className="flex flex-wrap gap-2">
+                  {discussion.tags && discussion.tags.map((t: string) => (
+                    <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold text-[#6B7280] dark:text-[#8B949E]">{t}</span>
+                  ))}
+                </div>
+              </h2>
+              <div className="mb-2">
                 {discussion.isResolved ? (
-                  <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-green-200 dark:border-green-800">
+                  <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold border border-green-200 dark:border-green-800">
                     <CheckCircle className="w-3 h-3" /> Résolu
                   </span>
                 ) : (
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-orange-200 dark:border-orange-800">
+                  <span className="inline-flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold border border-orange-200 dark:border-orange-800">
                     <Clock className="w-3 h-3" /> En attente
                   </span>
                 )}
-                <div className="flex flex-wrap gap-2">
-                  {discussion.tags && discussion.tags.map((t: string) => (
-                    <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold">{t}</span>
-                  ))}
-                </div>
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white flex flex-wrap items-center gap-2 leading-snug">
-                <span className="break-words w-full md:w-auto">{discussion.title}</span>
-              </h2>
             </div>
           </div>
 
@@ -214,13 +214,19 @@ export const ForumThread = () => {
             >
               <Share2 className="w-4 h-4" /> Partager
             </button>
-            {!discussion.isPertinent && (
-              <button 
-                onClick={markDiscussionAsPertinent}
-                className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-purple-600 transition-colors"
-              >
-                <CheckCircle className="w-4 h-4" /> Marquer comme pertinente
-              </button>
+            {!discussion.isPertinent ? (
+              (userRole === 'admin' || userRole === 'grand_frere') && (
+                <button 
+                  onClick={markDiscussionAsPertinent}
+                  className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-purple-600 transition-colors"
+                >
+                  <CheckCircle className="w-4 h-4" /> Pertinente ?
+                </button>
+              )
+            ) : (
+              <div className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E]">
+                <CheckCircle className="w-4 h-4 text-green-500" /> Pertinente
+              </div>
             )}
           </div>
         </div>
