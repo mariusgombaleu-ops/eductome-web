@@ -45,6 +45,7 @@ interface UserContextType {
   favoriteSubject: string;
   goal: string;
   createdAt: string;
+  photoURL: string | null;
   gainXp: (amount: number, reason: string, actionId?: string) => void;
   hasActionBeenRewarded: (actionId: string) => boolean;
   unlockCourse: (courseId: string) => void;
@@ -72,6 +73,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [favoriteSubject, setFavoriteSubject] = useState('');
   const [goal, setGoal] = useState('');
   const [createdAt, setCreatedAt] = useState('');
+  const [photoURL, setPhotoURL] = useState<string | null>(null);
 
   // Synchronisation avec Firestore
   useEffect(() => {
@@ -90,6 +92,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setFavoriteSubject('');
       setGoal('');
       setCreatedAt('');
+      setPhotoURL(null);
       return;
     }
 
@@ -119,6 +122,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setHighschool(data.highschool || '');
         setFavoriteSubject(data.favoriteSubject || '');
         setGoal(data.goal || '');
+        setPhotoURL(data.photoURL || currentUser.photoURL || null);
         
         if (data.createdAt) {
           const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
@@ -350,6 +354,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       favoriteSubject,
       goal,
       createdAt,
+      photoURL,
       gainXp, 
       hasActionBeenRewarded, 
       unlockCourse,

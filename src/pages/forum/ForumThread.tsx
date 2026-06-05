@@ -13,7 +13,7 @@ import { doc, onSnapshot, collection, query, where, addDoc, updateDoc, serverTim
 export const ForumThread = () => {
   const { id } = useParams();
   const { addToast } = useToast();
-  const { gainXp, userRole, pseudo, hasActionBeenRewarded } = useUser();
+  const { gainXp, userRole, pseudo, hasActionBeenRewarded, photoURL } = useUser();
   
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
@@ -68,7 +68,8 @@ export const ForumThread = () => {
       time: "À l'instant",
       createdAt: serverTimestamp(),
       isCorrect: false,
-      role: userRole
+      role: userRole,
+      authorPhotoURL: photoURL || null
     };
     
     try {
@@ -145,17 +146,21 @@ export const ForumThread = () => {
       <div className={`bg-white dark:bg-[#161B22] border ${discussion.isPertinent ? 'border-purple-400 dark:border-purple-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative overflow-hidden`}>
         <div className="absolute top-0 left-0 w-1 h-full bg-[#D81B60]"></div>
         
-        {discussion.isPertinent && (
-          <div className="absolute top-4 right-4 flex items-center gap-1.5 text-purple-600 dark:text-purple-400 text-sm font-bold bg-purple-50 dark:bg-purple-900/20 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-800">
-            <CheckCircle className="w-4 h-4" /> Question Pertinente
-          </div>
-        )}
+
         
         <div className="flex flex-col gap-4 mb-4 mt-2">
           <div className="flex items-start gap-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
-              {discussion.initials}
-            </div>
+            {discussion.authorPhotoURL ? (
+              <img 
+                src={discussion.authorPhotoURL} 
+                alt={discussion.author} 
+                className="w-12 h-12 rounded-full object-cover shrink-0 border border-[#E1E4E8] dark:border-[#30363D]"
+              />
+            ) : (
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
+                {discussion.initials}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E] mb-2">
                 <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
@@ -243,9 +248,17 @@ export const ForumThread = () => {
           <div key={reply.id} className={`bg-white dark:bg-[#161B22] border ${reply.isCorrect ? 'border-green-400 dark:border-green-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative`}>
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
-                  {reply.initials}
-                </div>
+                {reply.authorPhotoURL ? (
+                  <img 
+                    src={reply.authorPhotoURL} 
+                    alt={reply.author} 
+                    className="w-10 h-10 rounded-full object-cover shrink-0 border border-[#E1E4E8] dark:border-[#30363D]"
+                  />
+                ) : (
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
+                    {reply.initials}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex flex-wrap items-center gap-x-2">{reply.author} <RoleBadge role={reply.role} /></span>

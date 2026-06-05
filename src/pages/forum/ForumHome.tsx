@@ -13,7 +13,7 @@ import { RoleBadge } from '../../components/forum/RoleBadge';
 
 export const ForumHome = () => {
   const { addToast } = useToast();
-  const { gainXp, hasActionBeenRewarded, pseudo, userRole } = useUser();
+  const { gainXp, hasActionBeenRewarded, pseudo, userRole, photoURL } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [newTopicTitle, setNewTopicTitle] = useState("");
@@ -34,7 +34,8 @@ export const ForumHome = () => {
         replies: doc.data().replies || 0,
         tags: doc.data().tags || [],
         isResolved: doc.data().isResolved || false,
-        isPertinent: doc.data().isPertinent || false
+        isPertinent: doc.data().isPertinent || false,
+        authorPhotoURL: doc.data().authorPhotoURL || null
       }));
       setDiscussions(fetchedDiscussions);
     });
@@ -84,7 +85,8 @@ export const ForumHome = () => {
       tags: tags,
       role: userRole,
       isResolved: false,
-      isPertinent: false
+      isPertinent: false,
+      authorPhotoURL: photoURL || null
     };
 
     try {
@@ -160,9 +162,17 @@ export const ForumHome = () => {
               <Link to={`/forum/thread/${disc.id}`} key={disc.id} className="block bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] rounded-2xl p-6 hover:border-[#1976D2] dark:hover:border-[#1976D2] transition-all cursor-pointer shadow-sm group">
                 <div className="flex flex-col gap-4">
                   <div className="flex items-start gap-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${disc.avatar}`}>
-                      {disc.initials}
-                    </div>
+                    {disc.authorPhotoURL ? (
+                      <img 
+                        src={disc.authorPhotoURL} 
+                        alt={disc.author} 
+                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-[#E1E4E8] dark:border-[#30363D]"
+                      />
+                    ) : (
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${disc.avatar}`}>
+                        {disc.initials}
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1.5">
                         <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center flex-wrap gap-x-2">{disc.author} <RoleBadge role={disc.role} /></span>

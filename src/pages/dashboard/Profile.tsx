@@ -5,12 +5,26 @@ import { BADGES } from '../../constants/badges';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { RoleBadge } from '../../components/forum/RoleBadge';
+import { useRef } from 'react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { updateProfile } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { storage, db } from '../../config/firebase';
+import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
+import { useToast } from '../../contexts/ToastContext';
 
 export const Profile = () => {
   const { theme } = useTheme();
   const d = theme === 'dark';
-  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole } = useUser();
+  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole, photoURL } = useUser();
   const { currentUser } = useAuth();
+  const { addToast } = useToast();
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0); // 0-3
@@ -64,6 +78,44 @@ export const Profile = () => {
     setSavedNotes(prev => prev.filter(n => n.courseId !== courseId));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setSelectedImage(reader.result?.toString() || null);
+        setShowCropModal(true);
+      });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!currentUser) return;
+    try {
+      setShowCropModal(false);
+      setUploadingPhoto(true);
+      const fileRef = ref(storage, `profile_photos/${currentUser.uid}_${Date.now()}.jpg`);
+      await uploadBytes(fileRef, croppedBlob);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      // Update auth profile
+      await updateProfile(currentUser, { photoURL: downloadURL });
+      
+      // Update firestore document
+      await updateDoc(doc(db, 'users', currentUser.uid), { photoURL: downloadURL });
+      
+      addToast({ type: 'success', title: 'Photo de profil mise à jour', message: 'Ta photo de profil a été mise à jour avec succès.' });
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de mettre à jour ta photo de profil.' });
+    } finally {
+      setUploadingPhoto(false);
+      setSelectedImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       
@@ -73,19 +125,38 @@ export const Profile = () => {
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
         
-        <div className="relative z-10 group cursor-pointer">
+        <div className="relative z-10 group cursor-pointer" onClick={() => !uploadingPhoto && fileInputRef.current?.click()}>
           <div className="relative">
-            <img
-              className="h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-xl transition-transform group-hover:scale-105"
-              src="https://ui-avatars.com/api/?name=Marie+Eductome&background=E91E63&color=fff&size=128"
-              alt="User avatar"
-            />
+            {photoURL ? (
+              <img
+                className="h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-xl transition-transform group-hover:scale-105"
+                src={photoURL}
+                alt="User avatar"
+              />
+            ) : (
+              <div className="h-28 w-28 rounded-full ring-4 ring-white shadow-xl flex items-center justify-center bg-eductome-magenta text-white text-4xl font-bold transition-transform group-hover:scale-105">
+                {pseudo ? pseudo.substring(0, 2).toUpperCase() : '??'}
+              </div>
+            )}
+            
             <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera className="w-8 h-8 text-white" />
+              {uploadingPhoto ? (
+                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <Camera className="w-8 h-8 text-white" />
+              )}
             </div>
+            
             <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md text-eductome-magenta hover:text-pink-600 transition-colors">
               <Camera className="w-4 h-4" />
             </button>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+            />
           </div>
         </div>
         
@@ -438,6 +509,17 @@ export const Profile = () => {
           </button>
         </div>
       </div>
+      {showCropModal && selectedImage && (
+        <ImageCropperModal 
+          imageSrc={selectedImage}
+          onClose={() => {
+            setShowCropModal(false);
+            setSelectedImage(null);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+          }}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </div>
   );
 };
