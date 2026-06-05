@@ -15,17 +15,24 @@ export function GradesCalculator() {
     
     if (!newGradesObj[activeTab]) newGradesObj[activeTab] = {};
     
-    newGradesObj[activeTab]![subjectId] = [...currentGrades, 0]; // Add a default 0, will be edited
+    newGradesObj[activeTab]![subjectId] = [...currentGrades, '' as any]; // Add a default empty string, will be edited
     await updateGrades(newGradesObj);
   };
 
   const handleUpdateGrade = async (subjectId: string, index: number, value: string) => {
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) return;
+    let finalValue: number | string = value;
+    
+    // Only parse to float if it's not empty, not just a dot, and not ending with a dot (to allow typing "0.")
+    if (value !== '' && !value.endsWith('.')) {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        finalValue = numValue;
+      }
+    }
     
     const newGradesObj: UserGrades = { ...grades };
     const currentGrades = [...(grades[activeTab]?.[subjectId] || [])];
-    currentGrades[index] = numValue;
+    currentGrades[index] = finalValue as any;
     
     if (!newGradesObj[activeTab]) newGradesObj[activeTab] = {};
     newGradesObj[activeTab]![subjectId] = currentGrades;
@@ -46,9 +53,11 @@ export function GradesCalculator() {
 
   const calculateSubjectAverage = (subjectId: string) => {
     const subjectGrades = grades[activeTab]?.[subjectId] || [];
-    if (subjectGrades.length === 0) return null;
-    const sum = subjectGrades.reduce((a, b) => a + b, 0);
-    return sum / subjectGrades.length;
+    // Filter out empty strings or invalid numbers
+    const validGrades = subjectGrades.filter(g => g !== '' && !isNaN(Number(g))).map(g => Number(g));
+    if (validGrades.length === 0) return null;
+    const sum = validGrades.reduce((a, b) => a + b, 0);
+    return sum / validGrades.length;
   };
 
   const calculateTrimesterAverage = () => {
@@ -198,7 +207,7 @@ export function GradesCalculator() {
                           <input 
                             type="number" 
                             step="0.25"
-                            value={val === 0 ? '' : val}
+                            value={val}
                             onChange={(e) => handleUpdateGrade(subject.id, idx, e.target.value)}
                             placeholder="/ 20"
                             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-l-lg focus:ring-[#D81B60] focus:border-[#D81B60] bg-white dark:bg-[#161B22] dark:text-white"
