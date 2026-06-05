@@ -43,6 +43,40 @@ export function WelcomeModal() {
 
   const totalLength = parts.reduce((acc, part) => acc + part.text.length, 0);
 
+  const playNotificationSound = () => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const playDing = (startTime: number, freq: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, startTime + 0.05);
+        
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(startTime);
+        osc.stop(startTime + 0.3);
+      };
+
+      // Double ding like WhatsApp
+      playDing(ctx.currentTime, 800);
+      playDing(ctx.currentTime + 0.15, 1000);
+      
+    } catch (err) {
+      console.log("Audio play failed", err);
+    }
+  };
+
   useEffect(() => {
     if (!pseudo || !currentUser) return; // Wait for user data to load
     
@@ -50,11 +84,12 @@ export function WelcomeModal() {
     const hasSeenWelcome = localStorage.getItem(storageKey);
     
     if (!hasSeenWelcome) {
-      // Show modal after 1.5s delay to make it feel natural when landing on dashboard
+      // Show modal after 1.0s delay to make it feel natural when landing on dashboard
       const timer = setTimeout(() => {
+        playNotificationSound();
         setIsOpen(true);
         localStorage.setItem(storageKey, 'true');
-      }, 1500);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [pseudo, currentUser]);
