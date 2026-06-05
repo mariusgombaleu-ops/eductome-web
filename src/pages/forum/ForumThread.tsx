@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, CheckCircle, Heart, Send, Share2 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, Heart, Send, Share2, Clock } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
@@ -151,70 +151,78 @@ export const ForumThread = () => {
           </div>
         )}
         
-        <div className="flex items-start gap-4 mb-4 mt-2">
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
-            {discussion.initials}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E] mb-2">
-              <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
-              <span className="hidden md:inline">•</span>
-              <span className="shrink-0">{discussion.time}</span>
+        <div className="flex flex-col gap-4 mb-4 mt-2">
+          <div className="flex items-start gap-4">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
+              {discussion.initials}
             </div>
-            <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-2 flex flex-wrap items-center gap-2">
-              <span className="break-words w-full md:w-auto">{discussion.title}</span>
-              {discussion.isResolved && (
-                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 shrink-0">
-                  <CheckCircle className="w-3 h-3" /> Résolu
-                </span>
-              )}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {discussion.tags && discussion.tags.map((t: string) => (
-                <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-xs border border-[#E1E4E8] dark:border-[#30363D] font-bold">{t}</span>
-              ))}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E] mb-2">
+                <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
+                <span className="hidden md:inline">•</span>
+                <span className="shrink-0">{discussion.time}</span>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {discussion.isResolved ? (
+                  <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-green-200 dark:border-green-800">
+                    <CheckCircle className="w-3 h-3" /> Résolu
+                  </span>
+                ) : (
+                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-orange-200 dark:border-orange-800">
+                    <Clock className="w-3 h-3" /> En attente
+                  </span>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {discussion.tags && discussion.tags.map((t: string) => (
+                    <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold">{t}</span>
+                  ))}
+                </div>
+              </div>
+              <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white flex flex-wrap items-center gap-2 leading-snug">
+                <span className="break-words w-full md:w-auto">{discussion.title}</span>
+              </h2>
             </div>
           </div>
-        </div>
 
-        <div className="text-[#1A1A2E] dark:text-[#E6EDF3] leading-relaxed whitespace-pre-wrap ml-16">
-          <MarkdownText text={discussion.content} />
-        </div>
+          <div className="text-[#1A1A2E] dark:text-[#E6EDF3] leading-relaxed whitespace-pre-wrap">
+            <MarkdownText text={discussion.content} />
+          </div>
 
-        <div className="mt-6 ml-16 flex flex-wrap gap-y-3 gap-x-4">
-          <button 
-            onClick={() => {
-              const actionId = `forum_like_${discussion.id}`;
-              if (!hasActionBeenRewarded(actionId)) {
-                gainXp(10, 'Tu as aidé la communauté !', actionId);
-              }
-            }}
-            className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${discussion.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
-          >
-            <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${discussion.id}`) ? "currentColor" : "none"} /> Aimer
-          </button>
-          <button 
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: discussion.title,
-                  text: "Regarde cette discussion sur Eductome !",
-                  url: window.location.href,
-                }).catch(console.error);
-              }
-            }}
-            className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] transition-colors"
-          >
-            <Share2 className="w-4 h-4" /> Partager
-          </button>
-          {!discussion.isPertinent && (
+          <div className="mt-2 pt-4 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-wrap items-center gap-y-3 gap-x-6">
             <button 
-              onClick={markDiscussionAsPertinent}
-              className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-purple-600 transition-colors"
+              onClick={() => {
+                const actionId = `forum_like_${discussion.id}`;
+                if (!hasActionBeenRewarded(actionId)) {
+                  gainXp(10, 'Tu as aidé la communauté !', actionId);
+                }
+              }}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${discussion.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
             >
-              <CheckCircle className="w-4 h-4" /> Marquer comme pertinente
+              <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${discussion.id}`) ? "currentColor" : "none"} /> Aimer
             </button>
-          )}
+            <button 
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: discussion.title,
+                    text: "Regarde cette discussion sur Eductome !",
+                    url: window.location.href,
+                  }).catch(console.error);
+                }
+              }}
+              className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] transition-colors"
+            >
+              <Share2 className="w-4 h-4" /> Partager
+            </button>
+            {!discussion.isPertinent && (
+              <button 
+                onClick={markDiscussionAsPertinent}
+                className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-purple-600 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" /> Marquer comme pertinente
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -227,45 +235,48 @@ export const ForumThread = () => {
       <div className="space-y-4">
         {replies.map((reply) => (
           <div key={reply.id} className={`bg-white dark:bg-[#161B22] border ${reply.isCorrect ? 'border-green-400 dark:border-green-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
-                {reply.initials}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
+                  {reply.initials}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex flex-wrap items-center gap-x-2">{reply.author} <RoleBadge role={reply.role} /></span>
+                    <span className="text-xs text-[#6B7280] dark:text-[#8B949E] shrink-0">• {reply.time}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                  <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex flex-wrap items-center gap-x-2">{reply.author} <RoleBadge role={reply.role} /></span>
-                  <span className="text-xs text-[#6B7280] dark:text-[#8B949E] shrink-0">• {reply.time}</span>
-                </div>
-                <div className="text-[#1A1A2E] dark:text-[#E6EDF3] text-sm leading-relaxed whitespace-pre-wrap">
-                  <MarkdownText text={reply.content} />
-                </div>
 
-                <div className="mt-4 flex flex-wrap gap-y-3 gap-x-4">
+              <div className="text-[#1A1A2E] dark:text-[#E6EDF3] text-sm leading-relaxed whitespace-pre-wrap">
+                <MarkdownText text={reply.content} />
+              </div>
+
+              <div className="mt-1 pt-4 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-wrap items-center gap-y-3 gap-x-6">
+                <button 
+                  onClick={() => {
+                    const actionId = `forum_reply_like_${reply.id}`;
+                    if (!hasActionBeenRewarded(actionId)) {
+                      gainXp(5, 'Tu as encouragé un membre', actionId);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+                >
+                  <Heart className="w-3 h-3" fill={hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? "currentColor" : "none"} /> Aimer
+                </button>
+                {!reply.isCorrect && (
                   <button 
-                    onClick={() => {
-                      const actionId = `forum_reply_like_${reply.id}`;
-                      if (!hasActionBeenRewarded(actionId)) {
-                        gainXp(5, 'Tu as encouragé un membre', actionId);
-                      }
-                    }}
-                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+                    onClick={() => markAsCorrect(reply.id)}
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-green-600 transition-colors"
                   >
-                    <Heart className="w-3 h-3" fill={hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? "currentColor" : "none"} /> Aimer
+                    <CheckCircle className="w-3 h-3" /> Marquer comme solution
                   </button>
-                  {!reply.isCorrect && (
-                    <button 
-                      onClick={() => markAsCorrect(reply.id)}
-                      className="flex items-center gap-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-green-600 transition-colors"
-                    >
-                      <CheckCircle className="w-3 h-3" /> Marquer comme solution
-                    </button>
-                  )}
-                  {reply.isCorrect && (
-                    <div className="flex items-center gap-1.5 text-green-600 dark:text-green-500 text-xs font-bold bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md border border-green-200 dark:border-green-800">
-                      <CheckCircle className="w-3 h-3" /> Solution Validée
-                    </div>
-                  )}
-                </div>
+                )}
+                {reply.isCorrect && (
+                  <div className="flex items-center gap-1.5 text-green-600 dark:text-green-500 text-xs font-bold bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md border border-green-200 dark:border-green-800">
+                    <CheckCircle className="w-3 h-3" /> Solution Validée
+                  </div>
+                )}
               </div>
             </div>
           </div>

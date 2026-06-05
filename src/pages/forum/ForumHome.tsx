@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquare, Users, Search, Plus, Crown, X, Tag, Lightbulb, Heart, BookOpen, CheckCircle } from 'lucide-react';
+import { MessageSquare, Users, Search, Plus, Crown, X, Tag, Lightbulb, Heart, BookOpen, CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
@@ -158,55 +158,65 @@ export const ForumHome = () => {
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 delay-150">
             {discussions.map((disc) => (
               <Link to={`/forum/thread/${disc.id}`} key={disc.id} className="block bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] rounded-2xl p-6 hover:border-[#1976D2] dark:hover:border-[#1976D2] transition-all cursor-pointer shadow-sm group">
-                <div className="flex items-start gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${disc.avatar}`}>
-                    {disc.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                      <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center flex-wrap gap-x-2">{disc.author} <RoleBadge role={disc.role} /></span>
-                      <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center shrink-0">
-                        • {disc.time}
-                      </span>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${disc.avatar}`}>
+                      {disc.initials}
                     </div>
-                    <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white mb-2 group-hover:text-[#1976D2] transition-colors flex items-center flex-wrap gap-2">
-                      {disc.title}
-                      {disc.isResolved && (
-                        <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0">
-                          <CheckCircle className="w-3 h-3" /> Résolu
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1.5">
+                        <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex items-center flex-wrap gap-x-2">{disc.author} <RoleBadge role={disc.role} /></span>
+                        <span className="text-xs text-[#6B7280] dark:text-[#8B949E] flex items-center shrink-0">
+                          • {disc.time}
                         </span>
-                      )}
-                    </h3>
-                    <div className="text-sm text-[#6B7280] dark:text-[#8B949E] line-clamp-2 mb-4 leading-relaxed">
-                      <MarkdownText text={disc.content} />
-                    </div>
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="flex flex-wrap gap-2">
-                        {disc.tags.map((tag: any) => (
-                          <span key={tag} className="px-2.5 py-1 text-xs font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
-                            {tag}
-                          </span>
-                        ))}
                       </div>
-                      <div className="flex items-center gap-4 text-sm font-bold">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const actionId = `forum_like_${disc.id}`;
-                            if (!hasActionBeenRewarded(actionId)) {
-                              gainXp(10, 'Tu as aidé la communauté !', actionId);
-                            }
-                          }}
-                          className={`flex items-center gap-1.5 transition-colors ${hasActionBeenRewarded(`forum_like_${disc.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] hover:text-[#D81B60]'}`}
-                        >
-                          <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${disc.id}`) ? "currentColor" : "none"} /> 
-                          Aimer
-                        </button>
-                        <div className="flex items-center gap-1.5 text-[#1976D2]">
-                          <MessageSquare className="w-4 h-4" />
-                          {disc.replies} réponses
+                      
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {disc.isResolved ? (
+                          <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-green-200 dark:border-green-800">
+                            <CheckCircle className="w-3 h-3" /> Résolu
+                          </span>
+                        ) : (
+                          <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold flex items-center gap-1 shrink-0 border border-orange-200 dark:border-orange-800">
+                            <Clock className="w-3 h-3" /> En attente
+                          </span>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {disc.tags.map((tag: any) => (
+                            <span key={tag} className="px-2 py-0.5 text-xs font-bold rounded-md bg-[#F8F9FA] dark:bg-[#0D1117] text-[#6B7280] dark:text-[#8B949E] border border-[#E1E4E8] dark:border-[#30363D]">
+                              {tag}
+                            </span>
+                          ))}
                         </div>
                       </div>
+                      
+                      <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white group-hover:text-[#1976D2] transition-colors leading-snug">
+                        {disc.title}
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-[#6B7280] dark:text-[#8B949E] line-clamp-2 leading-relaxed">
+                    <MarkdownText text={disc.content} />
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-6 mt-1 pt-4 border-t border-[#E1E4E8] dark:border-[#30363D]">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const actionId = `forum_like_${disc.id}`;
+                        if (!hasActionBeenRewarded(actionId)) {
+                          gainXp(10, 'Tu as aidé la communauté !', actionId);
+                        }
+                      }}
+                      className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${disc.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] hover:text-[#D81B60]'}`}
+                    >
+                      <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${disc.id}`) ? "currentColor" : "none"} /> 
+                      Aimer
+                    </button>
+                    <div className="flex items-center gap-2 text-sm font-bold text-[#1976D2]">
+                      <MessageSquare className="w-4 h-4" />
+                      {disc.replies} réponses
                     </div>
                   </div>
                 </div>
