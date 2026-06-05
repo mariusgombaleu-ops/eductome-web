@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useOutlet, Link, useLocation } from 'react-router-dom';
+import { NavLink, useOutlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AnimatedPage } from './AnimatedPage';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -21,12 +21,14 @@ import {
   Settings,
   Download,
   Share,
-  PlusSquare,
-  X
+  PlusSquare, 
+  X 
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const DashboardLayout = () => {
+  const { currentUser, loading, logout } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -42,6 +44,14 @@ export const DashboardLayout = () => {
     { name: 'Ressources Gratuites', href: '/dashboard/ressources', icon: FileText },
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },
   ];
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0D1117] text-gray-500">Chargement...</div>;
+  }
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen flex font-poppins bg-[#F8F9FA] dark:bg-[#0D1117] transition-colors duration-300">
@@ -136,6 +146,7 @@ export const DashboardLayout = () => {
           </NavLink>
 
           <button 
+            onClick={logout}
             className={`group flex items-center px-3 py-3 rounded-lg transition-all duration-300 w-full 
               text-[#6B7280] dark:text-[#8B949E] hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 font-medium
               ${isCollapsed ? 'justify-center' : 'space-x-3'}

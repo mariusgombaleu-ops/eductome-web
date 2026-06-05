@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, BookOpen, FileText, Info, Edit3, HeartHandshake, User, Download, Share, PlusSquare } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +37,8 @@ export function Navbar() {
     }, 300); // 300ms pour correspondre à la durée de la transition
   };
 
-  const isLoggedIn = localStorage.getItem('eductome_user_logged_in') === 'true';
+  const { currentUser } = useAuth();
+  const isLoggedIn = !!currentUser;
   const lastChapter = localStorage.getItem('eductome_last_chapter_read');
   const espaceUrl = isLoggedIn ? (lastChapter ? `/dashboard/course/${lastChapter}` : '/dashboard') : '/login';
 

@@ -11,6 +11,9 @@ export default defineConfig({
       devOptions: {
         enabled: true
       },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 4000000 // 4MB
+      },
       manifest: {
         name: 'EDUCTOME - Apprendre sans limites',
         short_name: 'EDUCTOME',

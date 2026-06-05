@@ -25,47 +25,51 @@ import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
 
 import { UserProvider } from './contexts/UserContext';
 
+import { AuthProvider } from './contexts/AuthContext';
+
 function App() {
   return (
-    <UserProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          {/* Public Routes */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/collections" element={<Navigate to="/#collections" replace />} />
-            <Route path="/collections/:slug" element={<CollectionDetails />} />
-            <Route path="/ressources" element={<Resources />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/a-propos" element={<About />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/devenir-relais" element={<BecomeRelay />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
+    <AuthProvider>
+      <UserProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            {/* Public Routes */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/collections" element={<Navigate to="/#collections" replace />} />
+              <Route path="/collections/:slug" element={<CollectionDetails />} />
+              <Route path="/ressources" element={<Resources />} />
+              <Route path="/quiz" element={<Quiz />} />
+              <Route path="/a-propos" element={<About />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/devenir-relais" element={<BecomeRelay />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
 
-          {/* Private Routes (Espace Élève & Forum) */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<DashboardOverview />} />
-            <Route path="/dashboard/starter-pack" element={<StarterPack />} />
-            <Route path="/dashboard/courses" element={<MyCourses />} />
-            <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
-            <Route path="/dashboard/profile" element={<Profile />} />
-            <Route path="/dashboard/settings" element={<Profile />} />
-            <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
-            <Route path="/dashboard/ressources" element={<Resources />} />
-            <Route path="/forum" element={<ForumHome />} />
-            <Route path="/forum/thread/:id" element={<ForumThread />} />
-          </Route>
+            {/* Private Routes (Espace Élève & Forum) */}
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<DashboardOverview />} />
+              <Route path="/dashboard/starter-pack" element={<StarterPack />} />
+              <Route path="/dashboard/courses" element={<MyCourses />} />
+              <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
+              <Route path="/dashboard/profile" element={<Profile />} />
+              <Route path="/dashboard/settings" element={<Profile />} />
+              <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
+              <Route path="/dashboard/ressources" element={<Resources />} />
+              <Route path="/forum" element={<ForumHome />} />
+              <Route path="/forum/thread/:id" element={<ForumThread />} />
+            </Route>
 
-          {/* Standalone Route for Payment Success */}
-          <Route path="/paiement-confirme" element={<PaymentSuccess />} />
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
+            {/* Standalone Route for Payment Success */}
+            <Route path="/paiement-confirme" element={<PaymentSuccess />} />
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,17 +1,37 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Login = () => {
+  const { loginWithPhoneAndPassword } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const searchParams = new URLSearchParams(location.search);
-    const redirect = searchParams.get('redirect') || '/dashboard';
-    navigate(redirect);
+    setError('');
+    
+    const phone = (document.getElementById('phone') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+
+    try {
+      setIsLoading(true);
+      await loginWithPhoneAndPassword(phone, password);
+      
+      localStorage.setItem('eductome_user_logged_in', 'true');
+      const searchParams = new URLSearchParams(location.search);
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      navigate(redirect);
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError("Numéro de téléphone ou mot de passe incorrect.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,6 +45,12 @@ export const Login = () => {
           </p>
         </div>
         
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
@@ -84,8 +110,12 @@ export const Login = () => {
           </div>
 
           <div>
-            <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22]">
-              Se connecter
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22] disabled:opacity-70"
+            >
+              {isLoading ? 'Connexion en cours...' : 'Se connecter'}
             </button>
           </div>
         </form>

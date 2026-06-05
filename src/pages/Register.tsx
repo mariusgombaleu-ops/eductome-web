@@ -1,8 +1,16 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Lock, User as UserIcon, GraduationCap, Eye, EyeOff, BookOpen, Target } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmationResult } from 'firebase/auth';
+import { db } from '../config/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const Register = () => {
+  const { setupRecaptcha, sendVerificationCode, verifyCodeAndCreateAccount, currentUser } = useAuth();
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -17,19 +25,95 @@ export const Register = () => {
     useRef<HTMLInputElement>(null)
   ];
 
-  const handleNextStep = (e: React.FormEvent) => {
+  useEffect(() => {
+    setupRecaptcha('recaptcha-container');
+  }, [setupRecaptcha]);
+
+  const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
+    setError('');
+
+    if (step === 1) {
+      const phoneInput = (document.getElementById('phone') as HTMLInputElement).value;
+      const pass = (document.getElementById('password') as HTMLInputElement).value;
+      const confirmPass = (document.getElementById('confirmPassword') as HTMLInputElement).value;
+
+      if (pass !== confirmPass) {
+        setError("Les mots de passe ne correspondent pas");
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const confirmation = await sendVerificationCode(phoneInput);
+        setConfirmationResult(confirmation);
+        setStep(2);
+      } catch (err: any) {
+        console.error("SMS Error:", err);
+        setError("Erreur lors de l'envoi du SMS. Vérifie le numéro.");
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (step === 2) {
+      const code = otp.join('');
+      if (code.length < 6) {
+        setError("Le code doit contenir 6 chiffres.");
+        return;
+      }
+      if (!confirmationResult) return;
+
+      try {
+        setIsLoading(true);
+        const pass = (document.getElementById('password') as HTMLInputElement).value;
+        await verifyCodeAndCreateAccount(confirmationResult, code, pass);
+        setStep(3);
+      } catch (err: any) {
+        console.error("Code verification error:", err);
+        setError("Le code est incorrect ou a expiré.");
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       const levelSelect = document.getElementById('level') as HTMLSelectElement;
+      const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
+      const highschool = (document.getElementById('highschool') as HTMLInputElement).value;
+      const subject = (document.getElementById('subject') as HTMLSelectElement).value;
+      const goal = (document.getElementById('goal') as HTMLSelectElement).value;
+
       if (levelSelect) {
         localStorage.setItem('eductome_user_serie', levelSelect.value);
       }
-      localStorage.setItem('eductome_user_logged_in', 'true');
-      const searchParams = new URLSearchParams(location.search);
-      const redirect = searchParams.get('redirect') || '/dashboard';
-      navigate(redirect);
+      
+      try {
+        setIsLoading(true);
+        if (currentUser) {
+          // Initialize their profile in Firestore
+          await setDoc(doc(db, 'users', currentUser.uid), {
+            pseudo: firstName,
+            level: levelSelect.value,
+            highschool: highschool,
+            favoriteSubject: subject,
+            goal: goal,
+            xp: 0,
+            unlockedCourses: [],
+            unlockedBadges: [],
+            rewardedActions: [],
+            activityHistory: {},
+            role: 'student',
+            createdAt: new Date()
+          });
+        }
+        
+        localStorage.setItem('eductome_user_logged_in', 'true');
+        const searchParams = new URLSearchParams(location.search);
+        const redirect = searchParams.get('redirect') || '/dashboard';
+        navigate(redirect);
+      } catch (err: any) {
+        console.error("Profile save error:", err);
+        setError("Erreur lors de l'enregistrement du profil.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -61,7 +145,14 @@ export const Register = () => {
           </p>
         </div>
         
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleNextStep}>
+          <div id="recaptcha-container"></div>
           
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -133,8 +224,12 @@ export const Register = () => {
               </div>
 
               <div className="pt-2">
-                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22]">
-                  Recevoir mon code SMS
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22] disabled:opacity-70"
+                >
+                  {isLoading ? 'Envoi en cours...' : 'Recevoir mon code SMS'}
                 </button>
               </div>
             </div>
@@ -162,8 +257,12 @@ export const Register = () => {
               </div>
 
               <div className="pt-6">
-                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22]">
-                  Vérifier le code
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22] disabled:opacity-70"
+                >
+                  {isLoading ? 'Vérification...' : 'Vérifier le code'}
                 </button>
               </div>
               <div className="text-center">
@@ -274,8 +373,12 @@ export const Register = () => {
               </div>
 
               <div className="pt-4">
-                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22]">
-                  Rejoindre EDUCTOME 🚀
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-eductome-magenta hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eductome-magenta dark:focus:ring-offset-[#161B22] disabled:opacity-70"
+                >
+                  {isLoading ? 'Enregistrement...' : 'Rejoindre EDUCTOME 🚀'}
                 </button>
               </div>
             </div>

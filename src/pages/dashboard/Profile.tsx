@@ -3,11 +3,13 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const Profile = () => {
   const { theme } = useTheme();
   const d = theme === 'dark';
-  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev } = useUser();
+  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt } = useUser();
+  const { currentUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0); // 0-3
@@ -89,10 +91,10 @@ export const Profile = () => {
         <div className="relative z-10 text-center md:text-left text-white flex-1 w-full">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-playfair font-bold mb-1">Marie Eductome</h1>
-              <p className="text-blue-100">Terminale • Inscrite depuis Janvier 2024</p>
+              <h1 className="text-3xl font-playfair font-bold mb-1">{pseudo}</h1>
+              <p className="text-blue-100">{levelString} • Inscrit(e) depuis {createdAt}</p>
               <div className="mt-3 inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 backdrop-blur-sm text-yellow-300 border border-yellow-400/30 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
-                <Star className="w-4 h-4 fill-yellow-400" /> Compte Gratuit
+                <Star className="w-4 h-4 fill-yellow-400" /> Compte {level.level > 1 ? 'Premium' : 'Gratuit'}
               </div>
             </div>
 
@@ -125,11 +127,11 @@ export const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Prénom / Pseudo</label>
-                  <input type="text" defaultValue="Marie" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
+                  <input type="text" defaultValue={pseudo} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
                 </div>
                 <div>
                   <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Niveau d'études</label>
-                  <select defaultValue="Terminale" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <select defaultValue={levelString} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
                     <option>Terminale</option>
                     <option>Première</option>
                     <option>Seconde</option>
@@ -138,7 +140,7 @@ export const Profile = () => {
                 </div>
                 <div>
                   <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Matière préférée</label>
-                  <select defaultValue="Mathématiques" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <select defaultValue={favoriteSubject || "Mathématiques"} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
                     <option>Mathématiques</option>
                     <option>Physique-Chimie</option>
                     <option>SVT</option>
@@ -147,21 +149,25 @@ export const Profile = () => {
                 </div>
                 <div>
                   <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Objectif principal</label>
-                  <select defaultValue="Mention Bien" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <select defaultValue={goal || "Mention Bien"} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
                     <option>Mention Très Bien</option>
                     <option>Mention Bien</option>
                     <option>Mention Assez Bien</option>
                     <option>Avoir le BAC</option>
                   </select>
                 </div>
+                <div>
+                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Lycée</label>
+                  <input type="text" defaultValue={highschool || ""} placeholder="Ex: Lycée Classique d'Abidjan" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
+                </div>
               </div>
               
               <div>
                 <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1 flex items-center gap-2`}>
-                  <Mail className="w-4 h-4" /> Adresse e-mail
+                  <Mail className="w-4 h-4" /> Numéro de téléphone (Identifiant)
                 </label>
-                <input type="email" defaultValue="eleve@eductome.com" disabled className={`w-full px-4 py-2 border rounded-lg cursor-not-allowed ${d ? 'border-gray-700 bg-gray-800 text-gray-400' : 'border-gray-200 bg-gray-50 text-gray-500'}`} />
-                <p className="text-xs text-gray-400 mt-1">L'adresse e-mail ne peut pas être modifiée.</p>
+                <input type="text" defaultValue={currentUser?.phoneNumber || "Non renseigné"} disabled className={`w-full px-4 py-2 border rounded-lg cursor-not-allowed ${d ? 'border-gray-700 bg-gray-800 text-gray-400' : 'border-gray-200 bg-gray-50 text-gray-500'}`} />
+                <p className="text-xs text-gray-400 mt-1">Le numéro de téléphone ne peut pas être modifié.</p>
               </div>
 
               <div className="pt-4 flex justify-end">
