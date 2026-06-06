@@ -416,7 +416,6 @@ export function GradesCalculator() {
               </div>
               
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 flex flex-col justify-center">
-                <p className="text-sm font-bold text-blue-800 dark:text-blue-300 mb-2">Ce qui correspond à :</p>
                 <div className="text-4xl font-black text-blue-600 dark:text-blue-400">
                   {draftGoals.bacPoints || '-'} <span className="text-xl font-medium">Points</span>
                 </div>
