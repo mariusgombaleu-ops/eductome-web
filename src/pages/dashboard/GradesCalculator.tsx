@@ -207,9 +207,9 @@ export function GradesCalculator() {
           <div className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-4 rounded-xl flex items-center gap-4 shadow-lg text-white w-full md:w-auto shrink-0">
             <Target className="w-8 h-8 text-yellow-400 shrink-0" />
             <div>
-              <p className="text-xs text-blue-100 uppercase tracking-wider font-bold mb-1">Objectif Final : BAC</p>
-              <p className="text-2xl font-black">{goals.bacPoints} Points</p>
-              <p className="text-sm text-white/90">Moyenne générale {goals.generalAverage}/20</p>
+              <p className="text-xs text-blue-100 uppercase tracking-wider font-bold mb-1">Objectif Final</p>
+              <p className="text-2xl font-black">BAC : {goals.bacPoints} Points</p>
+              <p className="text-sm text-white/90">Moyenne générale : {goals.generalAverage}/20</p>
             </div>
           </div>
         )}
