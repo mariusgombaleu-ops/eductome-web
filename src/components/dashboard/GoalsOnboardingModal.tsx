@@ -78,6 +78,7 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
       const storageKey = `eductome_goals_onboarding_seen_${currentUser?.uid}`;
       localStorage.setItem(storageKey, 'true');
       
+      window.dispatchEvent(new Event('onboarding_complete'));
       onClose();
     } catch (err) {
       console.error(err);
@@ -89,6 +90,7 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
   const skipAndClose = () => {
     const storageKey = `eductome_goals_onboarding_seen_${currentUser?.uid}`;
     localStorage.setItem(storageKey, 'true');
+    window.dispatchEvent(new Event('onboarding_complete'));
     onClose();
   };
 
