@@ -242,15 +242,6 @@ export function Resources() {
     }
   };
 
-  const getBgColor = () => {
-    switch(activeTab) {
-      case 'fiches': return 'bg-pink-50/50';
-      case 'planning': return 'bg-teal-50/50';
-      case 'questions': return 'bg-orange-50/50';
-      case 'exercices': default: return 'bg-[#fafafa]';
-    }
-  };
-
   const isDashboard = location.pathname.startsWith('/dashboard');
 
   return (
