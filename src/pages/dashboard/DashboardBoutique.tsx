@@ -6,6 +6,8 @@ import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export const DashboardBoutique = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [optionsModalOpen, setOptionsModalOpen] = useState(false);
+  const [selectedTomeForOptions, setSelectedTomeForOptions] = useState<{tome: any, collection: any} | null>(null);
   const [selectedItem, setSelectedItem] = useState<{ title: string, price: number, isChapter: boolean, isCollection?: boolean, courseId?: string } | null>(null);
   const [openCollections, setOpenCollections] = useState<Record<string, boolean>>({
     'cles-maths': true // Ouvrir la première collection par défaut
@@ -120,29 +122,16 @@ export const DashboardBoutique = () => {
                       </div>
 
                       {/* Actions Section */}
-                      <div className="space-y-3">
+                      <div className="pt-2 mt-auto">
                         <button 
-                          onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false, false, tome.id)}
-                          className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                          onClick={() => {
+                            setSelectedTomeForOptions({tome, collection});
+                            setOptionsModalOpen(true);
+                          }}
+                          className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                         >
-                          <Unlock className="w-4 h-4" /> Débloquer ce tome
+                          <Unlock className="w-4 h-4" /> Débloquer
                         </button>
-                        
-                        <div className="flex items-center justify-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
-                          <button 
-                            onClick={() => openCheckout(`Chapitre au choix - Tome ${tome.number}`, 300, true, false, tome.id)}
-                            className="text-center py-1 text-[10px] sm:text-xs font-bold text-gray-500 hover:text-[#D81B60] transition-colors flex items-center gap-1"
-                          >
-                            <Lock className="w-3 h-3" /> À la carte (300F)
-                          </button>
-                          <div className="w-[1px] h-3 bg-gray-300 dark:bg-gray-700"></div>
-                          <button 
-                            onClick={() => openCheckout(`Collection ${collection.name}`, collection.id === 'cles-maths' ? 10000 : 8000, false, true, collection.id)}
-                            className="text-center py-1 text-[10px] sm:text-xs font-bold text-amber-600 hover:text-amber-700 transition-colors flex items-center gap-1"
-                          >
-                            <Unlock className="w-3 h-3" /> Offre VIP
-                          </button>
-                        </div>
                       </div>
                     </div>
                   ))}
@@ -152,6 +141,84 @@ export const DashboardBoutique = () => {
           </div>
         )})}
       </div>
+
+      {/* ── Options Modal ── */}
+      {optionsModalOpen && selectedTomeForOptions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOptionsModalOpen(false)} />
+          <div className="relative z-10 w-full max-w-sm bg-white dark:bg-[#161B22] rounded-3xl shadow-2xl overflow-hidden border border-[#E1E4E8] dark:border-[#30363D] animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center border-b border-[#E1E4E8] dark:border-[#30363D]">
+              <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Unlock className="w-6 h-6 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-[#1A1A2E] dark:text-white font-playfair mb-1">
+                Comment veux-tu débloquer ?
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {selectedTomeForOptions.tome.title}
+              </p>
+            </div>
+            
+            <div className="p-4 space-y-3 bg-gray-50 dark:bg-[#0D1117]">
+              {/* Option 1 : A la carte */}
+              <button 
+                onClick={() => {
+                  setOptionsModalOpen(false);
+                  openCheckout(`Chapitre au choix - Tome ${selectedTomeForOptions.tome.number}`, 300, true, false, selectedTomeForOptions.tome.id);
+                }}
+                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 hover:border-[#1976D2] transition-colors group"
+              >
+                <div className="text-left">
+                  <div className="font-bold text-[#1A1A2E] dark:text-white mb-0.5 group-hover:text-[#1976D2] transition-colors">1 Chapitre à la carte</div>
+                  <div className="text-xs text-gray-500">Choisis le chapitre de ton choix</div>
+                </div>
+                <div className="font-black text-[#1A3557] dark:text-white">300F</div>
+              </button>
+
+              {/* Option 2 : Tome Complet */}
+              <button 
+                onClick={() => {
+                  setOptionsModalOpen(false);
+                  openCheckout(`Tome ${selectedTomeForOptions.tome.number} : ${selectedTomeForOptions.tome.title}`, 1500, false, false, selectedTomeForOptions.tome.id);
+                }}
+                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#161B22] border-2 border-[#1A3557] hover:bg-[#1A3557] group transition-colors"
+              >
+                <div className="text-left">
+                  <div className="font-bold text-[#1A1A2E] dark:text-white group-hover:text-white transition-colors">Tome Complet</div>
+                  <div className="text-xs text-gray-500 group-hover:text-blue-100 transition-colors">Débloque tous les chapitres</div>
+                </div>
+                <div className="font-black text-[#1A3557] dark:text-white group-hover:text-white transition-colors">1.500F</div>
+              </button>
+
+              {/* Option 3 : VIP */}
+              <button 
+                onClick={() => {
+                  setOptionsModalOpen(false);
+                  openCheckout(`Collection ${selectedTomeForOptions.collection.name}`, selectedTomeForOptions.collection.id === 'cles-maths' ? 10000 : 8000, false, true, selectedTomeForOptions.collection.id);
+                }}
+                className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-white hover:from-amber-600 hover:to-yellow-500 transition-colors shadow-md"
+              >
+                <div className="text-left">
+                  <div className="font-bold mb-0.5 flex items-center gap-1">
+                    Offre VIP <Lock className="w-3 h-3" />
+                  </div>
+                  <div className="text-xs text-amber-50 font-medium">Toute la collection</div>
+                </div>
+                <div className="font-black">Dès 8.000F</div>
+              </button>
+            </div>
+            
+            <div className="p-4 border-t border-[#E1E4E8] dark:border-[#30363D]">
+              <button 
+                onClick={() => setOptionsModalOpen(false)}
+                className="w-full py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedItem && (
         <SelarPaymentModal 
