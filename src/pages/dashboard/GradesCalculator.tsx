@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star } from 'lucide-react';
+import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 import { useToast } from '../../contexts/ToastContext';
@@ -327,6 +327,21 @@ export function GradesCalculator() {
               const target = goals.subjectTargets?.[subject.id];
               const subjectGrades = grades[activeTab]?.[subject.id] || [];
 
+              let nextTargetText = "";
+              if (avg !== null && target && subjectGrades.length > 0) {
+                const n = subjectGrades.length;
+                const required = (target * (n + 1)) - (avg * n);
+                if (avg >= target) {
+                  nextTargetText = `Objectif : ${target}/20 au prochain devoir`;
+                } else {
+                  if (required > 20) {
+                    nextTargetText = `Objectif : 20/20 au prochain devoir`;
+                  } else {
+                    nextTargetText = `Objectif : ${Math.ceil(required)}/20 au prochain devoir`;
+                  }
+                }
+              }
+
               return (
                 <div key={subject.id} className="bg-white dark:bg-[#161B22] rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden transition-all shadow-sm">
                   {/* Header / Toggle */}
@@ -348,6 +363,13 @@ export function GradesCalculator() {
                         {avg !== null && target && (
                           <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
                             {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
+                          </div>
+                        )}
+                        {/* Next Target Line */}
+                        {nextTargetText && (
+                          <div className="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <ArrowRight className="w-3.5 h-3.5 text-blue-500" />
+                            {nextTargetText}
                           </div>
                         )}
                       </div>
