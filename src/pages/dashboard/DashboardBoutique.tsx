@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { collectionsData } from '../../data/collections';
-import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
+import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp } from 'lucide-react';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 

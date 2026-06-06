@@ -39,8 +39,7 @@ export function Navbar() {
 
   const { currentUser } = useAuth();
   const isLoggedIn = !!currentUser;
-  const lastChapter = localStorage.getItem('eductome_last_chapter_read');
-  const espaceUrl = isLoggedIn ? (lastChapter ? `/dashboard/course/${lastChapter}` : '/dashboard') : '/login';
+  const espaceUrl = isLoggedIn ? '/dashboard' : '/login';
 
   const navLinks = [
     { name: 'Accueil', path: '/', icon: Home },
