@@ -329,16 +329,10 @@ export function GradesCalculator() {
 
               let nextTargetText = "";
               if (avg !== null && target && subjectGrades.length > 0) {
-                const n = subjectGrades.length;
-                const required = (target * (n + 1)) - (avg * n);
                 if (avg >= target) {
                   nextTargetText = `Objectif : ${target}/20 au prochain devoir`;
                 } else {
-                  if (required > 20) {
-                    nextTargetText = `Objectif : 20/20 au prochain devoir`;
-                  } else {
-                    nextTargetText = `Objectif : ${Math.ceil(required)}/20 au prochain devoir`;
-                  }
+                  nextTargetText = `Objectif : ${target}/20 ou plus au prochain devoir`;
                 }
               }
 
@@ -356,8 +350,9 @@ export function GradesCalculator() {
                       <div className="text-left">
                         <h4 className="font-bold text-gray-900 dark:text-white">{subject.name}</h4>
                         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1">
-                          {target && <span className="text-gray-500">Objectif: <strong className="text-[#D81B60]">{target}</strong></span>}
-                          {avg !== null && <span className="text-gray-500">Actuelle: <strong className="text-blue-600 dark:text-blue-400">{avg.toFixed(2)}</strong></span>}
+                          {target && <span className="text-gray-500">Objectif: <strong className="text-blue-600 dark:text-blue-400">{target}</strong></span>}
+                          {avg !== null && target && <span className="text-gray-500">Actuelle: <strong className={avg >= target ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{avg.toFixed(2)}</strong></span>}
+                          {avg !== null && !target && <span className="text-gray-500">Actuelle: <strong className="text-gray-900 dark:text-white">{avg.toFixed(2)}</strong></span>}
                         </div>
                         {/* Message on Mobile */}
                         {avg !== null && target && (
