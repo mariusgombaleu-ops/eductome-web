@@ -332,24 +332,31 @@ export function GradesCalculator() {
                   {/* Header / Toggle */}
                   <button 
                     onClick={() => setOpenSubject(isOpen ? null : subject.id)}
-                    className="w-full flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="w-full flex items-start md:items-center justify-between p-4 md:p-5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-gray-100 dark:bg-[#0D1117] w-12 h-12 rounded-lg flex items-center justify-center font-bold text-[#1A3557] dark:text-white">
+                    <div className="flex items-start md:items-center gap-3 md:gap-4">
+                      <div className="bg-gray-100 dark:bg-[#0D1117] w-12 h-12 rounded-lg flex items-center justify-center font-bold text-[#1A3557] dark:text-white shrink-0 mt-0.5 md:mt-0">
                         x{subject.coeff}
                       </div>
                       <div className="text-left">
                         <h4 className="font-bold text-gray-900 dark:text-white">{subject.name}</h4>
-                        <div className="flex gap-3 text-sm mt-1">
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1">
                           {target && <span className="text-gray-500">Objectif: <strong className="text-[#D81B60]">{target}</strong></span>}
                           {avg !== null && <span className="text-gray-500">Actuelle: <strong className="text-blue-600 dark:text-blue-400">{avg.toFixed(2)}</strong></span>}
                         </div>
+                        {/* Message on Mobile */}
+                        {avg !== null && target && (
+                          <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
+                            {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 shrink-0 pt-2 md:pt-0">
+                      {/* Message on Desktop */}
                       {avg !== null && target && (
-                        <div className="hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md bg-gray-100 dark:bg-[#0D1117]">
-                          {avg >= target ? <span className="text-green-500">C'est ça qu'on veut voir ! 🔥</span> : <span className="text-orange-500">Pas de panique, on ajuste le tir ! 💪</span>}
+                        <div className={`hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
+                          {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
                         </div>
                       )}
                       {isOpen ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
