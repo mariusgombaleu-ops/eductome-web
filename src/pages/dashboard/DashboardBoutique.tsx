@@ -96,55 +96,51 @@ export const DashboardBoutique = () => {
               <div className="p-4 sm:p-6 border-t border-[#E1E4E8] dark:border-[#30363D]">
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                   {collection.tomes?.map((tome, index) => (
-                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group relative overflow-hidden animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
+                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-[24px] border border-gray-200/60 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 p-5 flex flex-col group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
                       
-                      {/* Top Accent Line */}
-                      <div className="h-1 w-full" style={{ backgroundColor: collection.primaryColor }}></div>
-
                       {/* Header Section */}
-                      <div className="p-3 sm:p-5 pb-0 flex-grow">
-                        <div className="flex items-start justify-between mb-2 sm:mb-3">
-                          <span className="inline-flex items-center px-2 py-0.5 sm:py-1 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md border border-gray-100 dark:border-gray-700">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 block">
                             Tome {tome.number}
                           </span>
-                          <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-300 dark:text-gray-600" />
+                          <h3 className="text-lg font-bold text-[#1A3557] dark:text-white leading-tight font-playfair pr-2">
+                            {tome.title}
+                          </h3>
                         </div>
-                        
-                        <h3 className="text-xs sm:text-[15px] font-bold text-[#1A1A2E] dark:text-white leading-snug line-clamp-2 mb-2">
-                          {tome.title}
-                        </h3>
-                        
-                        <div className="flex items-baseline gap-1 mt-auto pt-1 sm:pt-2">
-                          <span className="text-sm sm:text-lg font-black text-[#1A3557] dark:text-white">
-                            1.500
-                          </span>
-                          <span className="text-[9px] sm:text-[10px] font-bold text-gray-400">
-                            FCFA
-                          </span>
+                        <div className="bg-blue-50 dark:bg-blue-900/20 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                          <BookOpen className="w-5 h-5 text-blue-500" />
                         </div>
                       </div>
 
+                      {/* Price Section */}
+                      <div className="mb-6 flex items-baseline gap-1 mt-auto">
+                        <span className="text-2xl font-black text-[#1A1A2E] dark:text-white">1.500</span>
+                        <span className="text-xs font-bold text-gray-400">FCFA</span>
+                      </div>
+
                       {/* Actions Section */}
-                      <div className="p-2 sm:p-4 bg-gray-50/50 dark:bg-[#0D1117]/50 border-t border-gray-100 dark:border-gray-800 mt-2 sm:mt-3">
+                      <div className="space-y-3">
                         <button 
                           onClick={() => openCheckout(`Tome ${tome.number} : ${tome.title}`, 1500, false, false, tome.id)}
-                          className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 mb-1.5 sm:mb-2"
+                          className="w-full bg-[#1A3557] hover:bg-[#1976D2] text-white py-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                         >
-                          <Unlock className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Débloquer le Tome
+                          <Unlock className="w-4 h-4" /> Débloquer ce tome
                         </button>
                         
-                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                        <div className="flex items-center justify-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
                           <button 
                             onClick={() => openCheckout(`Chapitre au choix - Tome ${tome.number}`, 300, true, false, tome.id)}
-                            className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
+                            className="text-center py-1 text-[10px] sm:text-xs font-bold text-gray-500 hover:text-[#D81B60] transition-colors flex items-center gap-1"
                           >
-                            <Lock className="w-2.5 h-2.5 text-gray-400" /> 1 Chapitre (300F)
+                            <Lock className="w-3 h-3" /> À la carte (300F)
                           </button>
+                          <div className="w-[1px] h-3 bg-gray-300 dark:bg-gray-700"></div>
                           <button 
                             onClick={() => openCheckout(`Collection ${collection.name}`, collection.id === 'cles-maths' ? 10000 : 8000, false, true, collection.id)}
-                            className="w-full bg-amber-50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-700 dark:text-amber-500 py-1.5 sm:py-2 rounded-lg text-[8px] sm:text-[10px] font-semibold transition-colors flex items-center justify-center gap-1"
+                            className="text-center py-1 text-[10px] sm:text-xs font-bold text-amber-600 hover:text-amber-700 transition-colors flex items-center gap-1"
                           >
-                            <Unlock className="w-2.5 h-2.5" /> Collection compl.
+                            <Unlock className="w-3 h-3" /> Offre VIP
                           </button>
                         </div>
                       </div>
