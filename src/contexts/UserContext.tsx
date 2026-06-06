@@ -341,20 +341,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const resetUser = async () => {
     if (!currentUser) return;
     const userRef = doc(db, 'users', currentUser.uid);
-    await setDoc(userRef, {
+    // Use updateDoc instead of setDoc to preserve pseudo, goal, highschool, etc.
+    await updateDoc(userRef, {
       xp: 0,
       unlockedCourses: [],
       unlockedBadges: [],
       rewardedActions: [],
       activityHistory: {},
-      role: 'student',
-      createdAt: new Date()
+      grades: {},
+      goals: {}
     });
-    addToast({ type: 'info', title: 'Test', message: 'Profil réinitialisé dans Firebase : Nouvel Élève.' });
+    addToast({ type: 'info', title: 'Test', message: 'Progression réinitialisée à zéro. Profil conservé.' });
   };
 
-  const unlockEverything = () => {
-    // Dev only
+  const unlockEverything = async () => {
+    if (!currentUser) return;
+    const userRef = doc(db, 'users', currentUser.uid);
+    // Give 5000 XP and unlock main courses + badges
+    await updateDoc(userRef, {
+      xp: 5000,
+      unlockedCourses: ['t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff'],
+      unlockedBadges: ['badge_curieux', 'badge_studieux', 'badge_pilier_forum', 'badge_sans_faute']
+    });
+    addToast({ type: 'success', title: 'Mode Caïman Activé', message: '5000 XP et tous les contenus débloqués.' });
   };
 
   const addXpDev = async (amount: number) => {

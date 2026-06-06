@@ -434,7 +434,7 @@ export const Profile = () => {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <button 
-            onClick={() => { resetUser(); setTimeout(() => window.location.reload(), 500); }}
+            onClick={async () => { await resetUser(); }}
             className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
           >
             <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
@@ -445,7 +445,7 @@ export const Profile = () => {
           </button>
           
           <button 
-            onClick={() => { unlockEverything(); setTimeout(() => window.location.reload(), 500); }}
+            onClick={async () => { await unlockEverything(); }}
             className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
           >
             <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
