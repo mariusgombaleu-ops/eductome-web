@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Moon, Sun, Bell, Shield, Smartphone, Trash2, Save, Monitor, Eye, EyeOff } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../contexts/ToastContext';
+import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export function Settings() {
   const { theme, toggleTheme } = useTheme();
@@ -41,7 +42,11 @@ export function Settings() {
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in-up pb-20 p-4 md:p-8">
       <div>
         <h1 className="text-3xl font-playfair font-bold text-[#1A1A2E] dark:text-white mb-2">Paramètres</h1>
-        <p className="text-[#6B7280] dark:text-[#8B949E]">Configurez votre espace d'apprentissage selon vos préférences.</p>
+        <p className="text-[#6B7280] dark:text-[#8B949E] mb-6">Configurez votre espace d'apprentissage selon vos préférences.</p>
+        <GrandFrereGuide 
+          id="settings"
+          message="Ton espace, tes règles. Configure ton profil pour qu'il te ressemble. Et n'oublie pas : un profil bien rempli, c'est le début de l'organisation !"
+        />
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">

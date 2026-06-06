@@ -1,6 +1,7 @@
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { CTAButton } from '../components/ui/CTAButton';
 import { SEO } from '../components/SEO';
+import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
 
 export function BecomeRelay() {
   const WHATSAPP_NUMBER = "2250799506300";
@@ -11,8 +12,15 @@ export function BecomeRelay() {
     <div className="min-h-screen bg-gray-50 font-poppins pb-20">
       <SEO title="Devenir Relais" description="Deviens le Grand Frère de ton lycée. Rejoins le programme Relais Eductome." />
       
+      <div className="pt-24 px-4 max-w-6xl mx-auto">
+        <GrandFrereGuide 
+          id="relais"
+          message="Si tu as compris l'esprit Eductome, c'est le moment de le partager. Deviens Relais, aide tes camarades à s'en sortir, et gagne de quoi assurer tes propres frais. On compte sur toi !"
+        />
+      </div>
+
       {/* Hero Header */}
-      <section className="relative bg-eductome-marine text-white pt-24 pb-32 px-4 overflow-hidden">
+      <section className="relative bg-eductome-marine text-white pt-10 pb-32 px-4 overflow-hidden">
         {/* Background Decorative Blur */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-eductome-magenta/20 blur-[100px] rounded-full"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-eductome-sky/20 blur-[80px] rounded-full"></div>

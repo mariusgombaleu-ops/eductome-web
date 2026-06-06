@@ -3,6 +3,7 @@ import { useUser, UserGrades } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
 import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { GrandFrereGuide } from '../ui/GrandFrereGuide';
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades } = useUser();
@@ -27,7 +28,13 @@ export function GradesCalculator() {
     if (value !== '' && !value.endsWith('.')) {
       const numValue = parseFloat(value);
       if (!isNaN(numValue)) {
-        finalValue = numValue;
+        if (numValue > 20) {
+          finalValue = 20;
+        } else if (numValue < 0) {
+          finalValue = 0;
+        } else {
+          finalValue = numValue;
+        }
       }
     }
     
@@ -100,6 +107,10 @@ export function GradesCalculator() {
 
   return (
     <div className="space-y-6 px-4 md:px-6 lg:px-8 pt-6 pb-20 font-poppins">
+      <GrandFrereGuide 
+        id="grades"
+        message="Ici, on ne calcule pas pour stresser, on calcule pour ajuster. Rentre tes notes au fur et à mesure, et on va voir ce qu'il faut viser pour atteindre ton objectif final. Pas de panique !"
+      />
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -242,6 +253,7 @@ export function GradesCalculator() {
                             value={val}
                             onChange={(e) => handleUpdateGrade(subject.id, idx, e.target.value)}
                             placeholder="/ 20"
+                            min="0" max="20"
                             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-l-lg focus:ring-[#D81B60] focus:border-[#D81B60] bg-white dark:bg-[#161B22] dark:text-white"
                           />
                           <button 

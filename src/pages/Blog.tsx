@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { blogPosts } from '../data/blogPosts';
 import { SEO } from '../components/SEO';
 import { ChevronLeft, Newspaper, GraduationCap, Calendar, Users, Lightbulb, Compass } from 'lucide-react';
+import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
 
 export function Blog() {
   const location = useLocation();
@@ -57,9 +58,14 @@ export function Blog() {
       {/* Hero Banner */}
       {isDashboard && (
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-2">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white mb-6">
             <ChevronLeft className="w-4 h-4" /> Retour
           </button>
+          
+          <GrandFrereGuide 
+            id="blog"
+            message="Le mental et la méthode, c'est 50% de la note. Prends le temps de lire ces articles, ce sont de véritables 'alliés' pour ta réussite."
+          />
         </div>
       )}
 

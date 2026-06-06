@@ -56,6 +56,14 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
     if (step > 1) setStep(step - 1);
   };
 
+  const clampValue = (val: string, max: number) => {
+    if (!val) return '';
+    const num = parseFloat(val);
+    if (num > max) return max.toString();
+    if (num < 0) return '0';
+    return val;
+  };
+
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
@@ -143,8 +151,9 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
                 <input 
                   type="number" 
                   value={bacPoints}
-                  onChange={(e) => setBacPoints(e.target.value)}
-                  placeholder={`Ex: ${isCollege ? '150' : '250'}`}
+                  onChange={(e) => setBacPoints(clampValue(e.target.value, 400))}
+                  placeholder={isCollege ? "Ex: 150" : "Ex: 250"}
+                  min="0" max="400"
                   className="w-full text-2xl font-bold text-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-[#D81B60] focus:ring-0 bg-transparent dark:text-white transition-colors"
                 />
               </div>
@@ -166,8 +175,9 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
                   type="number" 
                   step="0.5"
                   value={generalAverage}
-                  onChange={(e) => setGeneralAverage(e.target.value)}
+                  onChange={(e) => setGeneralAverage(clampValue(e.target.value, 20))}
                   placeholder="Ex: 14"
+                  min="0" max="20"
                   className="w-full text-2xl font-bold text-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-[#D81B60] focus:ring-0 bg-transparent dark:text-white transition-colors"
                 />
               </div>
@@ -193,8 +203,9 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
                       type="number" 
                       step="0.5"
                       value={trimesterTargets[trim as keyof typeof trimesterTargets]}
-                      onChange={(e) => setTrimesterTargets({...trimesterTargets, [trim]: e.target.value})}
+                      onChange={(e) => setTrimesterTargets({...trimesterTargets, [trim]: clampValue(e.target.value, 20)})}
                       placeholder="Ex: 12"
+                      min="0" max="20"
                       className="w-full text-xl font-bold text-center p-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:border-[#D81B60] focus:ring-0 bg-white dark:bg-[#161B22] dark:text-white transition-colors"
                     />
                   </div>
@@ -223,8 +234,9 @@ export function GoalsOnboardingModal({ isOpen, onClose }: GoalsOnboardingModalPr
                       type="number" 
                       step="0.5"
                       value={subjectTargets[sub.id] || ''}
-                      onChange={(e) => setSubjectTargets({...subjectTargets, [sub.id]: e.target.value})}
+                      onChange={(e) => setSubjectTargets({...subjectTargets, [sub.id]: clampValue(e.target.value, 20)})}
                       placeholder="Sur 20"
+                      min="0" max="20"
                       className="w-full text-base font-bold text-center p-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:border-[#D81B60] focus:ring-0 bg-white dark:bg-[#161B22] dark:text-white transition-colors"
                     />
                   </div>

@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 
 import { MarkdownText } from '../../components/forum/MarkdownText';
 import { RoleBadge } from '../../components/forum/RoleBadge';
+import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export const ForumHome = () => {
   const { addToast } = useToast();
@@ -111,6 +112,11 @@ export const ForumHome = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 transition-colors duration-300">
       
+      <GrandFrereGuide 
+        id="forum"
+        message="Ici, tu n'es jamais seul(e). Pose tes questions, aide tes camarades, et n'oublie pas : les meilleures questions sont celles qui expliquent bien ce qui bloque. On est ensemble !"
+      />
+
       {/* Header Section (Hero Banner) */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
         {/* Decorative elements */}
