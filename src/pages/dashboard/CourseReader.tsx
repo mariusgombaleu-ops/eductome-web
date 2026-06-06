@@ -308,7 +308,7 @@ export const CourseReader = () => {
   // ── Sidebar (shared for mobile drawer & desktop) ─
   const SidebarContent = () => (
     <>
-      <button onClick={() => navigate('/dashboard/mes-cours')}
+      <button onClick={() => navigate('/dashboard/courses')}
         className="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white">
         <ChevronLeft className="w-3 h-3" /> Retour
       </button>
@@ -368,7 +368,7 @@ export const CourseReader = () => {
       {/* ── Fixed Top Bar ── */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#161B22]/95 backdrop-blur-md border-b border-[#E1E4E8] dark:border-[#30363D] transition-colors duration-300">
         <div className="flex items-center gap-3 px-4 py-3 h-16">
-          <button onClick={() => navigate('/dashboard/mes-cours')}
+          <button onClick={() => navigate('/dashboard/courses')}
             className="p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
