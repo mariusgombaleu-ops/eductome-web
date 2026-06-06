@@ -52,6 +52,8 @@ export function GradesCalculator() {
     const allGradesFlat = Object.values(grades).flatMap(trim => Object.values(trim || {}).flatMap(sub => sub));
     const hadNoValidGrades = allGradesFlat.filter(g => g !== '' && !isNaN(Number(g))).length === 0;
     
+    const oldAvg = calculateSubjectAverage(subjectId);
+
     const newGradesObj: UserGrades = { ...grades };
     const currentGrades = [...(grades[activeTab]?.[subjectId] || [])];
     currentGrades[index] = finalValue as any;
@@ -61,12 +63,29 @@ export function GradesCalculator() {
     
     await updateGrades(newGradesObj);
     
+    // Check new average for confetti
+    const validGrades = currentGrades.filter(g => g !== '' && !isNaN(Number(g))).map(g => Number(g));
+    const newAvg = validGrades.length === 0 ? null : validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
+    const target = goals.subjectTargets?.[subjectId];
+
     if (hadNoValidGrades && finalValue !== '' && !isNaN(Number(finalValue))) {
       confetti({
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 },
         colors: ['#D81B60', '#1A3557', '#1976D2', '#FACC15']
+      });
+    } else if (newAvg !== null && target && newAvg >= target && (oldAvg === null || oldAvg < target)) {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#34D399', '#FACC15']
+      });
+      addToast({
+        type: 'success',
+        title: 'Objectif Atteint !',
+        message: 'Tu as dépassé ton objectif dans cette matière ! Continue comme ça 🔥'
       });
     }
   };
@@ -321,11 +340,18 @@ export function GradesCalculator() {
           {/* Subjects Accordion */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Détails par matière</h3>
-            {subjects.map(subject => {
-              const isOpen = openSubject === subject.id;
-              const avg = calculateSubjectAverage(subject.id);
-              const target = goals.subjectTargets?.[subject.id];
-              const subjectGrades = grades[activeTab]?.[subject.id] || [];
+            {(() => {
+              const allValidAvgs = subjects.map(s => calculateSubjectAverage(s.id)).filter(a => a !== null) as number[];
+              const maxAvg = allValidAvgs.length > 0 ? Math.max(...allValidAvgs) : null;
+              
+              return subjects.map(subject => {
+                const isOpen = openSubject === subject.id;
+                const avg = calculateSubjectAverage(subject.id);
+                const target = goals.subjectTargets?.[subject.id];
+                const subjectGrades = grades[activeTab]?.[subject.id] || [];
+                
+                const isChampion = avg !== null && avg === maxAvg && avg >= 10;
+                const isAlert = avg !== null && avg < 10;
 
               let nextTargetText = "";
               if (avg !== null && target && subjectGrades.length > 0) {
@@ -347,13 +373,31 @@ export function GradesCalculator() {
                       <div className="bg-gray-100 dark:bg-[#0D1117] w-12 h-12 rounded-lg flex items-center justify-center font-bold text-[#1A3557] dark:text-white shrink-0 mt-0.5 md:mt-0">
                         x{subject.coeff}
                       </div>
-                      <div className="text-left">
-                        <h4 className="font-bold text-gray-900 dark:text-white">{subject.name}</h4>
+                      <div className="text-left flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+                          {subject.name}
+                          {isChampion && <span title="Meilleure matière" className="text-sm md:text-lg leading-none">⭐</span>}
+                          {isAlert && <span title="Moyenne critique (< 10)" className="text-sm md:text-lg leading-none animate-pulse">🔴</span>}
+                        </h4>
                         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1">
                           {target && <span className="text-gray-500">Objectif: <strong className="text-blue-600 dark:text-blue-400">{target}</strong></span>}
                           {avg !== null && target && <span className="text-gray-500">Actuelle: <strong className={avg >= target ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{avg.toFixed(2)}</strong></span>}
                           {avg !== null && !target && <span className="text-gray-500">Actuelle: <strong className="text-gray-900 dark:text-white">{avg.toFixed(2)}</strong></span>}
                         </div>
+                        {/* Progress Bar (Mini-jauge) */}
+                        {avg !== null && target && (
+                          <div className="w-full mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden relative">
+                            <div 
+                              className={`absolute top-0 left-0 h-full ${avg >= target ? 'bg-green-500' : 'bg-orange-500'} transition-all duration-1000 ease-out`}
+                              style={{ width: `${Math.min(100, (avg / 20) * 100)}%` }}
+                            />
+                            <div 
+                              className="absolute top-0 h-full w-[2px] bg-[#1A3557] dark:bg-white z-10"
+                              style={{ left: `${(target / 20) * 100}%` }}
+                              title={`Objectif: ${target}`}
+                            />
+                          </div>
+                        )}
                         {/* Message on Mobile */}
                         {avg !== null && target && (
                           <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
@@ -421,7 +465,8 @@ export function GradesCalculator() {
                   )}
                 </div>
               );
-            })}
+              });
+            })()}
           </div>
         </div>
       ) : (
