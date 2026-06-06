@@ -189,27 +189,34 @@ export function GradesCalculator() {
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
         
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 flex-1 w-full">
+        <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6 w-full">
           <div className="bg-white/10 p-3 md:p-4 rounded-2xl backdrop-blur-sm border border-white/20 shrink-0">
             <Calculator className="w-8 h-8 md:w-12 md:h-12 text-white" />
           </div>
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
+          <div className="flex flex-col gap-1 md:gap-2">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
               Mes Notes <br className="md:hidden" /> & Objectifs
             </h1>
-            <p className="text-blue-100 max-w-xl text-sm md:text-base">
+            <p className="text-blue-100 max-w-xl text-xs sm:text-sm md:text-base hidden sm:block">
               Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
             </p>
           </div>
         </div>
+        
+        {/* On mobile, show paragraph below title to avoid squeezing */}
+        <div className="relative z-10 text-left text-white flex-1 w-full sm:hidden">
+          <p className="text-blue-100 max-w-xl text-sm">
+            Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
+          </p>
+        </div>
 
         {goals.bacPoints && (
-          <div className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-4 rounded-xl flex items-center gap-4 shadow-lg text-white w-full md:w-auto shrink-0">
-            <Target className="w-8 h-8 text-yellow-400 shrink-0" />
+          <div className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 px-4 md:px-5 py-3 md:py-4 rounded-xl flex items-center gap-3 md:gap-4 shadow-lg text-white w-full md:w-auto shrink-0">
+            <Target className="w-6 h-6 md:w-8 md:h-8 text-yellow-400 shrink-0" />
             <div>
-              <p className="text-xs text-blue-100 uppercase tracking-wider font-bold mb-1">Objectif Final</p>
-              <p className="text-2xl font-black">BAC : {goals.bacPoints} Points</p>
-              <p className="text-sm text-white/90">Moyenne générale : {goals.generalAverage}/20</p>
+              <p className="text-[10px] md:text-xs text-blue-100 uppercase tracking-wider font-bold mb-0.5 md:mb-1">Objectif Final</p>
+              <p className="text-lg md:text-2xl font-black">BAC : {goals.bacPoints} Pts</p>
+              <p className="text-xs md:text-sm text-white/90">Moyenne générale : {goals.generalAverage}/20</p>
             </div>
           </div>
         )}
