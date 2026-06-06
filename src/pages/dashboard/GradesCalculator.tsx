@@ -184,24 +184,23 @@ export function GradesCalculator() {
       />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 animate-fade-in-up">
+      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 animate-fade-in-up">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
         
-        <div className="relative z-10 flex flex-row items-center gap-4 w-full md:w-auto">
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 flex-1 w-full">
           <div className="bg-white/10 p-3 md:p-4 rounded-2xl backdrop-blur-sm border border-white/20 shrink-0">
             <Calculator className="w-8 h-8 md:w-12 md:h-12 text-white" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
-            Mes Notes <br className="md:hidden" /> & Objectifs
-          </h1>
-        </div>
-        
-        <div className="relative z-10 text-left text-white flex-1 w-full">
-          <p className="text-blue-100 max-w-xl text-sm md:text-base">
-            Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
-          </p>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
+              Mes Notes <br className="md:hidden" /> & Objectifs
+            </h1>
+            <p className="text-blue-100 max-w-xl text-sm md:text-base">
+              Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
+            </p>
+          </div>
         </div>
 
         {goals.bacPoints && (
@@ -422,7 +421,7 @@ export function GradesCalculator() {
                   {draftGoals.bacPoints || '-'} <span className="text-xl font-medium">Points</span>
                 </div>
                 <p className="text-xs text-blue-600/70 dark:text-blue-300/70 mt-2">
-                  Calculé automatiquement selon les coefficients de ta série.
+                  Ton objectif de points pour le BAC.
                 </p>
               </div>
             </div>
