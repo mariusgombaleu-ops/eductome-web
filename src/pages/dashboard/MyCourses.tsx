@@ -64,7 +64,11 @@ export const MyCourses = () => {
 
   const filteredCourses = myCourses.filter(course => {
     // Filter by serie
-    if (userSerie && course.series && !course.series.includes(userSerie)) return false;
+    if (userSerie && course.series) {
+      const normalizedUser = userSerie.toLowerCase().replace('-', ' ');
+      const match = course.series.some((s: string) => s.toLowerCase().replace('-', ' ') === normalizedUser);
+      if (!match) return false;
+    }
     
     // Filter by tab
     if (activeTab === 'all') return true;
