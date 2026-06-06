@@ -332,7 +332,7 @@ export function GradesCalculator() {
                 if (avg >= target) {
                   nextTargetText = `Défi : ${target}/20 au prochain devoir`;
                 } else {
-                  nextTargetText = `Défi : ${target}/20 ou plus au prochain devoir`;
+                  nextTargetText = `Défi : au moins ${target}/20 ou plus au prochain devoir`;
                 }
               }
 
