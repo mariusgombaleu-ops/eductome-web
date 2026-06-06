@@ -17,6 +17,7 @@ import { exercicesT11 } from '../data/exercices-t11';
 import { SEO } from '../components/SEO';
 import { useProgress } from '../hooks/useProgress';
 import { LeadCaptureModal } from '../components/ui/LeadCaptureModal';
+import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
 
 const vitrineFiches = [
   {
@@ -253,10 +254,19 @@ export function Resources() {
   const isDashboard = location.pathname.startsWith('/dashboard');
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${getBgColor()}`}>
-      <SEO title="Ressources Gratuites" description="Télécharge gratuitement nos fiches méthodes et extraits de manuels Eductome." />
+    <div className={`min-h-screen pt-24 pb-12 font-poppins transition-colors duration-300 ${isDashboard ? 'bg-transparent pt-6' : 'bg-[#F8F9FA] dark:bg-[#0D1117]'}`}>
+      <SEO 
+        title="Ressources Gratuites | EDUCTOME" 
+        description="Fiches de révision, exercices corrigés et astuces du Grand Frère pour préparer ton BAC ou BEPC gratuitement." 
+      />
       
-      {/* Banner Quiz */}
+      <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isDashboard ? 'max-w-7xl' : 'max-w-7xl'}`}>
+        <GrandFrereGuide 
+          id="resources"
+          message="C'est cadeau ! Retrouve ici des fiches méthodes, des annales et des astuces gratuites pour booster tes révisions sans dépenser un franc."
+        />
+        
+        {/* Banner Quiz */}
       {showQuizBanner && !localStorage.getItem('eductome_quiz_profile') && (
         <div className="bg-gradient-to-r from-eductome-magenta to-eductome-marine text-white px-4 py-3 relative z-30">
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between text-sm sm:text-base">
@@ -978,6 +988,7 @@ export function Resources() {
           }
         }}
       />
+      </div>
     </div>
   );
 }

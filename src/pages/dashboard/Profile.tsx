@@ -10,6 +10,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
+import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export const Profile = () => {
   const { theme } = useTheme();
@@ -99,9 +100,12 @@ export const Profile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
-      
-      {/* Banner Profil */}
+    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-20 font-poppins max-w-7xl mx-auto">
+      <GrandFrereGuide 
+        id="profile"
+        message="Ton profil, c'est ton identité de Champion. Tu peux changer ton avatar, voir tes badges et suivre ton niveau d'XP. Fais-en une machine de guerre !"
+      />
+      {/* Header Profile Section */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-6 md:gap-8 animate-fade-in-up">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>

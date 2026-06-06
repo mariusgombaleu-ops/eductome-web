@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BookOpen, PlayCircle, Star, ShoppingBag, Book } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
+import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 const COURSE_METADATA: Record<string, any> = {
   't1-limites': {
@@ -74,6 +75,10 @@ export const MyCourses = () => {
 
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
+      <GrandFrereGuide 
+        id="courses"
+        message="Voici tes armes de guerre. Tu retrouveras ici tous les tomes que tu as débloqués. Continue là où tu t'es arrêté et n'oublie pas : la régularité fait la différence."
+      />
       {/* Banner */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
         {/* Decorative elements */}
