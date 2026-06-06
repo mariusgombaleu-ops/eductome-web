@@ -330,9 +330,9 @@ export function GradesCalculator() {
               let nextTargetText = "";
               if (avg !== null && target && subjectGrades.length > 0) {
                 if (avg >= target) {
-                  nextTargetText = `Objectif : ${target}/20 au prochain devoir`;
+                  nextTargetText = `Défi : ${target}/20 au prochain devoir`;
                 } else {
-                  nextTargetText = `Objectif : ${target}/20 ou plus au prochain devoir`;
+                  nextTargetText = `Défi : ${target}/20 ou plus au prochain devoir`;
                 }
               }
 
