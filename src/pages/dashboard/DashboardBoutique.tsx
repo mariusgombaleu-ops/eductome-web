@@ -98,27 +98,22 @@ export const DashboardBoutique = () => {
               <div className="p-4 sm:p-6 border-t border-[#E1E4E8] dark:border-[#30363D]">
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                   {collection.tomes?.map((tome, index) => (
-                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-[24px] border border-gray-200/60 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 p-5 flex flex-col group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
+                    <div key={tome.id} className="bg-white dark:bg-[#161B22] rounded-3xl border border-gray-200/60 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 p-4 flex flex-col group animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${(index + 1) * 50}ms` }}>
                       
                       {/* Header Section */}
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 block">
-                            Tome {tome.number}
-                          </span>
-                          <h3 className="text-lg font-bold text-[#1A3557] dark:text-white leading-tight font-playfair pr-2">
-                            {tome.title}
-                          </h3>
-                        </div>
-                        <div className="bg-blue-50 dark:bg-blue-900/20 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
-                          <BookOpen className="w-5 h-5 text-blue-500" />
-                        </div>
+                      <div className="mb-3">
+                        <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1 block">
+                          Tome {tome.number}
+                        </span>
+                        <h3 className="text-base sm:text-lg font-bold text-[#1A3557] dark:text-white leading-tight font-playfair">
+                          {tome.title}
+                        </h3>
                       </div>
 
                       {/* Price Section */}
-                      <div className="mb-6 flex items-baseline gap-1 mt-auto">
-                        <span className="text-2xl font-black text-[#1A1A2E] dark:text-white">1.500</span>
-                        <span className="text-xs font-bold text-gray-400">FCFA</span>
+                      <div className="mb-3 flex items-baseline gap-1 mt-auto">
+                        <span className="text-xl sm:text-2xl font-black text-[#1A1A2E] dark:text-white">1.500</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-gray-400">FCFA</span>
                       </div>
 
                       {/* Actions Section */}

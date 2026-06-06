@@ -116,13 +116,13 @@ export const collectionsData: Collection[] = [
       { id: "cm-2", number: 2, title: 'Les Dérivées', chapters: ['Tangentes', 'Variations', 'Optimisation', 'BAC'], coverImage: "/covers/tomes/cover-t2.png", image: "/covers/tomes/cover-t2.png" },
       { id: "cm-3", number: 3, title: 'Intégrales & Primitives', chapters: ['Primitives', 'Aires', 'Volumes', 'BAC'], coverImage: "/covers/tomes/cover-t3.png", image: "/covers/tomes/cover-t3.png" },
       { id: "cm-4", number: 4, title: 'Suites Numériques', coverImage: "/covers/tomes/cover-t4.png", image: "/covers/tomes/cover-t4.png" },
-      { id: "cm-5", number: 5, title: 'Logarithmes & Exponentielles', coverImage: "/covers/tomes/cover-t5.png", image: "/covers/tomes/cover-t5.png" },
-      { id: "cm-6", number: 6, title: 'Fonctions Trigonométriques', coverImage: "/covers/tomes/cover-t6.png", image: "/covers/tomes/cover-t6.png" },
+      { id: "cm-5", number: 5, title: 'Log & Expo', coverImage: "/covers/tomes/cover-t5.png", image: "/covers/tomes/cover-t5.png" },
+      { id: "cm-6", number: 6, title: 'Fonctions Trigo', coverImage: "/covers/tomes/cover-t6.png", image: "/covers/tomes/cover-t6.png" },
       { id: "cm-7", number: 7, title: 'Probabilités', coverImage: "/covers/tomes/cover-t7.png", image: "/covers/tomes/cover-t7.png" },
       { id: "cm-8", number: 8, title: 'Statistiques', coverImage: "/covers/tomes/cover-t8.png", image: "/covers/tomes/cover-t8.png" },
       { id: "cm-9", number: 9, title: 'Géométrie dans l\'Espace', coverImage: "/covers/tomes/cover-t9.jpeg", image: "/covers/tomes/cover-t9.jpeg" },
       { id: "cm-10", number: 10, title: 'Nombres Complexes', coverImage: "/covers/tomes/cover-t10.png", image: "/covers/tomes/cover-t10.png" },
-      { id: "cm-11", number: 11, title: 'Équations Différentielles', coverImage: "/covers/tomes/cover-t11.png", image: "/covers/tomes/cover-t11.png" }
+      { id: "cm-11", number: 11, title: 'Équations Diff.', coverImage: "/covers/tomes/cover-t11.png", image: "/covers/tomes/cover-t11.png" }
     ],
     
     faq: [
