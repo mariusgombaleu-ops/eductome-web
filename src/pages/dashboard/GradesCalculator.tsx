@@ -3,7 +3,7 @@ import { useUser, UserGrades } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
 import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { GrandFrereGuide } from '../ui/GrandFrereGuide';
+import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades } = useUser();
