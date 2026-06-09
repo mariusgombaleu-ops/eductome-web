@@ -137,6 +137,19 @@
   background-size: 20px 20px;
 }
 
+/* KaTeX: restore content-box so fraction bar and vlist sizing are unaffected by Tailwind preflight */
+.katex * {
+  box-sizing: content-box;
+}
+.katex .fbox,
+.katex .fcolorbox {
+  box-sizing: border-box;
+}
+/* Inline KaTeX with \displaystyle: align vertically with surrounding text */
+.katex {
+  vertical-align: middle;
+}
+
 /* Conteneur des blocs MathJax */
 mjx-container {
   max-width: 100%;

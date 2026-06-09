@@ -4,12 +4,12 @@ import { AnimatePresence } from 'framer-motion';
 import { AnimatedPage } from './AnimatedPage';
 import { useTheme } from '../../contexts/ThemeContext';
 import { 
-  LayoutDashboard, 
-  BookOpen, 
-  MessageSquare, 
-  User, 
-  LogOut, 
-  Menu, 
+  LayoutDashboard,
+  BookOpen,
+  MessageSquare,
+  User,
+  LogOut,
+  Menu,
   Bell,
   Search,
   ShoppingBag,
@@ -23,9 +23,10 @@ import {
   Share,
   Newspaper,
   Megaphone,
-  PlusSquare, 
+  PlusSquare,
   Calculator,
-  X 
+  TrendingUp,
+  X
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,7 +34,7 @@ import { useUser } from '../../contexts/UserContext';
 
 export const DashboardLayout = () => {
   const { currentUser, loading, logout } = useAuth();
-  const { pseudo, levelString, photoURL } = useUser();
+  const { pseudo, levelString, photoURL, isRelais } = useUser();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -49,6 +50,7 @@ export const DashboardLayout = () => {
     { name: 'Ressources Gratuites', href: '/dashboard/ressources', icon: FileText },
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },
     { name: 'Le Blog', href: '/dashboard/blog', icon: Newspaper },
+    ...(isRelais ? [{ name: 'Tableau Relais', href: '/dashboard/relais', icon: TrendingUp }] : []),
     { name: 'Devenir Relais', href: '/dashboard/devenir-relais', icon: Megaphone },
   ];
 

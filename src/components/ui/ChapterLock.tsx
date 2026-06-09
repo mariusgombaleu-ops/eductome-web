@@ -2,12 +2,14 @@ import { Lock, CreditCard, BookOpen } from 'lucide-react';
 
 interface ChapterLockProps {
   chapterTitle: string;
+  tomePrice: number;
+  deduction: number;
   onUnlockChapter: () => void;
   onUnlockTome: () => void;
   onUnlockCollection?: () => void;
 }
 
-export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome, onUnlockCollection }: ChapterLockProps) => {
+export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapter, onUnlockTome, onUnlockCollection }: ChapterLockProps) => {
 
   return (
     <div className="my-8 max-w-2xl mx-auto border-2 border-eductome-magenta rounded-2xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 relative">
@@ -32,21 +34,26 @@ export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome, onUnl
             <h4 className="font-bold text-gray-800 dark:text-[#E6EDF3] mb-1">Débloquer le Chapitre</h4>
             <div className="text-2xl font-black text-[#1A3557] dark:text-blue-400 mb-3">300 FCFA</div>
             <p className="text-sm text-gray-500 dark:text-[#8B949E] flex-grow mb-4">Accès illimité à ce chapitre uniquement, avec tous ses exercices.</p>
-            <button className="w-full mt-auto py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-[#30363D] dark:hover:bg-gray-700 text-[#1A3557] dark:text-white font-bold transition-colors flex items-center justify-center gap-2">
+            <button className="w-full mt-auto min-h-[44px] py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-[#30363D] dark:hover:bg-gray-700 text-[#1A3557] dark:text-white font-bold transition-colors flex items-center justify-center gap-2">
               <CreditCard size={18} /> Payer 300 F
             </button>
           </div>
 
           {/* Option 2: Unlocked Tome */}
-          <div className="bg-[#1A3557] border border-[#1A3557] rounded-xl p-5 text-white shadow-md hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full transform hover:-translate-y-1" onClick={onUnlockTome}>
+          <div className="relative bg-[#1A3557] border border-[#1A3557] rounded-xl p-5 text-white shadow-md hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full transform hover:-translate-y-1" onClick={onUnlockTome}>
             <div className="absolute top-0 right-0 bg-orange-500 text-xs font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl">
               🔥 PLUS RENTABLE
             </div>
             <h4 className="font-bold text-blue-100 mb-1">Le Tome Complet</h4>
-            <div className="text-2xl font-black text-white mb-3">1 500 FCFA</div>
+            <div className="text-2xl font-black text-white mb-1">{tomePrice} FCFA</div>
+            {deduction > 0 && (
+              <div className="text-xs font-bold text-green-300 mb-2">
+                -{deduction}F déduits pour tes chapitres déjà achetés !
+              </div>
+            )}
             <p className="text-sm text-blue-200 flex-grow mb-4">Débloque tous les chapitres, tous les quiz et le chapitre bonus BAC.</p>
-            <button className="w-full mt-auto py-2 rounded-lg bg-eductome-magenta hover:bg-pink-600 text-white font-bold transition-colors shadow-sm flex items-center justify-center gap-2">
-              <BookOpen size={18} /> Payer 1500 F
+            <button className="w-full mt-auto min-h-[44px] py-2 rounded-lg bg-eductome-magenta hover:bg-pink-600 text-white font-bold transition-colors shadow-sm flex items-center justify-center gap-2">
+              <BookOpen size={18} /> Payer {tomePrice} F
             </button>
           </div>
         </div>
@@ -69,7 +76,7 @@ export const ChapterLock = ({ chapterTitle, onUnlockChapter, onUnlockTome, onUnl
               <div className="flex flex-col items-center sm:items-end min-w-[120px]">
                 <div className="text-xs text-gray-400 line-through mb-1">Au lieu de 15 000 F</div>
                 <div className="text-2xl font-black text-amber-500 mb-2">10 000 F</div>
-                <button className="w-full sm:w-auto px-6 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm text-sm">
+                <button className="w-full sm:w-auto min-h-[44px] px-6 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm text-sm">
                   Devenir VIP
                 </button>
               </div>

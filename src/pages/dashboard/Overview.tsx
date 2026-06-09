@@ -1,4 +1,4 @@
-import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight } from 'lucide-react';
+import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link } from 'react-router-dom';
@@ -16,11 +16,19 @@ const QUOTES = [
 ];
 
 export const Overview = () => {
-  const { xp, level, rewardedActions, pseudo } = useUser();
+  const { xp, level, rewardedActions, pseudo, statut, currentStreak } = useUser();
   const [quote, setQuote] = useState(QUOTES[0]);
   const [greeting, setGreeting] = useState("Bonjour");
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
-  
+  const [showFamilleWelcome, setShowFamilleWelcome] = useState(
+    () => statut === 'famille' && localStorage.getItem('famille_welcomed') !== 'true'
+  );
+
+  const dismissFamilleWelcome = () => {
+    localStorage.setItem('famille_welcomed', 'true');
+    setShowFamilleWelcome(false);
+  };
+
   const isNewUser = xp === 0;
   let completedQuizzes = 0;
   rewardedActions.forEach(a => { if (a.startsWith('quiz_')) completedQuizzes++; });
@@ -49,6 +57,28 @@ export const Overview = () => {
         id="dashboard"
         message="C'est ici ton QG ! Tu as un aperçu de tes derniers cours, de ta progression et de tes prochains objectifs. Garde un œil sur tes stats pour rester motivé !"
       />
+      {/* Bandeau Bienvenue dans la Famille (one-shot, post-activation) */}
+      {showFamilleWelcome && (
+        <div className="relative bg-gradient-to-r from-amber-400 to-yellow-600 rounded-2xl p-5 md:p-6 shadow-lg flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+              <Heart className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg md:text-xl font-bold text-white">Bienvenue dans la Famille EDUCTOME ! 🎉</h2>
+              <p className="text-white/90 text-sm">Ton badge Famille, ton XP ×2 et tes avantages exclusifs sont activés — à vie.</p>
+            </div>
+          </div>
+          <button
+            onClick={dismissFamilleWelcome}
+            aria-label="Fermer"
+            className="shrink-0 text-white/80 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
       {/* Welcome Banner */}
       <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg h-[140px] md:h-[160px] flex items-center justify-between animate-fade-in-up">
         {/* Decorative elements */}
@@ -68,7 +98,10 @@ export const Overview = () => {
           <Flame className="w-6 h-6 md:w-8 md:h-8 text-white" />
           <div className="hidden sm:block">
             <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-orange-200">Série actuelle</p>
-            <p className="text-xl md:text-2xl font-bold">3 Jours</p>
+            <p className="text-xl md:text-2xl font-bold">{currentStreak} jour{currentStreak > 1 ? 's' : ''}</p>
+            {statut === 'famille' && (
+              <p className="text-[9px] font-bold text-orange-200 uppercase tracking-wider">XP ×2 actif</p>
+            )}
           </div>
         </div>
       </div>

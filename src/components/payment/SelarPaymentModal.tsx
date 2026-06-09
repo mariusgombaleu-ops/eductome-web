@@ -1,6 +1,8 @@
 import React from 'react';
 import { Lock, CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 // TODO: Intégrer AuthContext Firebase plus tard quand on mettra la base de données
 // import { useAuth } from '../../contexts/AuthContext';
 
@@ -23,32 +25,53 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
   const navigate = useNavigate();
   // Pour l'instant, un numéro fictif puisqu'on n'a pas encore de vraie BDD branchée
   const user = { phoneNumber: "0700000000" };
-  
+  const [email, setEmail] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [relaisCode, setRelaisCode] = React.useState('');
+  const [relaisCodeError, setRelaisCodeError] = React.useState('');
+
   if (!isOpen) return null;
 
   let paymentLink = SELAR_TOME_LINK;
   if (isChapter) paymentLink = SELAR_CHAPTER_LINK;
   if (isCollection) paymentLink = SELAR_COLLECTION_LINK;
 
-  const handlePaymentRedirect = () => {
+  const handlePaymentRedirect = async () => {
+    if (!email || !email.includes('@')) {
+      setError('Un email valide est obligatoire pour valider ton achat plus tard.');
+      return;
+    }
+    setError('');
+    setRelaisCodeError('');
+
+    // Valider le code relais si fourni (ne bloque pas l'achat si invalide)
+    if (relaisCode.trim()) {
+      try {
+        const code = relaisCode.trim().toUpperCase();
+        const relaisDocSnap = await getDoc(doc(db, 'relais', code));
+        if (!relaisDocSnap.exists()) {
+          setRelaisCodeError('Code invalide');
+        } else {
+          localStorage.setItem('eductome_pending_relais_code', code);
+        }
+      } catch (_) {
+        // Échec silencieux : l'achat continue sans code relais
+      }
+    }
+
     let finalLink = paymentLink;
-    let paymentEmail = '';
-    
+    let paymentEmail = email.trim();
+
     // Sauvegarder le courseId pour le déblocage après paiement
     if (courseId) {
       localStorage.setItem('eductome_pending_course', courseId);
     }
-    
+
     if (user?.phoneNumber) {
-      // Nettoyer le numéro pour l'email (enlever les + et espaces)
-      const cleanPhone = user.phoneNumber.replace(/[^0-9]/g, '');
-      paymentEmail = `${cleanPhone}@eductome.app`;
-      
       const encodedPhone = encodeURIComponent(user.phoneNumber);
       const separator = finalLink.includes('?') ? '&' : '?';
-      
       finalLink = `${finalLink}${separator}email=${encodeURIComponent(paymentEmail)}&phone=${encodedPhone}`;
-      
+
       // Enregistrer l'email dans le storage pour que le Vigile background prenne le relais
       localStorage.setItem('eductome_waiting_payment_email', paymentEmail);
       localStorage.setItem('eductome_waiting_payment_time', Date.now().toString());
@@ -57,7 +80,7 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
     // Redirection vers le lien Selar avec paramètres
     window.open(finalLink, '_blank');
     onClose();
-    
+
     if (paymentEmail) {
       navigate(`/dashboard/paiement-confirme?email=${encodeURIComponent(paymentEmail)}`);
     }
@@ -103,6 +126,39 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
               <div className="w-8 h-8 bg-[#FFCC00] rounded-full flex items-center justify-center text-[#000] font-bold text-xs">M</div>
               <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">MTN</span>
             </div>
+          </div>
+
+          <div className="space-y-2 mb-4 text-left">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Email utilisé sur Selar <span className="text-eductome-magenta">*</span>
+            </label>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+              Ce pont est indispensable pour retrouver ton paiement.
+            </p>
+            <input 
+              type="email" 
+              placeholder="ex: ton-email@gmail.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`w-full p-3 rounded-xl border ${error ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-[#0D1117] text-gray-900 dark:text-white focus:outline-none focus:border-eductome-magenta transition-colors`}
+              required
+            />
+            {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
+          </div>
+
+          <div className="space-y-2 mb-4 text-left">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Code Relais <span className="text-gray-400 font-normal">(optionnel)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="ex: ABC123"
+              value={relaisCode}
+              onChange={(e) => { setRelaisCode(e.target.value.toUpperCase()); setRelaisCodeError(''); }}
+              maxLength={6}
+              className={`w-full p-3 rounded-xl border font-mono uppercase tracking-widest ${relaisCodeError ? 'border-red-400' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-[#0D1117] text-gray-900 dark:text-white focus:outline-none focus:border-eductome-magenta transition-colors`}
+            />
+            {relaisCodeError && <p className="text-xs text-red-500 font-medium">{relaisCodeError}</p>}
           </div>
 
           <div className="space-y-3">

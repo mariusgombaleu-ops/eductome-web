@@ -1,5 +1,17 @@
 import { AnyBlock } from './course';
 
+export interface Achat {
+  id?: string;
+  compte_id: string;
+  type: 'chapitre' | 'tome' | 'collection' | 'physique';
+  reference: string;
+  montant_paye: number;
+  ref_commande_selar?: string;
+  date: string;
+  source: 'selar' | 'physique_qr';
+  relaisCode?: string;
+}
+
 export interface Tome {
   id: string;
   number?: number;

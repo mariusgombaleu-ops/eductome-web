@@ -1,18 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ChevronRight, ChevronLeft, Lightbulb, AlertTriangle,
+  ChevronRight, ChevronLeft, ChevronUp, ChevronDown, Lightbulb, AlertTriangle,
   Activity, CheckCircle, X,
-  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save
+  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save,
+  Lock, Download
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../contexts/ToastContext';
 import { courseT1 } from '../../data/course-t1';
 import { courseT2 } from '../../data/course-t2';
 import { courseT3 } from '../../data/course-t3';
 import { courseT11 } from '../../data/course-t11';
-import { QuizBlock, Tome } from '../../types/course';
-import { BlockRenderer } from '../../components/blocks/BlockRenderer';
+import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
+import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { fireConfetti } from '../../utils/confetti';
@@ -209,6 +211,7 @@ export const CourseReader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [mathjaxReady, setMathjaxReady] = useState(false);
 
   // Modals state
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -240,11 +243,27 @@ export const CourseReader = () => {
   const course = courseId && courseRegistry[courseId] ? courseRegistry[courseId] : courseT1;
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const chapter = course.chapitres[activeChapterIndex] || course.chapitres[0];
+  const [activeSectionId, setActiveSectionId] = useState<string>(
+    () => chapter.sections[0]?.id ?? ''
+  );
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
+    const firstId = chapter.sections[0]?.id;
+    return firstId ? new Set([firstId]) : new Set<string>();
+  });
   const chapterDisplayNumber = chapter.number ?? activeChapterIndex;
 
-  const isUnlocked = chapter.gratuit || 
-    unlockedCourses.includes(courseId || '') || 
-    (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') || 
+  const isUnlocked = chapter.gratuit ||
+    unlockedCourses.includes(courseId || '') ||
+    (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') ||
+    (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id);
+
+  // Possession réelle (achat du chapitre ou du tome) — distinct de isUnlocked,
+  // qui inclut aussi les chapitres offerts. Les corrections détaillées et le PDF
+  // hors-ligne sont réservés au contenu possédé (brief §5.2), pas au contenu offert.
+  const hasFullAccess =
+    unlockedCourses.includes(courseId || '') ||
+    unlockedCourses.includes(chapter.id) ||
+    (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') ||
     (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id);
 
   const handleUnlockChapter = () => {
@@ -254,9 +273,15 @@ export const CourseReader = () => {
     setIsPaymentModalOpen(true);
   };
 
+  // Calcul global du Booster Déductible pour ce tome
+  const chaptersInTome = course.chapitres.map(c => c.id);
+  const ownedChapters = chaptersInTome.filter(cId => unlockedCourses.includes(cId));
+  const deduction = ownedChapters.length * 300;
+  const finalTomePrice = Math.max(0, 1500 - deduction);
+
   const handleUnlockTome = () => {
-    setPaymentAmount(1500);
-    setPaymentItemName('Le Tome Complet (Tous les chapitres)');
+    setPaymentAmount(finalTomePrice);
+    setPaymentItemName(deduction > 0 ? `Le Tome Complet (-${deduction}F déduits pour tes chapitres)` : 'Le Tome Complet (Tous les chapitres)');
     setPaymentType('tome');
     setIsPaymentModalOpen(true);
   };
@@ -270,13 +295,215 @@ export const CourseReader = () => {
 
   // Ancienne fonction de succès de paiement retirée car c'est géré via Selar et Firebase maintenant
 
+  const downloadCorrectionsPDF = async () => {
+    try {
+      const html2canvasLib = (await import('html2canvas')).default;
+
+      // Collect exercise blocks from raw data — avoids capturing collapsed accordion DOM
+      const exerciseBlocks: ExerciceBlock[] = [];
+      for (const section of chapter.sections) {
+        for (const block of section.blocs) {
+          if (block.type === 'exercise') {
+            exerciseBlocks.push(block as ExerciceBlock);
+          }
+        }
+      }
+
+      if (exerciseBlocks.length === 0) {
+        addToast({ type: 'error', title: 'Aucun exercice trouvé', message: '' });
+        return;
+      }
+
+      const chapLabel =
+        chapterDisplayNumber != null && chapterDisplayNumber > 0
+          ? `Chapitre ${chapterDisplayNumber} — ${chapter.titre}`
+          : chapter.titre;
+
+      // Off-screen render target — never captures app DOM
+      const container = document.createElement('div');
+      container.id = 'pdf-render-target';
+      container.style.cssText = 'position:absolute;left:-9999px;top:0;width:794px;background:#ffffff;font-family:Poppins,sans-serif;';
+
+      // Header
+      const headerEl = document.createElement('div');
+      headerEl.style.cssText = 'background:#1A3557;padding:28px 36px 24px;';
+      headerEl.innerHTML = `
+        <div style="color:#ffffff;font-size:22px;font-weight:700;">EDUCTOME</div>
+        <div style="color:#B4D2F0;font-size:11px;margin-top:4px;">Corrections détaillées</div>
+        <div style="color:#E6EDF3;font-size:14px;font-weight:600;margin-top:10px;">${chapLabel}</div>
+      `;
+      container.appendChild(headerEl);
+
+      // Body — each exercise fully expanded, no accordion
+      const bodyEl = document.createElement('div');
+      bodyEl.style.cssText = 'padding:24px 36px;';
+
+      exerciseBlocks.forEach((ex, idx) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'margin-bottom:32px;border:1px solid #E1E4E8;border-radius:16px;overflow:hidden;background:#ffffff;';
+
+        // Card header
+        const cardHeader = document.createElement('div');
+        cardHeader.style.cssText = 'background:#EBF5FB;padding:12px 16px;border-bottom:1px solid #BEE3F8;';
+        cardHeader.innerHTML = `<span style="font-size:12px;font-weight:700;color:#1976D2;">Exercice ${idx + 1}${ex.niveau ? ' — ' + ex.niveau : ''}</span>`;
+        card.appendChild(cardHeader);
+
+        // Énoncé
+        const enonceEl = document.createElement('div');
+        enonceEl.style.cssText = 'padding:16px;font-size:14px;line-height:1.7;color:#1A1A2E;border-bottom:1px solid #F0F0F0;';
+        enonceEl.innerHTML = parseMarkdown(ex.enonce);
+        card.appendChild(enonceEl);
+
+        // Steps — all visible, no toggle
+        const stepsEl = document.createElement('div');
+        stepsEl.style.cssText = 'padding:16px;';
+        ex.etapes.forEach((step, stepIdx) => {
+          let stepName = `Étape ${stepIdx + 1}`;
+          let stepContent: string = typeof step === 'string' ? step : '';
+          if (typeof step === 'object' && step !== null) {
+            stepName = (step as { name: string; contenu: string }).name || stepName;
+            stepContent = (step as { name: string; contenu: string }).contenu || '';
+          }
+          const stepEl = document.createElement('div');
+          stepEl.style.cssText = 'margin-bottom:10px;padding:12px;background:#F8F9FA;border-radius:10px;';
+          stepEl.innerHTML = `
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#9CA3AF;margin-bottom:6px;">${stepName}</div>
+            <div style="font-size:13px;color:#374151;line-height:1.6;">${parseMarkdown(stepContent)}</div>
+          `;
+          stepsEl.appendChild(stepEl);
+        });
+        card.appendChild(stepsEl);
+
+        // Result
+        if (ex.reponse) {
+          const resultEl = document.createElement('div');
+          resultEl.style.cssText = 'margin:0 16px 16px;padding:12px;background:#F0FFF4;border:2px solid #86EFAC;border-radius:10px;';
+          resultEl.innerHTML = `
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#16A34A;margin-bottom:6px;">✓ Résultat</div>
+            <div style="font-size:14px;font-weight:700;color:#15803D;line-height:1.6;">${parseMarkdown(ex.reponse)}</div>
+          `;
+          card.appendChild(resultEl);
+        }
+
+        bodyEl.appendChild(card);
+      });
+
+      container.appendChild(bodyEl);
+
+      // Footer
+      const footerEl = document.createElement('div');
+      footerEl.style.cssText = 'padding:16px 36px;border-top:1px solid #E1E4E8;text-align:center;color:#9CA3AF;font-size:10px;font-style:italic;';
+      footerEl.textContent = 'EDUCTOME — Apprendre sans limites';
+      container.appendChild(footerEl);
+
+      document.body.appendChild(container);
+
+      const canvas = await html2canvasLib(container, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      document.body.removeChild(container);
+
+      // Multi-page PDF
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pw = doc.internal.pageSize.getWidth();
+      const ph = doc.internal.pageSize.getHeight();
+      const pageContentH = ph - 10;
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const totalH = (canvas.height / canvas.width) * pw;
+
+      const drawFooter = () => {
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(150, 150, 150);
+        doc.text('EDUCTOME — Apprendre sans limites', pw / 2, ph - 4, { align: 'center' });
+      };
+
+      let srcY = 0;
+      let remaining = totalH;
+      let firstPage = true;
+
+      while (remaining > 0) {
+        if (!firstPage) doc.addPage();
+        firstPage = false;
+        doc.addImage(imgData, 'JPEG', 0, -srcY, pw, totalH);
+        drawFooter();
+        srcY += pageContentH;
+        remaining -= pageContentH;
+      }
+
+      const filename = `eductome-${courseId || 'cours'}-${chapter.id}-corrections.pdf`;
+      doc.save(filename);
+      addToast({ type: 'success', title: 'Corrections téléchargées !', message: '' });
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Erreur — réessaie', message: '' });
+    }
+  };
+
   useEffect(() => { const t = setTimeout(() => renderMathJax(), 200); return () => clearTimeout(t); }, [activeChapterIndex]);
+
+  useEffect(() => {
+    const promise = window.MathJax?.startup?.promise;
+    if (promise) {
+      promise.then(() => setMathjaxReady(true)).catch(() => setMathjaxReady(true));
+    } else {
+      setMathjaxReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (courseId) {
       localStorage.setItem('eductome_last_chapter_read', courseId);
     }
   }, [courseId]);
+
+  // Reset active section + accordion when chapter changes
+  useEffect(() => {
+    const firstId = chapter.sections[0]?.id;
+    setActiveSectionId(firstId ?? '');
+    setExpandedSections(firstId ? new Set([firstId]) : new Set<string>());
+  }, [activeChapterIndex]);
+
+  // Highlight which section is currently in the viewport
+  useEffect(() => {
+    if (!isUnlocked || chapter.sections.length === 0) return;
+    const observers: IntersectionObserver[] = [];
+    chapter.sections.forEach(sec => {
+      const el = document.getElementById(`section-${sec.id}`);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSectionId(sec.id); },
+        { rootMargin: '-10% 0px -75% 0px', threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach(obs => obs.disconnect());
+  }, [activeChapterIndex, isUnlocked]);
+
+  // Auto-expand the active section on scroll
+  useEffect(() => {
+    if (!activeSectionId) return;
+    setExpandedSections(prev => {
+      if (prev.has(activeSectionId)) return prev;
+      const next = new Set(prev);
+      next.add(activeSectionId);
+      return next;
+    });
+  }, [activeSectionId]);
+
+  // Auto-scroll the sidebar nav to keep the active section item visible
+  useEffect(() => {
+    if (!activeSectionId) return;
+    document.querySelectorAll<HTMLElement>(`[data-section-id="${activeSectionId}"]`).forEach(el =>
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    );
+  }, [activeSectionId]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -337,18 +564,24 @@ export const CourseReader = () => {
               </button>
 
               {/* Sections du chapitre actif */}
-              {isActive && chap.sections.length > 0 && (
-                <div className="ml-3 my-2 border-l-2 pl-3 space-y-1 border-[#1976D2]/20 dark:border-[#D81B60]/20">
-                  {chap.sections.map(sec => (
+              {isActive && chap.sections.filter(s => s.titre).length > 0 && (
+                <div className="ml-3 my-2 space-y-0.5">
+                  {chap.sections.filter(s => s.titre).map(sec => (
                     <a key={sec.id} href={`#section-${sec.id}`}
+                      data-section-id={sec.id}
                       onClick={e => {
                         e.preventDefault();
                         setSidebarOpen(false);
+                        setExpandedSections(prev => { const next = new Set(prev); next.add(sec.id); return next; });
                         setTimeout(() => {
                           document.getElementById(`section-${sec.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 100);
                       }}
-                      className="block text-[11px] py-1.5 px-2 rounded-lg transition-colors leading-snug text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] dark:hover:text-white hover:bg-[#F8F9FA] dark:hover:bg-[#161B22] font-medium"
+                      className={`block text-[13px] py-1.5 px-2 rounded-lg transition-all duration-200 leading-snug border-l-2 ${
+                        activeSectionId === sec.id
+                          ? 'border-[#1A3557] dark:border-[#1976D2] text-[#1A3557] dark:text-blue-300 font-bold bg-[#EBF5FB]/60 dark:bg-[#1A3557]/20'
+                          : 'border-transparent text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] dark:hover:text-white hover:bg-[#F8F9FA] dark:hover:bg-[#161B22] font-medium'
+                      }`}
                     >
                       {sec.titre}
                     </a>
@@ -384,15 +617,15 @@ export const CourseReader = () => {
 
           <div className="flex items-center gap-1 sm:gap-2">
             <button onClick={() => setIsNotesOpen(true)} title="Prendre des notes"
-              className="p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
               <Edit3 className="w-5 h-5" />
             </button>
             <button onClick={() => setIsReportOpen(true)} title="Signaler une erreur"
-              className="p-2 rounded-xl text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
               <Flag className="w-5 h-5" />
             </button>
             <button onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
+              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
               <List className="w-5 h-5" />
             </button>
           </div>
@@ -406,7 +639,6 @@ export const CourseReader = () => {
         </div>
       </header>
 
-      {/* ── Mobile Drawer Overlay ── */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
@@ -458,6 +690,8 @@ export const CourseReader = () => {
             {!isUnlocked ? (
               <ChapterLock 
                 chapterTitle={chapter.titre}
+                tomePrice={finalTomePrice}
+                deduction={deduction}
                 onUnlockChapter={handleUnlockChapter}
                 onUnlockTome={handleUnlockTome}
                 onUnlockCollection={handleUnlockCollection}
@@ -465,19 +699,54 @@ export const CourseReader = () => {
             ) : (
               <>
                 {/* Sections & Blocks */}
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 delay-150">
-                  {chapter.sections.map(section => (
-                    <section key={section.id} id={`section-${section.id}`} className="scroll-mt-24">
-                      {section.titre && (
-                        <h2 className="text-xl md:text-2xl font-bold mt-10 mb-6 pb-2 border-b border-[#E1E4E8] dark:border-[#30363D] text-[#1A1A2E] dark:text-white transition-colors duration-300">
-                          {section.titre}
-                        </h2>
-                      )}
-                      {section.blocs.map((block, blockIdx) => (
-                        <div key={block.id} className="mb-6" style={{ animationDelay: `${blockIdx * 60}ms` }}><BlockRenderer block={block} isDark={theme === 'dark'} courseId={courseId || 'unknown'} chapterId={chapter.id} sectionId={section.id} /></div>
-                      ))}
-                    </section>
-                  ))}
+                <div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 delay-150">
+                  {chapter.sections.map(section => {
+                    const hasTitre = Boolean(section.titre);
+                    const isExpanded = expandedSections.has(section.id);
+                    const isActiveSec = activeSectionId === section.id;
+                    return (
+                      <section key={section.id} id={`section-${section.id}`} className="scroll-mt-24">
+                        {hasTitre && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedSections(prev => {
+                              const next = new Set(prev);
+                              if (next.has(section.id)) next.delete(section.id);
+                              else next.add(section.id);
+                              return next;
+                            })}
+                            className={`w-full text-left flex items-center justify-between gap-3 mt-10 mb-2 pb-2 border-b transition-colors duration-300 cursor-pointer ${
+                              isActiveSec
+                                ? 'border-[#1A3557] dark:border-[#1976D2]'
+                                : 'border-[#E1E4E8] dark:border-[#30363D]'
+                            }`}
+                          >
+                            <h2 className={`text-xl md:text-2xl font-bold transition-colors duration-300 ${
+                              isActiveSec ? 'text-[#1A3557] dark:text-blue-300' : 'text-[#1A1A2E] dark:text-white'
+                            }`}>
+                              {section.titre}
+                            </h2>
+                            <ChevronDown className={`w-5 h-5 shrink-0 transition-all duration-300 ${
+                              isExpanded ? 'rotate-180' : ''
+                            } ${isActiveSec ? 'text-[#1A3557] dark:text-blue-300' : 'text-gray-400 dark:text-gray-600'}`} />
+                          </button>
+                        )}
+                        <div className={`grid transition-all duration-500 ease-in-out ${
+                          isExpanded || !hasTitre ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                        }`}>
+                          <div className="min-h-0 overflow-hidden">
+                            <div className="space-y-6 pt-2">
+                              {section.blocs.map((block, blockIdx) => (
+                                <div key={block.id} data-block-type={block.type === 'exercise' ? 'exercise' : undefined} style={{ animationDelay: `${blockIdx * 60}ms` }}>
+                                  <BlockRenderer block={block} isDark={theme === 'dark'} courseId={courseId || 'unknown'} chapterId={chapter.id} sectionId={section.id} mathjaxReady={mathjaxReady} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                    );
+                  })}
                   {chapter.quiz && chapter.quiz.length > 0 && (
                     <QuizSection
                       quiz={chapter.quiz}
@@ -486,6 +755,58 @@ export const CourseReader = () => {
                       chapterId={chapter.id}
                     />
                   )}
+
+                  {/* Corrections détaillées & PDF hors-ligne — réservés au contenu possédé (brief §5.2) */}
+                  <div className={`mt-12 rounded-2xl border-2 overflow-hidden transition-colors duration-300 ${
+                    hasFullAccess
+                      ? 'bg-[#EBF5FB] dark:bg-[#1A3557]/20 border-[#1A3557]/20 dark:border-[#1A3557]/40'
+                      : 'bg-red-50 dark:bg-red-900/10 border-[#C62828]/20 dark:border-[#C62828]/30'
+                  }`}>
+                    <div className="p-6 md:p-8 text-center">
+                      <div className={`w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                        hasFullAccess
+                          ? 'bg-[#1A3557]/10 dark:bg-[#1A3557]/40 text-[#1A3557] dark:text-white'
+                          : 'bg-[#C62828]/10 text-[#C62828]'
+                      }`}>
+                        {hasFullAccess ? <Download className="w-7 h-7" /> : <Lock className="w-7 h-7" />}
+                      </div>
+
+                      <h3 className="text-lg font-bold mb-3 text-[#1A1A2E] dark:text-white transition-colors duration-300">
+                        Corrections détaillées & PDF hors-ligne
+                      </h3>
+
+                      <div className="relative max-w-md mx-auto mb-6">
+                        <p className={`text-sm leading-relaxed transition-all duration-300 text-[#6B7280] dark:text-[#8B949E] ${!hasFullAccess ? 'blur-[4px] select-none' : ''}`}>
+                          {hasFullAccess
+                            ? "Tu as un accès complet aux corrections pas-à-pas de chaque exercice de ce chapitre. Télécharge le PDF pour réviser hors-ligne, où que tu sois — même dans le gbaka, sans réseau."
+                            : "Solution étape par étape : on identifie la forme indéterminée, on factorise par le terme dominant, puis on conclut sur la limite recherchée pour chaque exercice de ce chapitre…"}
+                        </p>
+                        {!hasFullAccess && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-[#161B22] text-xs font-bold text-[#C62828] border border-[#C62828]/30 shadow-sm flex items-center gap-1.5">
+                              <Lock className="w-3.5 h-3.5" /> Réservé aux élèves qui possèdent ce chapitre
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {hasFullAccess ? (
+                        <button
+                          onClick={downloadCorrectionsPDF}
+                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#1A3557] hover:bg-[#1976D2] transition-colors duration-300 shadow-md shadow-blue-900/20"
+                        >
+                          <Download className="w-5 h-5" /> Télécharger le PDF
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleUnlockChapter}
+                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#C62828] hover:bg-red-700 transition-colors duration-300 shadow-md shadow-red-900/20"
+                        >
+                          <Lock className="w-5 h-5" /> Débloquer ce chapitre — 300 F
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -628,6 +949,15 @@ export const CourseReader = () => {
           onClose={() => setIsPaymentModalOpen(false)}
         />
       )}
+
+      {/* ── Back to Top ── */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Remonter en haut"
+        className={`fixed bottom-6 right-6 z-30 w-12 h-12 rounded-full flex items-center justify-center bg-[#1A3557] text-white shadow-lg transition-all duration-300 ${scrollProgress > 30 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+      >
+        <ChevronUp className="w-5 h-5" />
+      </button>
     </div>
   );
 };

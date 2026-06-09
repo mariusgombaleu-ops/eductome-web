@@ -23,7 +23,10 @@ import { CourseReader } from './pages/dashboard/CourseReader';
 import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
 import { StarterPack } from './pages/dashboard/StarterPack';
 import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
+import { ClaimPurchase } from './pages/dashboard/ClaimPurchase';
 import { GradesCalculator } from './pages/dashboard/GradesCalculator';
+import { RelaisDashboard } from './pages/RelaisDashboard';
+import { ParentDashboard } from './pages/ParentDashboard';
 
 import { UserProvider } from './contexts/UserContext';
 
@@ -66,12 +69,17 @@ function App() {
               <Route path="/dashboard/blog" element={<Blog />} />
               <Route path="/dashboard/blog/:slug" element={<BlogPost />} />
               <Route path="/dashboard/devenir-relais" element={<BecomeRelay />} />
+              <Route path="/dashboard/relais" element={<RelaisDashboard />} />
+              <Route path="/dashboard/reclamer" element={<ClaimPurchase />} />
               <Route path="/forum" element={<ForumHome />} />
               <Route path="/forum/thread/:id" element={<ForumThread />} />
             </Route>
 
             {/* Standalone Route for Payment Success */}
             <Route path="/paiement-confirme" element={<PaymentSuccess />} />
+
+            {/* Public parent progress view — no auth required */}
+            <Route path="/parent/:studentUid" element={<ParentDashboard />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

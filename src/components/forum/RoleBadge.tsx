@@ -1,12 +1,21 @@
 import React from 'react';
-import { ShieldCheck, UserCheck } from 'lucide-react';
+import { ShieldCheck, UserCheck, Users } from 'lucide-react';
 
 interface RoleBadgeProps {
-  role?: 'student' | 'grand_frere' | 'admin' | 'equipe' | string;
+  role?: 'student' | 'grand_frere' | 'admin' | 'equipe' | 'famille' | string;
 }
 
 export const RoleBadge: React.FC<RoleBadgeProps> = ({ role }) => {
   if (!role || role === 'student') return null;
+
+  if (role === 'famille') {
+    return (
+      <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-400 to-yellow-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full ml-2 shadow-sm" title="Membre de la Famille EDUCTOME">
+        <Users size={12} />
+        Famille
+      </span>
+    );
+  }
 
   if (role === 'grand_frere') {
     return (

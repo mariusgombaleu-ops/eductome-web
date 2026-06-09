@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useToast } from './ToastContext';
 import { BADGES } from '../constants/badges';
 import { useAuth } from './AuthContext';
 import { db } from '../config/firebase';
-import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, increment } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, increment, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { Achat } from '../types';
 
 export interface UserLevel {
   level: number;
@@ -52,9 +53,14 @@ interface UserContextType {
   level: UserLevel;
   unlockedBadges: string[];
   unlockedCourses: string[];
+  achats: Achat[];
+  statut: 'gratuit' | 'famille';
+  currentStreak: number;
+  email_selar?: string;
   activityHistory: Record<string, number>;
   rewardedActions: Set<string>;
   isAdmin: boolean;
+  isRelais: boolean;
   userRole: 'student' | 'grand_frere' | 'admin' | 'equipe';
   pseudo: string;
   sexe?: 'M' | 'F';
@@ -74,6 +80,10 @@ interface UserContextType {
   resetUser: () => void;
   unlockEverything: () => void;
   addXpDev: (amount: number) => void;
+  devSimulerGratuit: () => void;
+  devSimulerFamille: () => void;
+  devSetStreak: (n: number) => void;
+  devUnlockCourseTest: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -86,8 +96,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [rewardedActions, setRewardedActions] = useState<Set<string>>(new Set());
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
   const [unlockedCourses, setUnlockedCourses] = useState<string[]>([]);
+  const [achats, setAchats] = useState<Achat[]>([]);
+  const [statut, setStatut] = useState<'gratuit' | 'famille'>('gratuit');
+  const [currentStreak, setCurrentStreak] = useState<number>(1);
+  const [email_selar, setEmailSelar] = useState<string | undefined>(undefined);
+  const streakUpdatedRef = useRef(false);
   const [activityHistory, setActivityHistory] = useState<Record<string, number>>({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isRelais, setIsRelais] = useState(false);
   const [userRole, setUserRole] = useState<'student' | 'grand_frere' | 'admin' | 'equipe'>('student');
   const [pseudo, setPseudo] = useState('Champion(ne)');
   const [sexe, setSexe] = useState<'M' | 'F' | undefined>(undefined);
@@ -108,8 +124,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setRewardedActions(new Set());
       setUnlockedBadges([]);
       setUnlockedCourses([]);
+      setAchats([]);
+      setStatut('gratuit');
+      setCurrentStreak(1);
+      setEmailSelar(undefined);
       setActivityHistory({});
       setIsAdmin(false);
+      setIsRelais(false);
+      streakUpdatedRef.current = false;
       setUserRole('student');
       setPseudo('');
       setSexe(undefined);
@@ -123,6 +145,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const userRef = doc(db, 'users', currentUser.uid);
+    streakUpdatedRef.current = false;
     const unsubscribe = onSnapshot(userRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -152,7 +175,31 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setGoals(data.goals || {});
         setGrades(data.grades || {});
         setPhotoURL(data.photoURL || currentUser.photoURL || null);
-        
+        setEmailSelar(data.email_selar);
+
+        // Streak logic — runs once per login session to avoid update loops
+        const storedStreak: number = data.currentStreak || 1;
+        const lastStudyDate: string | null = data.lastStudyDate || null;
+        setCurrentStreak(storedStreak);
+
+        if (!streakUpdatedRef.current) {
+          streakUpdatedRef.current = true;
+          const d = new Date();
+          const pad = (n: number) => String(n).padStart(2, '0');
+          const today = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+          const yesterday = (() => {
+            const y = new Date(d);
+            y.setDate(y.getDate() - 1);
+            return `${y.getFullYear()}-${pad(y.getMonth() + 1)}-${pad(y.getDate())}`;
+          })();
+
+          if (lastStudyDate !== today) {
+            const newStreak = lastStudyDate === yesterday ? storedStreak + 1 : 1;
+            setCurrentStreak(newStreak);
+            updateDoc(userRef, { currentStreak: newStreak, lastStudyDate: today }).catch(console.error);
+          }
+        }
+
         if (data.createdAt) {
           const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
           setCreatedAt(new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(date));
@@ -174,6 +221,58 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => unsubscribe();
+  }, [currentUser]);
+
+  // Synchronisation des achats
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const achatsRef = collection(db, 'achats');
+    const q = query(achatsRef, where('compte_id', '==', currentUser.uid));
+    
+    const unsubscribeAchats = onSnapshot(q, (snapshot) => {
+      const fetchedAchats: Achat[] = [];
+      let isFamille = false;
+      const courses: string[] = [];
+
+      snapshot.forEach((doc) => {
+        const achat = { id: doc.id, ...doc.data() } as Achat;
+        fetchedAchats.push(achat);
+        
+        if (['tome', 'collection', 'physique'].includes(achat.type)) {
+          isFamille = true;
+        }
+        
+        // Dynamically add to unlocked courses for backward compatibility or simple check
+        if (!courses.includes(achat.reference)) {
+          courses.push(achat.reference);
+        }
+      });
+
+      setAchats(fetchedAchats);
+      setStatut(isFamille ? 'famille' : 'gratuit');
+      
+      // On fusionne les achats avec les unlockedCourses manuels (s'il y en a eu dans le passé)
+      setUnlockedCourses(prev => {
+        const merged = new Set([...prev, ...courses]);
+        return Array.from(merged);
+      });
+    });
+
+    return () => unsubscribeAchats();
+  }, [currentUser]);
+
+  // Détection du statut Relais
+  useEffect(() => {
+    if (!currentUser) {
+      setIsRelais(false);
+      return;
+    }
+    const relaisQuery = query(collection(db, 'relais'), where('uid', '==', currentUser.uid));
+    const unsubscribeRelais = onSnapshot(relaisQuery, (snap) => {
+      setIsRelais(!snap.empty);
+    });
+    return () => unsubscribeRelais();
   }, [currentUser]);
 
   // --- SYSTÈME DE VIGILE FRONTEND (POLLING EN ARRIÈRE-PLAN) ---
@@ -217,11 +316,43 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             unlockedCourses: arrayUnion(...coursesToAdd)
           });
 
+          // Traitement du code relais si présent
+          const pendingRelaisCode = localStorage.getItem('eductome_pending_relais_code');
+          if (pendingRelaisCode) {
+            try {
+              const produit = pendingCourseId || data.productId;
+              // Mettre à jour le doc achat avec le relaisCode
+              const achatSnap = await getDocs(query(
+                collection(db, 'achats'),
+                where('compte_id', '==', currentUser.uid)
+              ));
+              const matchingAchat = achatSnap.docs.find(d => d.data().reference === produit);
+              if (matchingAchat) {
+                await updateDoc(matchingAchat.ref, { relaisCode: pendingRelaisCode });
+              }
+              // Incrémenter les totaux du relais et enregistrer la vente
+              const relaisDocRef = doc(db, 'relais', pendingRelaisCode);
+              await updateDoc(relaisDocRef, {
+                totalVentes: increment(1),
+                totalCommission: increment(300)
+              });
+              await addDoc(collection(db, 'relais', pendingRelaisCode, 'ventes'), {
+                date: new Date(),
+                produit,
+                commission: 300,
+                acheteurId: currentUser.uid
+              });
+            } catch (relaisErr) {
+              console.error('Relais tracking error:', relaisErr);
+            }
+            localStorage.removeItem('eductome_pending_relais_code');
+          }
+
           // Nettoyage
           localStorage.removeItem('eductome_waiting_payment_email');
           localStorage.removeItem('eductome_pending_course');
           localStorage.removeItem('eductome_waiting_payment_time');
-          
+
           addToast({
             type: 'success',
             title: 'Paiement Validé ! 🎉',
@@ -240,10 +371,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const hasActionBeenRewarded = (actionId: string) => rewardedActions.has(actionId);
 
-  const gainXp = async (amount: number, reason: string, actionId?: string) => {
-    if (amount <= 0 || !currentUser) return;
+  const gainXp = async (baseAmount: number, reason: string, actionId?: string) => {
+    if (baseAmount <= 0 || !currentUser) return;
     
     if (actionId && rewardedActions.has(actionId)) return;
+
+    // Appliquer le modificateur Famille EDUCTOME (XP x2)
+    const amount = statut === 'famille' ? baseAmount * 2 : baseAmount;
 
     const previousLevel = getLevelFromXp(xp);
     const newXp = xp + amount;
@@ -370,6 +504,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await gainXp(amount, 'Dev boost', 'dev_boost');
   };
 
+  const devSimulerGratuit = () => {
+    setXp(0);
+    setStatut('gratuit');
+    setCurrentStreak(0);
+    setUnlockedCourses([]);
+    setUnlockedBadges([]);
+    setRewardedActions(new Set());
+  };
+
+  const devSimulerFamille = () => {
+    setXp(5000);
+    setStatut('famille');
+    setCurrentStreak(7);
+    setUnlockedCourses(['t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff']);
+    setUnlockedBadges(['badge_curieux', 'badge_studieux', 'badge_pilier_forum', 'badge_sans_faute']);
+  };
+
+  const devSetStreak = (n: number) => setCurrentStreak(n);
+
+  const devUnlockCourseTest = () => {
+    setUnlockedCourses(prev => prev.includes('t1-limites') ? prev : [...prev, 't1-limites']);
+  };
+
   const updateGoals = async (newGoals: UserGoals) => {
     if (!currentUser) return;
     try {
@@ -402,9 +559,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       level: getLevelFromXp(xp), 
       unlockedBadges, 
       unlockedCourses, 
+      achats,
+      statut,
+      currentStreak,
+      email_selar,
       activityHistory,
       rewardedActions,
       isAdmin,
+      isRelais,
       userRole,
       pseudo,
       sexe,
@@ -422,6 +584,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       resetUser,
       unlockEverything,
       addXpDev,
+      devSimulerGratuit,
+      devSimulerFamille,
+      devSetStreak,
+      devUnlockCourseTest,
       updateGoals,
       updateGrades
     }}>

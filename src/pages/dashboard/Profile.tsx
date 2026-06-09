@@ -1,12 +1,13 @@
-import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye } from 'lucide-react';
+import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye, Users, Timer, Share2 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { StudyChart } from '../../components/dashboard/StudyChart';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
@@ -15,9 +16,11 @@ import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 export const Profile = () => {
   const { theme } = useTheme();
   const d = theme === 'dark';
-  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole, photoURL } = useUser();
+  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole, isAdmin, photoURL, currentStreak, devSimulerGratuit, devSimulerFamille, devSetStreak, devUnlockCourseTest } = useUser();
   const { currentUser } = useAuth();
   const { addToast } = useToast();
+  const navigate = useNavigate();
+  const getTodayKey = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; };
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -27,6 +30,41 @@ export const Profile = () => {
   const [savedNotes, setSavedNotes] = useState<{courseId: string, content: string}[]>([]);
   const [couponCode, setCouponCode] = useState('');
   const [couponStatus, setCouponStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const [relaisNom, setRelaisNom] = useState('');
+  const [generatedRelaisCode, setGeneratedRelaisCode] = useState('');
+  const [generatingRelaisCode, setGeneratingRelaisCode] = useState(false);
+  const [relaisCodeCopied, setRelaisCodeCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const handleGenerateRelaisCode = async () => {
+    if (!relaisNom.trim()) return;
+    setGeneratingRelaisCode(true);
+    try {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      let unique = false;
+      while (!unique) {
+        code = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        const snap = await getDocs(query(collection(db, 'relais'), where('code', '==', code)));
+        unique = snap.empty;
+      }
+      await setDoc(doc(db, 'relais', code), {
+        uid: '',
+        nom: relaisNom.trim(),
+        code,
+        totalVentes: 0,
+        totalCommission: 0,
+        createdAt: new Date()
+      });
+      setGeneratedRelaisCode(code);
+      setRelaisNom('');
+    } catch (err) {
+      console.error('Erreur génération code relais:', err);
+    } finally {
+      setGeneratingRelaisCode(false);
+    }
+  };
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +135,22 @@ export const Profile = () => {
       setSelectedImage(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const handleShare = async () => {
+    if (!currentUser) return;
+    const url = `${window.location.origin}/parent/${currentUser.uid}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `Progression de ${pseudo} · EDUCTOME`, url });
+        return;
+      } catch {
+        // user cancelled or share failed — fall through to clipboard
+      }
+    }
+    await navigator.clipboard.writeText(url);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2500);
   };
 
   return (
@@ -173,6 +227,20 @@ export const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Share progress link */}
+      {currentUser && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleShare}
+            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border transition-colors ${d ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+          >
+            <Share2 className="w-4 h-4" />
+            {shareCopied ? 'Lien copié !' : 'Partager ma progression'}
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-6">
@@ -423,50 +491,203 @@ export const Profile = () => {
         </div>
       </div>
 
-      {/* Admin / Dev Tools Panel */}
-      <div className="mt-12 p-6 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-900/10 backdrop-blur-sm animate-fade-in-up">
-        <div className="flex items-center gap-2 mb-4 text-purple-600 dark:text-purple-400">
-          <Settings className="w-6 h-6 animate-spin-slow" />
-          <h2 className="text-xl font-bold font-playfair">Panneau d'Administration (Tests)</h2>
+      {/* Panneau Admin — Génération de codes Relais */}
+      {isAdmin && (
+        <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-orange-300 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-900/10">
+          <div className="flex items-center gap-2 mb-4 text-orange-600 dark:text-orange-400">
+            <Users className="w-5 h-5" />
+            <h2 className="text-lg font-bold font-playfair">Générer un Code Relais</h2>
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="Nom du relais (ex: Kévin Kouamé)"
+              value={relaisNom}
+              onChange={(e) => setRelaisNom(e.target.value)}
+              className={`flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}
+            />
+            <button
+              type="button"
+              onClick={handleGenerateRelaisCode}
+              disabled={generatingRelaisCode || !relaisNom.trim()}
+              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-bold transition-colors whitespace-nowrap"
+            >
+              {generatingRelaisCode ? 'Génération...' : 'Générer'}
+            </button>
+          </div>
+          {generatedRelaisCode && (
+            <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+              <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
+              <span className={`font-bold text-2xl font-mono tracking-widest ${d ? 'text-green-300' : 'text-green-700'}`}>
+                {generatedRelaisCode}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedRelaisCode);
+                  setRelaisCodeCopied(true);
+                  setTimeout(() => setRelaisCodeCopied(false), 2000);
+                }}
+                className="ml-auto flex items-center gap-1.5 text-sm font-bold text-green-600 dark:text-green-400 hover:text-green-800 transition-colors"
+              >
+                <Key className="w-4 h-4" />
+                {relaisCodeCopied ? 'Copié !' : 'Copier'}
+              </button>
+            </div>
+          )}
+          <p className={`text-xs mt-3 ${d ? 'text-gray-500' : 'text-gray-400'}`}>
+            Associe manuellement l'UID du relais dans Firebase Console pour activer son tableau de bord.
+          </p>
         </div>
-        <p className="text-sm text-purple-800/70 dark:text-purple-300/70 mb-6">
-          Ces outils ne sont visibles que par toi pendant le développement. Ils te permettent de tester tous les parcours utilisateurs en un clic.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <button 
-            onClick={async () => { await resetUser(); }}
-            className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
-          >
-            <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
-              <RefreshCw className="w-5 h-5" />
-            </div>
-            <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Simuler un Nouvel Élève</span>
-            <span className="text-xs text-gray-500">XP à 0, tout verrouillé</span>
-          </button>
-          
-          <button 
-            onClick={async () => { await unlockEverything(); }}
-            className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
-          >
-            <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
-              <Unlock className="w-5 h-5" />
-            </div>
-            <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Mode Caïman (Admin)</span>
-            <span className="text-xs text-gray-500">5000 XP, tout débloqué</span>
-          </button>
+      )}
 
-          <button 
-            onClick={() => { addXpDev(500); }}
-            className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
-          >
-            <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full group-hover:scale-110 transition-transform">
-              <Zap className="w-5 h-5" />
+      {/* Admin / Dev Tools Panel — visible en mode DEV uniquement */}
+      {import.meta.env.DEV && (
+        <div className="mt-12 p-6 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-900/10 backdrop-blur-sm animate-fade-in-up">
+          <div className="flex items-center gap-2 mb-4 text-purple-600 dark:text-purple-400">
+            <Settings className="w-6 h-6 animate-spin-slow" />
+            <h2 className="text-xl font-bold font-playfair">Panneau d'Administration (Tests)</h2>
+          </div>
+          <p className="text-sm text-purple-800/70 dark:text-purple-300/70 mb-6">
+            Ces outils ne sont visibles que pendant le développement. Simule différents comptes et états en un clic. Les changements sont locaux et se réinitialisent au prochain rechargement.
+          </p>
+
+          {/* Ligne 1 : Simulation de compte */}
+          <p className="text-xs font-bold uppercase tracking-widest text-purple-500 mb-3">Simulation de compte</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <button
+              onClick={() => { devSimulerGratuit(); localStorage.setItem('eductome_quiz_attempts', JSON.stringify({ date: getTodayKey(), count: 3 })); }}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
+                <RefreshCw className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Compte Gratuit</span>
+              <span className="text-xs text-gray-500">0 XP · verrouillé · streak 0 · quota quiz plein</span>
+            </button>
+
+            <button
+              onClick={devSimulerFamille}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
+                <Users className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Compte Famille</span>
+              <span className="text-xs text-gray-500">5000 XP · tout débloqué · streak 7 · quiz illimité</span>
+            </button>
+
+            <button
+              onClick={() => { devSimulerFamille(); localStorage.removeItem('famille_welcomed'); }}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-pink-100 dark:bg-pink-900/30 text-pink-500 rounded-full group-hover:scale-110 transition-transform">
+                <Heart className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Famille — 1ère connexion</span>
+              <span className="text-xs text-gray-500">Famille + bandeau de bienvenue réactivé</span>
+            </button>
+          </div>
+
+          {/* Ligne 2 : Tests de fonctionnalités */}
+          <p className="text-xs font-bold uppercase tracking-widest text-purple-500 mb-3">Tests de fonctionnalités</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <button
+              onClick={() => devSetStreak(currentStreak + 1)}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full group-hover:scale-110 transition-transform">
+                <Flame className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Streak +1</span>
+              <span className="text-xs text-gray-500">Actuellement : {currentStreak}</span>
+            </button>
+
+            <button
+              onClick={() => devSetStreak(0)}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full group-hover:scale-110 transition-transform">
+                <RefreshCw className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Streak reset</span>
+              <span className="text-xs text-gray-500">Remet à 0</span>
+            </button>
+
+            <button
+              onClick={() => localStorage.setItem('eductome_quiz_attempts', JSON.stringify({ date: getTodayKey(), count: 3 }))}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
+                <Lock className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Quiz : limite atteinte</span>
+              <span className="text-xs text-gray-500">Simule upsell gratuit</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/quiz')}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-500 rounded-full group-hover:scale-110 transition-transform">
+                <Timer className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Lancer Examen Blanc</span>
+              <span className="text-xs text-gray-500">Ouvre la page Quiz</span>
+            </button>
+
+            <button
+              onClick={devUnlockCourseTest}
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+            >
+              <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full group-hover:scale-110 transition-transform">
+                <Book className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Débloquer chapitre test</span>
+              <span className="text-xs text-gray-500">Ajoute t1-limites</span>
+            </button>
+          </div>
+
+          {/* Utilitaires conservés */}
+          <div className="mt-6 pt-6 border-t border-purple-200 dark:border-purple-800">
+            <p className="text-xs font-bold uppercase tracking-widest text-purple-500 mb-3">Utilitaires</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <button
+                onClick={async () => { await resetUser(); }}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              >
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Réinitialiser Firestore</span>
+                <span className="text-xs text-gray-500">Efface XP, cours, badges en base</span>
+              </button>
+
+              <button
+                onClick={async () => { await unlockEverything(); }}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              >
+                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
+                  <Unlock className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Mode Caïman (Firestore)</span>
+                <span className="text-xs text-gray-500">5000 XP persisté en base</span>
+              </button>
+
+              <button
+                onClick={() => { addXpDev(500); }}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              >
+                <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full group-hover:scale-110 transition-transform">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Ajouter +500 XP</span>
+                <span className="text-xs text-gray-500">Test de la jauge de niveau</span>
+              </button>
             </div>
-            <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Ajouter +500 XP</span>
-            <span className="text-xs text-gray-500">Test de la jauge de niveau</span>
-          </button>
+          </div>
         </div>
-      </div>
+      )}
       {showCropModal && selectedImage && (
         <ImageCropperModal 
           imageSrc={selectedImage}

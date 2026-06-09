@@ -1,29 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChevronRight, ChevronDown, Activity, AlertTriangle, Star } from 'lucide-react';
 import { AnyBlock, TextBlock, MathBlock, EncadreBlock, DialogueBlock, AnalogyBlock, TableBlock, FigureBlock, ExerciceBlock } from '../../types/course';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
 import { fireConfetti } from '../../utils/confetti';
+import katex from 'katex';
 
-declare global {
-  interface Window { MathJax?: any; }
-}
+const KATEX_FALLBACK = (tex: string) =>
+  `<code style="font-family:monospace;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;font-size:0.875em">${tex}</code>`;
 
-export const parseMarkdown = (text: string | undefined | null) => {
-  if (!text) return '';
-  let html = text.replace(/\n/g, '<br/>');
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/(^|\s)\*([^*]+)\*(?=\s|$|[.,:;!?])/g, '$1<em>$2</em>');
+const renderMath = (html: string): string => {
+  // Display: $$...$$ (process before $...$ to avoid double-matching)
+  html = html.replace(/\$\$([\s\S]+?)\$\$/g, (_, tex) => {
+    try { return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false, output: 'html' }); }
+    catch { return KATEX_FALLBACK(tex); }
+  });
+  // Display: \[...\]
+  html = html.replace(/\\\[([\s\S]+?)\\\]/g, (_, tex) => {
+    try { return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false, output: 'html' }); }
+    catch { return KATEX_FALLBACK(tex); }
+  });
+  // Inline: \(...\)
+  html = html.replace(/\\\((.+?)\\\)/gs, (_, tex) => {
+    const trimmed = tex.trim();
+    const formula = trimmed.includes('\\frac') ? `\\displaystyle ${trimmed}` : trimmed;
+    try { return katex.renderToString(formula, { displayMode: false, throwOnError: false, output: 'html' }); }
+    catch { return KATEX_FALLBACK(tex); }
+  });
+  // Inline: $...$ (single dollar, not inside already-replaced content)
+  html = html.replace(/(?<!\$)\$([^$\n]+?)\$(?!\$)/g, (_, tex) => {
+    const trimmed = tex.trim();
+    const formula = trimmed.includes('\\frac') ? `\\displaystyle ${trimmed}` : trimmed;
+    try { return katex.renderToString(formula, { displayMode: false, throwOnError: false, output: 'html' }); }
+    catch { return KATEX_FALLBACK(tex); }
+  });
   return html;
 };
 
-const renderMathJax = () => {
-  if (window.MathJax?.typesetPromise) {
-    if (window.MathJax.typesetClear) {
-      window.MathJax.typesetClear();
-    }
-    window.MathJax.typesetPromise().catch(() => {});
-  }
+export const parseMarkdown = (text: string | undefined | null) => {
+  if (!text) return '';
+  let html = renderMath(text);
+  html = html.replace(/\n/g, '<br/>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/(^|\s)\*([^*]+)\*(?=\s|$|[.,:;!?])/g, '$1<em>$2</em>');
+  return html;
 };
 
 const markdownTableToHtml = (md: string, isDark: boolean): string => {
@@ -44,9 +64,9 @@ const markdownTableToHtml = (md: string, isDark: boolean): string => {
     : 'px-3 py-2 text-sm text-gray-700 border-b border-gray-100';
   const trEvenClass = isDark ? 'bg-gray-800/30' : 'bg-gray-50/50';
 
-  const headerHtml = `<thead><tr>${headerCells.map(c => `<th class="${thClass}">${c}</th>`).join('')}</tr></thead>`;
+  const headerHtml = `<thead><tr>${headerCells.map(c => `<th class="${thClass}">${renderMath(c)}</th>`).join('')}</tr></thead>`;
   const bodyHtml = `<tbody>${rows.map((row, i) =>
-    `<tr class="${i % 2 === 0 ? '' : trEvenClass}">${row.map(c => `<td class="${tdClass}">${c}</td>`).join('')}</tr>`
+    `<tr class="${i % 2 === 0 ? '' : trEvenClass}">${row.map(c => `<td class="${tdClass}">${renderMath(c)}</td>`).join('')}</tr>`
   ).join('')}</tbody>`;
 
   return `<table class="w-full border-collapse">${headerHtml}${bodyHtml}</table>`;
@@ -58,12 +78,6 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
   const [isExpanded, setIsExpanded] = useState(false);
   
   const isMiniEx = (block.id && block.id.includes('micro-ex')) || (block.enonce && block.enonce.toLowerCase().includes("à toi de jouer"));
-
-  useEffect(() => { 
-    if (isExpanded) {
-      renderMathJax(); 
-    }
-  }, [step, isExpanded]);
 
   let containerBg = isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200 shadow-sm';
   let headerExpandedBg = isDark ? 'bg-blue-900/30 border-b border-blue-900/30' : 'bg-blue-50 border-b border-blue-100';
@@ -103,9 +117,10 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
         </div>
       </div>
 
-      <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+      <div className={`grid transition-all duration-500 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+        <div className="min-h-0 overflow-hidden">
         <div className={`px-4 pt-4 pb-3 text-sm leading-relaxed ${isDark ? 'text-gray-200' : 'text-gray-800'}`}
-          dangerouslySetInnerHTML={{ __html: block.enonce }} />
+          dangerouslySetInnerHTML={{ __html: renderMath(block.enonce) }} />
 
         <div className="px-4 pb-3 space-y-2">
           {block.etapes.map((s, i) => {
@@ -166,12 +181,13 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
             </button>
           )}
         </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }: { block: AnyBlock; isDark: boolean; courseId?: string; chapterId?: string; sectionId?: string }) => {
+export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }: { block: AnyBlock; isDark: boolean; courseId?: string; chapterId?: string; sectionId?: string; mathjaxReady?: boolean }) => {
   switch (block.type) {
     case 'text': {
       const b = block as TextBlock;
@@ -206,40 +222,53 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
 
     case 'math': {
       const b = block as MathBlock;
-      // Retro-compatibility in case `formule` wasn't mapped properly or `content` was used in the regex script
       const formule = b.formule || (b as any).contenu;
+      let rendered: string;
+      try {
+        rendered = katex.renderToString(formule, { displayMode: true, throwOnError: false, output: 'html' });
+      } catch {
+        rendered = KATEX_FALLBACK(formule);
+      }
       return (
         <div className={`my-5 px-4 py-4 overflow-x-auto text-center rounded-2xl ${isDark ? 'bg-gray-800/80 border border-gray-700' : 'bg-slate-50 border border-slate-200'}`}>
-          <span className="text-lg">{'$$' + formule + '$$'}</span>
+          <span dangerouslySetInnerHTML={{ __html: rendered }} />
         </div>
       );
     }
 
     case 'dialogue': {
       const b = block as DialogueBlock;
+      const pfBg   = isDark ? '#2D3748' : '#F0F0F0';
+      const pfText = isDark ? '#E2E8F0' : '#1F2937';
+      const gfBg   = isDark ? '#1A2F4A' : '#EBF3FF';
+      const gfText = isDark ? '#93C5FD' : '#1A3557';
       return (
         <div className="my-5 space-y-3 font-poppins">
           {b.pf && (
             <div className="flex items-start gap-3 max-w-[90%]">
-              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-base shadow-sm bg-gray-200 dark:bg-gray-700 border-2 border-white dark:border-[#0D1117]">👦</div>
-              <div className={`flex-1 rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed shadow-sm chat-bubble-pf ${isDark ? 'bg-gray-700/80 text-gray-200' : 'bg-gray-100 text-gray-800'}`} style={{ color: isDark ? 'var(--tw-prose-body)' : '#1F2937', '--bubble-tail-color': isDark ? '#374151' : '#F3F4F6' } as React.CSSProperties}>
-                <div style={{ color: isDark ? '#E5E7EB' : '#1F2937' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.pf) }} />
-              </div>
+              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-base bg-gray-100 dark:bg-gray-700">👦</div>
+              <div
+                className="flex-1 rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed shadow-sm chat-bubble-pf"
+                style={{ backgroundColor: pfBg, color: pfText, '--bubble-tail-color': pfBg } as React.CSSProperties}
+                dangerouslySetInnerHTML={{ __html: parseMarkdown(b.pf) }}
+              />
             </div>
           )}
           {b.gf && (
             <div className="flex items-start gap-3 max-w-[90%] ml-auto flex-row-reverse">
-              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden border-2 border-white dark:border-[#0D1117] bg-blue-100 dark:bg-blue-900/50">
+              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden bg-blue-100 dark:bg-blue-900/50">
                 <img src="/images/marius-pro.jpeg" alt="Le Gombaleu" className="w-full h-full object-cover" style={{ objectPosition: 'center 5%', transform: 'scale(1.6)' }} />
               </div>
-              <div className={`flex-1 rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed shadow-md chat-bubble-gf ${isDark ? 'bg-gradient-to-br from-[#1A3557] to-[#142943] text-blue-100' : 'bg-gradient-to-br from-[#EBF5FB] to-[#D6EAF8] text-[#1A3557]'}`} style={{ '--bubble-tail-color': isDark ? '#1A3557' : '#EBF5FB' } as React.CSSProperties}>
-                <div style={{ color: isDark ? '#DBEAFE' : '#1A3557' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.gf) }} />
-              </div>
+              <div
+                className="flex-1 rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed shadow-sm chat-bubble-gf"
+                style={{ backgroundColor: gfBg, color: gfText, '--bubble-tail-color': gfBg } as React.CSSProperties}
+                dangerouslySetInnerHTML={{ __html: parseMarkdown(b.gf) }}
+              />
             </div>
           )}
           {b.contenu && !b.pf && !b.gf && (
             <div className={`px-4 py-3 text-sm italic leading-loose rounded-2xl ${isDark ? 'bg-gray-700/50 text-gray-300' : 'bg-gray-50 text-gray-700'}`}
-              dangerouslySetInnerHTML={{ __html: b.contenu }} />
+              dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
           )}
         </div>
       );
@@ -253,7 +282,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
             <span className="text-base">🌍</span>
             <span className={`text-sm font-bold ${isDark ? 'text-orange-300' : 'text-[#E67E22]'}`}>{b.titre}</span>
           </div>
-          <div className={`px-4 py-4 text-sm leading-loose ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
+          <div className={`px-4 py-4 text-[15px] leading-loose ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
           {b.conceptMath && (
             <div className={`mx-4 mb-4 px-4 py-3 rounded-xl border-l-4 ${isDark ? 'bg-blue-900/20 border-l-blue-500 text-blue-200' : 'bg-blue-50 border-l-blue-500 text-blue-900'}`}>
@@ -293,7 +322,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
             {icon}
             <span className={textTitleClass}>{title}</span>
           </div>
-          <div className={`px-4 py-4 text-sm leading-loose ${isMotivation ? (isDark ? 'text-pink-50' : 'text-pink-950') : (isDark ? 'text-gray-300' : 'text-gray-800')}`}
+          <div className={`px-4 py-4 text-[15px] leading-loose ${isMotivation ? (isDark ? 'text-pink-50' : 'text-pink-950') : (isDark ? 'text-gray-300' : 'text-gray-800')}`}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }} />
         </div>
       );
@@ -321,7 +350,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
             <AlertTriangle className={`w-5 h-5 shrink-0 drop-shadow-sm ${isDark ? 'text-red-400' : 'text-[#C0392B]'}`} />
             <span className={`text-sm font-bold tracking-wide ${isDark ? 'text-red-300' : 'text-[#C0392B]'}`}>{warningTitle}</span>
           </div>
-          <div className={`px-4 py-3 text-sm leading-loose ${isDark ? 'text-gray-300' : 'text-gray-800'}`}
+          <div className={`px-4 py-3 text-[15px] leading-loose ${isDark ? 'text-gray-300' : 'text-gray-800'}`}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(warningBody) }} />
         </div>
       );
@@ -336,7 +365,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
             <span className="text-base">📌</span>
             <span className="text-sm font-bold tracking-wider uppercase text-white">{b.titre || "Règle d'Or"}</span>
           </div>
-          <div className={`px-5 py-4 text-sm leading-loose ${isDark ? 'text-gray-300' : 'text-gray-800'}`}
+          <div className={`px-5 py-4 text-[15px] leading-loose ${isDark ? 'text-gray-300' : 'text-gray-800'}`}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }} />
         </div>
       );
@@ -389,13 +418,13 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    {b.headers.map((h, i) => <th key={i} className={thClass} dangerouslySetInnerHTML={{ __html: h }} />)}
+                    {b.headers.map((h, i) => <th key={i} className={thClass} dangerouslySetInnerHTML={{ __html: renderMath(h) }} />)}
                   </tr>
                 </thead>
                 <tbody>
                   {b.rows.map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? '' : trEvenClass}>
-                      {row.map((cell, j) => <td key={j} className={tdClass} dangerouslySetInnerHTML={{ __html: cell }} />)}
+                      {row.map((cell, j) => <td key={j} className={tdClass} dangerouslySetInnerHTML={{ __html: renderMath(cell) }} />)}
                     </tr>
                   ))}
                 </tbody>
@@ -412,7 +441,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
       const b = block as FigureBlock;
       return (
         <div className={`my-5 rounded-2xl overflow-hidden border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200 shadow-sm'}`}>
-          <img src={b.src} alt={b.alt} className="w-full h-auto object-cover" />
+          <img src={b.src} alt={b.alt} className="w-full max-h-[60vh] object-contain" />
           {b.legende && (
             <div className={`px-4 py-2 text-center text-xs italic ${isDark ? 'text-gray-400 bg-gray-900/50' : 'text-gray-500 bg-gray-50'}`}>
               {b.legende}

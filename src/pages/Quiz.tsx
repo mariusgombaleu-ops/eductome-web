@@ -1,17 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, MessageCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Lock, MessageCircle, Timer, Trophy } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
+import { useUser } from '../contexts/UserContext';
+import { useAuth } from '../contexts/AuthContext';
+import { db } from '../config/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-// Types
+const DAILY_QUIZ_LIMIT = 3;
+const QUIZ_ATTEMPTS_KEY = 'eductome_quiz_attempts';
+const EXAM_DURATION_SECONDS = 14400;
+
+function getTodayKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+function getAttemptsToday(): number {
+  try {
+    const raw = localStorage.getItem(QUIZ_ATTEMPTS_KEY);
+    if (!raw) return 0;
+    const parsed = JSON.parse(raw);
+    return parsed.date === getTodayKey() ? parsed.count : 0;
+  } catch {
+    return 0;
+  }
+}
+
 type ProfileType = 'perdu' | 'bloque' | 'memoriseur' | 'strategePresse' | 'organiseDoute';
+type Step = 'intro' | 'questions' | 'result' | 'exam' | 'examResult';
 
 interface Question {
   id: number;
   title: string;
   question: string;
   options: { id: 'A' | 'B' | 'C' | 'D'; text: string }[];
+  correctAnswer: 'A' | 'B' | 'C' | 'D';
 }
 
 const QUESTIONS: Question[] = [
@@ -19,6 +44,7 @@ const QUESTIONS: Question[] = [
     id: 1,
     title: "Diagnostic en classe",
     question: "En classe, quand le prof explique une nouvelle notion en maths…",
+    correctAnswer: 'D',
     options: [
       { id: 'A', text: "Je décroche au bout de 5 minutes, c'est trop rapide pour moi" },
       { id: 'B', text: "Je suis, je comprends, je copie. Tout va bien" },
@@ -30,6 +56,7 @@ const QUESTIONS: Question[] = [
     id: 2,
     title: "Face au devoir",
     question: "Tu reçois ton devoir surveillé de maths. Tu ouvres la feuille…",
+    correctAnswer: 'D',
     options: [
       { id: 'A', text: "Trou noir. Je ne sais même pas par où commencer" },
       { id: 'B', text: "Je connais les formules mais je n'arrive pas à les appliquer" },
@@ -41,6 +68,7 @@ const QUESTIONS: Question[] = [
     id: 3,
     title: "Méthode de révision",
     question: "Comment tu révises pour un contrôle ?",
+    correctAnswer: 'D',
     options: [
       { id: 'A', text: "Je relis mon cahier la veille au soir" },
       { id: 'B', text: "Je refais les exercices du cours sans regarder le corrigé" },
@@ -52,6 +80,7 @@ const QUESTIONS: Question[] = [
     id: 4,
     title: "Ton rapport au cours",
     question: "Quand tu apprends une formule, tu…",
+    correctAnswer: 'B',
     options: [
       { id: 'A', text: "Tu la mémorises par cœur sans savoir d'où elle vient" },
       { id: 'B', text: "Tu cherches à comprendre d'où elle vient avant de l'apprendre" },
@@ -63,6 +92,7 @@ const QUESTIONS: Question[] = [
     id: 5,
     title: "Ta plus grande peur au BAC",
     question: "Ce qui te fait le plus peur à l'approche du BAC, c'est…",
+    correctAnswer: 'D',
     options: [
       { id: 'A', text: "De ne pas avoir le temps de tout réviser" },
       { id: 'B', text: "De bloquer sur un exercice et tout perdre" },
@@ -74,6 +104,7 @@ const QUESTIONS: Question[] = [
     id: 6,
     title: "Combien de temps avant ton examen ?",
     question: "À combien de mois es-tu de ton BAC ou BEPC ?",
+    correctAnswer: 'B',
     options: [
       { id: 'A', text: "Plus de 6 mois — j'ai le temps" },
       { id: 'B', text: "Entre 3 et 6 mois — il faut s'y mettre sérieusement" },
@@ -152,12 +183,120 @@ const PROFILES = {
 
 export function Quiz() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<'intro' | 'questions' | 'result'>('intro');
+  const { statut, gainXp } = useUser();
+  const { currentUser } = useAuth();
+
+  // Diagnostic quiz state
+  const [currentStep, setCurrentStep] = useState<Step>('intro');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [resultProfile, setResultProfile] = useState<ProfileType | null>(null);
+  const [attemptsToday, setAttemptsToday] = useState(getAttemptsToday);
+
+  // Exam mode state
+  const [examCurrentIndex, setExamCurrentIndex] = useState(0);
+  const [examAnswers, setExamAnswers] = useState<Record<number, string>>({});
+  const examAnswersRef = useRef<Record<number, string>>({});
+  const [examTimeLeft, setExamTimeLeft] = useState(EXAM_DURATION_SECONDS);
+  const [examActive, setExamActive] = useState(false);
+  const [showExamUpsell, setShowExamUpsell] = useState(false);
+  const [examScore, setExamScore] = useState(0);
+  const examFinalizedRef = useRef(false);
+  const finalizeExamCallbackRef = useRef<((a: Record<number, string>) => Promise<void>) | null>(null);
+
+  const hasReachedDailyLimit = statut !== 'famille' && attemptsToday >= DAILY_QUIZ_LIMIT;
+
+  const finalizeExam = async (answersArg: Record<number, string>) => {
+    if (examFinalizedRef.current) return;
+    examFinalizedRef.current = true;
+
+    const correct = QUESTIONS.filter((q, i) => answersArg[i] === q.correctAnswer).length;
+    setExamScore(correct);
+
+    const baseXp = correct >= 6 ? 500 : correct >= 5 ? 400 : correct >= 4 ? 300 : correct >= 3 ? 250 : 200;
+    await gainXp(baseXp, `Examen blanc terminé — Score: ${correct}/${QUESTIONS.length}`);
+
+    if (currentUser) {
+      try {
+        await addDoc(collection(db, 'examResults'), {
+          userId: currentUser.uid,
+          score: correct,
+          total: QUESTIONS.length,
+          answers: answersArg,
+          statut,
+          completedAt: serverTimestamp(),
+        });
+      } catch (e) {
+        console.error('Erreur sauvegarde examResult:', e);
+      }
+    }
+
+    setCurrentStep('examResult');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  finalizeExamCallbackRef.current = finalizeExam;
+
+  useEffect(() => {
+    if (!examActive || examTimeLeft <= 0) return;
+    const id = setTimeout(() => setExamTimeLeft(t => t - 1), 1000);
+    return () => clearTimeout(id);
+  }, [examActive, examTimeLeft]);
+
+  useEffect(() => {
+    if (examTimeLeft === 0 && currentStep === 'exam') {
+      setExamActive(false);
+      finalizeExamCallbackRef.current?.(examAnswersRef.current);
+    }
+  }, [examTimeLeft, currentStep]);
+
+  const formatExamTime = (seconds: number): string => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const handleExamStart = () => {
+    if (statut !== 'famille') {
+      setShowExamUpsell(true);
+      return;
+    }
+    examFinalizedRef.current = false;
+    examAnswersRef.current = {};
+    setExamCurrentIndex(0);
+    setExamAnswers({});
+    setExamTimeLeft(EXAM_DURATION_SECONDS);
+    setExamActive(true);
+    setCurrentStep('exam');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExamAnswer = (optionId: string) => {
+    const newAnswers = { ...examAnswersRef.current, [examCurrentIndex]: optionId };
+    examAnswersRef.current = newAnswers;
+    setExamAnswers(newAnswers);
+
+    if (examCurrentIndex < QUESTIONS.length - 1) {
+      setTimeout(() => {
+        setExamCurrentIndex(i => i + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 300);
+    } else {
+      setExamActive(false);
+      finalizeExam(newAnswers);
+    }
+  };
 
   const handleStart = () => {
+    if (hasReachedDailyLimit) return;
+
+    if (statut !== 'famille') {
+      const next = attemptsToday + 1;
+      localStorage.setItem(QUIZ_ATTEMPTS_KEY, JSON.stringify({ date: getTodayKey(), count: next }));
+      setAttemptsToday(next);
+    }
+
     setCurrentStep('questions');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -185,43 +324,35 @@ export function Quiz() {
       organiseDoute: 0
     };
 
-    // Logique de scoring simplifiée d'après le prompt
-    // Q1
     if (finalAnswers[0] === 'A') { scores.perdu += 3; scores.bloque += 1; }
     if (finalAnswers[0] === 'B') { scores.bloque += 2; scores.organiseDoute += 1; }
     if (finalAnswers[0] === 'C') { scores.memoriseur += 3; }
     if (finalAnswers[0] === 'D') { scores.organiseDoute += 2; }
-    
-    // Q2
+
     if (finalAnswers[1] === 'A') { scores.perdu += 3; }
     if (finalAnswers[1] === 'B') { scores.bloque += 3; scores.memoriseur += 1; }
     if (finalAnswers[1] === 'C') { scores.organiseDoute += 2; }
     if (finalAnswers[1] === 'D') { scores.organiseDoute += 3; scores.strategePresse += 1; }
 
-    // Q3
     if (finalAnswers[2] === 'A') { scores.perdu += 3; }
     if (finalAnswers[2] === 'B') { scores.bloque += 2; scores.organiseDoute += 1; }
     if (finalAnswers[2] === 'C') { scores.memoriseur += 2; scores.strategePresse += 1; }
     if (finalAnswers[2] === 'D') { scores.organiseDoute += 3; }
 
-    // Q4
     if (finalAnswers[3] === 'A') { scores.memoriseur += 3; scores.perdu += 1; }
     if (finalAnswers[3] === 'B') { scores.organiseDoute += 2; scores.bloque += 1; }
     if (finalAnswers[3] === 'C') { scores.memoriseur += 2; scores.perdu += 2; }
     if (finalAnswers[3] === 'D') { scores.bloque += 3; }
 
-    // Q5
     if (finalAnswers[4] === 'A') { scores.strategePresse += 3; scores.perdu += 1; }
     if (finalAnswers[4] === 'B') { scores.bloque += 3; }
     if (finalAnswers[4] === 'C') { scores.perdu += 2; scores.memoriseur += 1; }
     if (finalAnswers[4] === 'D') { scores.organiseDoute += 3; }
 
-    // Q6
     if (finalAnswers[5] === 'B') { scores.strategePresse += 1; }
     if (finalAnswers[5] === 'C') { scores.strategePresse += 3; }
     if (finalAnswers[5] === 'D') { scores.strategePresse += 5; }
 
-    // Déterminer le maximum (priorité en cas d'égalité: strategePresse > bloque > perdu > memoriseur > organise)
     let maxProfile: ProfileType = 'organiseDoute';
     let maxScore = scores.organiseDoute;
 
@@ -238,9 +369,9 @@ export function Quiz() {
 
   return (
     <div className="min-h-screen bg-[#1A3557] font-sans pt-20">
-      <SEO 
-        title="Quel type d'élève es-tu ? — Quiz EDUCTOME" 
-        description="En 2 minutes, découvre ton profil d'élève et reçois un plan de bataille personnalisé pour réussir ton BAC ou ton BEPC en Côte d'Ivoire." 
+      <SEO
+        title="Quel type d'élève es-tu ? — Quiz EDUCTOME"
+        description="En 2 minutes, découvre ton profil d'élève et reçois un plan de bataille personnalisé pour réussir ton BAC ou ton BEPC en Côte d'Ivoire."
       />
 
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -250,26 +381,239 @@ export function Quiz() {
 
         {/* INTRO STEP */}
         {currentStep === 'intro' && (
-          <ScrollReveal className="text-center bg-white/5 rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
-            <span className="text-6xl mb-6 block">🎯</span>
-            <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-6">
-              Quel type d'élève es-tu ?
-            </h1>
-            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Réponds à 6 questions. En 2 minutes, on te dit exactement par où commencer pour décoller — avec un plan de bataille personnalisé.
-            </p>
-            
-            <button 
-              onClick={handleStart}
-              className="bg-eductome-magenta hover:bg-pink-600 text-white font-bold text-lg py-4 px-10 rounded-full transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(216,27,96,0.4)]"
-            >
-              Commencer le quiz →
-            </button>
-            
-            <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-400 font-medium">
-              <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> 100% gratuit</span>
-              <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Aucune mauvaise réponse</span>
-              <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Plan personnalisé sur WhatsApp</span>
+          <>
+            <ScrollReveal className="text-center bg-white/5 rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
+              <span className="text-6xl mb-6 block">🎯</span>
+              <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-6">
+                Quel type d'élève es-tu ?
+              </h1>
+              <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Réponds à 6 questions. En 2 minutes, on te dit exactement par où commencer pour décoller — avec un plan de bataille personnalisé.
+              </p>
+
+              {hasReachedDailyLimit ? (
+                <div className="max-w-md mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center gap-2">
+                  <Lock className="w-8 h-8 text-amber-400 mb-1" />
+                  <p className="text-white font-bold">Tu as atteint ta limite de {DAILY_QUIZ_LIMIT} quiz aujourd'hui</p>
+                  <p className="text-gray-300 text-sm">
+                    Reviens demain pour de nouvelles tentatives, ou passe à la <strong className="text-amber-400">Famille EDUCTOME</strong> pour un accès illimité.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={handleStart}
+                    className="bg-eductome-magenta hover:bg-pink-600 text-white font-bold text-lg py-4 px-10 rounded-full transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(216,27,96,0.4)]"
+                  >
+                    Commencer le quiz →
+                  </button>
+                  {statut !== 'famille' && (
+                    <p className="text-gray-400 text-sm mt-4">
+                      Tentative {attemptsToday + 1} / {DAILY_QUIZ_LIMIT} aujourd'hui
+                    </p>
+                  )}
+                </>
+              )}
+
+              <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-400 font-medium">
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> 100% gratuit</span>
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Aucune mauvaise réponse</span>
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Plan personnalisé sur WhatsApp</span>
+              </div>
+            </ScrollReveal>
+
+            {/* EXAM MODE CARD */}
+            <ScrollReveal className="mt-6 text-center bg-gradient-to-br from-amber-500/10 to-yellow-600/10 rounded-3xl p-8 border border-amber-400/30 shadow-xl">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Trophy className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 font-bold uppercase tracking-wider text-xs">Famille EDUCTOME</span>
+              </div>
+              <h2 className="text-2xl font-playfair font-bold text-white mb-3">Mode Examen Blanc</h2>
+              <p className="text-gray-300 mb-6 text-sm max-w-md mx-auto leading-relaxed">
+                Entraîne-toi dans les conditions réelles du BAC. 4 heures chrono, aucune correction pendant l'épreuve. Score complet et corrigé révélés à la fin.
+              </p>
+
+              {showExamUpsell && statut !== 'famille' ? (
+                <div className="max-w-md mx-auto bg-white/5 border border-amber-400/20 rounded-2xl p-6 flex flex-col items-center gap-2">
+                  <Lock className="w-7 h-7 text-amber-400 mb-1" />
+                  <p className="text-white font-bold">Accès réservé à la Famille EDUCTOME</p>
+                  <p className="text-gray-300 text-sm text-center">
+                    Le Mode Examen Blanc est exclusif aux membres Famille. Rejoins-nous pour accéder à cet entraînement intensif + tous les contenus EDUCTOME.
+                  </p>
+                  <button onClick={() => setShowExamUpsell(false)} className="mt-2 text-gray-500 text-xs underline">
+                    Fermer
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleExamStart}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white font-bold text-base py-3 px-8 rounded-full transition-all transform hover:scale-105 shadow-lg"
+                >
+                  <Timer className="w-5 h-5" />
+                  Lancer l'Examen Blanc (4h)
+                </button>
+              )}
+
+              {statut !== 'famille' && !showExamUpsell && (
+                <p className="text-amber-400/50 text-xs mt-3 flex items-center justify-center gap-1">
+                  <Lock className="w-3 h-3" /> Famille EDUCTOME uniquement
+                </p>
+              )}
+            </ScrollReveal>
+          </>
+        )}
+
+        {/* EXAM STEP */}
+        {currentStep === 'exam' && (
+          <ScrollReveal className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div className={`p-4 text-center font-mono text-3xl font-bold flex items-center justify-center gap-3 transition-colors ${examTimeLeft < 600 ? 'bg-red-600 text-white animate-pulse' : 'bg-[#1A3557] text-white'}`}>
+              <Timer className="w-7 h-7" />
+              {formatExamTime(examTimeLeft)}
+            </div>
+
+            <div className="p-6 md:p-10">
+              <div className="mb-6">
+                <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">
+                  <span>Question {examCurrentIndex + 1} / {QUESTIONS.length}</span>
+                  <span>{Math.round((examCurrentIndex / QUESTIONS.length) * 100)}% complété</span>
+                </div>
+                <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="bg-amber-500 h-full transition-all duration-500 ease-out"
+                    style={{ width: `${((examCurrentIndex + 1) / QUESTIONS.length) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 mb-2">
+                <Trophy className="w-4 h-4 text-amber-500" />
+                <h2 className="text-sm font-bold text-amber-500 uppercase tracking-wider">
+                  {QUESTIONS[examCurrentIndex].title}
+                </h2>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-playfair font-bold text-[#1A3557] mb-8 leading-tight">
+                {QUESTIONS[examCurrentIndex].question}
+              </h3>
+
+              <div className="space-y-4">
+                {QUESTIONS[examCurrentIndex].options.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleExamAnswer(option.id)}
+                    className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 group
+                      ${examAnswers[examCurrentIndex] === option.id
+                        ? 'border-amber-500 bg-amber-50'
+                        : 'border-gray-200 hover:border-amber-400 hover:bg-gray-50'}`}
+                  >
+                    <div className="flex items-center">
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold mr-4 transition-colors flex-shrink-0
+                        ${examAnswers[examCurrentIndex] === option.id
+                          ? 'border-amber-500 bg-amber-500 text-white'
+                          : 'border-gray-300 text-gray-500 group-hover:border-amber-400 group-hover:text-amber-500'}`}
+                      >
+                        {option.id}
+                      </div>
+                      <span className={`text-lg font-medium ${examAnswers[examCurrentIndex] === option.id ? 'text-amber-700' : 'text-gray-700'}`}>
+                        {option.text}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {Object.keys(examAnswers).length > 0 && (
+                <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                  <button
+                    onClick={() => { setExamActive(false); finalizeExam(examAnswersRef.current); }}
+                    className="inline-flex items-center gap-2 bg-[#1A3557] hover:bg-[#243d61] text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                    Terminer l'examen
+                  </button>
+                  <p className="text-gray-400 text-xs mt-2">
+                    {Object.keys(examAnswers).length}/{QUESTIONS.length} questions répondues
+                  </p>
+                </div>
+              )}
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* EXAM RESULT STEP */}
+        {currentStep === 'examResult' && (
+          <ScrollReveal className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-amber-500 to-yellow-600 p-8 md:p-12 text-center text-white">
+              <Trophy className="w-12 h-12 mx-auto mb-4 opacity-90" />
+              <p className="text-sm font-bold uppercase tracking-wider opacity-80 mb-1">Examen Blanc — Résultats</p>
+              <div className="text-6xl md:text-7xl font-bold mb-2">{examScore}/{QUESTIONS.length}</div>
+              <p className="text-xl font-semibold">
+                {examScore >= 6 ? 'Parfait ! 🏆' : examScore >= 5 ? 'Excellent ! 🌟' : examScore >= 4 ? 'Très bien ! 💪' : examScore >= 3 ? 'Bien !' : 'À améliorer — continue !'}
+              </p>
+              {statut === 'famille' && (
+                <p className="text-sm opacity-80 mt-2">XP Famille ×2 appliqué 🔥</p>
+              )}
+            </div>
+
+            <div className="p-6 md:p-10">
+              <h3 className="text-xl font-playfair font-bold text-[#1A3557] mb-6">Corrigé complet :</h3>
+              <div className="space-y-6">
+                {QUESTIONS.map((q, i) => {
+                  const userAnswer = examAnswers[i];
+                  const isCorrect = userAnswer === q.correctAnswer;
+                  return (
+                    <div key={q.id} className="border border-gray-100 rounded-2xl overflow-hidden">
+                      <div className={`px-5 py-3 text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isCorrect ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                        {isCorrect
+                          ? <CheckCircle className="w-4 h-4" />
+                          : <span className="w-4 h-4 rounded-full border-2 border-current inline-flex items-center justify-center text-[10px] font-black flex-shrink-0">✕</span>
+                        }
+                        {q.title} — {isCorrect ? 'Correct' : 'À revoir'}
+                      </div>
+                      <div className="p-5">
+                        <p className="text-gray-700 font-medium mb-4">{q.question}</p>
+                        <div className="space-y-2">
+                          {q.options.map((opt) => {
+                            const isUserChoice = userAnswer === opt.id;
+                            const isCorrectAnswer = opt.id === q.correctAnswer;
+                            let rowCls = 'border-gray-100 text-gray-500';
+                            if (isCorrectAnswer) rowCls = 'border-green-400 bg-green-50 text-green-800 font-semibold';
+                            else if (isUserChoice) rowCls = 'border-red-300 bg-red-50 text-red-700 line-through';
+                            return (
+                              <div key={opt.id} className={`flex items-center gap-3 p-3 rounded-lg border ${rowCls}`}>
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${isCorrectAnswer ? 'bg-green-500 text-white' : isUserChoice ? 'bg-red-400 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                  {opt.id}
+                                </div>
+                                <span className="text-sm">{opt.text}</span>
+                                {isCorrectAnswer && <span className="ml-auto text-green-600 text-xs font-bold whitespace-nowrap">✓ Idéal</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {!userAnswer && (
+                          <p className="text-gray-400 text-xs mt-2 italic">Non répondu</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => { setCurrentStep('intro'); setShowExamUpsell(false); }}
+                  className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-8 rounded-xl transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Retour
+                </button>
+                <button
+                  onClick={handleExamStart}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                >
+                  <Timer className="w-4 h-4" />
+                  Recommencer l'examen
+                </button>
+              </div>
             </div>
           </ScrollReveal>
         )}
@@ -283,7 +627,7 @@ export function Quiz() {
                 <span>{Math.round(((currentQuestionIndex) / QUESTIONS.length) * 100)}% complété</span>
               </div>
               <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="bg-eductome-magenta h-full transition-all duration-500 ease-out"
                   style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%` }}
                 ></div>
@@ -303,14 +647,14 @@ export function Quiz() {
                   key={option.id}
                   onClick={() => handleAnswer(option.id)}
                   className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 group
-                    ${answers[currentQuestionIndex] === option.id 
-                      ? 'border-eductome-magenta bg-pink-50' 
+                    ${answers[currentQuestionIndex] === option.id
+                      ? 'border-eductome-magenta bg-pink-50'
                       : 'border-gray-200 hover:border-eductome-magenta hover:bg-gray-50'}`}
                 >
                   <div className="flex items-center">
                     <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold mr-4 transition-colors
-                      ${answers[currentQuestionIndex] === option.id 
-                        ? 'border-eductome-magenta bg-eductome-magenta text-white' 
+                      ${answers[currentQuestionIndex] === option.id
+                        ? 'border-eductome-magenta bg-eductome-magenta text-white'
                         : 'border-gray-300 text-gray-500 group-hover:border-eductome-magenta group-hover:text-eductome-magenta'}`}
                     >
                       {option.id}
@@ -337,7 +681,7 @@ export function Quiz() {
                 {PROFILES[resultProfile].title}
               </h2>
             </div>
-            
+
             <div className="p-8 md:p-12">
               <div className="mb-10 text-gray-700 text-lg leading-relaxed">
                 <p dangerouslySetInnerHTML={{ __html: PROFILES[resultProfile].description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
@@ -367,7 +711,7 @@ export function Quiz() {
                 <p className="text-gray-600 mb-6">
                   On t'envoie tout ça sur WhatsApp pour que tu ne le perdes pas, avec les liens directs vers les ressources gratuites.
                 </p>
-                <a 
+                <a
                   href={`https://wa.me/2250715811398?text=${encodeURIComponent(`Salut le Grand Frère 👋\n\nJ'ai fait le quiz et mon profil est : ${PROFILES[resultProfile].title} ${PROFILES[resultProfile].icon}\n\nJe veux bien recevoir mon plan d'action détaillé !`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="w-full sm:w-auto inline-flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-lg text-lg"
@@ -375,7 +719,7 @@ export function Quiz() {
                   <MessageCircle className="w-6 h-6 mr-3" /> Recevoir mon plan sur WhatsApp
                 </a>
               </div>
-              
+
               <div className="mt-8 text-center">
                 <p className="text-gray-500 mb-4 font-medium">Partage le quiz avec tes potes :</p>
                 <div className="flex justify-center gap-4">

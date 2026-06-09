@@ -3,8 +3,10 @@ import { collectionsData } from '../../data/collections';
 import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp } from 'lucide-react';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { useUser } from '../../contexts/UserContext';
 
 export const DashboardBoutique = () => {
+  const { unlockedCourses } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
   const [optionsModalOpen, setOptionsModalOpen] = useState(false);
   const [selectedTomeForOptions, setSelectedTomeForOptions] = useState<{tome: any, collection: any} | null>(null);
@@ -171,19 +173,32 @@ export const DashboardBoutique = () => {
               </button>
 
               {/* Option 2 : Tome Complet */}
-              <button 
-                onClick={() => {
-                  setOptionsModalOpen(false);
-                  openCheckout(`Tome ${selectedTomeForOptions.tome.number} : ${selectedTomeForOptions.tome.title}`, 1500, false, false, selectedTomeForOptions.tome.id);
-                }}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#161B22] border-2 border-[#1A3557] hover:bg-[#1A3557] group transition-colors"
-              >
-                <div className="text-left">
-                  <div className="font-bold text-[#1A1A2E] dark:text-white group-hover:text-white transition-colors">Tome Complet</div>
-                  <div className="text-xs text-gray-500 group-hover:text-blue-100 transition-colors">Débloque tous les chapitres</div>
-                </div>
-                <div className="font-black text-[#1A3557] dark:text-white group-hover:text-white transition-colors">1.500F</div>
-              </button>
+              {(() => {
+                const tomePrefix = selectedTomeForOptions?.tome?.id?.split('-')[0] + '-chap';
+                const ownedChaptersCount = unlockedCourses.filter(id => id.startsWith(tomePrefix)).length;
+                const deduction = ownedChaptersCount * 300;
+                const finalTomePrice = Math.max(0, 1500 - deduction);
+
+                return (
+                  <button 
+                    onClick={() => {
+                      setOptionsModalOpen(false);
+                      openCheckout(`Tome ${selectedTomeForOptions.tome.number} : ${selectedTomeForOptions.tome.title}${deduction > 0 ? ` (-${deduction}F déduits)` : ''}`, finalTomePrice, false, false, selectedTomeForOptions.tome.id);
+                    }}
+                    className="w-full flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#161B22] border-2 border-[#1A3557] hover:bg-[#1A3557] group transition-colors"
+                  >
+                    <div className="text-left">
+                      <div className="font-bold text-[#1A1A2E] dark:text-white group-hover:text-white transition-colors">Tome Complet</div>
+                      {deduction > 0 ? (
+                        <div className="text-xs text-green-500 group-hover:text-green-300 transition-colors font-bold">-{deduction}F pour tes chapitres acquis</div>
+                      ) : (
+                        <div className="text-xs text-gray-500 group-hover:text-blue-100 transition-colors">Débloque tous les chapitres</div>
+                      )}
+                    </div>
+                    <div className="font-black text-[#1A3557] dark:text-white group-hover:text-white transition-colors">{finalTomePrice}F</div>
+                  </button>
+                );
+              })()}
 
               {/* Option 3 : VIP */}
               <button 
