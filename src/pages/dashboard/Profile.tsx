@@ -1,4 +1,4 @@
-import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye, Users, Timer, Share2 } from 'lucide-react';
+import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye, Users, Timer, Share2, Calendar } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useUser } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
@@ -12,6 +12,15 @@ import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { TimetableBottomSheet } from '../../components/TimetableBottomSheet';
+import { IVORIAN_CURRICULUM, IvorianSeries } from '../../utils/curriculum';
+
+function getSeriesFromLevel(levelStr: string): IvorianSeries {
+  const lower = levelStr.toLowerCase();
+  if (lower.includes('3') || lower.includes('troisième') || lower.includes('3ème')) return '3EME';
+  if (lower.includes('_a') || lower.includes('terminale a') || lower.includes('tle a')) return 'TLE_A';
+  return 'TLE_D';
+}
 
 export const Profile = () => {
   const { theme } = useTheme();
@@ -36,6 +45,7 @@ export const Profile = () => {
   const [generatingRelaisCode, setGeneratingRelaisCode] = useState(false);
   const [relaisCodeCopied, setRelaisCodeCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [selectedSubjectForTimetable, setSelectedSubjectForTimetable] = useState<{ id: string; name: string; color: string } | null>(null);
 
   const handleGenerateRelaisCode = async () => {
     if (!relaisNom.trim()) return;
@@ -64,6 +74,31 @@ export const Profile = () => {
     } finally {
       setGeneratingRelaisCode(false);
     }
+  };
+
+  const handleSaveSlot = async (data: {
+    dayOfWeek: string;
+    startTime: string;
+    endTime: string;
+    teacherName: string;
+    duplicateTo?: string[];
+  }) => {
+    if (!currentUser || !selectedSubjectForTimetable) return;
+    const allDays = [data.dayOfWeek, ...(data.duplicateTo ?? [])];
+    for (const day of allDays) {
+      const slotId = `${day}-${data.startTime.replace(':', '')}`;
+      await setDoc(doc(db, 'users', currentUser.uid, 'timetable', slotId), {
+        id: slotId,
+        dayOfWeek: day,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        subjectId: selectedSubjectForTimetable.id,
+        subjectName: selectedSubjectForTimetable.name,
+        teacherName: data.teacherName || null
+      });
+    }
+    addToast({ type: 'success', title: 'Cours enregistré', message: `${selectedSubjectForTimetable.name} ajouté à ton emploi du temps.` });
+    setSelectedSubjectForTimetable(null);
   };
 
   const handleApplyCoupon = (e: React.FormEvent) => {
@@ -361,6 +396,34 @@ export const Profile = () => {
           </div>
 
 
+
+          {/* Mon Emploi du Temps */}
+          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-225`}>
+            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
+              <Calendar className="w-5 h-5 text-blue-500" /> Mon Emploi du Temps
+            </h2>
+            <p className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'} mb-4`}>Configure tes créneaux hebdomadaires par matière :</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {IVORIAN_CURRICULUM[getSeriesFromLevel(levelString)].map(subject => (
+                <div
+                  key={subject.id}
+                  className={`flex items-center justify-between p-3 rounded-xl border ${d ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: subject.color }} />
+                    <span className={`text-sm font-medium ${d ? 'text-gray-200' : 'text-gray-800'}`}>{subject.name}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSubjectForTimetable({ id: subject.id, name: subject.name, color: subject.color })}
+                    className="text-xs font-bold text-blue-500 hover:text-blue-400 border border-blue-500/30 hover:border-blue-400 px-3 py-1 rounded-lg transition-all"
+                  >
+                    Configurer
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Code Livre Physique */}
           <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-250`}>
@@ -688,8 +751,17 @@ export const Profile = () => {
           </div>
         </div>
       )}
+      {selectedSubjectForTimetable && (
+        <TimetableBottomSheet
+          isOpen={true}
+          onClose={() => setSelectedSubjectForTimetable(null)}
+          subjectName={selectedSubjectForTimetable.name}
+          subjectId={selectedSubjectForTimetable.id}
+          onSave={handleSaveSlot}
+        />
+      )}
       {showCropModal && selectedImage && (
-        <ImageCropperModal 
+        <ImageCropperModal
           imageSrc={selectedImage}
           onClose={() => {
             setShowCropModal(false);

@@ -27,6 +27,7 @@ import { ClaimPurchase } from './pages/dashboard/ClaimPurchase';
 import { GradesCalculator } from './pages/dashboard/GradesCalculator';
 import { RelaisDashboard } from './pages/RelaisDashboard';
 import { ParentDashboard } from './pages/ParentDashboard';
+import { TimetablePage } from './pages/TimetablePage';
 
 import { UserProvider } from './contexts/UserContext';
 
@@ -71,6 +72,7 @@ function App() {
               <Route path="/dashboard/devenir-relais" element={<BecomeRelay />} />
               <Route path="/dashboard/relais" element={<RelaisDashboard />} />
               <Route path="/dashboard/reclamer" element={<ClaimPurchase />} />
+              <Route path="/dashboard/emploi-du-temps" element={<TimetablePage />} />
               <Route path="/forum" element={<ForumHome />} />
               <Route path="/forum/thread/:id" element={<ForumThread />} />
             </Route>

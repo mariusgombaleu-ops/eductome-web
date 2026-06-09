@@ -1,11 +1,18 @@
-import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X } from 'lucide-react';
+import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser, USER_LEVELS } from '../../contexts/UserContext';
 import { WelcomeModal } from '../../components/dashboard/WelcomeModal';
 import { GoalsOnboardingModal } from '../../components/dashboard/GoalsOnboardingModal';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { useAuth } from '../../contexts/AuthContext';
+import { collection, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { TimetableDashboardWidget } from '../../components/TimetableDashboardWidget';
+import { PostAssessmentModal } from '../../components/PostAssessmentModal';
+import type { TimetableSlot, AssessmentEvent } from '../../components/types';
+import { getRecommendedTome } from '../../utils/getRecommendedTome';
 
 const QUOTES = [
   "Chaque minute d'étude est un pas de plus vers ton but.",
@@ -16,13 +23,27 @@ const QUOTES = [
 ];
 
 export const Overview = () => {
-  const { xp, level, rewardedActions, pseudo, statut, currentStreak } = useUser();
+  const { xp, level, rewardedActions, pseudo, statut, currentStreak, gainXp } = useUser();
   const [quote, setQuote] = useState(QUOTES[0]);
   const [greeting, setGreeting] = useState("Bonjour");
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
   const [showFamilleWelcome, setShowFamilleWelcome] = useState(
     () => statut === 'famille' && localStorage.getItem('famille_welcomed') !== 'true'
   );
+
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const [timetableSlots, setTimetableSlots] = useState<TimetableSlot[]>([]);
+  const [assessments, setAssessments] = useState<AssessmentEvent[]>([]);
+  const [postAssessment, setPostAssessment] = useState<AssessmentEvent | null>(null);
+  const [showAddAssessment, setShowAddAssessment] = useState(false);
+  const [fabSubjectId, setFabSubjectId] = useState('maths');
+  const [fabSubjectName, setFabSubjectName] = useState('Mathématiques');
+  const [fabType, setFabType] = useState<'INTERRO' | 'DEVOIR' | 'BAC_BLANC'>('INTERRO');
+  const [fabDate, setFabDate] = useState('');
+  const [fabTitle, setFabTitle] = useState('');
 
   const dismissFamilleWelcome = () => {
     localStorage.setItem('famille_welcomed', 'true');
@@ -44,12 +65,105 @@ export const Overview = () => {
     else setGreeting("Bonsoir");
   }, []);
 
+  useEffect(() => {
+    if (!currentUser) return;
+    const unsub = onSnapshot(
+      collection(db, 'users', currentUser.uid, 'timetable'),
+      (snap) => { setTimetableSlots(snap.docs.map(d => d.data() as TimetableSlot)); }
+    );
+    return () => unsub();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const unsub = onSnapshot(
+      collection(db, 'users', currentUser.uid, 'assessments'),
+      (snap) => { setAssessments(snap.docs.map(d => ({ id: d.id, ...d.data() } as AssessmentEvent))); }
+    );
+    return () => unsub();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const due = assessments.find(
+      a => a.date === todayStr && a.status === 'UPCOMING' && !localStorage.getItem(`assessment_shown_${a.id}`)
+    );
+    if (due) setPostAssessment(due);
+  }, [assessments, todayStr]);
+
+  const DAY_NAMES = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  const todayName = DAY_NAMES[new Date().getDay()];
+  const currentTime = `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`;
+  const todaySlots = [...timetableSlots]
+    .filter(s => s.dayOfWeek === todayName)
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const currentSlot = todaySlots.find(s => s.startTime <= currentTime && s.endTime > currentTime) ?? null;
+  const nextSlot = todaySlots.find(s => s.startTime > currentTime) ?? null;
+  const upcomingAssessment = [...assessments]
+    .filter(a => a.status === 'UPCOMING' && a.date >= todayStr)
+    .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
+
+  const ASSESSMENT_SUBJECTS = [
+    { id: 'maths', name: 'Mathématiques' },
+    { id: 'pc', name: 'Physique-Chimie' },
+    { id: 'svt', name: 'SVT' },
+    { id: 'philo', name: 'Philosophie' },
+    { id: 'français', name: 'Français' },
+    { id: 'anglais', name: 'Anglais' },
+    { id: 'hg', name: 'Histoire-Géographie' },
+  ];
+
+  const handleAssessmentAction = (assessment: AssessmentEvent) => {
+    const tome = getRecommendedTome(assessment.subjectId, assessment.title);
+    if (tome) navigate(`/dashboard/course/${tome.tomeId}`);
+  };
+
+  const handlePostAssessmentResolve = async (data: { status: 'SUCCESS' | 'FAILED'; reviewComment?: string; xpEarned: number }) => {
+    if (!postAssessment || !currentUser) return;
+    const { status, reviewComment, xpEarned } = data;
+    localStorage.setItem(`assessment_shown_${postAssessment.id}`, 'true');
+    try {
+      const updateData: Record<string, unknown> = { status };
+      if (reviewComment) updateData.reviewComment = reviewComment;
+      await updateDoc(doc(db, 'users', currentUser.uid, 'assessments', postAssessment.id), updateData);
+    } catch (err) {
+      console.error('Failed to update assessment:', err);
+    }
+    if (xpEarned > 0) gainXp(xpEarned, 'Devoir réussi ! 🎉', `assessment_win_${postAssessment.id}`);
+    const assessmentRef = postAssessment;
+    setPostAssessment(null);
+    if (status === 'FAILED' && reviewComment) {
+      const tome = getRecommendedTome(assessmentRef.subjectId, assessmentRef.title);
+      if (tome) navigate(`/dashboard/course/${tome.tomeId}`);
+    }
+  };
+
+  const handleSaveAssessment = async () => {
+    if (!currentUser || !fabDate) return;
+    const title = fabTitle.trim() || `${fabType} de ${fabSubjectName}`;
+    await addDoc(collection(db, 'users', currentUser.uid, 'assessments'), {
+      title,
+      type: fabType,
+      subjectId: fabSubjectId,
+      subjectName: fabSubjectName,
+      date: fabDate,
+      reminderEnabled: true,
+      status: 'UPCOMING',
+      createdAt: Date.now()
+    });
+    setShowAddAssessment(false);
+    setFabDate('');
+    setFabTitle('');
+  };
+
   const handleWelcomeComplete = () => {
     setIsGoalsModalOpen(true);
   };
 
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
+      {postAssessment && (
+        <PostAssessmentModal assessment={postAssessment} onResolve={handlePostAssessmentResolve} />
+      )}
       <WelcomeModal onComplete={handleWelcomeComplete} />
       <GoalsOnboardingModal isOpen={isGoalsModalOpen} onClose={() => setIsGoalsModalOpen(false)} />
       
@@ -105,6 +219,20 @@ export const Overview = () => {
           </div>
         </div>
       </div>
+
+      {/* Timetable + Assessments Widget */}
+      <TimetableDashboardWidget
+        currentSlot={currentSlot}
+        nextSlot={nextSlot}
+        upcomingAssessment={upcomingAssessment}
+        onActionClick={handleAssessmentAction}
+      />
+      <button
+        onClick={() => navigate('/dashboard/emploi-du-temps')}
+        className="w-full py-3 rounded-xl border-2 border-[#1A3557] text-[#1A3557] dark:border-blue-400 dark:text-blue-400 font-bold text-sm hover:bg-[#1A3557]/5 dark:hover:bg-blue-400/10 transition-colors"
+      >
+        Voir mon Emploi du Temps
+      </button>
 
       {/* Stats Grid - Toujours visible pour l'aspect psychologique */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
@@ -334,6 +462,76 @@ export const Overview = () => {
             </div>
           </div>
         </>
+      )}
+      {/* FAB: Ajouter un devoir / interro */}
+      <button
+        onClick={() => setShowAddAssessment(true)}
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-xl shadow-blue-600/30 transition-all hover:scale-110"
+        title="Ajouter un devoir / interro"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
+
+      {showAddAssessment && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="absolute inset-0" onClick={() => setShowAddAssessment(false)} />
+          <div className="relative z-10 w-full max-w-sm bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-white mb-5">Ajouter un devoir / interro</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1">Matière</label>
+                <select
+                  value={fabSubjectId}
+                  onChange={(e) => {
+                    const subject = ASSESSMENT_SUBJECTS.find(s => s.id === e.target.value);
+                    if (subject) { setFabSubjectId(subject.id); setFabSubjectName(subject.name); }
+                  }}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                >
+                  {ASSESSMENT_SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1">Type</label>
+                <select
+                  value={fabType}
+                  onChange={(e) => setFabType(e.target.value as 'INTERRO' | 'DEVOIR' | 'BAC_BLANC')}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                >
+                  <option value="INTERRO">Interrogation</option>
+                  <option value="DEVOIR">Devoir</option>
+                  <option value="BAC_BLANC">BAC Blanc</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1">Titre (optionnel)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Devoir Régional N°1"
+                  value={fabTitle}
+                  onChange={(e) => setFabTitle(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1">Date</label>
+                <input
+                  type="date"
+                  value={fabDate}
+                  onChange={(e) => setFabDate(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <button
+                onClick={handleSaveAssessment}
+                disabled={!fabDate}
+                className="w-full bg-blue-600 disabled:opacity-40 text-white font-bold py-3.5 rounded-xl text-sm transition-all hover:bg-blue-700"
+              >
+                Enregistrer le combat
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

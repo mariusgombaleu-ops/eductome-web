@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── users ────────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      // Owner: full read/write
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Parent progress view (/parent/:uid) is a public client route.
+      // Firestore rules cannot restrict individual fields, so sensitive fields
+      // (email, phone) must be excluded at the application/Cloud Function layer.
+      // TODO: Replace with a Cloud Function proxy returning only safe fields.
+      allow read: if true;
+
+      // ── achats ──────────────────────────────────────────────────────────────
+      // Writes come from Cloud Functions (admin SDK bypasses rules).
+      match /achats/{achatId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── timetable ───────────────────────────────────────────────────────────
+      match /timetable/{slotId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // ── assessments ─────────────────────────────────────────────────────────
+      match /assessments/{assessmentId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ─── relais ───────────────────────────────────────────────────────────────
+    match /relais/{code} {
+      // Any authenticated user can read (code validation at purchase flow)
+      allow read: if request.auth != null;
+      // Write: admin custom claim only
+      allow write: if request.auth != null && request.auth.token.isAdmin == true;
+
+      // ── ventes ──────────────────────────────────────────────────────────────
+      // Writes come from Cloud Functions (admin SDK bypasses rules).
+      match /ventes/{venteId} {
+        allow read: if request.auth != null &&
+          get(/databases/$(database)/documents/relais/$(code)).data.uid == request.auth.uid;
+        allow write: if false;
+      }
+    }
+
+    // ─── examResults ──────────────────────────────────────────────────────────
+    // Managed exclusively by Cloud Functions — deny all client access.
+    match /examResults/{document=**} {
+      allow read, write: if false;
+    }
+
+    // ─── Default ──────────────────────────────────────────────────────────────
+    // Firestore denies by default; all unlisted collections are implicitly denied.
+  }
+}
