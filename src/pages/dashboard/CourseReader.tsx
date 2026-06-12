@@ -20,7 +20,8 @@ import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { fireConfetti } from '../../utils/confetti';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
-
+import { db } from '../../config/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 declare global {
   interface Window { MathJax?: any; }
 }
@@ -47,8 +48,14 @@ const QuizSection = ({ quiz, onComplete, courseId, chapterId }: { quiz: QuizBloc
   const [attempts, setAttempts] = useState(1);
 
   useEffect(() => {
-    const t = setTimeout(() => renderMathJax(), 50);
-    return () => clearTimeout(t);
+    let rafId: number;
+    const triggerMathJax = () => {
+      rafId = requestAnimationFrame(() => {
+        renderMathJax();
+      });
+    };
+    triggerMathJax();
+    return () => cancelAnimationFrame(rafId);
   }, [qi, quizFinished]);
 
   const handleValidate = () => {
@@ -225,6 +232,7 @@ export const CourseReader = () => {
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [paymentItemName, setPaymentItemName] = useState('');
   const [paymentType, setPaymentType] = useState<'chapter' | 'tome' | 'collection'>('chapter');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     if (isNotesOpen && courseId) {
@@ -293,9 +301,32 @@ export const CourseReader = () => {
     setIsPaymentModalOpen(true);
   };
 
+  const handleRequestParent = async () => {
+    // 1. Générer le texte WhatsApp avec l'explication de EDUCTOME
+    const text = `Papa/Maman, j'ai besoin du cours "${chapter.titre}" sur EDUCTOME.\n\nC'est une plateforme éducative qui m'aide à comprendre mes leçons et à mieux préparer mes devoirs. Tu peux débloquer ce cours pour moi directement via ce lien sécurisé :\n\nhttps://eductome.com/pay/${courseId || 'tome'}/${chapter.id}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    
+    // 2. Enregistrer la demande dans Firebase (Analytics)
+    try {
+      // We assume user info is available if needed, but for now we log basic info
+      await addDoc(collection(db, 'payment_requests'), {
+        courseId: courseId || 'unknown',
+        chapterId: chapter.id,
+        timestamp: serverTimestamp(),
+        method: 'whatsapp_share'
+      });
+    } catch (e) {
+      console.error("Erreur lors de l'enregistrement de la demande", e);
+    }
+
+    // 3. Ouvrir WhatsApp
+    window.open(url, '_blank');
+  };
+
   // Ancienne fonction de succès de paiement retirée car c'est géré via Selar et Firebase maintenant
 
   const downloadCorrectionsPDF = async () => {
+    setIsGeneratingPDF(true);
     try {
       const html2canvasLib = (await import('html2canvas')).default;
 
@@ -442,10 +473,23 @@ export const CourseReader = () => {
     } catch (err) {
       console.error(err);
       addToast({ type: 'error', title: 'Erreur — réessaie', message: '' });
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
-  useEffect(() => { const t = setTimeout(() => renderMathJax(), 200); return () => clearTimeout(t); }, [activeChapterIndex]);
+  useEffect(() => {
+    let rafId: number;
+    const triggerMathJax = () => {
+      requestAnimationFrame(() => {
+        rafId = requestAnimationFrame(() => {
+          renderMathJax();
+        });
+      });
+    };
+    triggerMathJax();
+    return () => cancelAnimationFrame(rafId);
+  }, [activeChapterIndex]);
 
   useEffect(() => {
     const promise = window.MathJax?.startup?.promise;
@@ -695,6 +739,7 @@ export const CourseReader = () => {
                 onUnlockChapter={handleUnlockChapter}
                 onUnlockTome={handleUnlockTome}
                 onUnlockCollection={handleUnlockCollection}
+                onRequestParent={handleRequestParent}
               />
             ) : (
               <>
@@ -793,9 +838,22 @@ export const CourseReader = () => {
                       {hasFullAccess ? (
                         <button
                           onClick={downloadCorrectionsPDF}
-                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#1A3557] hover:bg-[#1976D2] transition-colors duration-300 shadow-md shadow-blue-900/20"
+                          disabled={isGeneratingPDF}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#1A3557] hover:bg-[#1976D2] transition-colors duration-300 shadow-md shadow-blue-900/20 w-full md:w-auto disabled:opacity-70 disabled:cursor-wait"
                         >
-                          <Download className="w-5 h-5" /> Télécharger le PDF
+                          {isGeneratingPDF ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Génération...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-5 h-5" /> Télécharger le PDF
+                            </>
+                          )}
                         </button>
                       ) : (
                         <button

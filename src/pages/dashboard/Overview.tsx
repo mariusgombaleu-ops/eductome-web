@@ -1,4 +1,4 @@
-import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Plus } from 'lucide-react';
+import { Trophy, Star, Book, Target, ArrowRight, Flame, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Plus, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link, useNavigate } from 'react-router-dom';
@@ -113,8 +113,7 @@ export const Overview = () => {
   ];
 
   const handleAssessmentAction = (assessment: AssessmentEvent) => {
-    const tome = getRecommendedTome(assessment.subjectId, assessment.title);
-    if (tome) navigate(`/dashboard/course/${tome.tomeId}`);
+    navigate(`/dashboard/revisions`);
   };
 
   const handlePostAssessmentResolve = async (data: { status: 'SUCCESS' | 'FAILED'; reviewComment?: string; xpEarned: number }) => {
@@ -229,9 +228,10 @@ export const Overview = () => {
       />
       <button
         onClick={() => navigate('/dashboard/emploi-du-temps')}
-        className="w-full py-3 rounded-xl border-2 border-[#1A3557] text-[#1A3557] dark:border-blue-400 dark:text-blue-400 font-bold text-sm hover:bg-[#1A3557]/5 dark:hover:bg-blue-400/10 transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-white dark:bg-[#161B22] border-2 border-[#1A3557]/20 dark:border-blue-900/40 text-[#1A3557] dark:text-blue-400 font-bold text-sm shadow-sm hover:border-[#1A3557] dark:hover:border-blue-400 hover:bg-[#F8F9FA] dark:hover:bg-[#0D1117] transition-all duration-300 hover:shadow-md group"
       >
-        Voir mon Emploi du Temps
+        <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        Voir mon emploi du temps complet
       </button>
 
       {/* Stats Grid - Toujours visible pour l'aspect psychologique */}
@@ -475,28 +475,33 @@ export const Overview = () => {
       {showAddAssessment && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="absolute inset-0" onClick={() => setShowAddAssessment(false)} />
-          <div className="relative z-10 w-full max-w-sm bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-5">Ajouter un devoir / interro</h3>
+          <div className="relative z-10 w-full max-w-sm bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5 flex justify-between items-center">
+              Ajouter un devoir / interro
+              <button onClick={() => setShowAddAssessment(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <X className="w-5 h-5" />
+              </button>
+            </h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1">Matière</label>
+                <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Matière</label>
                 <select
                   value={fabSubjectId}
                   onChange={(e) => {
                     const subject = ASSESSMENT_SUBJECTS.find(s => s.id === e.target.value);
                     if (subject) { setFabSubjectId(subject.id); setFabSubjectName(subject.name); }
                   }}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-3 px-4 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                 >
                   {ASSESSMENT_SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1">Type</label>
+                <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Type</label>
                 <select
                   value={fabType}
                   onChange={(e) => setFabType(e.target.value as 'INTERRO' | 'DEVOIR' | 'BAC_BLANC')}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-3 px-4 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                 >
                   <option value="INTERRO">Interrogation</option>
                   <option value="DEVOIR">Devoir</option>
@@ -504,22 +509,22 @@ export const Overview = () => {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1">Titre (optionnel)</label>
+                <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Titre (optionnel)</label>
                 <input
                   type="text"
                   placeholder="Ex: Devoir Régional N°1"
                   value={fabTitle}
                   onChange={(e) => setFabTitle(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-3 px-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-600 focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1">Date</label>
+                <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Date</label>
                 <input
                   type="date"
                   value={fabDate}
                   onChange={(e) => setFabDate(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-3 px-4 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <button
@@ -527,7 +532,7 @@ export const Overview = () => {
                 disabled={!fabDate}
                 className="w-full bg-blue-600 disabled:opacity-40 text-white font-bold py-3.5 rounded-xl text-sm transition-all hover:bg-blue-700"
               >
-                Enregistrer le combat
+                Enregistrer cette évaluation
               </button>
             </div>
           </div>

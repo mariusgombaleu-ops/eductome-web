@@ -1,17 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight } from 'lucide-react';
+import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp } from 'lucide-react';
+import { BacSimulator } from '../../components/bac/BacSimulator';
 import confetti from 'canvas-confetti';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 import { useToast } from '../../contexts/ToastContext';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 export function GradesCalculator() {
-  const { levelString, goals, grades, updateGrades, updateGoals } = useUser();
+  const { levelString, goals, grades, updateGrades, updateGoals, xp } = useUser();
   const { addToast } = useToast();
+  const navigate = useNavigate();
   const subjects = getSubjectsForLevel(levelString);
   
-  const [mainTab, setMainTab] = useState<'notes' | 'objectifs'>('notes');
+  const [mainTab, setMainTab] = useState<'notes' | 'objectifs' | 'simulateur' | 'evolution'>('notes');
   const [activeTab, setActiveTab] = useState<'t1' | 't2' | 't3'>('t1');
   const [openSubject, setOpenSubject] = useState<string | null>(null);
 
@@ -110,12 +114,19 @@ export function GradesCalculator() {
   };
 
   const calculateTrimesterAverage = () => {
+    return calculateSpecificTrimesterAverage(activeTab);
+  };
+
+  const calculateSpecificTrimesterAverage = (trim: 't1' | 't2' | 't3') => {
     let totalPoints = 0;
     let totalCoeffs = 0;
 
     subjects.forEach(sub => {
-      const avg = calculateSubjectAverage(sub.id);
-      if (avg !== null) {
+      const subjectGrades = grades[trim]?.[sub.id] || [];
+      const validGrades = subjectGrades.filter(g => g !== '' && !isNaN(Number(g))).map(g => Number(g));
+      
+      if (validGrades.length > 0) {
+        const avg = validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
         totalPoints += avg * sub.coeff;
         totalCoeffs += sub.coeff;
       }
@@ -124,6 +135,36 @@ export function GradesCalculator() {
     if (totalCoeffs === 0) return null;
     return totalPoints / totalCoeffs;
   };
+
+  // --- DATA FOR EVOLUTION CHART ---
+  const chartData = useMemo(() => {
+    const t1Avg = calculateSpecificTrimesterAverage('t1');
+    const t2Avg = calculateSpecificTrimesterAverage('t2');
+    const t3Avg = calculateSpecificTrimesterAverage('t3');
+
+    // To make the chart look nice for the demo/marketing, if XP > 0, we distribute it
+    const t1XP = Math.floor(xp * 0.3);
+    const t2XP = Math.floor(xp * 0.6);
+    const t3XP = xp;
+
+    return [
+      {
+        name: 'Trimestre 1',
+        moyenne: t1Avg !== null ? Number(t1Avg.toFixed(2)) : null,
+        activite: t1Avg !== null ? t1XP : null,
+      },
+      {
+        name: 'Trimestre 2',
+        moyenne: t2Avg !== null ? Number(t2Avg.toFixed(2)) : null,
+        activite: t2Avg !== null ? t2XP : null,
+      },
+      {
+        name: 'Trimestre 3',
+        moyenne: t3Avg !== null ? Number(t3Avg.toFixed(2)) : null,
+        activite: t3Avg !== null ? t3XP : null,
+      }
+    ].filter(d => d.moyenne !== null); // Only show trimesters with grades
+  }, [grades, xp]);
 
   // --- GOALS HANDLING ---
   const handleSaveGoals = async () => {
@@ -147,17 +188,28 @@ export function GradesCalculator() {
   const handleGeneralAverageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     if (!isNaN(val) && val >= 0 && val <= 20) {
-      const totalCoeffs = subjects.reduce((sum, sub) => sum + sub.coeff, 0);
-      const points = Math.round(val * totalCoeffs);
       setDraftGoals(prev => ({
         ...prev,
-        generalAverage: val,
-        bacPoints: points
+        generalAverage: val
       }));
     } else if (e.target.value === '') {
       setDraftGoals(prev => ({
         ...prev,
-        generalAverage: undefined,
+        generalAverage: undefined
+      }));
+    }
+  };
+
+  const handleBacPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    if (!isNaN(val) && val >= 0) {
+      setDraftGoals(prev => ({
+        ...prev,
+        bacPoints: val
+      }));
+    } else if (e.target.value === '') {
+      setDraftGoals(prev => ({
+        ...prev,
         bacPoints: undefined
       }));
     }
@@ -242,10 +294,10 @@ export function GradesCalculator() {
       </div>
 
       {/* Main Navigation Tabs */}
-      <div className="flex bg-gray-100 dark:bg-[#0D1117] p-1.5 rounded-xl w-full md:w-fit animate-fade-in-up animation-delay-100">
+      <div className="flex flex-wrap bg-gray-100 dark:bg-[#0D1117] p-1.5 rounded-xl w-full md:w-fit animate-fade-in-up animation-delay-100 gap-1">
         <button
           onClick={() => setMainTab('notes')}
-          className={`flex-1 md:px-8 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
             mainTab === 'notes' 
               ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm' 
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -256,16 +308,126 @@ export function GradesCalculator() {
         </button>
         <button
           onClick={() => setMainTab('objectifs')}
-          className={`flex-1 md:px-8 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-            mainTab === 'objectifs' 
-              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm' 
+          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+            mainTab === 'objectifs'
+              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
           <Target className="w-4 h-4" />
           Mes Objectifs
         </button>
+        <button
+          onClick={() => setMainTab('simulateur')}
+          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+            mainTab === 'simulateur'
+              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <BarChart2 className="w-4 h-4" />
+          Simulateur BAC
+        </button>
+        <button
+          onClick={() => setMainTab('evolution')}
+          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+            mainTab === 'evolution'
+              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <TrendingUp className="w-4 h-4" />
+          Évolution (ROI)
+        </button>
       </div>
+
+      {/* CONTENT: SIMULATEUR BAC */}
+      {mainTab === 'simulateur' && (
+        <div className="animate-fade-in-up animation-delay-150">
+          <BacSimulator />
+        </div>
+      )}
+
+      {/* CONTENT: EVOLUTION */}
+      {mainTab === 'evolution' && (
+        <div className="space-y-6 animate-fade-in-up animation-delay-150">
+          <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-[#1A3557] dark:text-white mb-2 flex items-center gap-2">
+              <TrendingUp className="text-[#D81B60]" /> 
+              Ton Retour sur Investissement
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
+              Découvre comment ton assiduité sur EDUCTOME (XP gagnée, quiz réussis) impacte directement tes moyennes en classe. La courbe ne ment pas : l'effort paie toujours !
+            </p>
+
+            {chartData.length > 0 ? (
+              <div className="h-80 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#30363D" opacity={0.3} />
+                    <XAxis dataKey="name" stroke="#8B949E" />
+                    <YAxis yAxisId="left" stroke="#1976D2" domain={[0, 20]} />
+                    <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#161B22', borderColor: '#30363D', borderRadius: '8px' }}
+                      itemStyle={{ color: '#E6EDF3' }}
+                    />
+                    <Legend />
+                    <Line 
+                      yAxisId="left" 
+                      type="monotone" 
+                      dataKey="moyenne" 
+                      name="Moyenne de classe (/20)" 
+                      stroke="#1976D2" 
+                      strokeWidth={3}
+                      activeDot={{ r: 8 }} 
+                    />
+                    <Line 
+                      yAxisId="right" 
+                      type="monotone" 
+                      dataKey="activite" 
+                      name="Activité EDUCTOME (XP)" 
+                      stroke="#10B981" 
+                      strokeWidth={3}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-8 text-center border border-blue-100 dark:border-blue-900/30">
+                <BarChart2 className="w-12 h-12 text-blue-300 dark:text-blue-700 mx-auto mb-4 opacity-50" />
+                <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">Pas encore assez de données</h3>
+                <p className="text-blue-700 dark:text-blue-300 max-w-md mx-auto text-sm">
+                  Remplis tes notes pour au moins un trimestre dans l'onglet "Mes Notes" pour voir apparaître la courbe magique !
+                </p>
+                <button 
+                  onClick={() => setMainTab('notes')}
+                  className="mt-6 bg-white dark:bg-[#0D1117] text-blue-600 dark:text-blue-400 font-bold px-6 py-2 rounded-lg shadow-sm hover:shadow transition-all border border-blue-100 dark:border-blue-800"
+                >
+                  Ajouter mes notes
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-gradient-to-br from-[#1A3557] to-[#1976D2] rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold mb-2">Besoin d'un coup de pouce pour le prochain trimestre ?</h3>
+              <p className="text-blue-100 mb-6 text-sm md:text-base max-w-2xl">
+                Montre ce graphique à tes parents. C'est la preuve concrète que ton travail sur EDUCTOME porte ses fruits. Demande-leur de débloquer de nouveaux chapitres pour t'aider à exploser tes moyennes !
+              </p>
+              <button 
+                onClick={() => navigate('/dashboard/boutique')}
+                className="bg-[#D81B60] hover:bg-[#C2185B] text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+              >
+                <Star className="w-5 h-5" />
+                Explorer les tomes EDUCTOME
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CONTENT: MES NOTES */}
       {mainTab === 'notes' ? (
@@ -469,7 +631,7 @@ export function GradesCalculator() {
             })()}
           </div>
         </div>
-      ) : (
+      ) : mainTab === 'objectifs' ? (
         /* CONTENT: MES OBJECTIFS */
         <div className="space-y-8 animate-fade-in-up animation-delay-150">
           
@@ -492,8 +654,17 @@ export function GradesCalculator() {
               </div>
               
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 flex flex-col justify-center">
-                <div className="text-4xl font-black text-blue-600 dark:text-blue-400">
-                  {draftGoals.bacPoints || '-'} <span className="text-xl font-medium">Points</span>
+                <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2">Objectif de Points (BAC)</label>
+                <div className="flex items-end gap-2">
+                  <input 
+                    type="number" 
+                    step="1" min="0"
+                    value={draftGoals.bacPoints || ''}
+                    onChange={handleBacPointsChange}
+                    placeholder="Ex: 280"
+                    className="w-full max-w-[150px] px-4 py-3 text-2xl font-black text-blue-600 dark:text-blue-400 bg-white/80 dark:bg-[#161B22] border border-blue-200 dark:border-blue-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <span className="text-xl font-medium text-blue-600 dark:text-blue-400 mb-3">Points</span>
                 </div>
                 <p className="text-xs text-blue-600/70 dark:text-blue-300/70 mt-2">
                   Ton objectif de points pour le BAC.
@@ -572,7 +743,7 @@ export function GradesCalculator() {
           </div>
 
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

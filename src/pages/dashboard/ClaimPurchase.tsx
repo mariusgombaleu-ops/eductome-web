@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Search, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
 
 export const ClaimPurchase = () => {
   const [reference, setReference] = useState('');
   const [status, setStatus] = useState<'idle' | 'searching' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const { unlockCourse } = useUser();
 
   const handleClaim = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ export const ClaimPurchase = () => {
     setErrorMessage('');
 
     try {
-      // Simulation appel backend
+      // Appel de la Cloud Function claimSelarOrder
       const response = await fetch(`https://us-central1-eductome-web.cloudfunctions.net/claimSelarOrder`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,7 +27,18 @@ export const ClaimPurchase = () => {
       
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.productId) {
+        // BUG FIX — appel manquant : on débloque maintenant le cours dans Firestore
+        try {
+          await unlockCourse(data.productId);
+          setStatus('success');
+        } catch (unlockError) {
+          console.error('Erreur lors du déblocage du cours:', unlockError);
+          setStatus('error');
+          setErrorMessage('Ton achat a été retrouvé mais le déblocage a échoué. Réessaie ou contacte le support sur WhatsApp.');
+        }
+      } else if (data.success) {
+        // success sans productId (ne devrait pas arriver, mais on gère)
         setStatus('success');
       } else {
         setStatus('error');
@@ -88,9 +101,9 @@ export const ClaimPurchase = () => {
         {status === 'success' && (
           <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex flex-col items-center text-center animate-in zoom-in-95">
             <CheckCircle2 className="w-10 h-10 text-green-500 mb-2" />
-            <h3 className="font-bold text-green-800 dark:text-green-300 mb-1">Achat retrouvé !</h3>
+            <h3 className="font-bold text-green-800 dark:text-green-300 mb-1">Achat retrouvé ✅</h3>
             <p className="text-sm text-green-700 dark:text-green-400 mb-4">
-              Ton contenu a été débloqué et ajouté à ton compte.
+              Ton cours est maintenant débloqué. Bonne étude Champion(ne) !
             </p>
             <button
               onClick={() => navigate('/dashboard/courses')}

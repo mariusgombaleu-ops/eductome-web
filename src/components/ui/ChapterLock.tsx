@@ -1,4 +1,4 @@
-import { Lock, CreditCard, BookOpen } from 'lucide-react';
+import { Lock, CreditCard, BookOpen, MessageCircle } from 'lucide-react';
 
 interface ChapterLockProps {
   chapterTitle: string;
@@ -7,9 +7,10 @@ interface ChapterLockProps {
   onUnlockChapter: () => void;
   onUnlockTome: () => void;
   onUnlockCollection?: () => void;
+  onRequestParent?: () => void;
 }
 
-export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapter, onUnlockTome, onUnlockCollection }: ChapterLockProps) => {
+export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapter, onUnlockTome, onUnlockCollection, onRequestParent }: ChapterLockProps) => {
 
   return (
     <div className="my-8 max-w-2xl mx-auto border-2 border-eductome-magenta rounded-2xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 relative">
@@ -81,6 +82,21 @@ export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapte
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Option 4: Demander à un parent */}
+        {onRequestParent && (
+          <div 
+            className="mt-6 w-full p-4 bg-[#25D366]/10 border border-[#25D366]/30 rounded-xl cursor-pointer hover:bg-[#25D366]/20 transition-colors flex flex-col items-center shadow-sm" 
+            onClick={onRequestParent}
+          >
+            <div className="flex items-center gap-2 text-[#075E54] dark:text-[#25D366] font-bold mb-1">
+              <MessageCircle size={20} /> Demander à un parent via WhatsApp
+            </div>
+            <p className="text-xs text-[#128C7E] dark:text-[#25D366]/80 text-center">
+              Pas de Mobile Money ? Envoie un lien de paiement direct à ton père ou ta mère.
+            </p>
           </div>
         )}
 

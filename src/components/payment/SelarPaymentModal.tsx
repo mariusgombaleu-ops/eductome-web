@@ -3,8 +3,7 @@ import { Lock, CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-// TODO: Intégrer AuthContext Firebase plus tard quand on mettra la base de données
-// import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface SelarPaymentModalProps {
   isOpen: boolean;
@@ -23,8 +22,9 @@ const SELAR_COLLECTION_LINK = "https://selar.com/27v5n07o20";
 
 export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, onClose, tomeTitle, price, isChapter = false, isCollection = false, courseId }) => {
   const navigate = useNavigate();
-  // Pour l'instant, un numéro fictif puisqu'on n'a pas encore de vraie BDD branchée
-  const user = { phoneNumber: "0700000000" };
+  const { currentUser } = useAuth();
+  // Extraire le vrai numéro depuis l'email fictif Firebase (format: +225XXXXXXXXXX@eductome.app)
+  const realPhoneNumber = currentUser?.email?.replace('@eductome.app', '') || '';
   const [email, setEmail] = React.useState('');
   const [error, setError] = React.useState('');
   const [relaisCode, setRelaisCode] = React.useState('');
@@ -67,8 +67,8 @@ export const SelarPaymentModal: React.FC<SelarPaymentModalProps> = ({ isOpen, on
       localStorage.setItem('eductome_pending_course', courseId);
     }
 
-    if (user?.phoneNumber) {
-      const encodedPhone = encodeURIComponent(user.phoneNumber);
+    if (realPhoneNumber) {
+      const encodedPhone = encodeURIComponent(realPhoneNumber);
       const separator = finalLink.includes('?') ? '&' : '?';
       finalLink = `${finalLink}${separator}email=${encodeURIComponent(paymentEmail)}&phone=${encodedPhone}`;
 

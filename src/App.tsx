@@ -25,9 +25,11 @@ import { StarterPack } from './pages/dashboard/StarterPack';
 import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
 import { ClaimPurchase } from './pages/dashboard/ClaimPurchase';
 import { GradesCalculator } from './pages/dashboard/GradesCalculator';
+import { Flashcards } from './pages/dashboard/Flashcards';
 import { RelaisDashboard } from './pages/RelaisDashboard';
 import { ParentDashboard } from './pages/ParentDashboard';
 import { TimetablePage } from './pages/TimetablePage';
+import { ApeDashboard } from './pages/ApeDashboard';
 
 import { UserProvider } from './contexts/UserContext';
 
@@ -63,6 +65,7 @@ function App() {
               <Route path="/dashboard/courses" element={<MyCourses />} />
               <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
               <Route path="/dashboard/objectifs" element={<GradesCalculator />} />
+              <Route path="/dashboard/revisions" element={<Flashcards />} />
               <Route path="/dashboard/profile" element={<Profile />} />
               <Route path="/dashboard/settings" element={<Settings />} />
               <Route path="/dashboard/boutique" element={<DashboardBoutique />} />
@@ -82,6 +85,9 @@ function App() {
 
             {/* Public parent progress view — no auth required */}
             <Route path="/parent/:studentUid" element={<ParentDashboard />} />
+
+            {/* APE / COGES Dashboard */}
+            <Route path="/ape" element={<ApeDashboard />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

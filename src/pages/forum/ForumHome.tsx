@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useToast } from '../../contexts/ToastContext';
 import { useUser } from '../../contexts/UserContext';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, addDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, query, orderBy, serverTimestamp, limit, startAfter, getDocs } from 'firebase/firestore';
 import { useEffect } from 'react';
 
 
@@ -23,9 +23,12 @@ export const ForumHome = () => {
   const [newTopicContent, setNewTopicContent] = useState("");
 
   const [discussions, setDiscussions] = useState<any[]>([]);
+  const [lastVisible, setLastVisible] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
-    const q = query(collection(db, 'forum_posts'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'forum_posts'), orderBy('createdAt', 'desc'), limit(10));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedDiscussions = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -39,10 +42,69 @@ export const ForumHome = () => {
         authorPhotoURL: doc.data().authorPhotoURL || null
       }));
       setDiscussions(fetchedDiscussions);
+      
+      if (snapshot.docs.length > 0) {
+        setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      }
+      
+      if (snapshot.docs.length < 10) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
     });
 
     return () => unsubscribe();
   }, []);
+
+  const loadMore = async () => {
+    if (!lastVisible || !hasMore || isLoadingMore) return;
+    setIsLoadingMore(true);
+    
+    try {
+      const q = query(
+        collection(db, 'forum_posts'), 
+        orderBy('createdAt', 'desc'), 
+        startAfter(lastVisible), 
+        limit(10)
+      );
+      
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        setHasMore(false);
+        setIsLoadingMore(false);
+        return;
+      }
+
+      const newDiscussions = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        time: doc.data().time || "À l'instant",
+        replies: doc.data().replies || 0,
+        tags: doc.data().tags || [],
+        isResolved: doc.data().isResolved || false,
+        isPertinent: doc.data().isPertinent || false,
+        authorPhotoURL: doc.data().authorPhotoURL || null
+      }));
+
+      setDiscussions(prev => {
+        // Prevent duplicates just in case
+        const existingIds = new Set(prev.map(d => d.id));
+        const filteredNew = newDiscussions.filter(d => !existingIds.has(d.id));
+        return [...prev, ...filteredNew];
+      });
+      setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      
+      if (snapshot.docs.length < 10) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error loading more posts:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   const insertMarkdown = (prefix: string, suffix: string, placeholder: string) => {
     const textarea = document.getElementById('forum-textarea') as HTMLTextAreaElement;
@@ -238,9 +300,15 @@ export const ForumHome = () => {
             ))}
           </div>
           
-          <button className="w-full py-4 rounded-xl font-bold border border-[#E1E4E8] dark:border-[#30363D] bg-[#F8F9FA] dark:bg-[#161B22] text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#30363D] transition-colors">
-            Charger plus de discussions
-          </button>
+          {hasMore && (
+            <button 
+              onClick={loadMore}
+              disabled={isLoadingMore}
+              className="w-full py-4 rounded-xl font-bold border border-[#E1E4E8] dark:border-[#30363D] bg-[#F8F9FA] dark:bg-[#161B22] text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#30363D] transition-colors disabled:opacity-50"
+            >
+              {isLoadingMore ? "Chargement..." : "Charger plus de discussions"}
+            </button>
+          )}
 
         </div>
 

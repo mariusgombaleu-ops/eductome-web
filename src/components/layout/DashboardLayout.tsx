@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { NavLink, useOutlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AnimatedPage } from './AnimatedPage';
@@ -26,11 +26,14 @@ import {
   PlusSquare,
   Calculator,
   TrendingUp,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
+import { useHasUnreadNotifications } from '../../hooks/useHasUnreadNotifications';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUser } from '../../contexts/UserContext';
+import { NotificationDropdown } from '../notifications/NotificationDropdown';
 
 export const DashboardLayout = () => {
   const { currentUser, loading, logout } = useAuth();
@@ -41,6 +44,21 @@ export const DashboardLayout = () => {
   const outlet = useOutlet();
   const { theme, toggleTheme } = useTheme();
   const { isInstallable, installPWA, showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
+  const hasUnread = useHasUnreadNotifications();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const bellRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showNotifications) return;
+    const handler = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showNotifications]);
+
   const navigation = [
     { name: 'Vue d\'ensemble', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Mon Profil', href: '/dashboard/profile', icon: User },
@@ -59,7 +77,7 @@ export const DashboardLayout = () => {
   }
 
   if (!currentUser) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   return (
@@ -208,10 +226,21 @@ export const DashboardLayout = () => {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <button className="p-2 rounded-xl transition-colors relative group text-[#6B7280] dark:text-[#E6EDF3] hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <div className="relative" ref={bellRef}>
+              <button
+                onClick={() => setShowNotifications(prev => !prev)}
+                className="p-2 rounded-xl transition-colors relative group text-[#6B7280] dark:text-[#E6EDF3] hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]"
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5" />
+                {hasUnread && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                )}
+              </button>
+              {showNotifications && (
+                <NotificationDropdown onClose={() => setShowNotifications(false)} />
+              )}
+            </div>
             <Link to="/dashboard/profile" className="flex items-center space-x-2 p-1 pr-2 sm:pr-3 rounded-full sm:rounded-xl transition-colors hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]">
               <div className="w-8 h-8 rounded-full bg-eductome-magenta flex items-center justify-center text-white font-bold text-sm shadow-sm uppercase overflow-hidden">
                 {photoURL ? (

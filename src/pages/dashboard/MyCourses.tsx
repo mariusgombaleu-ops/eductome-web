@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, PlayCircle, Star, ShoppingBag, Book } from 'lucide-react';
+import { BookOpen, PlayCircle, Star, ShoppingBag, Book, Zap } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
@@ -98,6 +98,27 @@ export const MyCourses = () => {
             Retrouve ici tous les tomes et chapitres que tu as débloqués. Continue ton entraînement !
           </p>
         </div>
+      </div>
+
+      {/* Banner Révisions Express */}
+      <div className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 dark:from-orange-500/5 dark:to-orange-600/5 border border-orange-200 dark:border-orange-900/50 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-xl shrink-0">
+            <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-[#1A1A2E] dark:text-white">Mode Révision Express</h2>
+            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#8B949E]">
+              15 minutes chrono. Révise les essentiels à connaître avant un devoir !
+            </p>
+          </div>
+        </div>
+        <button 
+          onClick={() => navigate('/dashboard/revisions')}
+          className="w-full sm:w-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-transform hover:scale-105 shrink-0 shadow-lg shadow-orange-500/20"
+        >
+          Lancer une révision <Zap className="w-5 h-5 fill-current" />
+        </button>
       </div>
 
       {/* Tabs */}

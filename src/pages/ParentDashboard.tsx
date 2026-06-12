@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../config/firebase';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getLevelFromXp } from '../contexts/UserContext';
 import { Trophy, Flame, BookOpen, Star, Calendar, Target, CheckCircle, Lock, TrendingUp, ShieldCheck } from 'lucide-react';
 import type { Achat } from '../types';
@@ -86,16 +86,26 @@ export const ParentDashboard = () => {
 
     const fetchData = async () => {
       try {
-        // Read only safe fields — no email, no payment amounts
-        const userSnap = await getDoc(doc(db, 'users', studentUid));
+        // FIX 5 — Accès via Cloud Function proxy (ne retourne que les champs publics sûrs)
+        // Remplace l'ancienne lecture Firestore directe qui exposait toutes les données
+        const fnUrl = `https://us-central1-eductome-web.cloudfunctions.net/getPublicStudentData?uid=${encodeURIComponent(studentUid)}`;
+        const fnResponse = await fetch(fnUrl);
 
-        if (!userSnap.exists()) {
+        if (!fnResponse.ok) {
           setNotFound(true);
           setLoading(false);
           return;
         }
 
-        const d = userSnap.data();
+        const fnData = await fnResponse.json();
+
+        if (!fnData.success || !fnData.data) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        const d = fnData.data;
         setStudent({
           pseudo: d.pseudo || 'Élève',
           xp: d.xp || 0,

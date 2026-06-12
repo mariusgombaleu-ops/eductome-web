@@ -23,9 +23,11 @@ export const Login = () => {
       await loginWithPhoneAndPassword(phone, password);
       
       localStorage.setItem('eductome_user_logged_in', 'true');
+      // Priorité : state.from (injecté par DashboardLayout guard), puis query param, puis /dashboard
+      const from = (location.state as any)?.from;
       const searchParams = new URLSearchParams(location.search);
-      const redirect = searchParams.get('redirect') || '/dashboard';
-      navigate(redirect);
+      const redirect = from || searchParams.get('redirect') || '/dashboard';
+      navigate(redirect, { replace: true });
     } catch (err: any) {
       console.error("Login error:", err);
       setError("Numéro de téléphone ou mot de passe incorrect.");
