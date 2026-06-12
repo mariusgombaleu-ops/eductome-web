@@ -3,23 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getLevelFromXp } from '../contexts/UserContext';
-import { Trophy, Flame, BookOpen, Star, Calendar, Target, CheckCircle, Lock, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Trophy, Flame, BookOpen, Star, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
 import type { Achat } from '../types';
 
 interface StudentData {
   pseudo: string;
   xp: number;
   currentStreak: number;
-  lastStudyDate: string | null;
-  rewardedActions: string[];
-  unlockedCourses: string[];
-}
-
-interface ExamResult {
-  id: string;
-  score: number;
-  total: number;
-  completedAt: any;
 }
 
 const TOME_MAP = [
@@ -29,25 +19,7 @@ const TOME_MAP = [
   { id: 't11-eq-diff', name: 'Équations Différentielles', tome: 11 },
 ];
 
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—';
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-  } catch {
-    return dateStr ?? '—';
-  }
-}
 
-function formatTimestamp(ts: any): string {
-  if (!ts) return '—';
-  try {
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-  } catch {
-    return '—';
-  }
-}
 
 function StatCard({ icon, label, value, small }: { icon: React.ReactNode; label: string; value: string; small?: boolean }) {
   return (
@@ -77,7 +49,6 @@ export const ParentDashboard = () => {
   const { studentUid } = useParams<{ studentUid: string }>();
   const [student, setStudent] = useState<StudentData | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
-  const [examResults, setExamResults] = useState<ExamResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -110,35 +81,17 @@ export const ParentDashboard = () => {
           pseudo: d.pseudo || 'Élève',
           xp: d.xp || 0,
           currentStreak: d.currentStreak || 0,
-          lastStudyDate: d.lastStudyDate || null,
-          rewardedActions: d.rewardedActions || [],
-          unlockedCourses: d.unlockedCourses || [],
         });
 
-        // Achats — used to show owned tomes (reference + type only, no amounts)
-        const achatsSnap = await getDocs(
-          query(collection(db, 'achats'), where('compte_id', '==', studentUid))
-        );
-        setAchats(achatsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Achat)));
-
-        // Exam Blanc results — ordered client-side to avoid composite index requirement
-        const examSnap = await getDocs(
-          query(collection(db, 'examResults'), where('userId', '==', studentUid))
-        );
-        const exams: ExamResult[] = examSnap.docs
-          .map(doc => ({
-            id: doc.id,
-            score: doc.data().score ?? 0,
-            total: doc.data().total ?? 1,
-            completedAt: doc.data().completedAt,
-          }))
-          .sort((a, b) => {
-            const ta = a.completedAt?.toDate?.()?.getTime?.() ?? 0;
-            const tb = b.completedAt?.toDate?.()?.getTime?.() ?? 0;
-            return tb - ta;
-          })
-          .slice(0, 10);
-        setExamResults(exams);
+        // Achats — used to show owned tomes (may fail silently if rules deny parent access)
+        try {
+          const achatsSnap = await getDocs(
+            query(collection(db, 'achats'), where('compte_id', '==', studentUid))
+          );
+          setAchats(achatsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Achat)));
+        } catch {
+          // Silently ignore — achats are protected by Firestore rules
+        }
       } catch (err) {
         console.error('ParentDashboard fetch error:', err);
         setNotFound(true);
@@ -181,19 +134,11 @@ export const ParentDashboard = () => {
     ? Math.min(100, Math.max(0, ((student.xp - level.minXp) / (level.maxXp - level.minXp)) * 100))
     : 100;
 
-  const quizCount = student.rewardedActions.filter(a => a.startsWith('quiz_')).length;
-
-  const avgExamScore =
-    examResults.length > 0
-      ? Math.round(examResults.reduce((sum, r) => sum + (r.score / r.total) * 100, 0) / examResults.length)
-      : null;
-
-  const unlockedSet = new Set(student.unlockedCourses);
   const ownedRefs = new Set(achats.map(a => a.reference));
 
   const tomeProgress = TOME_MAP.map(t => ({
     ...t,
-    unlocked: unlockedSet.has(t.id) || ownedRefs.has(t.id) || ownedRefs.has('cles-maths'),
+    unlocked: ownedRefs.has(t.id) || ownedRefs.has('cles-maths'),
   }));
 
   const unlockedCount = tomeProgress.filter(t => t.unlocked).length;
@@ -241,7 +186,7 @@ export const ParentDashboard = () => {
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {/* Stat cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <StatCard
             icon={<Flame className="w-4 h-4 text-orange-500" />}
             label="Série actuelle"
@@ -251,17 +196,6 @@ export const ParentDashboard = () => {
             icon={<Star className="w-4 h-4 text-yellow-500" />}
             label="Points XP"
             value={`${student.xp}`}
-          />
-          <StatCard
-            icon={<Target className="w-4 h-4 text-blue-500" />}
-            label="Quiz faits"
-            value={`${quizCount}`}
-          />
-          <StatCard
-            icon={<Calendar className="w-4 h-4 text-green-500" />}
-            label="Dernière activité"
-            value={formatDate(student.lastStudyDate)}
-            small
           />
         </div>
 
@@ -291,38 +225,6 @@ export const ParentDashboard = () => {
             ))}
           </div>
         </Section>
-
-        {/* Exam Blanc results */}
-        {examResults.length > 0 && (
-          <Section title="Examens Blancs" icon={<TrendingUp className="w-5 h-5 text-[#1A3557]" />}>
-            {avgExamScore !== null && (
-              <div className="mb-4 px-4 py-3 bg-blue-50 rounded-xl flex items-center justify-between">
-                <span className="text-sm text-blue-600 font-medium">Score moyen</span>
-                <span className="font-bold text-blue-800 text-xl">{avgExamScore}%</span>
-              </div>
-            )}
-            <div className="divide-y divide-gray-100">
-              {examResults.map(r => {
-                const pct = Math.round((r.score / r.total) * 100);
-                const color =
-                  pct >= 70 ? 'bg-green-100 text-green-700' :
-                  pct >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                  'bg-red-100 text-red-700';
-                return (
-                  <div key={r.id} className="flex items-center justify-between py-3">
-                    <span className="text-sm text-gray-500">{formatTimestamp(r.completedAt)}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#1A3557] text-sm">{r.score}/{r.total}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${color}`}>
-                        {pct}%
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Section>
-        )}
 
         {/* CTA — justify buying the physical book */}
         <div className="bg-[#1A3557] rounded-2xl p-6 text-white text-center">

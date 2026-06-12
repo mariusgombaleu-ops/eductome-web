@@ -18,6 +18,7 @@ import { SEO } from '../components/SEO';
 import { useProgress } from '../hooks/useProgress';
 import { LeadCaptureModal } from '../components/ui/LeadCaptureModal';
 import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
+import { renderMath } from '../components/blocks/BlockRenderer';
 
 const vitrineFiches = [
   {
@@ -148,10 +149,6 @@ export function Resources() {
         // Déployer la correction de l'exercice cible après le rendu
         setTimeout(() => {
           setShowCorrection(prev => ({ ...prev, [openExParam]: true }));
-          // Rendre les formules MathJax
-          if ((window as any).MathJax) {
-            (window as any).MathJax.typesetPromise();
-          }
           // Scroller jusqu'à l'exercice cible
           setTimeout(() => {
             const el = document.getElementById(openExParam);
@@ -189,13 +186,6 @@ export function Resources() {
 
     setShowCorrection(prev => {
       const newState = { ...prev, [exerciseId]: !prev[exerciseId] };
-      if (newState[exerciseId]) {
-        setTimeout(() => {
-          if ((window as any).MathJax) {
-            (window as any).MathJax.typesetPromise([exercisesContainerRef.current]);
-          }
-        }, 50);
-      }
       return newState;
     });
   };
@@ -212,15 +202,6 @@ export function Resources() {
     }
   };
 
-  useEffect(() => {
-    if (activeTab === 'exercices' && activeTomeId) {
-      setTimeout(() => {
-        if ((window as any).MathJax) {
-          (window as any).MathJax.typesetPromise([exercisesContainerRef.current]);
-        }
-      }, 50);
-    }
-  }, [activeTab, activeTomeId]);
 
   const handleTomeClick = (id: number) => {
     if (activeTomeId === id) {
@@ -545,9 +526,9 @@ export function Resources() {
                                 </div>
                               )}
                               
-                              <div 
+                              <div
                                 className="text-gray-800 text-base md:text-lg leading-relaxed math-content"
-                                dangerouslySetInnerHTML={{ __html: ex.statement }}
+                                dangerouslySetInnerHTML={{ __html: renderMath(ex.statement) }}
                               />
 
                               <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -613,7 +594,7 @@ export function Resources() {
                                             return (
                                               <div key={eIdx} className="bg-[#FDEDEC] border-l-4 border-[#C62828] p-4 rounded-r-lg">
                                                 <h5 className="font-bold text-[#C62828] mb-1">🚨 ATTENTION PIÈGE BAC</h5>
-                                                <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: etape.content }} />
+                                                <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
                                               </div>
                                             );
                                           }
@@ -627,7 +608,7 @@ export function Resources() {
                                           return (
                                             <div key={eIdx} className="mb-4">
                                               <h5 className={`font-bold ${color} mb-1`}>{icon} {etape.type}</h5>
-                                              <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: etape.content }} />
+                                              <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
                                             </div>
                                           );
                                         })}
@@ -669,7 +650,7 @@ export function Resources() {
                                       <div className="pl-4 md:pl-12">
                                         {ex.correction.astuces.map((astuce: string, aIdx: number) => (
                                           <div key={aIdx} className="bg-[#FDEBD0] border-l-4 border-[#E67E22] p-4 rounded-r-lg mb-3">
-                                            <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: astuce.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>') }} />
+                                            <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(astuce.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')) }} />
                                           </div>
                                         ))}
                                       </div>

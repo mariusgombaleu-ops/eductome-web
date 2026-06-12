@@ -9,7 +9,7 @@ import katex from 'katex';
 const KATEX_FALLBACK = (tex: string) =>
   `<code style="font-family:monospace;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;font-size:0.875em">${tex}</code>`;
 
-const renderMath = (html: string): string => {
+export const renderMath = (html: string): string => {
   // Display: $$...$$ (process before $...$ to avoid double-matching)
   html = html.replace(/\$\$([\s\S]+?)\$\$/g, (_, tex) => {
     try { return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false, output: 'html' }); }
@@ -187,7 +187,7 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
   );
 };
 
-export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }: { block: AnyBlock; isDark: boolean; courseId?: string; chapterId?: string; sectionId?: string; mathjaxReady?: boolean }) => {
+export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }: { block: AnyBlock; isDark: boolean; courseId?: string; chapterId?: string; sectionId?: string }) => {
   switch (block.type) {
     case 'text': {
       const b = block as TextBlock;

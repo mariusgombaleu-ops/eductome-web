@@ -22,19 +22,6 @@ import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
 import { db } from '../../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-declare global {
-  interface Window { MathJax?: any; }
-}
-
-const renderMathJax = () => {
-  if (window.MathJax?.typesetPromise) {
-    if (window.MathJax.typesetClear) {
-      window.MathJax.typesetClear();
-    }
-    window.MathJax.typesetPromise().catch(() => {});
-  }
-};
-
 // ──────────────────────────────────────────────
 // Quiz Component
 // ──────────────────────────────────────────────
@@ -46,17 +33,6 @@ const QuizSection = ({ quiz, onComplete, courseId, chapterId }: { quiz: QuizBloc
   const [results, setResults] = useState<boolean[]>([]);
   const [quizFinished, setQuizFinished] = useState(false);
   const [attempts, setAttempts] = useState(1);
-
-  useEffect(() => {
-    let rafId: number;
-    const triggerMathJax = () => {
-      rafId = requestAnimationFrame(() => {
-        renderMathJax();
-      });
-    };
-    triggerMathJax();
-    return () => cancelAnimationFrame(rafId);
-  }, [qi, quizFinished]);
 
   const handleValidate = () => {
     if (selected === null) return;
@@ -218,8 +194,6 @@ export const CourseReader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [mathjaxReady, setMathjaxReady] = useState(false);
-
   // Modals state
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
@@ -477,28 +451,6 @@ export const CourseReader = () => {
       setIsGeneratingPDF(false);
     }
   };
-
-  useEffect(() => {
-    let rafId: number;
-    const triggerMathJax = () => {
-      requestAnimationFrame(() => {
-        rafId = requestAnimationFrame(() => {
-          renderMathJax();
-        });
-      });
-    };
-    triggerMathJax();
-    return () => cancelAnimationFrame(rafId);
-  }, [activeChapterIndex]);
-
-  useEffect(() => {
-    const promise = window.MathJax?.startup?.promise;
-    if (promise) {
-      promise.then(() => setMathjaxReady(true)).catch(() => setMathjaxReady(true));
-    } else {
-      setMathjaxReady(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (courseId) {
@@ -783,7 +735,7 @@ export const CourseReader = () => {
                             <div className="space-y-6 pt-2">
                               {section.blocs.map((block, blockIdx) => (
                                 <div key={block.id} data-block-type={block.type === 'exercise' ? 'exercise' : undefined} style={{ animationDelay: `${blockIdx * 60}ms` }}>
-                                  <BlockRenderer block={block} isDark={theme === 'dark'} courseId={courseId || 'unknown'} chapterId={chapter.id} sectionId={section.id} mathjaxReady={mathjaxReady} />
+                                  <BlockRenderer block={block} isDark={theme === 'dark'} courseId={courseId || 'unknown'} chapterId={chapter.id} sectionId={section.id} />
                                 </div>
                               ))}
                             </div>
