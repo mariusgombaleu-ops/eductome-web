@@ -521,14 +521,24 @@ export const getPublicStudentData = onRequest({ cors: true }, async (req, res) =
     // Champs publics autorisés UNIQUEMENT — jamais de données sensibles.
     // Ne pas exposer : rewardedActions, unlockedCourses, lastStudyDate,
     // email_selar, goal, goals, grades, bacSimulation.
-    const publicData = {
+    const publicData: Record<string, unknown> = {
       pseudo: data.pseudo || null,
       xp: data.xp || 0,
       currentStreak: data.currentStreak || 0,
       level: data.level || null,
       photoURL: data.photoURL || null,
       highschool: data.highschool || null,
+      purchasedReferences: [] as string[],
     };
+
+    // Lire les achats depuis la collection racine (Admin SDK bypass les rules).
+    // On ne renvoie que les références — jamais montant, date ou ref_commande.
+    const achatsSnap = await db.collection("achats")
+      .where("compte_id", "==", uid)
+      .get();
+    publicData.purchasedReferences = achatsSnap.docs
+      .map((d) => d.data().reference as string)
+      .filter(Boolean);
 
     res.status(200).json({ success: true, data: publicData });
   } catch (error) {

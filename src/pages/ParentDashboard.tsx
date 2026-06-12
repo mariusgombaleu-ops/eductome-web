@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { db } from '../config/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getLevelFromXp } from '../contexts/UserContext';
 import { Trophy, Flame, BookOpen, Star, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
-import type { Achat } from '../types';
 
 interface StudentData {
   pseudo: string;
@@ -48,7 +45,7 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
 export const ParentDashboard = () => {
   const { studentUid } = useParams<{ studentUid: string }>();
   const [student, setStudent] = useState<StudentData | null>(null);
-  const [achats, setAchats] = useState<Achat[]>([]);
+  const [purchasedRefs, setPurchasedRefs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -83,15 +80,8 @@ export const ParentDashboard = () => {
           currentStreak: d.currentStreak || 0,
         });
 
-        // Achats — used to show owned tomes (may fail silently if rules deny parent access)
-        try {
-          const achatsSnap = await getDocs(
-            query(collection(db, 'achats'), where('compte_id', '==', studentUid))
-          );
-          setAchats(achatsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Achat)));
-        } catch {
-          // Silently ignore — achats are protected by Firestore rules
-        }
+        // Tomes débloqués — les références achetées viennent de la Cloud Function
+        setPurchasedRefs(d.purchasedReferences || []);
       } catch (err) {
         console.error('ParentDashboard fetch error:', err);
         setNotFound(true);
@@ -134,7 +124,7 @@ export const ParentDashboard = () => {
     ? Math.min(100, Math.max(0, ((student.xp - level.minXp) / (level.maxXp - level.minXp)) * 100))
     : 100;
 
-  const ownedRefs = new Set(achats.map(a => a.reference));
+  const ownedRefs = new Set(purchasedRefs);
 
   const tomeProgress = TOME_MAP.map(t => ({
     ...t,
