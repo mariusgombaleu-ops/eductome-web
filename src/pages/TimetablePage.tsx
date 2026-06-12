@@ -8,6 +8,7 @@ import { useToast } from '../contexts/ToastContext';
 import { Calendar, Plus, Pencil, X, Clock, AlertTriangle, ChevronRight, CheckCircle2 } from 'lucide-react';
 import type { TimetableSlot, AssessmentEvent } from '../components/types';
 import { IVORIAN_CURRICULUM } from '../utils/curriculum';
+import { TimetableBottomSheet } from '../components/TimetableBottomSheet';
 
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as const;
 type Day = typeof DAYS[number];

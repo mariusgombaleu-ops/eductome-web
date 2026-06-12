@@ -26,8 +26,7 @@ import {
   PlusSquare,
   Calculator,
   TrendingUp,
-  X,
-  Zap
+  X
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
 import { useHasUnreadNotifications } from '../../hooks/useHasUnreadNotifications';

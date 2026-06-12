@@ -112,7 +112,7 @@ export const Overview = () => {
     { id: 'hg', name: 'Histoire-Géographie' },
   ];
 
-  const handleAssessmentAction = (assessment: AssessmentEvent) => {
+  const handleAssessmentAction = (_assessment: AssessmentEvent) => {
     navigate(`/dashboard/revisions`);
   };
 
