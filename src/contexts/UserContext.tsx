@@ -292,7 +292,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const response = await fetch(`https://us-central1-eductome-web.cloudfunctions.net/checkTransaction?email=${encodeURIComponent(waitingEmail)}`);
+        const response = await fetch(
+          `https://us-central1-eductome-web.cloudfunctions.net/checkTransaction?email=${encodeURIComponent(waitingEmail)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${await currentUser.getIdToken()}`,
+            },
+          }
+        );
         const data = await response.json();
         
         if (data.success && data.productId) {
@@ -309,12 +316,37 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             coursesToAdd = [data.productId];
           }
           
-          // Mettre à jour Firestore
-          const userRef = doc(db, 'users', currentUser.uid);
-          // On évite les doublons via une petite vérification ou on utilise arrayUnion pour chaque
-          await updateDoc(userRef, {
-            unlockedCourses: arrayUnion(...coursesToAdd)
-          });
+          // Appeler la Cloud Function sécurisée pour chaque cours à débloquer.
+          // Elle vérifie l'achat dans /achats avant d'écrire dans Firestore.
+          const idToken = await currentUser.getIdToken();
+          let allUnlocked = true;
+          for (const cId of coursesToAdd) {
+            try {
+              const unlockRes = await fetch(
+                'https://us-central1-eductome-web.cloudfunctions.net/unlockCourseSecure',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${idToken}`,
+                  },
+                  body: JSON.stringify({ courseId: cId }),
+                }
+              );
+              const unlockData = await unlockRes.json();
+              if (!unlockData.success) {
+                // La CF refuse (achat pas encore syncé) — on réessaiera au prochain cycle
+                console.warn(`Vigile: déblocage refusé pour ${cId}:`, unlockData.message);
+                allUnlocked = false;
+              }
+            } catch (unlockErr) {
+              console.error(`Vigile: erreur unlock ${cId}:`, unlockErr);
+              allUnlocked = false;
+            }
+          }
+          // Si au moins un cours a échoué, on ne nettoie pas le localStorage
+          // Le Vigile réessaiera au prochain cycle (dans 5 secondes)
+          if (!allUnlocked) return;
 
           // Traitement du code relais si présent
           const pendingRelaisCode = localStorage.getItem('eductome_pending_relais_code');
@@ -466,10 +498,31 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const unlockCourse = async (courseId: string) => {
     if (!currentUser || unlockedCourses.includes(courseId)) return;
-    const userRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(userRef, {
-      unlockedCourses: arrayUnion(courseId)
-    });
+
+    // SÉCURITÉ : on passe TOUJOURS par la Cloud Function sécurisée.
+    // Elle vérifie qu'un achat réel existe dans /achats avant d'écrire dans Firestore.
+    // NE JAMAIS écrire directement dans users/{uid}.unlockedCourses depuis le client.
+    try {
+      const idToken = await currentUser.getIdToken();
+      const response = await fetch(
+        'https://us-central1-eductome-web.cloudfunctions.net/unlockCourseSecure',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ courseId }),
+        }
+      );
+      const data = await response.json();
+      if (!data.success) {
+        console.error('unlockCourse refusé :', data.message);
+        // On ne lance pas d’exception ici — l'UI gère l'erreur via le flux appelant
+      }
+    } catch (err) {
+      console.error('Erreur unlockCourse (Cloud Function):', err);
+    }
   };
 
   const resetUser = async () => {
