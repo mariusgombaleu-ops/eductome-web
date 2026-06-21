@@ -2,6 +2,7 @@ import { useParams, Link, Navigate, useLocation } from 'react-router-dom';
 import { blogPosts, BlogContentElement } from '../data/blogPosts';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { SEO } from '../components/SEO';
+import { useTheme } from '../contexts/ThemeContext';
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -9,6 +10,7 @@ export function BlogPost() {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
   const basePath = isDashboard ? '/dashboard/blog' : '/blog';
+  const { palette } = useTheme();
 
   if (!post) {
     return <Navigate to={basePath} replace />;
@@ -17,27 +19,27 @@ export function BlogPost() {
   const renderContentElement = (element: BlogContentElement, index: number) => {
     switch (element.type) {
       case 'h2':
-        return <h2 key={index} className="text-2xl font-bold text-eductome-marine mt-10 mb-4 font-playfair">{element.text}</h2>;
+        return <h2 key={index} className="text-2xl font-bold mt-10 mb-4 font-playfair transition-colors" style={{ color: palette.ink }}>{element.text}</h2>;
       case 'h3':
-        return <h3 key={index} className="text-xl font-bold text-eductome-marine mt-8 mb-3 font-poppins">{element.text}</h3>;
+        return <h3 key={index} className="text-xl font-bold mt-8 mb-3 font-poppins transition-colors" style={{ color: palette.ink2 }}>{element.text}</h3>;
       case 'p':
-        return <p key={index} className="text-gray-700 leading-relaxed mb-6 text-lg">{element.text}</p>;
+        return <p key={index} className="leading-relaxed mb-6 text-lg transition-colors" style={{ color: palette.ink2 }}>{element.text}</p>;
       case 'ul':
         return (
           <ul key={index} className="space-y-3 mb-6">
             {element.items.map((item, i) => (
               <li key={i} className="flex items-start">
-                <span className="text-eductome-magenta mr-3 mt-1">✦</span>
-                <span className="text-gray-700 leading-relaxed text-lg">{item}</span>
+                <span className="mr-3 mt-1" style={{ color: palette.accent }}>✦</span>
+                <span className="leading-relaxed text-lg transition-colors" style={{ color: palette.ink2 }}>{item}</span>
               </li>
             ))}
           </ul>
         );
       case 'quote':
         return (
-          <blockquote key={index} className="border-l-4 border-eductome-magenta bg-eductome-magenta/5 p-6 rounded-r-lg my-8 italic text-lg text-gray-800">
+          <blockquote key={index} className="border-l-4 p-6 rounded-r-lg my-8 italic text-lg transition-colors" style={{ borderColor: palette.accent, background: `${palette.accent}10`, color: palette.ink }}>
             "{element.text}"
-            {element.author && <footer className="mt-2 text-sm font-semibold text-eductome-marine not-italic">— {element.author}</footer>}
+            {element.author && <footer className="mt-2 text-sm font-semibold not-italic transition-colors" style={{ color: palette.ink3 }}>— {element.author}</footer>}
           </blockquote>
         );
       default:
@@ -46,7 +48,7 @@ export function BlogPost() {
   };
 
   return (
-    <article className="min-h-screen bg-white">
+    <article className={`min-h-screen transition-colors duration-300 ${isDashboard ? 'pb-20' : ''}`} style={{ background: isDashboard ? 'transparent' : palette.bg }}>
       <SEO title={post.title} description={post.excerpt} />
       {/* Hero Header */}
       <div className="relative h-[40vh] min-h-[300px] w-full">
@@ -83,12 +85,12 @@ export function BlogPost() {
             {post.content.map((element, index) => renderContentElement(element, index))}
           </div>
 
-          <div className="mt-16 pt-8 border-t border-gray-100 flex justify-between items-center">
-            <p className="text-gray-500 font-medium">Partager cet article :</p>
+          <div className="mt-16 pt-8 border-t flex justify-between items-center transition-colors" style={{ borderColor: palette.line }}>
+            <p className="font-medium" style={{ color: palette.ink3 }}>Partager cet article :</p>
             <div className="flex space-x-4">
-              <button className="text-gray-400 hover:text-blue-600 transition-colors">Facebook</button>
-              <button className="text-gray-400 hover:text-blue-400 transition-colors">Twitter</button>
-              <button className="text-gray-400 hover:text-green-600 transition-colors">WhatsApp</button>
+              <button className="hover:opacity-80 transition-colors" style={{ color: palette.ink2 }}>Facebook</button>
+              <button className="hover:opacity-80 transition-colors" style={{ color: palette.ink2 }}>Twitter</button>
+              <button className="hover:opacity-80 transition-colors" style={{ color: palette.ink2 }}>WhatsApp</button>
             </div>
           </div>
         </ScrollReveal>

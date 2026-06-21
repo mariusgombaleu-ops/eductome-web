@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { BottomTabBar } from './BottomTabBar';
 import { NavLink, useOutlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AnimatedPage } from './AnimatedPage';
@@ -79,8 +80,12 @@ export const DashboardLayout = () => {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
+  const isCourseReader = location.pathname.includes('/dashboard/course/');
+
   return (
     <div className="min-h-screen flex font-poppins bg-[#F8F9FA] dark:bg-[#0D1117] transition-colors duration-300">
+      {/* Mobile Bottom Tab Bar */}
+      <BottomTabBar />
       {/* Mobile Sidebar Overlay */}
       {isMobileOpen && (
         <div 
@@ -91,7 +96,7 @@ export const DashboardLayout = () => {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed lg:static inset-y-0 left-0 z-50 border-r transform transition-all duration-300 ease-in-out flex flex-col
+        className={`fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 z-50 border-r transform transition-all duration-300 ease-in-out flex flex-col
           bg-white dark:bg-[#0D1117] border-[#E1E4E8] dark:border-[#30363D]
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isCollapsed ? 'lg:w-[60px]' : 'lg:w-[260px]'} w-[260px] shrink-0
@@ -186,9 +191,9 @@ export const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 relative" id="main-scroll-container">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 border-b border-[#E1E4E8] dark:border-[#30363D] px-4 lg:px-6 py-3 flex items-center justify-between bg-white/80 dark:bg-[#0D1117]/80 backdrop-blur-md transition-colors duration-300">
+        <header className={`${isCourseReader ? 'relative' : 'sticky top-0'} z-30 border-b border-[#E1E4E8] dark:border-[#30363D] px-4 lg:px-6 py-3 flex items-center justify-between bg-white/80 dark:bg-[#0D1117]/80 backdrop-blur-md transition-colors duration-300`}>
           <div className="flex items-center gap-4 flex-1">
             <button 
               onClick={() => setIsMobileOpen(true)}
@@ -257,7 +262,7 @@ export const DashboardLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 pb-20 lg:pb-0">
           <AnimatePresence mode="wait">
             <AnimatedPage key={location.pathname}>
               {outlet}

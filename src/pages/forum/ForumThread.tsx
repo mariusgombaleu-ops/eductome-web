@@ -9,11 +9,13 @@ import { MarkdownText } from '../../components/forum/MarkdownText';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { db } from '../../config/firebase';
 import { doc, onSnapshot, collection, query, where, addDoc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export const ForumThread = () => {
   const { id } = useParams();
   const { addToast } = useToast();
   const { gainXp, userRole, pseudo, hasActionBeenRewarded, photoURL } = useUser();
+  const { palette } = useTheme();
   
   const [discussion, setDiscussion] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
@@ -132,21 +134,19 @@ export const ForumThread = () => {
   if (!discussion) return <div className="p-8 text-center text-gray-500">Discussion introuvable.</div>;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 animate-fade-in-up">
+    <div className="max-w-4xl mx-auto space-y-6 px-4 md:px-6 lg:px-8 pt-6 font-poppins pb-20 animate-fade-in-up transition-colors duration-300">
       
       {/* Header / Retour */}
       <div className="flex items-center gap-4 mb-8">
-        <Link to="/forum" className="p-2 rounded-xl bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
+        <Link to="/forum" className="p-2 rounded-[16px] border transition-colors opacity-80 hover:opacity-100 hover:-translate-x-1" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink }}>
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-bold font-playfair text-[#1A1A2E] dark:text-white">Discussion</h1>
+        <h1 className="text-2xl font-bold font-playfair" style={{ color: palette.ink }}>Discussion</h1>
       </div>
 
       {/* Main Question */}
-      <div className={`bg-white dark:bg-[#161B22] border ${discussion.isPertinent ? 'border-purple-400 dark:border-purple-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative overflow-hidden`}>
-        <div className="absolute top-0 left-0 w-1 h-full bg-[#D81B60]"></div>
-        
-
+      <div className="border rounded-[28px] p-6 shadow-sm relative overflow-hidden transition-colors" style={{ background: palette.bg, borderColor: discussion.isPertinent ? '#a855f7' : palette.line }}>
+        <div className="absolute top-0 left-0 w-1 h-full" style={{ background: palette.accent }}></div>
         
         <div className="flex flex-col gap-4 mb-4 mt-2">
           <div className="flex items-start gap-4">
@@ -154,7 +154,8 @@ export const ForumThread = () => {
               <img 
                 src={discussion.authorPhotoURL} 
                 alt={discussion.author} 
-                className="w-12 h-12 rounded-full object-cover shrink-0 border border-[#E1E4E8] dark:border-[#30363D]"
+                className="w-12 h-12 rounded-full object-cover shrink-0 border"
+                style={{ borderColor: palette.line }}
               />
             ) : (
               <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${discussion.avatar}`}>
@@ -162,24 +163,24 @@ export const ForumThread = () => {
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6B7280] dark:text-[#8B949E] mb-2">
-                <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] flex flex-wrap items-center gap-x-2">{discussion.author} <RoleBadge role={discussion.role} /></span>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm mb-2" style={{ color: palette.ink2 }}>
+                <span className="font-bold flex flex-wrap items-center gap-x-2" style={{ color: palette.ink }}>{discussion.author} <RoleBadge role={discussion.role} /></span>
                 <span className="hidden md:inline">•</span>
                 <span className="shrink-0">{discussion.time}</span>
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A2E] dark:text-white flex flex-wrap items-center gap-2 leading-snug mb-1">
+              <h2 className="text-xl font-bold flex flex-wrap items-center gap-2 leading-snug mb-1" style={{ color: palette.ink }}>
                 <span className="break-words max-w-full">{discussion.title}</span>
                 {discussion.tags && discussion.tags.map((t: string) => (
-                  <span key={t} className="px-2 py-0.5 bg-[#F8F9FA] dark:bg-[#0D1117] rounded text-[10px] uppercase tracking-wider border border-[#E1E4E8] dark:border-[#30363D] font-bold text-[#6B7280] dark:text-[#8B949E]">{t}</span>
+                  <span key={t} className="px-2 py-0.5 rounded-[8px] text-[10px] uppercase tracking-wider border font-bold" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink2 }}>{t}</span>
                 ))}
               </h2>
               <div className="mb-2">
                 {discussion.isResolved ? (
-                  <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-0.5 rounded-md font-bold border border-green-200 dark:border-green-800">
+                  <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-[8px] font-bold border" style={{ background: '#22c55e20', borderColor: '#22c55e30', color: '#22c55e' }}>
                     <CheckCircle className="w-3 h-3" /> Résolu
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-2 py-0.5 rounded-md font-bold border border-orange-200 dark:border-orange-800">
+                  <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-[8px] font-bold border" style={{ background: '#f9731620', borderColor: '#f9731630', color: '#f97316' }}>
                     <Clock className="w-3 h-3" /> En attente
                   </span>
                 )}
@@ -187,11 +188,11 @@ export const ForumThread = () => {
             </div>
           </div>
 
-          <div className="text-[#1A1A2E] dark:text-[#E6EDF3] leading-relaxed whitespace-pre-wrap">
+          <div className="leading-relaxed whitespace-pre-wrap" style={{ color: palette.ink }}>
             <MarkdownText text={discussion.content} />
           </div>
 
-          <div className="mt-2 pt-4 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-wrap items-center gap-y-3 gap-x-6">
+          <div className="mt-2 pt-4 border-t flex flex-wrap items-center gap-y-3 gap-x-6 transition-colors" style={{ borderColor: palette.line }}>
             <button 
               onClick={() => {
                 const actionId = `forum_like_${discussion.id}`;
@@ -199,7 +200,8 @@ export const ForumThread = () => {
                   gainXp(10, 'Tu as aidé la communauté !', actionId);
                 }
               }}
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${discussion.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${hasActionBeenRewarded(`forum_like_${discussion.id}`) ? 'opacity-100' : 'opacity-60 hover:opacity-100'}`}
+              style={{ color: hasActionBeenRewarded(`forum_like_${discussion.id}`) ? palette.accent : palette.ink }}
             >
               <Heart className="w-4 h-4" fill={hasActionBeenRewarded(`forum_like_${discussion.id}`) ? "currentColor" : "none"} /> Aimer
             </button>
@@ -213,7 +215,7 @@ export const ForumThread = () => {
                   }).catch(console.error);
                 }
               }}
-              className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] transition-colors"
+              className="flex items-center gap-2 text-sm font-bold transition-colors opacity-60 hover:opacity-100" style={{ color: palette.ink }}
             >
               <Share2 className="w-4 h-4" /> Partager
             </button>
@@ -221,14 +223,14 @@ export const ForumThread = () => {
               (userRole === 'admin' || userRole === 'grand_frere') && (
                 <button 
                   onClick={markDiscussionAsPertinent}
-                  className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-purple-600 transition-colors"
+                  className="flex items-center gap-2 text-sm font-bold transition-colors opacity-60 hover:opacity-100" style={{ color: palette.ink }}
                 >
                   <CheckCircle className="w-4 h-4" /> Pertinente ?
                 </button>
               )
             ) : (
-              <div className="flex items-center gap-2 text-sm font-bold text-[#6B7280] dark:text-[#8B949E]">
-                <CheckCircle className="w-4 h-4 text-green-500" /> Pertinente
+              <div className="flex items-center gap-2 text-sm font-bold opacity-80" style={{ color: palette.ink }}>
+                <CheckCircle className="w-4 h-4" style={{ color: palette.accent }} /> Pertinente
               </div>
             )}
           </div>
@@ -236,21 +238,22 @@ export const ForumThread = () => {
       </div>
 
       {/* Replies count */}
-      <h3 className="text-lg font-bold text-[#1A1A2E] dark:text-white flex items-center gap-2 mt-8 mb-4">
-        <MessageSquare className="w-5 h-5 text-[#1976D2]" /> {replies.length} Réponses
+      <h3 className="text-lg font-bold flex items-center gap-2 mt-8 mb-4" style={{ color: palette.ink }}>
+        <MessageSquare className="w-5 h-5" style={{ color: palette.accent }} /> {replies.length} Réponses
       </h3>
 
       {/* Replies List */}
       <div className="space-y-4">
         {replies.map((reply) => (
-          <div key={reply.id} className={`bg-white dark:bg-[#161B22] border ${reply.isCorrect ? 'border-green-400 dark:border-green-600' : 'border-[#E1E4E8] dark:border-[#30363D]'} rounded-2xl p-6 shadow-sm relative`}>
+          <div key={reply.id} className="border rounded-[24px] p-6 shadow-sm relative transition-colors" style={{ background: palette.bg, borderColor: reply.isCorrect ? '#22c55e' : palette.line }}>
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
                 {reply.authorPhotoURL ? (
                   <img 
                     src={reply.authorPhotoURL} 
                     alt={reply.author} 
-                    className="w-10 h-10 rounded-full object-cover shrink-0 border border-[#E1E4E8] dark:border-[#30363D]"
+                    className="w-10 h-10 rounded-full object-cover shrink-0 border"
+                    style={{ borderColor: palette.line }}
                   />
                 ) : (
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${reply.avatar}`}>
@@ -259,17 +262,17 @@ export const ForumThread = () => {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="font-bold text-[#1A1A2E] dark:text-[#E6EDF3] text-sm flex flex-wrap items-center gap-x-2">{reply.author} <RoleBadge role={reply.role} /></span>
-                    <span className="text-xs text-[#6B7280] dark:text-[#8B949E] shrink-0">• {reply.time}</span>
+                    <span className="font-bold text-sm flex flex-wrap items-center gap-x-2" style={{ color: palette.ink }}>{reply.author} <RoleBadge role={reply.role} /></span>
+                    <span className="text-xs shrink-0" style={{ color: palette.ink2 }}>• {reply.time}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="text-[#1A1A2E] dark:text-[#E6EDF3] text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: palette.ink }}>
                 <MarkdownText text={reply.content} />
               </div>
 
-              <div className="mt-1 pt-4 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-wrap items-center gap-y-3 gap-x-6">
+              <div className="mt-1 pt-4 border-t flex flex-wrap items-center gap-y-3 gap-x-6 transition-colors" style={{ borderColor: palette.line }}>
                 <button 
                   onClick={() => {
                     const actionId = `forum_reply_like_${reply.id}`;
@@ -277,20 +280,21 @@ export const ForumThread = () => {
                       gainXp(5, 'Tu as encouragé un membre', actionId);
                     }
                   }}
-                  className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? 'text-[#D81B60]' : 'text-[#6B7280] dark:text-[#8B949E] hover:text-[#D81B60]'}`}
+                  className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? 'opacity-100' : 'opacity-60 hover:opacity-100'}`}
+                  style={{ color: hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? palette.accent : palette.ink }}
                 >
                   <Heart className="w-3 h-3" fill={hasActionBeenRewarded(`forum_reply_like_${reply.id}`) ? "currentColor" : "none"} /> Aimer
                 </button>
                 {!reply.isCorrect && (
                   <button 
                     onClick={() => markAsCorrect(reply.id)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:text-green-600 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold transition-colors opacity-60 hover:opacity-100" style={{ color: palette.ink }}
                   >
                     <CheckCircle className="w-3 h-3" /> Marquer comme solution
                   </button>
                 )}
                 {reply.isCorrect && (
-                  <div className="flex items-center gap-1.5 text-green-600 dark:text-green-500 text-xs font-bold bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md border border-green-200 dark:border-green-800">
+                  <div className="flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-[8px] border" style={{ background: '#22c55e20', borderColor: '#22c55e30', color: '#22c55e' }}>
                     <CheckCircle className="w-3 h-3" /> Solution Validée
                   </div>
                 )}
@@ -301,23 +305,25 @@ export const ForumThread = () => {
       </div>
 
       {/* Reply Input */}
-      <div className="bg-white dark:bg-[#161B22] border border-[#E1E4E8] dark:border-[#30363D] rounded-2xl p-4 shadow-sm mt-8 flex gap-4 items-start">
+      <div className="border rounded-[24px] p-4 shadow-sm mt-8 flex gap-4 items-start transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${userRole === 'grand_frere' || userRole === 'admin' ? "bg-[#1A3557]" : userRole === 'equipe' ? "bg-[#D81B60]" : "bg-gray-400"}`}>
           {pseudo ? pseudo.substring(0, 2).toUpperCase() : "CH"}
         </div>
-        <div className="flex-1 border border-[#E1E4E8] dark:border-[#30363D] rounded-xl overflow-hidden focus-within:border-[#1976D2] focus-within:ring-1 focus-within:ring-[#1976D2] transition-colors bg-[#F8F9FA] dark:bg-[#0D1117]">
+        <div className="flex-1 border rounded-[16px] overflow-hidden focus-within:ring-2 transition-colors" style={{ background: palette.bg2, borderColor: palette.line, ['--tw-ring-color' as any]: palette.accent }}>
           <textarea
             rows={3}
             value={newReply}
             onChange={(e) => setNewReply(e.target.value)}
             placeholder="Écrire une réponse pour aider..."
-            className="w-full px-4 py-3 bg-transparent text-[#1A1A2E] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#6E7681] focus:outline-none resize-none"
+            className="w-full px-4 py-3 bg-transparent focus:outline-none resize-none transition-colors"
+            style={{ color: palette.ink }}
           ></textarea>
-          <div className="p-2 border-t border-[#E1E4E8] dark:border-[#30363D] bg-white dark:bg-[#161B22] flex justify-between items-center">
-            <span className="text-xs text-[#6B7280] dark:text-[#8B949E] px-2 font-medium">Gagne {XP.FORUM_SOLUTION} XP si ta réponse est validée</span>
+          <div className="p-2 border-t flex justify-between items-center transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <span className="text-xs px-2 font-medium" style={{ color: palette.ink2 }}>Gagne {XP.FORUM_SOLUTION} XP si ta réponse est validée</span>
             <button 
               onClick={handlePostReply}
-              className="px-4 py-2 bg-[#D81B60] hover:bg-pink-700 text-white rounded-lg font-bold text-sm flex items-center gap-2 transition-colors"
+              className="px-4 py-2 text-white rounded-[12px] font-bold text-sm flex items-center gap-2 transition-transform hover:scale-[1.02]"
+              style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
             >
               <Send className="w-4 h-4" /> Publier
             </button>

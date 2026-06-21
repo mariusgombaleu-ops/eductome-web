@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getLevelFromXp } from '../contexts/UserContext';
-import { Trophy, Flame, BookOpen, Star, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
+import { Trophy, Flame, BookOpen, Star, ShieldCheck } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface StudentData {
   pseudo: string;
@@ -9,31 +10,26 @@ interface StudentData {
   currentStreak: number;
 }
 
-const TOME_MAP = [
-  { id: 't1-limites', name: 'Les Limites', tome: 1 },
-  { id: 't2-derivees', name: 'Les Dérivées', tome: 2 },
-  { id: 't3-primitives', name: 'Intégrales & Primitives', tome: 3 },
-  { id: 't11-eq-diff', name: 'Équations Différentielles', tome: 11 },
-];
 
 
 
-function StatCard({ icon, label, value, small }: { icon: React.ReactNode; label: string; value: string; small?: boolean }) {
+
+function StatCard({ icon, label, value, small, palette }: { icon: React.ReactNode; label: string; value: string; small?: boolean, palette: any }) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-2">
-      <div className="flex items-center gap-1.5 text-gray-400 text-xs font-medium">
+    <div className="rounded-[24px] p-4 shadow-sm border flex flex-col gap-2 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+      <div className="flex items-center gap-1.5 text-xs font-medium transition-colors" style={{ color: palette.ink3 }}>
         {icon}
         <span>{label}</span>
       </div>
-      <span className={`font-bold text-[#1A3557] leading-tight ${small ? 'text-sm' : 'text-lg'}`}>{value}</span>
+      <span className={`font-bold leading-tight transition-colors ${small ? 'text-sm' : 'text-lg'}`} style={{ color: palette.ink }}>{value}</span>
     </div>
   );
 }
 
-function Section({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+function Section({ title, icon, children, palette }: { title: string; icon: React.ReactNode; children: React.ReactNode, palette: any }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-      <h2 className="text-base font-bold text-[#1A3557] flex items-center gap-2 mb-4">
+    <div className="rounded-[24px] shadow-sm border p-5 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+      <h2 className="text-base font-bold flex items-center gap-2 mb-4 transition-colors" style={{ color: palette.ink }}>
         {icon}
         {title}
       </h2>
@@ -45,9 +41,9 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
 export const ParentDashboard = () => {
   const { studentUid } = useParams<{ studentUid: string }>();
   const [student, setStudent] = useState<StudentData | null>(null);
-  const [purchasedRefs, setPurchasedRefs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { palette } = useTheme();
 
   useEffect(() => {
     if (!studentUid) return;
@@ -80,8 +76,7 @@ export const ParentDashboard = () => {
           currentStreak: d.currentStreak || 0,
         });
 
-        // Tomes débloqués — les références achetées viennent de la Cloud Function
-        setPurchasedRefs(d.purchasedReferences || []);
+        // SÉCURITÉ : purchasedReferences supprimé de la réponse publique (info sensible)
       } catch (err) {
         console.error('ParentDashboard fetch error:', err);
         setNotFound(true);
@@ -95,23 +90,24 @@ export const ParentDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#1A3557] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center transition-colors duration-300" style={{ background: palette.bg2 }}>
+        <div className="w-10 h-10 border-4 rounded-full animate-spin transition-colors" style={{ borderColor: `${palette.line}`, borderTopColor: palette.accent }} />
       </div>
     );
   }
 
   if (notFound || !student) {
     return (
-      <div className="min-h-screen bg-[#1A3557] flex flex-col items-center justify-center text-white p-6">
-        <Trophy className="w-16 h-16 text-white/30 mb-4" />
-        <h1 className="text-2xl font-bold mb-2">Profil introuvable</h1>
-        <p className="text-white/60 text-center max-w-sm text-sm">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 transition-colors duration-300" style={{ background: palette.bg }}>
+        <Trophy className="w-16 h-16 mb-4 transition-colors" style={{ color: palette.ink3 }} />
+        <h1 className="text-2xl font-bold mb-2 transition-colors" style={{ color: palette.ink }}>Profil introuvable</h1>
+        <p className="text-center max-w-sm text-sm transition-colors" style={{ color: palette.ink2 }}>
           Ce lien ne correspond à aucun élève EDUCTOME. Demandez à votre enfant de vous partager un nouveau lien depuis son profil.
         </p>
         <Link
           to="/"
-          className="mt-6 px-6 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-medium transition-colors"
+          className="mt-6 px-6 py-2 rounded-[24px] text-sm font-medium transition-colors hover:opacity-80"
+          style={{ background: palette.accent, color: '#fff' }}
         >
           Retour à l'accueil
         </Link>
@@ -124,21 +120,14 @@ export const ParentDashboard = () => {
     ? Math.min(100, Math.max(0, ((student.xp - level.minXp) / (level.maxXp - level.minXp)) * 100))
     : 100;
 
-  const ownedRefs = new Set(purchasedRefs);
 
-  const tomeProgress = TOME_MAP.map(t => ({
-    ...t,
-    unlocked: ownedRefs.has(t.id) || ownedRefs.has('cles-maths'),
-  }));
-
-  const unlockedCount = tomeProgress.filter(t => t.unlocked).length;
 
   return (
-    <div className="min-h-screen bg-[#F0F4F8] font-poppins">
+    <div className="min-h-screen font-poppins transition-colors duration-300" style={{ background: palette.bg2 }}>
       {/* Header */}
-      <div className="bg-[#1A3557]">
+      <div className="transition-colors duration-300" style={{ background: palette.accent }}>
         <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
-          <div className="flex items-center gap-2 text-white/50 text-xs font-medium mb-6 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-white/70 text-xs font-medium mb-6 uppercase tracking-wider">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Espace Parents · EDUCTOME</span>
           </div>
@@ -150,7 +139,7 @@ export const ParentDashboard = () => {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{student.pseudo}</h1>
-              <p className="text-white/60 text-sm mt-0.5">
+              <p className="text-white/80 text-sm mt-0.5">
                 Niveau {level.level} &middot; {level.title}
               </p>
             </div>
@@ -160,13 +149,13 @@ export const ParentDashboard = () => {
           <div className="mt-6 bg-white/10 rounded-xl p-4 border border-white/10">
             <div className="flex justify-between items-center mb-2 text-sm text-white">
               <span className="font-semibold">{level.title}</span>
-              <span className="text-white/60">
+              <span className="text-white/80">
                 {student.xp}{level.maxXp ? ` / ${level.maxXp}` : ''} XP
               </span>
             </div>
             <div className="h-2.5 bg-white/20 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full transition-all duration-700"
+                className="h-full bg-white rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                 style={{ width: `${xpProgress}%` }}
               />
             </div>
@@ -181,51 +170,45 @@ export const ParentDashboard = () => {
             icon={<Flame className="w-4 h-4 text-orange-500" />}
             label="Série actuelle"
             value={`${student.currentStreak} j`}
+            palette={palette}
           />
           <StatCard
             icon={<Star className="w-4 h-4 text-yellow-500" />}
             label="Points XP"
             value={`${student.xp}`}
+            palette={palette}
           />
         </div>
 
-        {/* Tomes section */}
-        <Section title={`Tomes débloqués (${unlockedCount}/${TOME_MAP.length})`} icon={<BookOpen className="w-5 h-5 text-[#1A3557]" />}>
-          <div className="divide-y divide-gray-100">
-            {tomeProgress.map(t => (
-              <div key={t.id} className="flex items-center justify-between py-3">
-                <div className="flex items-center gap-3">
-                  {t.unlocked ? (
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                  ) : (
-                    <Lock className="w-4 h-4 text-gray-300 shrink-0" />
-                  )}
-                  <span className={`text-sm font-medium ${t.unlocked ? 'text-gray-800' : 'text-gray-400'}`}>
-                    Tome {t.tome} — {t.name}
-                  </span>
-                </div>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    t.unlocked ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  {t.unlocked ? 'Débloqué' : 'Non débloqué'}
-                </span>
-              </div>
-            ))}
+        {/* Section info — pas d'affichage des tomes débloqués (donnée sensible) */}
+        <Section title="Activité d'apprentissage" icon={<BookOpen className="w-5 h-5" style={{ color: palette.accent }} />} palette={palette}>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between py-2 border-b border-dashed" style={{ borderColor: palette.line }}>
+              <span className="text-sm transition-colors" style={{ color: palette.ink2 }}>Niveau actuel</span>
+              <span className="text-sm font-bold transition-colors" style={{ color: palette.ink }}>{level.title}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-dashed" style={{ borderColor: palette.line }}>
+              <span className="text-sm transition-colors" style={{ color: palette.ink2 }}>Points d'expérience</span>
+              <span className="text-sm font-bold transition-colors" style={{ color: palette.ink }}>{student.xp} XP</span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm transition-colors" style={{ color: palette.ink2 }}>Jours consécutifs</span>
+              <span className="text-sm font-bold transition-colors" style={{ color: palette.ink }}>{student.currentStreak} jour{student.currentStreak > 1 ? 's' : ''}</span>
+            </div>
           </div>
         </Section>
 
         {/* CTA — justify buying the physical book */}
-        <div className="bg-[#1A3557] rounded-2xl p-6 text-white text-center">
-          <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Offrir un cadeau utile</p>
+        <div className="rounded-[28px] p-6 text-white text-center transition-colors" style={{ background: palette.accent }}>
+          <p className="text-white/80 text-xs uppercase tracking-wider mb-1">Offrir un cadeau utile</p>
           <h2 className="text-xl font-bold mb-1">Les Clés Maths — Livre Physique</h2>
-          <p className="text-white/70 text-sm mb-5 max-w-xs mx-auto">
+          <p className="text-white/90 text-sm mb-5 max-w-xs mx-auto">
             Un livre papier avec accès numérique complet. Le meilleur soutien que vous pouvez offrir à votre enfant pour le BAC.
           </p>
           <a
             href="/collections/cles-maths"
-            className="inline-block bg-white text-[#1A3557] font-bold px-6 py-2.5 rounded-xl hover:bg-white/90 transition-colors text-sm"
+            className="inline-block bg-white font-bold px-6 py-2.5 rounded-[24px] hover:opacity-90 transition-all text-sm shadow-md"
+            style={{ color: palette.accent }}
           >
             Voir la collection →
           </a>

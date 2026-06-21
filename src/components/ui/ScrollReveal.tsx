@@ -5,9 +5,10 @@ interface ScrollRevealProps {
   children: React.ReactNode;
   className?: string;
   delay?: number; // 0 to 1s delay
+  style?: React.CSSProperties;
 }
 
-export function ScrollReveal({ children, className = '', delay = 0 }: ScrollRevealProps) {
+export function ScrollReveal({ children, className = '', delay = 0, style = {} }: ScrollRevealProps) {
   const { ref, isVisible } = useScrollReveal();
 
   const transitionDelay = `${delay}s`;
@@ -17,6 +18,7 @@ export function ScrollReveal({ children, className = '', delay = 0 }: ScrollReve
       ref={ref}
       className={`transition-all duration-700 ease-out ${className}`}
       style={{
+        ...style,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
         transitionDelay

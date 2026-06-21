@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ChevronRight, ChevronLeft, ChevronUp, ChevronDown, Lightbulb, AlertTriangle,
+  ChevronRight, ChevronLeft, ChevronUp, Lightbulb, AlertTriangle,
   Activity, CheckCircle, X,
-  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save,
-  Lock, Download
+  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save, Download
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -189,7 +188,7 @@ const QuizSection = ({ quiz, onComplete, courseId, chapterId }: { quiz: QuizBloc
 export const CourseReader = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { theme, palette } = useTheme();
   const { addToast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
@@ -229,8 +228,7 @@ export const CourseReader = () => {
     () => chapter.sections[0]?.id ?? ''
   );
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
-    const firstId = chapter.sections[0]?.id;
-    return firstId ? new Set([firstId]) : new Set<string>();
+    return new Set<string>();
   });
   const chapterDisplayNumber = chapter.number ?? activeChapterIndex;
 
@@ -239,14 +237,6 @@ export const CourseReader = () => {
     (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') ||
     (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id);
 
-  // Possession réelle (achat du chapitre ou du tome) — distinct de isUnlocked,
-  // qui inclut aussi les chapitres offerts. Les corrections détaillées et le PDF
-  // hors-ligne sont réservés au contenu possédé (brief §5.2), pas au contenu offert.
-  const hasFullAccess =
-    unlockedCourses.includes(courseId || '') ||
-    unlockedCourses.includes(chapter.id) ||
-    (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') ||
-    (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id);
 
   const handleUnlockChapter = () => {
     setPaymentAmount(300);
@@ -462,7 +452,7 @@ export const CourseReader = () => {
   useEffect(() => {
     const firstId = chapter.sections[0]?.id;
     setActiveSectionId(firstId ?? '');
-    setExpandedSections(firstId ? new Set([firstId]) : new Set<string>());
+    setExpandedSections(new Set<string>());
   }, [activeChapterIndex]);
 
   // Highlight which section is currently in the viewport
@@ -482,17 +472,7 @@ export const CourseReader = () => {
     return () => observers.forEach(obs => obs.disconnect());
   }, [activeChapterIndex, isUnlocked]);
 
-  // Auto-expand the active section on scroll
-  useEffect(() => {
-    if (!activeSectionId) return;
-    setExpandedSections(prev => {
-      if (prev.has(activeSectionId)) return prev;
-      const next = new Set(prev);
-      next.add(activeSectionId);
-      return next;
-    });
-  }, [activeSectionId]);
-
+  // Auto-expand on scroll is removed per user request
   // Auto-scroll the sidebar nav to keep the active section item visible
   useEffect(() => {
     if (!activeSectionId) return;
@@ -592,55 +572,45 @@ export const CourseReader = () => {
   );
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117] transition-colors duration-300 font-poppins">
+    <div className="min-h-screen font-poppins transition-colors duration-300" style={{ background: palette.bg }}>
 
-      {/* ── Fixed Top Bar ── */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#161B22]/95 backdrop-blur-md border-b border-[#E1E4E8] dark:border-[#30363D] transition-colors duration-300">
-        <div className="flex items-center gap-3 px-4 py-3 h-16">
-          <button onClick={() => navigate('/dashboard/courses')}
-            className="p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          
-          <div className="flex-1 min-w-0 flex items-center justify-center text-center">
-            <div className="max-w-xl truncate">
-              {chapterDisplayNumber != null && chapterDisplayNumber > 0 && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#D81B60] block mb-0.5">Chapitre {chapterDisplayNumber}</span>
-              )}
-              <span className="text-sm sm:text-base font-bold truncate text-[#1A1A2E] dark:text-white">{chapter.titre}</span>
+      {/* ── Floating Top Bar (Premium Design) ── */}
+      <div className="sticky top-4 z-40 px-4 lg:px-8 mb-4 pointer-events-none transition-colors duration-300">
+        <div className="max-w-3xl mx-auto">
+          <header className="pointer-events-auto rounded-[18px] p-[9px] pr-3 flex items-center gap-2 shadow-lg transition-colors duration-300" style={{ background: palette.glass, backdropFilter: 'blur(16px) saturate(160%)', WebkitBackdropFilter: 'blur(16px) saturate(160%)', border: `1px solid ${palette.glassLine}` }}>
+            <button onClick={() => navigate('/dashboard/courses')}
+              className="w-8 h-8 shrink-0 rounded-[9px] flex items-center justify-center transition-colors hover:opacity-80" style={{ background: palette.accentSoft, color: palette.accent }}>
+              <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
+            </button>
+            
+            <div className="flex-1 min-w-0 text-center">
+              <div className="text-[9px] font-bold tracking-[0.14em] uppercase truncate" style={{ color: palette.accent }}>
+                Tome {courseId ? courseId.replace('t', '').split('-')[0] : '1'} · {course.titre}
+              </div>
+              <div className="text-[12.5px] font-bold truncate mt-0.5" style={{ color: palette.ink }}>
+                {chapter.titre}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button onClick={() => setIsNotesOpen(true)} title="Prendre des notes"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
-              <Edit3 className="w-5 h-5" />
-            </button>
-            <button onClick={() => setIsReportOpen(true)} title="Signaler une erreur"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
-              <Flag className="w-5 h-5" />
-            </button>
             <button onClick={() => setSidebarOpen(true)}
-              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D] transition-colors">
-              <List className="w-5 h-5" />
+              className="lg:hidden w-8 h-8 shrink-0 rounded-[9px] flex items-center justify-center transition-colors hover:opacity-80" style={{ background: palette.bg3, color: palette.ink2 }}>
+              <List className="w-5 h-5" strokeWidth={2.2} />
             </button>
+            <div className="hidden lg:flex w-8 h-8 shrink-0"></div>
+          </header>
+          {/* Progress Bar under header */}
+          <div className="h-[3px] mx-1 mt-2 rounded-full overflow-hidden transition-colors duration-300" style={{ background: palette.bg3 }}>
+            <div className="h-full rounded-full transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%`, background: palette.accent }} />
           </div>
         </div>
-        {/* ProgressBar de lecture */}
-        <div className="absolute bottom-0 left-0 h-1 bg-[#F8F9FA] dark:bg-[#30363D] w-full">
-          <div 
-            className="h-full bg-[#D81B60] progress-glow transition-all duration-150 ease-out"
-            style={{ width: `${scrollProgress}%` }}
-          />
-        </div>
-      </header>
+      </div>
 
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-          <div className="relative z-10 w-72 h-full flex flex-col p-5 overflow-y-auto bg-white dark:bg-[#161B22] border-r border-[#E1E4E8] dark:border-[#30363D] transition-colors duration-300">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="relative z-10 w-80 h-full flex flex-col p-5 overflow-y-auto transition-colors duration-300" style={{ background: palette.bg2 }}>
             <button onClick={() => setSidebarOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-[#6B7280] dark:text-[#8B949E] hover:bg-[#F8F9FA] dark:hover:bg-[#30363D]">
+              className="absolute top-4 right-4 p-1.5 rounded-lg" style={{ color: palette.ink3 }}>
               <X className="w-5 h-5" />
             </button>
             <div className="mt-8">
@@ -650,38 +620,108 @@ export const CourseReader = () => {
         </div>
       )}
 
-      <div className="flex pt-16 relative">
+      {/* ── Floating Mobile Bottom Dock (Premium Design) ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden pb-safe px-4 pb-6 pointer-events-none transition-colors duration-300">
+        <div className="pointer-events-auto rounded-[20px] p-2 flex items-center gap-1.5 transition-colors duration-300" style={{ background: palette.glass, backdropFilter: 'blur(16px) saturate(160%)', WebkitBackdropFilter: 'blur(16px) saturate(160%)', border: `1px solid ${palette.glassLine}`, boxShadow: `0 10px 30px ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(120,90,40,0.18)'}` }}>
+          <button onClick={() => setIsNotesOpen(true)} className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: palette.ink2 }}>
+            <Edit3 className="w-5 h-5" strokeWidth={2} />
+            <span className="text-[10px] font-semibold">Notes</span>
+          </button>
+          <button onClick={() => setIsReportOpen(true)} className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: palette.ink2 }}>
+            <Flag className="w-5 h-5" strokeWidth={2} />
+            <span className="text-[10px] font-semibold">Signaler</span>
+          </button>
+          <button onClick={downloadCorrectionsPDF} disabled={isGeneratingPDF} className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50" style={{ color: palette.ink2 }}>
+            {isGeneratingPDF ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin" /> : <Download className="w-5 h-5" strokeWidth={2} />}
+            <span className="text-[10px] font-semibold">PDF</span>
+          </button>
+          <div className="w-[1px] h-[30px]" style={{ background: palette.glassLine }}></div>
+          <div className="flex items-center gap-[7px] px-3">
+            <div className="relative w-[34px] h-[34px]">
+              <svg width="34" height="34" viewBox="0 0 36 36" className="-rotate-90">
+                <circle cx="18" cy="18" r="15" fill="none" stroke={palette.bg3} strokeWidth="4"/>
+                <circle cx="18" cy="18" r="15" fill="none" stroke={palette.accent} strokeWidth="4" strokeLinecap="round" strokeDasharray="94.2" strokeDashoffset={94.2 - (94.2 * scrollProgress) / 100} className="transition-all duration-150 ease-out" />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-extrabold" style={{ color: palette.accent }}>{Math.round(scrollProgress)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex relative items-start">
 
         {/* ── Desktop Sidebar ── */}
-        <aside className={`hidden lg:flex lg:flex-col shrink-0 border-r fixed top-16 bottom-0 overflow-y-auto transition-all duration-300 ease-in-out z-20 bg-[#F8F9FA] dark:bg-[#0D1117] border-[#E1E4E8] dark:border-[#30363D] ${isDesktopSidebarCollapsed ? '-translate-x-full w-0 p-0 border-r-0' : 'w-72 xl:w-80 p-5 translate-x-0'}`}>
+        <aside className={`hidden lg:flex lg:flex-col shrink-0 border-r sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto transition-all duration-300 ease-in-out z-20 ${isDesktopSidebarCollapsed ? 'w-0 p-0 border-r-0 opacity-0 overflow-hidden' : 'w-72 xl:w-80 p-5 opacity-100'}`} style={{ background: palette.bg2, borderColor: palette.line }}>
           <SidebarContent />
         </aside>
 
         {/* ── Main Content ── */}
-        <main className={`flex-1 min-w-0 px-4 py-8 lg:px-8 lg:py-12 pb-24 transition-all duration-300 ease-in-out bg-white dark:bg-[#0D1117] ${isDesktopSidebarCollapsed ? 'lg:ml-0' : 'lg:ml-72 xl:ml-80'}`}>
+        <main className="flex-1 min-w-0 px-4 pt-0 pb-32 lg:px-8 transition-all duration-300 ease-in-out" style={{ background: palette.bg }}>
           
           {/* Toggle button relative to main content */}
           <button
             onClick={() => setIsDesktopSidebarCollapsed(!isDesktopSidebarCollapsed)}
-            className="hidden lg:flex fixed top-20 z-30 p-2 rounded-full border shadow-md transition-all duration-300 hover:scale-110 bg-white dark:bg-[#161B22] border-[#E1E4E8] dark:border-[#30363D] text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] dark:hover:text-[#D81B60] -ml-4 lg:-ml-6"
+            className="hidden lg:flex sticky top-24 z-30 p-2 rounded-full border shadow-md transition-all duration-300 hover:scale-110 -ml-8 mt-4 float-left"
+            style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink2 }}
           >
             {isDesktopSidebarCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
 
           <div className={`mx-auto transition-all duration-300 ${isDesktopSidebarCollapsed ? 'max-w-4xl' : 'max-w-3xl'}`}>
 
-            {/* Chapter Header */}
-            <div className="mb-10 animate-in fade-in slide-in-from-bottom-4">
-              {chapterDisplayNumber != null && chapterDisplayNumber > 0 && (
-                <span className="inline-flex items-center px-3 py-1 mb-4 rounded-full text-xs font-bold tracking-wider bg-[#EBF5FB] dark:bg-[#1A3557] text-[#1976D2] dark:text-[#E6EDF3]">
-                  CHAPITRE {chapterDisplayNumber}
-                </span>
-              )}
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-playfair font-bold leading-tight text-[#1A1A2E] dark:text-white">
+            {/* Chapter Header (Premium Design) */}
+            <div className="mb-6 animate-in fade-in slide-in-from-bottom-4 mt-2">
+              <span className="inline-block text-[10px] font-bold tracking-[0.12em] uppercase px-[11px] py-[5px] rounded-full transition-colors duration-300" style={{ color: palette.accent, background: palette.accentSoft }}>
+                Les Clés · Maths · Chapitre {chapterDisplayNumber ?? 1}
+              </span>
+              <h1 className="font-poppins text-[34px] md:text-4xl lg:text-5xl font-black leading-[1.08] mt-[14px] tracking-[-0.01em] transition-colors duration-300" style={{ color: palette.ink }}>
                 {chapter.titre}
               </h1>
-              <div className="mt-6 h-1.5 w-20 rounded-full bg-[#1976D2] dark:bg-[#D81B60]" />
+              <div className="mt-[14px] h-1 w-[54px] rounded-full transition-colors duration-300" style={{ background: palette.accent }} />
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 mt-[18px]">
+                <span className="inline-flex items-center gap-[5px] text-[11.5px] font-semibold px-[11px] py-[6px] rounded-full border transition-colors duration-300" style={{ color: palette.ink2, background: palette.bg2, borderColor: palette.line }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  {chapter.duree || 30} min
+                </span>
+                <span className="inline-flex items-center gap-[5px] text-[11.5px] font-bold px-[11px] py-[6px] rounded-full transition-colors duration-300" style={{ color: 'var(--tipBar, #1E8449)', background: 'var(--tipBg, #EAF7EF)' }}>
+                  Niveau {chapter.niveau || 'BASE'}
+                </span>
+                <span className="inline-flex items-center gap-[5px] text-[11.5px] font-bold px-[11px] py-[6px] rounded-full transition-colors duration-300" style={{ color: palette.accent, background: palette.accentSoft }}>
+                  ★ +{chapter.xpGain || 50} XP
+                </span>
+              </div>
+
+              {/* Author Box */}
+              <div className="flex items-center gap-3 mt-[18px] p-3 rounded-[18px] border shadow-sm transition-colors duration-300" style={{ background: palette.bg2, borderColor: palette.line, boxShadow: `0 4px 16px ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(120,90,40,0.1)'}` }}>
+                <div className="relative shrink-0">
+                  <img src="/grand-frere.jpeg" alt="Marius" className="w-[46px] h-[46px] rounded-[14px] object-cover object-[50%_14%]" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Marius&background=1A3557&color=fff' }} />
+                  <span className="absolute -bottom-[3px] -right-[3px] w-4 h-4 rounded-full border-2 transition-colors duration-300" style={{ background: 'var(--tipBar, #1E8449)', borderColor: palette.bg2 }}></span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-bold transition-colors duration-300" style={{ color: palette.ink }}>Marius · ton grand frère</div>
+                  <div className="text-[11.5px] leading-[1.4] transition-colors duration-300" style={{ color: palette.ink2 }}>« On affûte tes outils, puis tu voles sur les limites. »</div>
+                </div>
+              </div>
             </div>
+
+            {/* Objectives */}
+            {chapter.objectifs && chapter.objectifs.length > 0 && (
+              <div className="my-[22px] p-4 rounded-[18px] border transition-colors duration-300" style={{ background: palette.bg3, borderColor: palette.line }}>
+                <div className="text-[10.5px] font-bold tracking-[0.1em] uppercase mb-[10px] transition-colors duration-300" style={{ color: palette.ink3 }}>Objectifs du chapitre</div>
+                <div className="space-y-2">
+                  {chapter.objectifs.map((obj, i) => (
+                    <div key={i} className="flex gap-[9px] items-start">
+                      <span className="shrink-0 mt-[1px] w-[18px] h-[18px] rounded-[6px] flex items-center justify-center transition-colors duration-300" style={{ background: palette.accent, color: palette.onAccent }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                      </span>
+                      <span className="text-[13px] leading-[1.45] font-medium transition-colors duration-300" style={{ color: palette.ink }}>{obj}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {!isUnlocked ? (
               <ChapterLock 
@@ -712,20 +752,20 @@ export const CourseReader = () => {
                               else next.add(section.id);
                               return next;
                             })}
-                            className={`w-full text-left flex items-center justify-between gap-3 mt-10 mb-2 pb-2 border-b transition-colors duration-300 cursor-pointer ${
-                              isActiveSec
-                                ? 'border-[#1A3557] dark:border-[#1976D2]'
-                                : 'border-[#E1E4E8] dark:border-[#30363D]'
-                            }`}
+                            className="w-full text-left flex items-center justify-between gap-[10px] mt-[30px] pb-[10px] border-b-[2px] transition-colors duration-300 cursor-pointer"
+                            style={{ borderBottomColor: isActiveSec ? palette.accent : palette.line }}
                           >
-                            <h2 className={`text-xl md:text-2xl font-bold transition-colors duration-300 ${
-                              isActiveSec ? 'text-[#1A3557] dark:text-blue-300' : 'text-[#1A1A2E] dark:text-white'
-                            }`}>
-                              {section.titre}
-                            </h2>
-                            <ChevronDown className={`w-5 h-5 shrink-0 transition-all duration-300 ${
-                              isExpanded ? 'rotate-180' : ''
-                            } ${isActiveSec ? 'text-[#1A3557] dark:text-blue-300' : 'text-gray-400 dark:text-gray-600'}`} />
+                            <span className="text-left">
+                              <span className="block text-[10px] font-bold tracking-[0.1em] uppercase transition-colors duration-300" style={{ color: palette.accent }}>
+                                Section {section.id.replace(/\D/g, '') || (chapter.sections.indexOf(section) + 1)}
+                              </span>
+                              <span className="font-poppins text-[20px] md:text-[24px] font-bold transition-colors duration-300" style={{ color: palette.ink }}>
+                                {section.titre}
+                              </span>
+                            </span>
+                            <span className={`flex-none transition-transform duration-300 ease-in-out ${isExpanded ? 'rotate-180' : ''}`} style={{ color: palette.ink2 }}>
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
                           </button>
                         )}
                         <div className={`grid transition-all duration-500 ease-in-out ${
@@ -753,70 +793,6 @@ export const CourseReader = () => {
                     />
                   )}
 
-                  {/* Corrections détaillées & PDF hors-ligne — réservés au contenu possédé (brief §5.2) */}
-                  <div className={`mt-12 rounded-2xl border-2 overflow-hidden transition-colors duration-300 ${
-                    hasFullAccess
-                      ? 'bg-[#EBF5FB] dark:bg-[#1A3557]/20 border-[#1A3557]/20 dark:border-[#1A3557]/40'
-                      : 'bg-red-50 dark:bg-red-900/10 border-[#C62828]/20 dark:border-[#C62828]/30'
-                  }`}>
-                    <div className="p-6 md:p-8 text-center">
-                      <div className={`w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                        hasFullAccess
-                          ? 'bg-[#1A3557]/10 dark:bg-[#1A3557]/40 text-[#1A3557] dark:text-white'
-                          : 'bg-[#C62828]/10 text-[#C62828]'
-                      }`}>
-                        {hasFullAccess ? <Download className="w-7 h-7" /> : <Lock className="w-7 h-7" />}
-                      </div>
-
-                      <h3 className="text-lg font-bold mb-3 text-[#1A1A2E] dark:text-white transition-colors duration-300">
-                        Corrections détaillées & PDF hors-ligne
-                      </h3>
-
-                      <div className="relative max-w-md mx-auto mb-6">
-                        <p className={`text-sm leading-relaxed transition-all duration-300 text-[#6B7280] dark:text-[#8B949E] ${!hasFullAccess ? 'blur-[4px] select-none' : ''}`}>
-                          {hasFullAccess
-                            ? "Tu as un accès complet aux corrections pas-à-pas de chaque exercice de ce chapitre. Télécharge le PDF pour réviser hors-ligne, où que tu sois — même dans le gbaka, sans réseau."
-                            : "Solution étape par étape : on identifie la forme indéterminée, on factorise par le terme dominant, puis on conclut sur la limite recherchée pour chaque exercice de ce chapitre…"}
-                        </p>
-                        {!hasFullAccess && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-[#161B22] text-xs font-bold text-[#C62828] border border-[#C62828]/30 shadow-sm flex items-center gap-1.5">
-                              <Lock className="w-3.5 h-3.5" /> Réservé aux élèves qui possèdent ce chapitre
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {hasFullAccess ? (
-                        <button
-                          onClick={downloadCorrectionsPDF}
-                          disabled={isGeneratingPDF}
-                          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#1A3557] hover:bg-[#1976D2] transition-colors duration-300 shadow-md shadow-blue-900/20 w-full md:w-auto disabled:opacity-70 disabled:cursor-wait"
-                        >
-                          {isGeneratingPDF ? (
-                            <>
-                              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Génération...
-                            </>
-                          ) : (
-                            <>
-                              <Download className="w-5 h-5" /> Télécharger le PDF
-                            </>
-                          )}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleUnlockChapter}
-                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#C62828] hover:bg-red-700 transition-colors duration-300 shadow-md shadow-red-900/20"
-                        >
-                          <Lock className="w-5 h-5" /> Débloquer ce chapitre — 300 F
-                        </button>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </>
             )}

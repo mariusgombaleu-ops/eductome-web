@@ -19,6 +19,7 @@ import { useProgress } from '../hooks/useProgress';
 import { LeadCaptureModal } from '../components/ui/LeadCaptureModal';
 import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
 import { renderMath } from '../components/blocks/BlockRenderer';
+import { useTheme } from '../contexts/ThemeContext';
 
 const vitrineFiches = [
   {
@@ -123,6 +124,7 @@ export function Resources() {
   const initialTab = (searchParams.get('tab') as 'fiches' | 'exercices' | 'planning' | 'questions') || 'exercices';
   const [activeTab, setActiveTab] = useState<'fiches' | 'exercices' | 'planning' | 'questions'>(initialTab);
   const [activeTomeId, setActiveTomeId] = useState<number | null>(null);
+  const { palette } = useTheme();
   
   // Modal states
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
@@ -226,7 +228,7 @@ export function Resources() {
   const isDashboard = location.pathname.startsWith('/dashboard');
 
   return (
-    <div className={`min-h-screen pt-24 pb-12 font-poppins transition-colors duration-300 ${isDashboard ? 'bg-transparent pt-6' : 'bg-[#F8F9FA] dark:bg-[#0D1117]'}`}>
+    <div className={`min-h-screen pt-24 pb-12 font-poppins transition-colors duration-300 ${isDashboard ? 'pt-6' : ''}`} style={{ background: isDashboard ? 'transparent' : palette.bg }}>
       <SEO 
         title="Ressources Gratuites | EDUCTOME" 
         description="Fiches de révision, exercices corrigés et astuces du Grand Frère pour préparer ton BAC ou BEPC gratuitement." 
@@ -260,10 +262,10 @@ export function Resources() {
       
       {/* Profil Banner */}
       {localStorage.getItem('eductome_quiz_profile') && (
-        <div className="bg-gray-100 text-eductome-marine px-4 py-3 relative z-30 border-b border-gray-200">
+        <div className="px-4 py-3 relative z-30 border-b transition-colors" style={{ background: palette.bg2, color: palette.ink, borderColor: palette.line }}>
           <div className="max-w-4xl mx-auto flex items-center justify-between text-sm sm:text-base font-medium">
-            <span>🎯 Ton profil : {localStorage.getItem('eductome_quiz_profile')}</span>
-            <Link to="/quiz" className="text-eductome-magenta hover:underline text-sm font-bold">Refaire le quiz</Link>
+            <span style={{ color: palette.ink }}>🎯 Ton profil : {localStorage.getItem('eductome_quiz_profile')}</span>
+            <Link to="/quiz" className="hover:underline text-sm font-bold" style={{ color: palette.accent }}>Refaire le quiz</Link>
           </div>
         </div>
       )}
@@ -271,7 +273,7 @@ export function Resources() {
       {/* Hero Banner Premium */}
       {isDashboard && (
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-2">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors hover:scale-105" style={{ color: palette.ink2 }}>
             <ChevronLeft className="w-4 h-4" /> Retour
           </button>
         </div>
@@ -310,28 +312,32 @@ export function Resources() {
 
       {/* Tabs Premium */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8 -mt-8 relative z-20 mb-12">
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 bg-white p-2 rounded-2xl shadow-lg border border-gray-100">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 p-2 rounded-2xl shadow-lg border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
           <button 
             onClick={() => setActiveTab('exercices')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'exercices' ? 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-eductome-marine hover:border-eductome-marine'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'exercices' ? 'shadow-md transform scale-[1.02]' : 'opacity-70 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'}`}
+            style={activeTab === 'exercices' ? { background: palette.accent, color: '#fff', borderColor: palette.accent } : { background: 'transparent', borderColor: palette.line, color: palette.ink }}
           >
             <PenTool className={`w-5 h-5 mr-2 ${activeTab === 'exercices' ? 'animate-bounce' : ''}`} /> Exos Corrigés
           </button>
           <button 
             onClick={() => setActiveTab('fiches')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'fiches' ? 'bg-[#D81B60] text-white border-[#D81B60] shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-[#D81B60] hover:border-[#D81B60]'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'fiches' ? 'shadow-md transform scale-[1.02]' : 'opacity-70 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'}`}
+            style={activeTab === 'fiches' ? { background: palette.accent, color: '#fff', borderColor: palette.accent } : { background: 'transparent', borderColor: palette.line, color: palette.ink }}
           >
             <BookOpen className="w-5 h-5 mr-2" /> Fiches Méthode
           </button>
           <button 
             onClick={() => setActiveTab('planning')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'planning' ? 'bg-teal-600 text-white border-teal-600 shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-teal-600 hover:border-teal-600'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'planning' ? 'shadow-md transform scale-[1.02]' : 'opacity-70 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'}`}
+            style={activeTab === 'planning' ? { background: palette.accent, color: '#fff', borderColor: palette.accent } : { background: 'transparent', borderColor: palette.line, color: palette.ink }}
           >
             <BookMarked className="w-5 h-5 mr-2" /> Le Planning
           </button>
           <button 
             onClick={() => setActiveTab('questions')}
-            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'questions' ? 'bg-orange-500 text-white border-orange-500 shadow-md transform scale-[1.02]' : 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-orange-500 hover:border-orange-500'}`}
+            className={`flex-1 min-w-[140px] flex justify-center items-center px-4 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 border ${activeTab === 'questions' ? 'shadow-md transform scale-[1.02]' : 'opacity-70 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5'}`}
+            style={activeTab === 'questions' ? { background: palette.accent, color: '#fff', borderColor: palette.accent } : { background: 'transparent', borderColor: palette.line, color: palette.ink }}
           >
             <span className="text-xl mr-2">🎯</span> 10 Pièges
           </button>
@@ -342,28 +348,27 @@ export function Resources() {
       <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pb-20">
         
         {/* TAB 1: Fiches Méthode */}
-        {/* TAB 1: Fiches Méthode */}
         {activeTab === 'fiches' && (
           <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {vitrineFiches.map(fiche => (
-                <div key={fiche.id} className="bg-white dark:bg-[#161B22] p-6 rounded-xl shadow-sm border border-gray-100 dark:border-[#30363D] flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 opacity-5 rounded-bl-full pointer-events-none" style={{ backgroundColor: fiche.theme }}></div>
+                <div key={fiche.id} className="p-6 rounded-[28px] shadow-sm border flex flex-col hover:shadow-md transition-all relative overflow-hidden" style={{ background: palette.bg, borderColor: palette.line }}>
+                  <div className="absolute top-0 right-0 w-24 h-24 opacity-5 rounded-bl-[60px] pointer-events-none" style={{ backgroundColor: fiche.theme }}></div>
                   
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-3 rounded-xl text-white shadow-inner z-10" style={{ backgroundColor: fiche.theme }}>
                       <BookOpen className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase tracking-wider">{fiche.subject}</span>
+                    <span className="text-xs font-bold px-2 py-1 rounded bg-black/5 dark:bg-white/5 uppercase tracking-wider" style={{ color: palette.ink }}>{fiche.subject}</span>
                   </div>
                   
-                  <h3 className="font-bold text-[#1A1A2E] dark:text-white text-lg mb-1">{fiche.title}</h3>
-                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">{fiche.level}</p>
+                  <h3 className="font-bold text-lg mb-1" style={{ color: palette.ink }}>{fiche.title}</h3>
+                  <p className="text-xs font-bold mb-4" style={{ color: palette.ink2 }}>{fiche.level}</p>
                   
-                  <ul className="text-sm text-gray-600 dark:text-[#8B949E] mb-6 flex-grow space-y-2">
+                  <ul className="text-sm mb-6 flex-grow space-y-2" style={{ color: palette.ink2 }}>
                     {fiche.content.map((item, idx) => (
                       <li key={idx} className="flex items-start">
-                        <span className="text-[#D81B60] mr-2 mt-0.5">•</span>
+                        <span className="mr-2 mt-0.5" style={{ color: palette.accent }}>•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -371,7 +376,8 @@ export function Resources() {
                   
                   <button 
                     onClick={(e) => handleDownloadFiche(e as any, fiche.pdfFile)}
-                    className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 dark:bg-[#30363D] dark:hover:bg-[#4B5563] text-[#1A1A2E] dark:text-white font-semibold py-2.5 rounded-xl border border-gray-200 dark:border-transparent transition-colors z-10"
+                    className="w-full flex items-center justify-center font-semibold py-2.5 rounded-xl border transition-colors z-10 hover:opacity-80"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink }}
                   >
                     <Download className="w-4 h-4 mr-2" /> Télécharger
                   </button>
@@ -417,8 +423,13 @@ export function Resources() {
                     key={tome.id}
                     onClick={() => !tome.isUpcoming && handleTomeClick(tome.id)}
                     className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden group
-                      ${tome.isUpcoming ? 'bg-gray-50 dark:bg-[#161B22]/50 border-gray-100 dark:border-[#30363D] cursor-not-allowed opacity-60' : 
-                        isActive ? 'border-[#D81B60] bg-pink-50 dark:bg-[#D81B60]/10 shadow-md transform scale-105' : 'border-gray-100 dark:border-[#30363D] bg-white dark:bg-[#161B22] shadow-sm hover:border-[#1A3557] dark:hover:border-blue-500 hover:shadow-md'}`}
+                      ${tome.isUpcoming ? 'cursor-not-allowed opacity-60' : 
+                        isActive ? 'shadow-md transform scale-105' : 'shadow-sm hover:shadow-md'}`}
+                    style={
+                      tome.isUpcoming ? { background: palette.bg2, borderColor: palette.line } :
+                      isActive ? { background: `${palette.accent}15`, borderColor: palette.accent } :
+                      { background: palette.bg, borderColor: palette.line }
+                    }
                   >
                     {tome.isUpcoming && (
                       <div className="absolute top-0 right-0 bg-gray-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg uppercase">Bientôt</div>
@@ -426,8 +437,8 @@ export function Resources() {
                     <div className="w-10 h-10 rounded-full flex items-center justify-center text-white mb-3 shadow-inner" style={{ backgroundColor: tome.theme, opacity: tome.isUpcoming ? 0.5 : 1 }}>
                       <tome.icon className="w-5 h-5" />
                     </div>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${tome.isUpcoming ? 'text-gray-400 dark:text-gray-600' : isActive ? 'text-[#D81B60]' : 'text-gray-500 dark:text-gray-400'}`}>{tome.subject}</span>
-                    <span className={`text-sm font-semibold text-center leading-tight ${tome.isUpcoming ? 'text-gray-400 dark:text-gray-600' : isActive ? 'text-[#D81B60]' : 'text-[#1A1A2E] dark:text-white'}`}>{tome.title}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${tome.isUpcoming ? '' : isActive ? '' : ''}`} style={{ color: tome.isUpcoming ? palette.ink3 : isActive ? palette.accent : palette.ink2 }}>{tome.subject}</span>
+                    <span className={`text-sm font-semibold text-center leading-tight ${tome.isUpcoming ? '' : isActive ? '' : ''}`} style={{ color: tome.isUpcoming ? palette.ink3 : isActive ? palette.accent : palette.ink }}>{tome.title}</span>
                   </button>
                 )
               })}
@@ -435,15 +446,15 @@ export function Resources() {
 
             {/* Exercises Panel */}
             {activeTomeId !== null && (
-              <div ref={exercisesContainerRef} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-8 scroll-mt-24">
+              <div ref={exercisesContainerRef} className="rounded-[28px] shadow-lg border overflow-hidden mt-8 scroll-mt-24 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
                 
                 {tomesRegistry.find(t => t.id === activeTomeId)?.hasExercises ? (
                   <div>
                     {/* Header Panel */}
-                    <div className="bg-[#1A3557] text-white p-6 md:p-8 flex flex-col md:flex-row md:items-start justify-between">
+                    <div className="text-white p-6 md:p-8 flex flex-col md:flex-row md:items-start justify-between" style={{ background: palette.ink }}>
                       <div>
                         <h2 className="text-2xl font-bold font-playfair mb-3">Exercices Corrigés — {tomesRegistry.find(t => t.id === activeTomeId)?.title}</h2>
-                        <div className="inline-flex items-start bg-[#FFF3E0] text-[#E65100] px-4 py-3 rounded-xl text-sm font-medium leading-relaxed max-w-3xl">
+                        <div className="inline-flex items-start px-4 py-3 rounded-xl text-sm font-medium leading-relaxed max-w-3xl border" style={{ background: `${palette.accent}20`, borderColor: `${palette.accent}40`, color: palette.accent }}>
                           <span className="mr-2 text-xl">💡</span>
                           <span>
                             <strong>Conseil du Grand Frère :</strong> Cache la correction avant de commencer. Cherche d'abord — même si tu galères. Trompe-toi, c'est NORMAL : c'est comme ça qu'on apprend vraiment. Vérifie ensuite.
@@ -453,23 +464,23 @@ export function Resources() {
                     </div>
 
                     {/* Filters & Progress */}
-                    <div className="p-4 md:p-8 bg-gray-50 border-b border-gray-100">
+                    <div className="p-4 md:p-8 border-b transition-colors" style={{ background: palette.bg2, borderColor: palette.line }}>
                       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center space-x-2 bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm overflow-x-auto w-full md:w-auto">
-                          <Filter className="w-4 h-4 text-gray-400 ml-2 mr-1" />
-                          <button onClick={() => setActiveLevelFilter('ALL')} className={`px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap ${activeLevelFilter === 'ALL' ? 'bg-gray-200 text-gray-800' : 'text-gray-500 hover:bg-gray-100'}`}>Tous ({(allExercises[activeTomeId]||[]).length})</button>
-                          <button onClick={() => setActiveLevelFilter('BASE')} className={`px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap ${activeLevelFilter === 'BASE' ? 'bg-green-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>🟢 BASE</button>
-                          <button onClick={() => setActiveLevelFilter('MOYEN')} className={`px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap ${activeLevelFilter === 'MOYEN' ? 'bg-orange-500 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>🟠 MOYEN</button>
-                          <button onClick={() => setActiveLevelFilter('BAC')} className={`px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap ${activeLevelFilter === 'BAC' ? 'bg-red-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>🔴 BAC</button>
+                        <div className="flex items-center space-x-2 p-1.5 rounded-[12px] border shadow-sm overflow-x-auto w-full md:w-auto transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+                          <Filter className="w-4 h-4 ml-2 mr-1" style={{ color: palette.ink3 }} />
+                          <button onClick={() => setActiveLevelFilter('ALL')} className={`px-3 py-1.5 rounded-[8px] text-sm font-semibold whitespace-nowrap transition-colors`} style={activeLevelFilter === 'ALL' ? { background: palette.ink, color: palette.bg } : { background: 'transparent', color: palette.ink2 }}>Tous ({(allExercises[activeTomeId]||[]).length})</button>
+                          <button onClick={() => setActiveLevelFilter('BASE')} className={`px-3 py-1.5 rounded-[8px] text-sm font-semibold whitespace-nowrap transition-colors`} style={activeLevelFilter === 'BASE' ? { background: '#16a34a', color: '#fff' } : { background: 'transparent', color: palette.ink2 }}>🟢 BASE</button>
+                          <button onClick={() => setActiveLevelFilter('MOYEN')} className={`px-3 py-1.5 rounded-[8px] text-sm font-semibold whitespace-nowrap transition-colors`} style={activeLevelFilter === 'MOYEN' ? { background: '#f97316', color: '#fff' } : { background: 'transparent', color: palette.ink2 }}>🟠 MOYEN</button>
+                          <button onClick={() => setActiveLevelFilter('BAC')} className={`px-3 py-1.5 rounded-[8px] text-sm font-semibold whitespace-nowrap transition-colors`} style={activeLevelFilter === 'BAC' ? { background: '#dc2626', color: '#fff' } : { background: 'transparent', color: palette.ink2 }}>🔴 BAC</button>
                         </div>
                         
                         {/* Progress Bar Mini */}
-                        <div className="w-full md:w-64 bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
-                          <div className="flex justify-between text-xs font-bold text-gray-500 mb-2">
+                        <div className="w-full md:w-64 p-3 rounded-[16px] border shadow-sm transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+                          <div className="flex justify-between text-xs font-bold mb-2" style={{ color: palette.ink2 }}>
                             <span>Ta progression</span>
                             <span>{completedExercises.filter(id => id.startsWith(`t${activeTomeId}-`)).length} / {(allExercises[activeTomeId]||[]).length}</span>
                           </div>
-                          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                          <div className="w-full h-2 rounded-full overflow-hidden flex" style={{ background: palette.line }}>
                             <div className="bg-green-500 h-full" style={{ width: `${(completedExercises.filter(id => id.startsWith(`t${activeTomeId}-`) && (allExercises[activeTomeId]||[]).find(e => e.id === id)?.level === 'BASE').length / ((allExercises[activeTomeId]||[]).filter(e => e.level === 'BASE').length || 1)) * 33.3}%` }}></div>
                             <div className="bg-orange-500 h-full" style={{ width: `${(completedExercises.filter(id => id.startsWith(`t${activeTomeId}-`) && (allExercises[activeTomeId]||[]).find(e => e.id === id)?.level === 'MOYEN').length / ((allExercises[activeTomeId]||[]).filter(e => e.level === 'MOYEN').length || 1)) * 33.3}%` }}></div>
                             <div className="bg-red-500 h-full" style={{ width: `${(completedExercises.filter(id => id.startsWith(`t${activeTomeId}-`) && (allExercises[activeTomeId]||[]).find(e => e.id === id)?.level === 'BAC').length / ((allExercises[activeTomeId]||[]).filter(e => e.level === 'BAC').length || 1)) * 33.3}%` }}></div>
@@ -500,48 +511,50 @@ export function Resources() {
                         const currentEvaluation = evaluations[ex.id]?.level;
 
                         return (
-                          <div key={ex.id} id={ex.id} className={`border rounded-xl overflow-hidden shadow-sm transition-all duration-500 scroll-mt-24 ${isCompleted ? 'border-green-400 bg-green-50/30' : 'border-gray-200 bg-white'}`}>
+                          <div key={ex.id} id={ex.id} className="border rounded-[24px] overflow-hidden shadow-sm transition-all duration-500 scroll-mt-24" style={{ background: isCompleted ? '#22c55e10' : palette.bg, borderColor: isCompleted ? '#22c55e40' : palette.line }}>
                             {/* Énoncé */}
                             <div className="p-6">
                               <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-bold text-lg text-[#1A3557] flex items-center">
+                                <h3 className="font-bold text-lg flex items-center" style={{ color: palette.ink }}>
                                   {isCompleted && <CheckCircle className="w-5 h-5 text-green-500 mr-2" />}
                                   EXERCICE {index + 1}
                                 </h3>
                                 <div className="flex items-center space-x-3">
                                   <span className={`text-xs font-bold px-2 py-1 rounded-md ${styles.badge}`}>{ex.level}</span>
-                                  <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md">{ex.points} pts</span>
+                                  <span className="text-xs font-semibold px-2 py-1 rounded-md" style={{ background: palette.bg2, color: palette.ink2 }}>{ex.points} pts</span>
                                 </div>
                               </div>
                               
                               {ex.contextBac && (
-                                <p className="text-sm text-gray-500 italic mb-4">
+                                <p className="text-sm italic mb-4" style={{ color: palette.ink3 }}>
                                   {ex.contextBac.format} — {ex.contextBac.serie}. Durée conseillée : {ex.contextBac.dureeConseillee} min.
                                 </p>
                               )}
                               
                               {ex.testedConcept && (
                                 <div className="mb-4">
-                                  <span className="italic text-gray-700 text-sm">🎯 Ce qu'on teste ici : {ex.testedConcept}</span>
+                                  <span className="italic text-sm" style={{ color: palette.ink2 }}>🎯 Ce qu'on teste ici : {ex.testedConcept}</span>
                                 </div>
                               )}
                               
                               <div
-                                className="text-gray-800 text-base md:text-lg leading-relaxed math-content"
+                                className="text-base md:text-lg leading-relaxed math-content"
+                                style={{ color: palette.ink }}
                                 dangerouslySetInnerHTML={{ __html: renderMath(ex.statement) }}
                               />
 
                               <div className="mt-6 flex flex-wrap items-center gap-3">
                                 <button 
                                   onClick={() => toggleCorrection(ex.id)}
-                                  className={`inline-flex items-center font-semibold text-sm px-4 py-2 rounded-lg transition-colors ${isCorrectionVisible ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-[#1A3557] text-white hover:bg-[#1A3557]/90'}`}
+                                  className={`inline-flex items-center font-semibold text-sm px-4 py-2 rounded-[12px] transition-colors`}
+                                  style={isCorrectionVisible ? { background: palette.bg2, color: palette.ink2 } : { background: palette.ink, color: palette.bg }}
                                 >
                                   {isCorrectionVisible ? <><EyeOff className="w-4 h-4 mr-2" /> Masquer la correction</> : <><Eye className="w-4 h-4 mr-2" /> Voir la correction</>}
                                 </button>
                                 <a
                                   href={`https://wa.me/2250715811398?text=${encodeURIComponent(`Bonjour le Grand Frère 👋\n\nJe suis bloqué sur l'Exercice de la plateforme (ID: ${ex.id}) du Tome ${activeTomeId}.\n\nPouvez-vous m'aider à comprendre ?`)}`}
                                   target="_blank" rel="noopener noreferrer"
-                                  className="inline-flex items-center font-semibold text-sm px-4 py-2 rounded-lg text-[#128C7E] bg-[#128C7E]/10 hover:bg-[#128C7E]/20 transition-colors"
+                                  className="inline-flex items-center font-semibold text-sm px-4 py-2 rounded-[12px] text-[#128C7E] bg-[#128C7E]/10 hover:bg-[#128C7E]/20 transition-colors"
                                 >
                                   <MessageCircle className="w-4 h-4 mr-2" /> Bloqué ?
                                 </a>
@@ -550,7 +563,7 @@ export function Resources() {
 
                             {/* Correction Déroulante */}
                             {isCorrectionVisible && ex.correction && (
-                              <div className={`border-t border-gray-200 ${styles.body} animate-fade-in`}>
+                              <div className={`border-t animate-fade-in`} style={{ borderColor: palette.line, background: palette.bg2 }}>
                                 <div className={`${styles.header} text-white px-6 py-3 font-semibold flex items-center`}>
                                   <div className="w-2 h-2 rounded-full bg-white/50 mr-2"></div> Correction Détaillée
                                 </div>
@@ -558,22 +571,22 @@ export function Resources() {
                                 <div className="p-6 space-y-8">
                                   {/* Répartition du temps (BAC) */}
                                   {ex.correction.repartitionTemps && (
-                                    <div className="bg-[#E8EDF3] border border-[#1A3557] rounded-lg p-5">
-                                      <h4 className="font-bold text-[#1A3557] flex items-center mb-3">
+                                    <div className="rounded-[16px] p-5 border" style={{ background: palette.bg, borderColor: palette.line }}>
+                                      <h4 className="font-bold flex items-center mb-3" style={{ color: palette.ink }}>
                                         <span className="mr-2">⏱️</span> Répartition du temps recommandée :
                                       </h4>
-                                      <ul className="space-y-1 text-sm text-[#1A3557]">
+                                      <ul className="space-y-1 text-sm" style={{ color: palette.ink2 }}>
                                         {ex.correction.repartitionTemps.map((rt: any, i: number) => (
                                           <li key={i} className="flex">
-                                            <span className="w-12 font-semibold">{rt.question}</span>
-                                            <span className="w-16 font-semibold">: {rt.duree} min</span>
-                                            <span className="text-gray-600">— {rt.description}</span>
+                                            <span className="w-12 font-semibold" style={{ color: palette.ink }}>{rt.question}</span>
+                                            <span className="w-16 font-semibold" style={{ color: palette.ink }}>: {rt.duree} min</span>
+                                            <span className="">— {rt.description}</span>
                                           </li>
                                         ))}
-                                        <li className="flex pt-2 mt-2 border-t border-[#1A3557]/20">
+                                        <li className="flex pt-2 mt-2 border-t" style={{ borderColor: palette.line }}>
                                           <span className="w-12"></span>
-                                          <span className="w-16 font-semibold text-gray-500">+ 1 min</span>
-                                          <span className="text-gray-500">de relecture</span>
+                                          <span className="w-16 font-semibold" style={{ color: palette.ink3 }}>+ 1 min</span>
+                                          <span style={{ color: palette.ink3 }}>de relecture</span>
                                         </li>
                                       </ul>
                                     </div>
@@ -583,32 +596,32 @@ export function Resources() {
                                   {ex.correction.questions?.map((q: any, qIdx: number) => (
                                     <div key={qIdx} className="space-y-4">
                                       <div className="flex items-center whitespace-nowrap">
-                                        <div className="h-px bg-gray-300 w-8 mr-4"></div>
-                                        <h4 className="font-bold text-gray-800">{q.label}</h4>
-                                        <div className="h-px bg-gray-300 w-full ml-4"></div>
+                                        <div className="h-px w-8 mr-4" style={{ background: palette.line }}></div>
+                                        <h4 className="font-bold" style={{ color: palette.ink }}>{q.label}</h4>
+                                        <div className="h-px w-full ml-4" style={{ background: palette.line }}></div>
                                       </div>
                                       
                                       <div className="pl-4 md:pl-12 space-y-4">
                                         {q.etapes.map((etape: any, eIdx: number) => {
                                           if (etape.type === 'PIEGE') {
                                             return (
-                                              <div key={eIdx} className="bg-[#FDEDEC] border-l-4 border-[#C62828] p-4 rounded-r-lg">
-                                                <h5 className="font-bold text-[#C62828] mb-1">🚨 ATTENTION PIÈGE BAC</h5>
-                                                <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
+                                              <div key={eIdx} className="bg-[#FDEDEC] dark:bg-[#C62828]/10 border-l-4 border-[#C62828] p-4 rounded-r-[12px]">
+                                                <h5 className="font-bold text-[#C62828] dark:text-red-400 mb-1">🚨 ATTENTION PIÈGE BAC</h5>
+                                                <div className="math-content" style={{ color: palette.ink }} dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
                                               </div>
                                             );
                                           }
                                           
                                           let icon = '🔍';
-                                          let color = 'text-[#1A3557]';
-                                          if (etape.type === 'STRATEGIE') { icon = '🛠️'; color = 'text-[#1A3557]'; }
-                                          else if (etape.type === 'CALCUL') { icon = '🧮'; color = 'text-[#1B5E20]'; }
-                                          else if (etape.type === 'CONCLUSION') { icon = '✅'; color = 'text-[#2E7D32]'; }
+                                          let color = 'text-[#1A3557] dark:text-blue-400';
+                                          if (etape.type === 'STRATEGIE') { icon = '🛠️'; color = 'text-[#1A3557] dark:text-blue-400'; }
+                                          else if (etape.type === 'CALCUL') { icon = '🧮'; color = 'text-[#1B5E20] dark:text-green-400'; }
+                                          else if (etape.type === 'CONCLUSION') { icon = '✅'; color = 'text-[#2E7D32] dark:text-green-400'; }
                                           
                                           return (
                                             <div key={eIdx} className="mb-4">
                                               <h5 className={`font-bold ${color} mb-1`}>{icon} {etape.type}</h5>
-                                              <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
+                                              <div className="math-content" style={{ color: palette.ink }} dangerouslySetInnerHTML={{ __html: renderMath(etape.content) }} />
                                             </div>
                                           );
                                         })}
@@ -620,18 +633,18 @@ export function Resources() {
                                   {ex.correction.dialogue?.map((dial: any, dIdx: number) => (
                                     <div key={dIdx} className="space-y-4 mt-8">
                                       <div className="flex items-center whitespace-nowrap">
-                                        <div className="h-px bg-gray-300 w-8 mr-4"></div>
-                                        <h4 className="font-bold text-gray-800">🗣️ Dialogue Petit Frère / Grand Frère</h4>
-                                        <div className="h-px bg-gray-300 w-full ml-4"></div>
+                                        <div className="h-px w-8 mr-4" style={{ background: palette.line }}></div>
+                                        <h4 className="font-bold" style={{ color: palette.ink }}>🗣️ Dialogue Petit Frère / Grand Frère</h4>
+                                        <div className="h-px w-full ml-4" style={{ background: palette.line }}></div>
                                       </div>
                                       
                                       <div className="space-y-3 pl-4 md:pl-12">
-                                        <div className="bg-[#FEF9E7] p-4 rounded-2xl rounded-tl-sm shadow-sm inline-block max-w-[90%]">
-                                          <p className="text-gray-700 italic"><span className="font-bold mr-2">🗣️ Petit Frère :</span> "{dial.petitFrere}"</p>
+                                        <div className="p-4 rounded-2xl rounded-tl-sm shadow-sm inline-block max-w-[90%]" style={{ background: palette.bg, border: `1px solid ${palette.line}` }}>
+                                          <p className="italic" style={{ color: palette.ink2 }}><span className="font-bold mr-2" style={{ color: palette.ink }}>🗣️ Petit Frère :</span> "{dial.petitFrere}"</p>
                                         </div>
                                         <div className="flex justify-end w-full">
-                                          <div className="bg-[#EBF5FB] p-4 rounded-2xl rounded-tr-sm shadow-sm inline-block max-w-[90%]">
-                                            <p className="text-gray-800"><span className="font-bold text-[#1A3557] mr-2">🗣️ Grand Frère :</span> "{dial.grandFrere}"</p>
+                                          <div className="p-4 rounded-2xl rounded-tr-sm shadow-sm inline-block max-w-[90%]" style={{ background: `${palette.accent}15`, border: `1px solid ${palette.accent}30` }}>
+                                            <p style={{ color: palette.ink }}><span className="font-bold mr-2" style={{ color: palette.accent }}>🗣️ Grand Frère :</span> "{dial.grandFrere}"</p>
                                           </div>
                                         </div>
                                       </div>
@@ -642,15 +655,15 @@ export function Resources() {
                                   {ex.correction.astuces?.length > 0 && (
                                     <div className="mt-8 space-y-4">
                                       <div className="flex items-center whitespace-nowrap">
-                                        <div className="h-px bg-gray-300 w-8 mr-4"></div>
-                                        <h4 className="font-bold text-gray-800">💡 Astuces du Grand Frère</h4>
-                                        <div className="h-px bg-gray-300 w-full ml-4"></div>
+                                        <div className="h-px w-8 mr-4" style={{ background: palette.line }}></div>
+                                        <h4 className="font-bold" style={{ color: palette.ink }}>💡 Astuces du Grand Frère</h4>
+                                        <div className="h-px w-full ml-4" style={{ background: palette.line }}></div>
                                       </div>
                                       
                                       <div className="pl-4 md:pl-12">
                                         {ex.correction.astuces.map((astuce: string, aIdx: number) => (
-                                          <div key={aIdx} className="bg-[#FDEBD0] border-l-4 border-[#E67E22] p-4 rounded-r-lg mb-3">
-                                            <div className="text-gray-800 math-content" dangerouslySetInnerHTML={{ __html: renderMath(astuce.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')) }} />
+                                          <div key={aIdx} className="border-l-4 border-[#E67E22] p-4 rounded-r-[12px] mb-3" style={{ background: `${palette.accent}10` }}>
+                                            <div className="math-content" style={{ color: palette.ink }} dangerouslySetInnerHTML={{ __html: renderMath(astuce.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')) }} />
                                           </div>
                                         ))}
                                       </div>
@@ -659,20 +672,20 @@ export function Resources() {
 
                                   {/* Note Grand Frère */}
                                   {ex.correction.noteGrandFrere && (
-                                    <div className="mt-8 border-2 border-[#D81B60] bg-[#FFF0F5] p-5 rounded-lg shadow-sm relative">
-                                      <div className="absolute -top-3 left-4 bg-[#D81B60] text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+                                    <div className="mt-8 border-2 p-5 rounded-[16px] shadow-sm relative" style={{ borderColor: palette.accent, background: `${palette.accent}05` }}>
+                                      <div className="absolute -top-3 left-4 text-white px-3 py-1 rounded-[8px] text-xs font-bold uppercase tracking-wider" style={{ background: palette.accent }}>
                                         📝 Note du Grand Frère
                                       </div>
-                                      <p className="text-gray-800 font-medium italic mt-2">{ex.correction.noteGrandFrere}</p>
+                                      <p className="font-medium italic mt-2" style={{ color: palette.ink }}>{ex.correction.noteGrandFrere}</p>
                                     </div>
                                   )}
 
                                   {/* Auto-Évaluation (Remplace Marquer comme fait) */}
-                                  <div className="mt-10 border-2 border-[#1A3557] rounded-xl overflow-hidden shadow-sm">
-                                    <div className="bg-[#1A3557] text-white px-6 py-3 font-semibold flex items-center">
+                                  <div className="mt-10 border-2 rounded-[24px] overflow-hidden shadow-sm" style={{ borderColor: palette.ink }}>
+                                    <div className="text-white px-6 py-3 font-semibold flex items-center" style={{ background: palette.ink }}>
                                       💪 Comment tu te sens sur cet exercice ?
                                     </div>
-                                    <div className="p-6 bg-white">
+                                    <div className="p-6" style={{ background: palette.bg }}>
                                       <div className="space-y-3">
                                         {[
                                           { level: '🟢', label: "J'ai tout réussi tout seul" },
@@ -680,16 +693,17 @@ export function Resources() {
                                           { level: '🟠', label: "J'ai bloqué, j'ai utilisé le corrigé, maintenant je comprends" },
                                           { level: '🔴', label: "Je dois refaire cet exo dans 3 jours" }
                                         ].map(opt => (
-                                          <label key={opt.level} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${currentEvaluation === opt.level ? 'border-eductome-marine bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}>
+                                          <label key={opt.level} className={`flex items-center p-3 rounded-[12px] border cursor-pointer transition-colors`} style={currentEvaluation === opt.level ? { borderColor: palette.accent, background: `${palette.accent}15` } : { borderColor: palette.line, background: palette.bg2 }}>
                                             <input 
                                               type="radio" 
                                               name={`eval-${ex.id}`} 
                                               value={opt.level}
                                               checked={currentEvaluation === opt.level}
                                               onChange={() => evaluateExercise(ex.id, opt.level as any, `Exercice ${index + 1}`, isLastExercise)}
-                                              className="w-4 h-4 text-eductome-marine focus:ring-eductome-marine"
+                                              className="w-4 h-4 focus:ring-2 focus:ring-offset-1"
+                                              style={{ accentColor: palette.accent }}
                                             />
-                                            <span className="ml-3 font-medium text-gray-700"><span className="mr-2">{opt.level}</span> {opt.label}</span>
+                                            <span className="ml-3 font-medium" style={{ color: palette.ink }}><span className="mr-2">{opt.level}</span> {opt.label}</span>
                                           </label>
                                         ))}
                                       </div>

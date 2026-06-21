@@ -1,6 +1,6 @@
-import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Target, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Eye, Users, Timer, Share2, Calendar } from 'lucide-react';
+import { User, Mail, Save, Camera, Star, Edit3, Book, Trash2, Key, CheckCircle, ChevronRight, Lock, Flame, Trophy, Heart, Settings, RefreshCw, Unlock, Zap, Users, Timer, Share2, Calendar, Award } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useUser } from '../../contexts/UserContext';
+import { useUser, USER_LEVELS } from '../../contexts/UserContext';
 import { BADGES } from '../../constants/badges';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -23,7 +23,7 @@ function getSeriesFromLevel(levelStr: string): IvorianSeries {
 }
 
 export const Profile = () => {
-  const { theme } = useTheme();
+  const { theme, palette } = useTheme();
   const d = theme === 'dark';
   const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole, isAdmin, photoURL, currentStreak, devSimulerGratuit, devSimulerFamille, devSetStreak, devUnlockCourseTest } = useUser();
   const { currentUser } = useAuth();
@@ -46,6 +46,11 @@ export const Profile = () => {
   const [relaisCodeCopied, setRelaisCodeCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [selectedSubjectForTimetable, setSelectedSubjectForTimetable] = useState<{ id: string; name: string; color: string } | null>(null);
+
+  const nextLevelData = USER_LEVELS.find(l => l.level === level.level + 1);
+  const nextLevelXp = nextLevelData ? nextLevelData.minXp : level.minXp;
+  const currentLevelXp = level.minXp;
+  const progress = nextLevelXp > currentLevelXp ? ((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100 : 100;
 
   const handleGenerateRelaisCode = async () => {
     if (!relaisNom.trim()) return;
@@ -269,7 +274,8 @@ export const Profile = () => {
           <button
             type="button"
             onClick={handleShare}
-            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border transition-colors ${d ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            className="flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl border transition-colors hover:bg-black/5"
+            style={{ borderColor: palette.line, color: palette.ink }}
           >
             <Share2 className="w-4 h-4" />
             {shareCopied ? 'Lien copié !' : 'Partager ma progression'}
@@ -279,20 +285,20 @@ export const Profile = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-6">
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-100`}>
-            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-6 flex items-center gap-2`}>
-              <User className="w-5 h-5 text-gray-400" /> Informations Personnelles
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-100 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
+              <User className="w-5 h-5 opacity-60" /> Informations Personnelles
             </h2>
             
             <form className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Prénom / Pseudo</label>
-                  <input type="text" defaultValue={pseudo} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
+                  <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Prénom / Pseudo</label>
+                  <input type="text" defaultValue={pseudo} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Niveau d'études</label>
-                  <select defaultValue={levelString} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Niveau d'études</label>
+                  <select defaultValue={levelString} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Terminale</option>
                     <option>Première</option>
                     <option>Seconde</option>
@@ -300,8 +306,8 @@ export const Profile = () => {
                   </select>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Matière préférée</label>
-                  <select defaultValue={favoriteSubject || "Mathématiques"} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Matière préférée</label>
+                  <select defaultValue={favoriteSubject || "Mathématiques"} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Mathématiques</option>
                     <option>Physique-Chimie</option>
                     <option>SVT</option>
@@ -309,8 +315,8 @@ export const Profile = () => {
                   </select>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Objectif principal</label>
-                  <select defaultValue={goal || "Mention Bien"} className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}>
+                  <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Objectif principal</label>
+                  <select defaultValue={goal || "Mention Bien"} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Mention Très Bien</option>
                     <option>Mention Bien</option>
                     <option>Mention Assez Bien</option>
@@ -318,68 +324,68 @@ export const Profile = () => {
                   </select>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1`}>Lycée</label>
-                  <input type="text" defaultValue={highschool || ""} placeholder="Ex: Lycée Classique d'Abidjan" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} />
+                  <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Lycée</label>
+                  <input type="text" defaultValue={highschool || ""} placeholder="Ex: Lycée Classique d'Abidjan" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
                 </div>
               </div>
               
               <div>
-                <label className={`block text-sm font-medium ${d ? 'text-gray-300' : 'text-gray-700'} mb-1 flex items-center gap-2`}>
+                <label className="block text-sm font-medium mb-1 flex items-center gap-2" style={{ color: palette.ink2 }}>
                   <Mail className="w-4 h-4" /> Numéro de téléphone (Identifiant)
                 </label>
-                <input type="text" defaultValue={currentUser?.phoneNumber || "Non renseigné"} disabled className={`w-full px-4 py-2 border rounded-lg cursor-not-allowed ${d ? 'border-gray-700 bg-gray-800 text-gray-400' : 'border-gray-200 bg-gray-50 text-gray-500'}`} />
-                <p className="text-xs text-gray-400 mt-1">Le numéro de téléphone ne peut pas être modifié.</p>
+                <input type="text" defaultValue={currentUser?.phoneNumber || "Non renseigné"} disabled className="w-full px-4 py-2 border rounded-lg cursor-not-allowed opacity-70" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink3 }} />
+                <p className="text-xs mt-1" style={{ color: palette.ink3 }}>Le numéro de téléphone ne peut pas être modifié.</p>
               </div>
 
               <div className="pt-4 flex justify-end">
-                <button type="button" className="flex items-center gap-2 bg-eductome-magenta hover:bg-eductome-marine text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                <button type="button" className="flex items-center gap-2 text-white px-6 py-2 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]" style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}>
                   <Save className="w-4 h-4" /> Enregistrer les modifications
                 </button>
               </div>
             </form>
           </div>
 
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-150`}>
-            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-6 flex items-center gap-2`}>
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-150 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
               <Flame className="w-5 h-5 text-orange-500" /> Temps d'étude
             </h2>
             <StudyChart />
           </div>
 
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-200`}>
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-200 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} flex items-center gap-2`}>
-                <Edit3 className="w-5 h-5 text-eductome-blue" /> Mon Carnet de Notes
+              <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: palette.ink }}>
+                <Edit3 className="w-5 h-5" style={{ color: palette.accent }} /> Mon Carnet de Notes
               </h2>
             </div>
             
             {savedNotes.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {savedNotes.map((note) => (
-                  <div key={note.courseId} className={`relative p-4 rounded-xl border ${d ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-200'} group`}>
+                  <div key={note.courseId} className="relative p-4 rounded-[20px] border group transition-colors" style={{ background: palette.bg2, borderColor: palette.line }}>
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-eductome-magenta bg-eductome-magenta/10 px-2 py-0.5 rounded-full w-fit uppercase tracking-wider">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full w-fit uppercase tracking-wider" style={{ background: `${palette.accent}20`, color: palette.accent }}>
                           <Book className="w-3 h-3" /> Chapitre
                         </div>
-                        <h3 className={`font-bold text-sm ${d ? 'text-white' : 'text-eductome-marine'} pr-6`}>
+                        <h3 className="font-bold text-sm pr-6" style={{ color: palette.ink }}>
                           {note.courseId === 't1-limites' ? 'Les Limites' : note.courseId === 't11-eq-diff' ? 'Équations Différentielles' : note.courseId}
                         </h3>
                       </div>
                       <button 
                         type="button"
                         onClick={() => handleDeleteNote(note.courseId)}
-                        className="p-1.5 absolute top-3 right-3 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors sm:opacity-0 group-hover:opacity-100 z-10"
+                        className="p-1.5 absolute top-3 right-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors sm:opacity-0 group-hover:opacity-100 z-10"
                         title="Supprimer la note"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className={`text-sm whitespace-pre-wrap line-clamp-3 mt-2 mb-3 ${d ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p className="text-sm whitespace-pre-wrap line-clamp-3 mt-2 mb-3" style={{ color: palette.ink2 }}>
                       {note.content}
                     </p>
-                    <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-end">
-                      <a href={`/dashboard/course/${note.courseId}`} className="text-xs font-bold text-blue-500 hover:text-blue-600 flex items-center">
+                    <div className="pt-3 border-t flex justify-end" style={{ borderColor: palette.line }}>
+                      <a href={`/dashboard/course/${note.courseId}`} className="text-xs font-bold hover:opacity-80 flex items-center transition-opacity" style={{ color: palette.accent }}>
                         Aller au cours <ChevronRight className="w-3 h-3 ml-0.5" />
                       </a>
                     </div>
@@ -387,7 +393,7 @@ export const Profile = () => {
                 ))}
               </div>
             ) : (
-              <div className={`text-center py-8 px-4 border-2 border-dashed rounded-xl ${d ? 'border-gray-700 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
+              <div className="text-center py-8 px-4 border-2 border-dashed rounded-[20px]" style={{ borderColor: palette.line, color: palette.ink3 }}>
                 <Edit3 className="w-8 h-8 mx-auto mb-3 opacity-50" />
                 <p className="font-medium text-sm">Ton carnet est vide.</p>
                 <p className="text-xs mt-1 opacity-80">Prends des notes pendant ta lecture, elles apparaîtront ici.</p>
@@ -398,25 +404,27 @@ export const Profile = () => {
 
 
           {/* Mon Emploi du Temps */}
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-225`}>
-            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
-              <Calendar className="w-5 h-5 text-blue-500" /> Mon Emploi du Temps
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-225 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: palette.ink }}>
+              <Calendar className="w-5 h-5" style={{ color: palette.accent }} /> Mon Emploi du Temps
             </h2>
-            <p className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'} mb-4`}>Configure tes créneaux hebdomadaires par matière :</p>
+            <p className="text-sm mb-4" style={{ color: palette.ink2 }}>Configure tes créneaux hebdomadaires par matière :</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {IVORIAN_CURRICULUM[getSeriesFromLevel(levelString)].map(subject => (
                 <div
                   key={subject.id}
-                  className={`flex items-center justify-between p-3 rounded-xl border ${d ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}
+                  className="flex items-center justify-between p-3 rounded-[16px] border transition-colors"
+                  style={{ background: palette.bg2, borderColor: palette.line }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: subject.color }} />
-                    <span className={`text-sm font-medium ${d ? 'text-gray-200' : 'text-gray-800'}`}>{subject.name}</span>
+                    <span className="text-sm font-medium" style={{ color: palette.ink }}>{subject.name}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setSelectedSubjectForTimetable({ id: subject.id, name: subject.name, color: subject.color })}
-                    className="text-xs font-bold text-blue-500 hover:text-blue-400 border border-blue-500/30 hover:border-blue-400 px-3 py-1 rounded-lg transition-all"
+                    className="text-xs font-bold border px-3 py-1 rounded-[12px] transition-all hover:bg-black/5"
+                    style={{ color: palette.accent, borderColor: `${palette.accent}50` }}
                   >
                     Configurer
                   </button>
@@ -426,11 +434,11 @@ export const Profile = () => {
           </div>
 
           {/* Code Livre Physique */}
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card animate-fade-in-up animation-delay-250`}>
-            <h2 className={`text-lg font-bold ${d ? 'text-white' : 'text-gray-900'} mb-2 flex items-center gap-2`}>
-              <Key className="w-5 h-5 text-eductome-magenta" /> Activer un Livre Physique
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-250 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: palette.ink }}>
+              <Key className="w-5 h-5" style={{ color: palette.accent }} /> Activer un Livre Physique
             </h2>
-            <p className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'} mb-6`}>
+            <p className="text-sm mb-6" style={{ color: palette.ink2 }}>
               Tu as acheté un manuel EDUCTOME en librairie ? Entre le code unique situé à la fin du livre pour débloquer la version numérique et tous les quiz.
             </p>
             <form onSubmit={handleApplyCoupon} className="space-y-4">
@@ -440,97 +448,95 @@ export const Profile = () => {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   placeholder="Ex: T1LIMITES2026" 
-                  className={`flex-1 px-4 py-3 border rounded-xl font-mono uppercase focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`} 
+                  className="flex-1 px-4 py-3 border rounded-xl font-mono uppercase focus:ring-2 focus:outline-none transition-colors" 
+                  style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
                 />
                 <button 
                   type="submit" 
                   disabled={couponStatus === 'loading'}
-                  className="bg-eductome-marine hover:bg-blue-900 text-white px-6 py-3 rounded-xl font-bold transition-colors disabled:opacity-70 whitespace-nowrap"
+                  className="text-white px-6 py-3 rounded-[16px] font-bold transition-all hover:scale-[1.02] shadow-md disabled:opacity-70 disabled:hover:scale-100 whitespace-nowrap"
+                  style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
                 >
                   {couponStatus === 'loading' ? 'Vérification...' : 'Activer'}
                 </button>
               </div>
               {couponStatus === 'success' && (
-                <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-400 text-sm flex items-start gap-2">
+                <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-[16px] text-green-700 dark:text-green-400 text-sm flex items-start gap-2">
                   <CheckCircle className="w-5 h-5 shrink-0" />
                   <p>Code validé ! Le Tome a été ajouté à tes cours. Tu as maintenant accès à la version numérique et aux quiz interactifs.</p>
                 </div>
               )}
               {couponStatus === 'error' && (
-                <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-[16px] text-red-700 dark:text-red-400 text-sm">
                   Code invalide ou déjà utilisé. Vérifie que tu as bien recopié les lettres et chiffres.
                 </div>
               )}
             </form>
           </div>
-
-
         </div>
 
-        <div className="space-y-6 animate-fade-in-up animation-delay-300">
-          {/* Quick Stats */}
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card`}>
-            <h3 className={`font-bold ${d ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
-              <Target className="w-5 h-5 text-eductome-sky" /> Statistiques rapides
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'}`}>Série d'étude</span>
-                <span className={`font-bold ${d ? 'text-white' : 'text-gray-900'} flex items-center gap-1`}><Flame className="w-4 h-4 text-orange-500" /> 3 Jours</span>
+        {/* Sidebar Droite (Badges et Admin) */}
+        <div className="space-y-6">
+          {/* Progression Niveau */}
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-left animation-delay-300 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold flex items-center gap-2" style={{ color: palette.ink }}>
+                <Trophy className="w-5 h-5 text-yellow-500" /> Niveau {level.level}
+              </h3>
+              <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: palette.bg2, color: palette.ink }}>
+                {level.title || 'Élève'}
+              </span>
+            </div>
+            
+            <div className="relative pt-4">
+              <div className="flex justify-between text-xs font-bold mb-1">
+                <span style={{ color: palette.accent }}>{xp} XP</span>
+                <span style={{ color: palette.ink3 }}>{nextLevelXp} XP</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'}`}>Cours terminés</span>
-                <span className={`font-bold ${d ? 'text-white' : 'text-gray-900'}`}>12</span>
+              <div className="h-3 w-full rounded-full overflow-hidden" style={{ background: palette.bg2 }}>
+                <div 
+                  className="h-full rounded-full relative overflow-hidden transition-all duration-1000 ease-out"
+                  style={{ width: `${progress}%`, background: palette.accent }}
+                >
+                  <div className="absolute top-0 bottom-0 left-0 right-0 bg-white/20 animate-shimmer" style={{
+                    backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                    transform: 'skewX(-20deg)'
+                  }}></div>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${d ? 'text-gray-400' : 'text-gray-600'}`}>Temps cette sem.</span>
-                <span className={`font-bold ${d ? 'text-white' : 'text-gray-900'}`}>4h 30m</span>
-              </div>
+              <p className="text-[10px] text-center mt-2" style={{ color: palette.ink3 }}>
+                Plus que {nextLevelXp - xp} XP pour atteindre le niveau {level.level + 1}
+              </p>
             </div>
           </div>
 
-          {/* Badges */}
-          <div className={`${d ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl shadow-sm border glass-card`}>
-            <h3 className={`font-bold ${d ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
-              <Trophy className="w-5 h-5 text-yellow-500" /> Mes Badges
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {BADGES.map((badge) => {
+          {/* Badges Récents */}
+          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-left animation-delay-400 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold flex items-center gap-2" style={{ color: palette.ink }}>
+                <Award className="w-5 h-5 text-purple-500" /> Mes Badges
+              </h3>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${palette.accent}20`, color: palette.accent }}>
+                {unlockedBadges.length} débloqués
+              </span>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-3">
+              {BADGES.slice(0, 6).map(badge => {
                 const isUnlocked = unlockedBadges.includes(badge.id);
-                
-                let IconComponent = Trophy;
-                if (badge.iconName === 'Eye') IconComponent = Eye;
-                if (badge.iconName === 'Book') IconComponent = Book;
-                if (badge.iconName === 'Star') IconComponent = Star;
-                if (badge.iconName === 'Heart') IconComponent = Heart;
-                
-                // Color configuration
-                const colors = {
-                  orange: { bg: 'from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30', border: 'border-orange-200 dark:border-orange-800/50', text: 'text-orange-500', label: d ? 'text-orange-300' : 'text-orange-800' },
-                  blue: { bg: 'from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30', border: 'border-blue-200 dark:border-blue-800/50', text: 'text-blue-500', label: d ? 'text-blue-300' : 'text-blue-800' },
-                  yellow: { bg: 'from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30', border: 'border-yellow-200 dark:border-yellow-800/50', text: 'text-yellow-500', label: d ? 'text-yellow-300' : 'text-yellow-800' },
-                  magenta: { bg: 'from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30', border: 'border-pink-200 dark:border-pink-800/50', text: 'text-[#D81B60]', label: d ? 'text-pink-300' : 'text-pink-800' },
-                  green: { bg: 'from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30', border: 'border-green-200 dark:border-green-800/50', text: 'text-green-500', label: d ? 'text-green-300' : 'text-green-800' },
-                  purple: { bg: 'from-purple-100 to-fuchsia-100 dark:from-purple-900/30 dark:to-fuchsia-900/30', border: 'border-purple-200 dark:border-purple-800/50', text: 'text-purple-500', label: d ? 'text-purple-300' : 'text-purple-800' },
-                };
-                
-                const themeColors = colors[badge.colorTheme] || colors.blue;
-                
                 return (
                   <div 
                     key={badge.id}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 ${isUnlocked ? `bg-gradient-to-br ${themeColors.bg} border ${themeColors.border} hover:scale-105 shadow-sm` : `bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60 grayscale`}`}
-                    title={isUnlocked ? badge.description : `À débloquer : ${badge.description}`}
+                    className={`aspect-square rounded-[16px] flex flex-col items-center justify-center p-2 text-center transition-all ${
+                      isUnlocked 
+                        ? 'border' 
+                        : 'opacity-40 grayscale border border-dashed'
+                    }`}
+                    style={isUnlocked ? { background: palette.bg2, borderColor: palette.line } : { borderColor: palette.line }}
+                    title={badge.description}
                   >
-                    <div className="relative mb-2">
-                      <IconComponent className={`w-8 h-8 ${isUnlocked ? themeColors.text : 'text-gray-400'}`} />
-                      {!isUnlocked && (
-                        <div className="absolute -bottom-1 -right-1 bg-gray-200 dark:bg-gray-700 rounded-full p-0.5 border-2 border-white dark:border-gray-800">
-                          <Lock className="w-3 h-3 text-gray-500" />
-                        </div>
-                      )}
-                    </div>
-                    <span className={`text-[10px] font-bold text-center leading-tight ${isUnlocked ? themeColors.label : (d ? 'text-gray-500' : 'text-gray-600')}`}>
+                    <Award className={`w-6 h-6 mb-1 ${isUnlocked ? 'text-yellow-500' : 'text-gray-400'}`} />
+                    <span className="text-[9px] leading-tight font-bold line-clamp-2" style={{ color: palette.ink }}>
                       {badge.title}
                     </span>
                   </div>
@@ -539,15 +545,15 @@ export const Profile = () => {
             </div>
           </div>
 
-          <div className={`${d ? 'bg-gradient-to-br from-yellow-900/20 to-orange-900/20 border-yellow-800/50' : 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200'} border p-6 rounded-2xl`}>
+          <div className="p-6 rounded-[28px] border transition-colors shadow-sm" style={{ background: `linear-gradient(135deg, ${palette.bg2}, #F59E0B20)`, borderColor: palette.line }}>
             <div className="flex items-center gap-2 mb-2">
-              <Star className={`w-5 h-5 ${d ? 'text-yellow-500' : 'text-yellow-600'}`} />
-              <h3 className={`font-bold ${d ? 'text-white' : 'text-yellow-900'}`}>Passez Premium</h3>
+              <Star className="w-5 h-5 text-yellow-500" />
+              <h3 className="font-bold" style={{ color: palette.ink }}>Passez Premium</h3>
             </div>
-            <p className={`text-sm ${d ? 'text-yellow-200/70' : 'text-yellow-800'} mb-4`}>
+            <p className="text-sm mb-4" style={{ color: palette.ink2 }}>
               Débloquez des manuels complets et des quiz corrigés en visitant notre boutique de collections.
             </p>
-            <button className="w-full font-bold py-2 rounded-xl bg-yellow-400 text-yellow-900 hover:bg-yellow-500 transition-colors shadow-sm">
+            <button className="w-full font-bold py-3 rounded-[16px] bg-yellow-400 text-yellow-900 hover:bg-yellow-500 transition-colors shadow-sm hover:scale-[1.02]">
               Voir la boutique
             </button>
           </div>
@@ -556,7 +562,7 @@ export const Profile = () => {
 
       {/* Panneau Admin — Génération de codes Relais */}
       {isAdmin && (
-        <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-orange-300 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-900/10">
+        <div className="mt-8 p-6 rounded-[28px] border-2 border-dashed transition-colors shadow-sm" style={{ background: '#f9731610', borderColor: '#f9731640' }}>
           <div className="flex items-center gap-2 mb-4 text-orange-600 dark:text-orange-400">
             <Users className="w-5 h-5" />
             <h2 className="text-lg font-bold font-playfair">Générer un Code Relais</h2>
@@ -567,19 +573,20 @@ export const Profile = () => {
               placeholder="Nom du relais (ex: Kévin Kouamé)"
               value={relaisNom}
               onChange={(e) => setRelaisNom(e.target.value)}
-              className={`flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-colors ${d ? 'border-gray-600 bg-gray-900 text-white' : 'border-gray-200'}`}
+              className="flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:outline-none transition-colors"
+              style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
             />
             <button
               type="button"
               onClick={handleGenerateRelaisCode}
               disabled={generatingRelaisCode || !relaisNom.trim()}
-              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-bold transition-colors whitespace-nowrap"
+              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-3 rounded-[16px] font-bold transition-colors whitespace-nowrap hover:scale-[1.02]"
             >
               {generatingRelaisCode ? 'Génération...' : 'Générer'}
             </button>
           </div>
           {generatedRelaisCode && (
-            <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+            <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-[16px]">
               <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
               <span className={`font-bold text-2xl font-mono tracking-widest ${d ? 'text-green-300' : 'text-green-700'}`}>
                 {generatedRelaisCode}
@@ -598,7 +605,7 @@ export const Profile = () => {
               </button>
             </div>
           )}
-          <p className={`text-xs mt-3 ${d ? 'text-gray-500' : 'text-gray-400'}`}>
+          <p className="text-xs mt-3" style={{ color: palette.ink3 }}>
             Associe manuellement l'UID du relais dans Firebase Console pour activer son tableau de bord.
           </p>
         </div>
@@ -606,7 +613,7 @@ export const Profile = () => {
 
       {/* Admin / Dev Tools Panel — visible en mode DEV uniquement */}
       {import.meta.env.DEV && (
-        <div className="mt-12 p-6 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-900/10 backdrop-blur-sm animate-fade-in-up">
+        <div className="mt-12 p-6 rounded-[28px] border-2 border-dashed transition-colors shadow-sm animate-fade-in-up" style={{ background: '#a855f710', borderColor: '#a855f740' }}>
           <div className="flex items-center gap-2 mb-4 text-purple-600 dark:text-purple-400">
             <Settings className="w-6 h-6 animate-spin-slow" />
             <h2 className="text-xl font-bold font-playfair">Panneau d'Administration (Tests)</h2>
@@ -620,35 +627,38 @@ export const Profile = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <button
               onClick={() => { devSimulerGratuit(); localStorage.setItem('eductome_quiz_attempts', JSON.stringify({ date: getTodayKey(), count: 3 })); }}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
                 <RefreshCw className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Compte Gratuit</span>
-              <span className="text-xs text-gray-500">0 XP · verrouillé · streak 0 · quota quiz plein</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Compte Gratuit</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>0 XP · verrouillé · streak 0 · quota quiz plein</span>
             </button>
 
             <button
               onClick={devSimulerFamille}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
                 <Users className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Compte Famille</span>
-              <span className="text-xs text-gray-500">5000 XP · tout débloqué · streak 7 · quiz illimité</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Compte Famille</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>5000 XP · tout débloqué · streak 7 · quiz illimité</span>
             </button>
 
             <button
               onClick={() => { devSimulerFamille(); localStorage.removeItem('famille_welcomed'); }}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-pink-100 dark:bg-pink-900/30 text-pink-500 rounded-full group-hover:scale-110 transition-transform">
                 <Heart className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Famille — 1ère connexion</span>
-              <span className="text-xs text-gray-500">Famille + bandeau de bienvenue réactivé</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Famille — 1ère connexion</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Famille + bandeau de bienvenue réactivé</span>
             </button>
           </div>
 
@@ -657,95 +667,103 @@ export const Profile = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             <button
               onClick={() => devSetStreak(currentStreak + 1)}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full group-hover:scale-110 transition-transform">
                 <Flame className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Streak +1</span>
-              <span className="text-xs text-gray-500">Actuellement : {currentStreak}</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Streak +1</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Actuellement : {currentStreak}</span>
             </button>
 
             <button
               onClick={() => devSetStreak(0)}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full group-hover:scale-110 transition-transform">
                 <RefreshCw className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Streak reset</span>
-              <span className="text-xs text-gray-500">Remet à 0</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Streak reset</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Remet à 0</span>
             </button>
 
             <button
               onClick={() => localStorage.setItem('eductome_quiz_attempts', JSON.stringify({ date: getTodayKey(), count: 3 }))}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
                 <Lock className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Quiz : limite atteinte</span>
-              <span className="text-xs text-gray-500">Simule upsell gratuit</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Quiz : limite atteinte</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Simule upsell gratuit</span>
             </button>
 
             <button
               onClick={() => navigate('/quiz')}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-500 rounded-full group-hover:scale-110 transition-transform">
                 <Timer className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Lancer Examen Blanc</span>
-              <span className="text-xs text-gray-500">Ouvre la page Quiz</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Lancer Examen Blanc</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Ouvre la page Quiz</span>
             </button>
 
             <button
               onClick={devUnlockCourseTest}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+              style={{ background: palette.bg, borderColor: palette.line }}
             >
               <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full group-hover:scale-110 transition-transform">
                 <Book className="w-5 h-5" />
               </div>
-              <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Débloquer chapitre test</span>
-              <span className="text-xs text-gray-500">Ajoute t1-limites</span>
+              <span className="font-bold text-sm" style={{ color: palette.ink }}>Débloquer chapitre test</span>
+              <span className="text-xs" style={{ color: palette.ink3 }}>Ajoute t1-limites</span>
             </button>
           </div>
 
           {/* Utilitaires conservés */}
-          <div className="mt-6 pt-6 border-t border-purple-200 dark:border-purple-800">
+          <div className="mt-6 pt-6 border-t" style={{ borderColor: palette.line }}>
             <p className="text-xs font-bold uppercase tracking-widest text-purple-500 mb-3">Utilitaires</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <button
                 onClick={async () => { await resetUser(); }}
-                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+                style={{ background: palette.bg, borderColor: palette.line }}
               >
                 <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full group-hover:scale-110 transition-transform">
                   <Trash2 className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Réinitialiser Firestore</span>
-                <span className="text-xs text-gray-500">Efface XP, cours, badges en base</span>
+                <span className="font-bold text-sm" style={{ color: palette.ink }}>Réinitialiser Firestore</span>
+                <span className="text-xs" style={{ color: palette.ink3 }}>Efface XP, cours, badges en base</span>
               </button>
 
               <button
                 onClick={async () => { await unlockEverything(); }}
-                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+                style={{ background: palette.bg, borderColor: palette.line }}
               >
                 <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-500 rounded-full group-hover:scale-110 transition-transform">
                   <Unlock className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Mode Caïman (Firestore)</span>
-                <span className="text-xs text-gray-500">5000 XP persisté en base</span>
+                <span className="font-bold text-sm" style={{ color: palette.ink }}>Mode Caïman (Firestore)</span>
+                <span className="text-xs" style={{ color: palette.ink3 }}>5000 XP persisté en base</span>
               </button>
 
               <button
                 onClick={() => { addXpDev(500); }}
-                className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white dark:bg-[#0D1117] border border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all text-center group"
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-[20px] border transition-all text-center group hover:scale-[1.02]"
+                style={{ background: palette.bg, borderColor: palette.line }}
               >
                 <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full group-hover:scale-110 transition-transform">
                   <Zap className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-sm text-gray-800 dark:text-gray-200">Ajouter +500 XP</span>
-                <span className="text-xs text-gray-500">Test de la jauge de niveau</span>
+                <span className="font-bold text-sm" style={{ color: palette.ink }}>Ajouter +500 XP</span>
+                <span className="text-xs" style={{ color: palette.ink3 }}>Test de la jauge de niveau</span>
               </button>
             </div>
           </div>

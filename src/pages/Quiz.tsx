@@ -5,8 +5,9 @@ import { SEO } from '../components/SEO';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { useUser } from '../contexts/UserContext';
 import { useAuth } from '../contexts/AuthContext';
-import { db } from '../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { useTheme } from '../contexts/ThemeContext';
 
 const DAILY_QUIZ_LIMIT = 3;
 const QUIZ_ATTEMPTS_KEY = 'eductome_quiz_attempts';
@@ -185,6 +186,7 @@ export function Quiz() {
   const navigate = useNavigate();
   const { statut, gainXp } = useUser();
   const { currentUser } = useAuth();
+  const { palette } = useTheme();
 
   // Diagnostic quiz state
   const [currentStep, setCurrentStep] = useState<Step>('intro');
@@ -368,57 +370,58 @@ export function Quiz() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A3557] font-sans pt-20">
+    <div className="min-h-screen font-sans pt-20 transition-colors duration-300" style={{ background: palette.bg2 }}>
       <SEO
         title="Quel type d'élève es-tu ? — Quiz EDUCTOME"
         description="En 2 minutes, découvre ton profil d'élève et reçois un plan de bataille personnalisé pour réussir ton BAC ou ton BEPC en Côte d'Ivoire."
       />
 
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <button onClick={() => navigate('/ressources')} className="text-white/70 hover:text-white flex items-center mb-8 transition-colors">
+        <button onClick={() => navigate('/ressources')} className="flex items-center mb-8 transition-colors hover:opacity-80" style={{ color: palette.ink2 }}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Retour aux ressources
         </button>
 
         {/* INTRO STEP */}
         {currentStep === 'intro' && (
           <>
-            <ScrollReveal className="text-center bg-white/5 rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
+            <ScrollReveal className="text-center rounded-[28px] p-8 md:p-12 border shadow-sm transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
               <span className="text-6xl mb-6 block">🎯</span>
-              <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-6">
+              <h1 className="text-4xl md:text-5xl font-playfair font-bold mb-6 transition-colors" style={{ color: palette.ink }}>
                 Quel type d'élève es-tu ?
               </h1>
-              <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-xl mb-10 max-w-2xl mx-auto leading-relaxed transition-colors" style={{ color: palette.ink2 }}>
                 Réponds à 6 questions. En 2 minutes, on te dit exactement par où commencer pour décoller — avec un plan de bataille personnalisé.
               </p>
 
               {hasReachedDailyLimit ? (
-                <div className="max-w-md mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center gap-2">
+                <div className="max-w-md mx-auto border rounded-2xl p-6 flex flex-col items-center gap-2" style={{ background: palette.bg2, borderColor: palette.line }}>
                   <Lock className="w-8 h-8 text-amber-400 mb-1" />
-                  <p className="text-white font-bold">Tu as atteint ta limite de {DAILY_QUIZ_LIMIT} quiz aujourd'hui</p>
-                  <p className="text-gray-300 text-sm">
-                    Reviens demain pour de nouvelles tentatives, ou passe à la <strong className="text-amber-400">Famille EDUCTOME</strong> pour un accès illimité.
+                  <p className="font-bold transition-colors" style={{ color: palette.ink }}>Tu as atteint ta limite de {DAILY_QUIZ_LIMIT} quiz aujourd'hui</p>
+                  <p className="text-sm transition-colors" style={{ color: palette.ink2 }}>
+                    Reviens demain pour de nouvelles tentatives, ou passe à la <strong className="text-amber-500">Famille EDUCTOME</strong> pour un accès illimité.
                   </p>
                 </div>
               ) : (
                 <>
                   <button
                     onClick={handleStart}
-                    className="bg-eductome-magenta hover:bg-pink-600 text-white font-bold text-lg py-4 px-10 rounded-full transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(216,27,96,0.4)]"
+                    className="text-white font-bold text-lg py-4 px-10 rounded-[24px] transition-all transform hover:scale-105 shadow-md"
+                    style={{ background: palette.accent }}
                   >
                     Commencer le quiz →
                   </button>
                   {statut !== 'famille' && (
-                    <p className="text-gray-400 text-sm mt-4">
+                    <p className="text-sm mt-4 transition-colors" style={{ color: palette.ink3 }}>
                       Tentative {attemptsToday + 1} / {DAILY_QUIZ_LIMIT} aujourd'hui
                     </p>
                   )}
                 </>
               )}
 
-              <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-400 font-medium">
-                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> 100% gratuit</span>
-                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Aucune mauvaise réponse</span>
-                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-400" /> Plan personnalisé sur WhatsApp</span>
+              <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm font-medium transition-colors" style={{ color: palette.ink2 }}>
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{ color: palette.accent }} /> 100% gratuit</span>
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{ color: palette.accent }} /> Aucune mauvaise réponse</span>
+                <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{ color: palette.accent }} /> Plan personnalisé sur WhatsApp</span>
               </div>
             </ScrollReveal>
 
@@ -465,8 +468,8 @@ export function Quiz() {
 
         {/* EXAM STEP */}
         {currentStep === 'exam' && (
-          <ScrollReveal className="bg-white rounded-3xl overflow-hidden shadow-2xl">
-            <div className={`p-4 text-center font-mono text-3xl font-bold flex items-center justify-center gap-3 transition-colors ${examTimeLeft < 600 ? 'bg-red-600 text-white animate-pulse' : 'bg-[#1A3557] text-white'}`}>
+          <ScrollReveal className="rounded-[28px] overflow-hidden shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <div className={`p-4 text-center font-mono text-3xl font-bold flex items-center justify-center gap-3 transition-colors ${examTimeLeft < 600 ? 'bg-red-600 text-white animate-pulse' : 'text-white'}`} style={{ background: examTimeLeft < 600 ? '' : palette.accent }}>
               <Timer className="w-7 h-7" />
               {formatExamTime(examTimeLeft)}
             </div>
@@ -486,39 +489,44 @@ export function Quiz() {
               </div>
 
               <div className="flex items-center gap-2 mb-2">
-                <Trophy className="w-4 h-4 text-amber-500" />
-                <h2 className="text-sm font-bold text-amber-500 uppercase tracking-wider">
+                <Trophy className="w-4 h-4" style={{ color: palette.accent }} />
+                <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: palette.accent }}>
                   {QUESTIONS[examCurrentIndex].title}
                 </h2>
               </div>
-              <h3 className="text-2xl md:text-3xl font-playfair font-bold text-[#1A3557] mb-8 leading-tight">
+              <h3 className="text-2xl md:text-3xl font-playfair font-bold mb-8 leading-tight transition-colors" style={{ color: palette.ink }}>
                 {QUESTIONS[examCurrentIndex].question}
               </h3>
 
               <div className="space-y-4">
-                {QUESTIONS[examCurrentIndex].options.map((option) => (
+                {QUESTIONS[examCurrentIndex].options.map((option) => {
+                  const isSelected = examAnswers[examCurrentIndex] === option.id;
+                  return (
                   <button
                     key={option.id}
                     onClick={() => handleExamAnswer(option.id)}
-                    className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 group
-                      ${examAnswers[examCurrentIndex] === option.id
-                        ? 'border-amber-500 bg-amber-50'
-                        : 'border-gray-200 hover:border-amber-400 hover:bg-gray-50'}`}
+                    className={`w-full text-left p-5 rounded-[24px] border transition-all duration-200 group`}
+                    style={{
+                      borderColor: isSelected ? palette.accent : palette.line,
+                      background: isSelected ? `${palette.accent}15` : palette.bg,
+                    }}
                   >
                     <div className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold mr-4 transition-colors flex-shrink-0
-                        ${examAnswers[examCurrentIndex] === option.id
-                          ? 'border-amber-500 bg-amber-500 text-white'
-                          : 'border-gray-300 text-gray-500 group-hover:border-amber-400 group-hover:text-amber-500'}`}
+                      <div className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold mr-4 transition-colors flex-shrink-0`}
+                        style={{
+                          borderColor: isSelected ? palette.accent : palette.line,
+                          background: isSelected ? palette.accent : 'transparent',
+                          color: isSelected ? '#fff' : palette.ink3,
+                        }}
                       >
                         {option.id}
                       </div>
-                      <span className={`text-lg font-medium ${examAnswers[examCurrentIndex] === option.id ? 'text-amber-700' : 'text-gray-700'}`}>
+                      <span className={`text-lg font-medium transition-colors`} style={{ color: isSelected ? palette.accent : palette.ink2 }}>
                         {option.text}
                       </span>
                     </div>
                   </button>
-                ))}
+                )})}
               </div>
 
               {Object.keys(examAnswers).length > 0 && (
@@ -620,7 +628,7 @@ export function Quiz() {
 
         {/* QUESTIONS STEP */}
         {currentStep === 'questions' && (
-          <ScrollReveal className="bg-white rounded-3xl p-6 md:p-12 shadow-2xl">
+          <ScrollReveal className="rounded-[28px] p-6 md:p-12 shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
             <div className="mb-8">
               <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">
                 <span>Question {currentQuestionIndex + 1} sur {QUESTIONS.length}</span>
@@ -634,45 +642,50 @@ export function Quiz() {
               </div>
             </div>
 
-            <h2 className="text-sm font-bold text-eductome-magenta uppercase tracking-wider mb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wider mb-2 transition-colors" style={{ color: palette.accent }}>
               📍 {QUESTIONS[currentQuestionIndex].title}
             </h2>
-            <h3 className="text-2xl md:text-3xl font-playfair font-bold text-[#1A3557] mb-8 leading-tight">
+            <h3 className="text-2xl md:text-3xl font-playfair font-bold mb-8 leading-tight transition-colors" style={{ color: palette.ink }}>
               {QUESTIONS[currentQuestionIndex].question}
             </h3>
 
             <div className="space-y-4">
-              {QUESTIONS[currentQuestionIndex].options.map((option) => (
+              {QUESTIONS[currentQuestionIndex].options.map((option) => {
+                const isSelected = answers[currentQuestionIndex] === option.id;
+                return (
                 <button
                   key={option.id}
                   onClick={() => handleAnswer(option.id)}
-                  className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 group
-                    ${answers[currentQuestionIndex] === option.id
-                      ? 'border-eductome-magenta bg-pink-50'
-                      : 'border-gray-200 hover:border-eductome-magenta hover:bg-gray-50'}`}
+                  className={`w-full text-left p-5 rounded-[24px] border transition-all duration-200 group`}
+                  style={{
+                    borderColor: isSelected ? palette.accent : palette.line,
+                    background: isSelected ? `${palette.accent}15` : palette.bg,
+                  }}
                 >
                   <div className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold mr-4 transition-colors
-                      ${answers[currentQuestionIndex] === option.id
-                        ? 'border-eductome-magenta bg-eductome-magenta text-white'
-                        : 'border-gray-300 text-gray-500 group-hover:border-eductome-magenta group-hover:text-eductome-magenta'}`}
+                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold mr-4 transition-colors`}
+                      style={{
+                        borderColor: isSelected ? palette.accent : palette.line,
+                        background: isSelected ? palette.accent : 'transparent',
+                        color: isSelected ? '#fff' : palette.ink3,
+                      }}
                     >
                       {option.id}
                     </div>
-                    <span className={`text-lg font-medium ${answers[currentQuestionIndex] === option.id ? 'text-eductome-magenta' : 'text-gray-700'}`}>
+                    <span className={`text-lg font-medium transition-colors`} style={{ color: isSelected ? palette.accent : palette.ink2 }}>
                       {option.text}
                     </span>
                   </div>
                 </button>
-              ))}
+              )})}
             </div>
           </ScrollReveal>
         )}
 
         {/* RESULT STEP */}
         {currentStep === 'result' && resultProfile && (
-          <ScrollReveal className="bg-white rounded-3xl overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-eductome-magenta to-pink-600 p-8 md:p-12 text-center text-white relative">
+          <ScrollReveal className="rounded-[28px] overflow-hidden shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+            <div className="p-8 md:p-12 text-center text-white relative transition-colors" style={{ background: palette.accent }}>
               <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm">
                 RÉSULTAT
               </div>
@@ -683,32 +696,32 @@ export function Quiz() {
             </div>
 
             <div className="p-8 md:p-12">
-              <div className="mb-10 text-gray-700 text-lg leading-relaxed">
+              <div className="mb-10 text-lg leading-relaxed transition-colors" style={{ color: palette.ink2 }}>
                 <p dangerouslySetInnerHTML={{ __html: PROFILES[resultProfile].description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
               </div>
 
-              <div className="bg-[#FFF3E0] border-l-4 border-[#E65100] p-6 rounded-r-xl mb-10">
-                <h3 className="font-bold text-[#E65100] uppercase text-sm mb-2">🎯 Ta priorité absolue</h3>
-                <p className="text-lg text-gray-800 font-medium">{PROFILES[resultProfile].priority}</p>
+              <div className="border-l-4 p-6 rounded-r-xl mb-10 transition-colors" style={{ background: `${palette.accent}15`, borderColor: palette.accent }}>
+                <h3 className="font-bold uppercase text-sm mb-2 transition-colors" style={{ color: palette.accent }}>🎯 Ta priorité absolue</h3>
+                <p className="text-lg font-medium transition-colors" style={{ color: palette.ink }}>{PROFILES[resultProfile].priority}</p>
               </div>
 
               <div className="mb-10">
-                <h3 className="text-2xl font-playfair font-bold text-[#1A3557] mb-6">Ton plan de bataille personnalisé :</h3>
+                <h3 className="text-2xl font-playfair font-bold mb-6 transition-colors" style={{ color: palette.ink }}>Ton plan de bataille personnalisé :</h3>
                 <ul className="space-y-4">
                   {PROFILES[resultProfile].steps.map((step, idx) => (
                     <li key={idx} className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-eductome-marine flex items-center justify-center font-bold mr-4 mt-0.5">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4 mt-0.5" style={{ background: `${palette.accent}20`, color: palette.accent }}>
                         {idx + 1}
                       </div>
-                      <p className="text-lg text-gray-700">{step}</p>
+                      <p className="text-lg transition-colors" style={{ color: palette.ink2 }}>{step}</p>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-8 text-center">
-                <h4 className="text-xl font-bold text-[#1A3557] mb-3">Récupère ton plan sur WhatsApp 🎁</h4>
-                <p className="text-gray-600 mb-6">
+              <div className="border rounded-[24px] p-6 md:p-8 text-center transition-colors" style={{ background: palette.bg2, borderColor: palette.line }}>
+                <h4 className="text-xl font-bold mb-3 transition-colors" style={{ color: palette.ink }}>Récupère ton plan sur WhatsApp 🎁</h4>
+                <p className="mb-6 transition-colors" style={{ color: palette.ink2 }}>
                   On t'envoie tout ça sur WhatsApp pour que tu ne le perdes pas, avec les liens directs vers les ressources gratuites.
                 </p>
                 <a

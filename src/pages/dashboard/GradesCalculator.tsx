@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
 import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp } from 'lucide-react';
 import { BacSimulator } from '../../components/bac/BacSimulator';
@@ -11,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades, updateGoals, xp } = useUser();
+  const { palette } = useTheme();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const subjects = getSubjectsForLevel(levelString);
@@ -255,14 +257,14 @@ export function GradesCalculator() {
       />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 animate-fade-in-up">
+      <div className="relative rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 animate-fade-in-up" style={{ background: `linear-gradient(135deg, ${palette.accent}, ${palette.ink})` }}>
         {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
-        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white/10 pointer-events-none blur-2xl"></div>
         
         <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6 w-full">
-          <div className="bg-white/10 p-3 md:p-4 rounded-2xl backdrop-blur-sm border border-white/20 shrink-0">
-            <Calculator className="w-8 h-8 md:w-12 md:h-12 text-white" />
+          <div className="bg-white/10 p-3 md:p-4 rounded-[20px] backdrop-blur-sm border border-white/20 shrink-0">
+            <Calculator className="w-8 h-8 md:w-12 md:h-12 text-white opacity-90" />
           </div>
           <div className="flex flex-col gap-1 md:gap-2">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
@@ -294,47 +296,51 @@ export function GradesCalculator() {
       </div>
 
       {/* Main Navigation Tabs */}
-      <div className="flex flex-wrap bg-gray-100 dark:bg-[#0D1117] p-1.5 rounded-xl w-full md:w-fit animate-fade-in-up animation-delay-100 gap-1">
+      <div className="flex flex-wrap p-1.5 rounded-[20px] w-full md:w-fit animate-fade-in-up animation-delay-100 gap-1" style={{ background: palette.bg2 }}>
         <button
           onClick={() => setMainTab('notes')}
-          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-            mainTab === 'notes' 
-              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm' 
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
+          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
+          style={{ 
+            background: mainTab === 'notes' ? palette.bg : 'transparent',
+            color: mainTab === 'notes' ? palette.accent : palette.ink3,
+            boxShadow: mainTab === 'notes' ? `0 4px 12px ${palette.shadow}` : 'none'
+          }}
         >
           <BookOpen className="w-4 h-4" />
           Mes Notes
         </button>
         <button
           onClick={() => setMainTab('objectifs')}
-          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-            mainTab === 'objectifs'
-              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
+          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
+          style={{ 
+            background: mainTab === 'objectifs' ? palette.bg : 'transparent',
+            color: mainTab === 'objectifs' ? palette.accent : palette.ink3,
+            boxShadow: mainTab === 'objectifs' ? `0 4px 12px ${palette.shadow}` : 'none'
+          }}
         >
           <Target className="w-4 h-4" />
           Mes Objectifs
         </button>
         <button
           onClick={() => setMainTab('simulateur')}
-          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-            mainTab === 'simulateur'
-              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
+          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
+          style={{ 
+            background: mainTab === 'simulateur' ? palette.bg : 'transparent',
+            color: mainTab === 'simulateur' ? palette.accent : palette.ink3,
+            boxShadow: mainTab === 'simulateur' ? `0 4px 12px ${palette.shadow}` : 'none'
+          }}
         >
           <BarChart2 className="w-4 h-4" />
           Simulateur BAC
         </button>
         <button
           onClick={() => setMainTab('evolution')}
-          className={`flex-1 min-w-[120px] md:px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-            mainTab === 'evolution'
-              ? 'bg-white dark:bg-[#161B22] text-eductome-magenta shadow-sm'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
+          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
+          style={{ 
+            background: mainTab === 'evolution' ? palette.bg : 'transparent',
+            color: mainTab === 'evolution' ? palette.accent : palette.ink3,
+            boxShadow: mainTab === 'evolution' ? `0 4px 12px ${palette.shadow}` : 'none'
+          }}
         >
           <TrendingUp className="w-4 h-4" />
           Évolution (ROI)
@@ -351,12 +357,12 @@ export function GradesCalculator() {
       {/* CONTENT: EVOLUTION */}
       {mainTab === 'evolution' && (
         <div className="space-y-6 animate-fade-in-up animation-delay-150">
-          <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1A3557] dark:text-white mb-2 flex items-center gap-2">
-              <TrendingUp className="text-[#D81B60]" /> 
+          <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-xl font-bold mb-2 flex items-center gap-2" style={{ color: palette.ink }}>
+              <TrendingUp style={{ color: palette.accent }} /> 
               Ton Retour sur Investissement
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
+            <p className="mb-8 text-sm" style={{ color: palette.ink2 }}>
               Découvre comment ton assiduité sur EDUCTOME (XP gagnée, quiz réussis) impacte directement tes moyennes en classe. La courbe ne ment pas : l'effort paie toujours !
             </p>
 
@@ -410,16 +416,17 @@ export function GradesCalculator() {
             )}
           </div>
 
-          <div className="bg-gradient-to-br from-[#1A3557] to-[#1976D2] rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
+          <div className="rounded-[28px] p-6 md:p-8 text-white relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${palette.accent}, ${palette.ink})` }}>
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-2">Besoin d'un coup de pouce pour le prochain trimestre ?</h3>
-              <p className="text-blue-100 mb-6 text-sm md:text-base max-w-2xl">
+              <p className="text-white/80 mb-6 text-sm md:text-base max-w-2xl font-medium">
                 Montre ce graphique à tes parents. C'est la preuve concrète que ton travail sur EDUCTOME porte ses fruits. Demande-leur de débloquer de nouveaux chapitres pour t'aider à exploser tes moyennes !
               </p>
               <button 
                 onClick={() => navigate('/dashboard/boutique')}
-                className="bg-[#D81B60] hover:bg-[#C2185B] text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                className="text-white font-bold py-3 px-6 rounded-[16px] transition-colors flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02]"
+                style={{ background: palette.accent }}
               >
                 <Star className="w-5 h-5" />
                 Explorer les tomes EDUCTOME
@@ -433,7 +440,7 @@ export function GradesCalculator() {
       {mainTab === 'notes' ? (
         <div className="space-y-6 animate-fade-in-up animation-delay-150">
           {/* Trimester Tabs */}
-          <div className="flex gap-2 bg-gray-100 dark:bg-[#0D1117] p-1 rounded-xl w-fit">
+          <div className="flex gap-2 p-1 rounded-[20px] w-fit" style={{ background: palette.bg2 }}>
             {[
               { id: 't1', label: 'Trimestre 1' },
               { id: 't2', label: 'Trimestre 2' },
@@ -442,11 +449,12 @@ export function GradesCalculator() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
-                  activeTab === tab.id 
-                    ? 'bg-white dark:bg-[#161B22] text-[#D81B60] shadow-sm' 
-                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                }`}
+                className="px-6 py-2 rounded-[16px] font-medium text-sm transition-all"
+                style={{
+                  background: activeTab === tab.id ? palette.bg : 'transparent',
+                  color: activeTab === tab.id ? palette.accent : palette.ink3,
+                  boxShadow: activeTab === tab.id ? `0 4px 12px ${palette.shadow}` : 'none'
+                }}
               >
                 {tab.label}
               </button>
@@ -454,19 +462,19 @@ export function GradesCalculator() {
           </div>
 
           {/* Global Average Card */}
-          <div className="bg-gradient-to-br from-white to-gray-50 dark:from-[#161B22] dark:to-[#0D1117] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+          <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="text-center md:text-left">
-                <h2 className="text-gray-500 dark:text-gray-400 font-medium">Moyenne {activeTab.toUpperCase()} Actuelle</h2>
-                <div className="text-4xl md:text-5xl font-black text-[#1A3557] dark:text-white mt-2">
-                  {trimesterAvg !== null ? trimesterAvg.toFixed(2) : '-.--'} <span className="text-xl md:text-2xl text-gray-400 font-normal">/ 20</span>
+                <h2 className="font-medium" style={{ color: palette.ink2 }}>Moyenne {activeTab.toUpperCase()} Actuelle</h2>
+                <div className="text-4xl md:text-5xl font-black mt-2" style={{ color: palette.ink }}>
+                  {trimesterAvg !== null ? trimesterAvg.toFixed(2) : '-.--'} <span className="text-xl md:text-2xl font-normal" style={{ color: palette.ink3 }}>/ 20</span>
                 </div>
               </div>
 
               {targetTrimester ? (
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center min-w-[200px]">
-                  <p className="text-blue-600 dark:text-blue-400 text-sm font-bold mb-1">Objectif {activeTab.toUpperCase()}</p>
-                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{targetTrimester} / 20</p>
+                <div className="p-4 rounded-[20px] text-center min-w-[200px]" style={{ background: `${palette.accent}15` }}>
+                  <p className="text-sm font-bold mb-1" style={{ color: palette.accent }}>Objectif {activeTab.toUpperCase()}</p>
+                  <p className="text-2xl font-bold" style={{ color: palette.accent }}>{targetTrimester} / 20</p>
                   {trimesterAvg !== null && (
                     <div className={`mt-2 flex items-center justify-center gap-1 text-xs font-bold ${trimesterAvg >= targetTrimester ? 'text-green-600' : 'text-orange-500'}`}>
                       {trimesterAvg >= targetTrimester ? (
@@ -478,7 +486,7 @@ export function GradesCalculator() {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-xl text-sm">
+                <div className="flex items-center gap-2 text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-[20px] text-sm">
                   <AlertCircle className="w-5 h-5" />
                   <span>Tu n'as pas défini d'objectif pour ce trimestre.</span>
                 </div>
@@ -488,12 +496,12 @@ export function GradesCalculator() {
 
           {/* Empty State */}
           {!hasGradesForTrimester && (
-            <div className="bg-[#D81B60]/10 border-2 border-[#D81B60]/20 rounded-2xl p-6 md:p-8 text-center animate-in fade-in zoom-in-95 duration-500">
-              <div className="bg-white dark:bg-[#161B22] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-[#D81B60]/30">
-                <Sparkles className="w-8 h-8 text-[#D81B60]" />
+            <div className="border-2 rounded-[28px] p-6 md:p-8 text-center animate-in fade-in zoom-in-95 duration-500" style={{ background: `${palette.accent}10`, borderColor: `${palette.accent}30` }}>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border" style={{ background: palette.bg, borderColor: `${palette.accent}40` }}>
+                <Sparkles className="w-8 h-8" style={{ color: palette.accent }} />
               </div>
-              <h3 className="text-xl font-bold text-[#1A3557] dark:text-white mb-2">Ton carnet est encore vierge Champion !</h3>
-              <p className="text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
+              <h3 className="text-xl font-bold mb-2" style={{ color: palette.ink }}>Ton carnet est encore vierge Champion !</h3>
+              <p className="max-w-lg mx-auto" style={{ color: palette.ink2 }}>
                 Dès que tu as ta première note de devoir pour ce trimestre, viens la glisser ici pour voir la magie opérer ✨
               </p>
             </div>
@@ -501,7 +509,7 @@ export function GradesCalculator() {
 
           {/* Subjects Accordion */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Détails par matière</h3>
+            <h3 className="text-lg font-bold" style={{ color: palette.ink }}>Détails par matière</h3>
             {(() => {
               const allValidAvgs = subjects.map(s => calculateSubjectAverage(s.id)).filter(a => a !== null) as number[];
               const maxAvg = allValidAvgs.length > 0 ? Math.max(...allValidAvgs) : null;
@@ -525,51 +533,51 @@ export function GradesCalculator() {
               }
 
               return (
-                <div key={subject.id} className="bg-white dark:bg-[#161B22] rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden transition-all shadow-sm">
+                <div key={subject.id} className="rounded-[24px] border overflow-hidden transition-all shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
                   {/* Header / Toggle */}
                   <button 
                     onClick={() => setOpenSubject(isOpen ? null : subject.id)}
-                    className="w-full flex items-start md:items-center justify-between p-4 md:p-5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="w-full flex items-start md:items-center justify-between p-4 md:p-5 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
                   >
                     <div className="flex items-start md:items-center gap-3 md:gap-4">
-                      <div className="bg-gray-100 dark:bg-[#0D1117] w-12 h-12 rounded-lg flex items-center justify-center font-bold text-[#1A3557] dark:text-white shrink-0 mt-0.5 md:mt-0">
+                      <div className="w-12 h-12 rounded-[16px] flex items-center justify-center font-bold shrink-0 mt-0.5 md:mt-0" style={{ background: palette.bg2, color: palette.ink }}>
                         x{subject.coeff}
                       </div>
                       <div className="text-left flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold flex items-center gap-2 flex-wrap" style={{ color: palette.ink }}>
                           {subject.name}
                           {isChampion && <span title="Meilleure matière" className="text-sm md:text-lg leading-none">⭐</span>}
                           {isAlert && <span title="Moyenne critique (< 10)" className="text-sm md:text-lg leading-none animate-pulse">🔴</span>}
                         </h4>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1">
-                          {target && <span className="text-gray-500">Objectif: <strong className="text-blue-600 dark:text-blue-400">{target}</strong></span>}
-                          {avg !== null && target && <span className="text-gray-500">Actuelle: <strong className={avg >= target ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{avg.toFixed(2)}</strong></span>}
-                          {avg !== null && !target && <span className="text-gray-500">Actuelle: <strong className="text-gray-900 dark:text-white">{avg.toFixed(2)}</strong></span>}
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1" style={{ color: palette.ink3 }}>
+                          {target && <span>Objectif: <strong style={{ color: palette.accent }}>{target}</strong></span>}
+                          {avg !== null && target && <span>Actuelle: <strong className={avg >= target ? "text-green-500" : "text-orange-500"}>{avg.toFixed(2)}</strong></span>}
+                          {avg !== null && !target && <span>Actuelle: <strong style={{ color: palette.ink }}>{avg.toFixed(2)}</strong></span>}
                         </div>
                         {/* Progress Bar (Mini-jauge) */}
                         {avg !== null && target && (
-                          <div className="w-full mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden relative">
+                          <div className="w-full mt-2 h-1.5 rounded-full overflow-hidden relative" style={{ background: palette.bg2 }}>
                             <div 
                               className={`absolute top-0 left-0 h-full ${avg >= target ? 'bg-green-500' : 'bg-orange-500'} transition-all duration-1000 ease-out`}
                               style={{ width: `${Math.min(100, (avg / 20) * 100)}%` }}
                             />
                             <div 
-                              className="absolute top-0 h-full w-[2px] bg-[#1A3557] dark:bg-white z-10"
-                              style={{ left: `${(target / 20) * 100}%` }}
+                              className="absolute top-0 h-full w-[2px] z-10"
+                              style={{ left: `${(target / 20) * 100}%`, background: palette.ink }}
                               title={`Objectif: ${target}`}
                             />
                           </div>
                         )}
                         {/* Message on Mobile */}
                         {avg !== null && target && (
-                          <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
+                          <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                             {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
                           </div>
                         )}
                         {/* Next Target Line */}
                         {nextTargetText && (
-                          <div className="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-                            <ArrowRight className="w-3.5 h-3.5 text-blue-500" />
+                          <div className="mt-2 text-xs font-medium flex items-center gap-1.5" style={{ color: palette.ink3 }}>
+                            <ArrowRight className="w-3.5 h-3.5" style={{ color: palette.accent }} />
                             {nextTargetText}
                           </div>
                         )}
@@ -578,21 +586,21 @@ export function GradesCalculator() {
                     <div className="flex items-center gap-4 shrink-0 pt-2 md:pt-0">
                       {/* Message on Desktop */}
                       {avg !== null && target && (
-                        <div className={`hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md ${avg >= target ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
+                        <div className={`hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md ${avg >= target ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                           {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
                         </div>
                       )}
-                      {isOpen ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
+                      {isOpen ? <ChevronUp style={{ color: palette.ink3 }} /> : <ChevronDown style={{ color: palette.ink3 }} />}
                     </div>
                   </button>
 
                   {/* Content */}
                   {isOpen && (
-                    <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#0D1117]/50">
+                    <div className="p-4 border-t" style={{ borderColor: palette.line, background: palette.bg2 }}>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         {subjectGrades.map((val, idx) => (
                           <div key={idx} className="relative group">
-                            <label className="text-xs text-gray-500 mb-1 block">Note {idx + 1}</label>
+                            <label className="text-xs mb-1 block" style={{ color: palette.ink3 }}>Note {idx + 1}</label>
                             <div className="flex items-center">
                               <input 
                                 type="number" 
@@ -601,11 +609,17 @@ export function GradesCalculator() {
                                 onChange={(e) => handleUpdateGrade(subject.id, idx, e.target.value)}
                                 placeholder="/ 20"
                                 min="0" max="20"
-                                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-l-lg focus:ring-[#D81B60] focus:border-[#D81B60] bg-white dark:bg-[#161B22] dark:text-white"
+                                className="w-full p-2 border rounded-l-lg focus:outline-none focus:ring-2"
+                                style={{ 
+                                  background: palette.bg, 
+                                  borderColor: palette.line,
+                                  color: palette.ink,
+                                  ['--tw-ring-color' as any]: palette.accent
+                                }}
                               />
                               <button 
                                 onClick={() => handleRemoveGrade(subject.id, idx)}
-                                className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-3 py-2 rounded-r-lg hover:bg-red-200 transition-colors"
+                                className="px-3 py-2 rounded-r-lg transition-colors border-y border-r flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-500"
                               >
                                 <X className="w-4 h-4" />
                               </button>
@@ -616,9 +630,10 @@ export function GradesCalculator() {
 
                       <button 
                         onClick={() => handleAddGrade(subject.id)}
-                        className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 transition-colors"
+                        className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                        style={{ color: palette.accent }}
                       >
-                        <div className="bg-blue-100 dark:bg-blue-900/30 p-1 rounded-md">
+                        <div className="p-1 rounded-md" style={{ background: `${palette.accent}20` }}>
                           <Plus className="w-4 h-4" />
                         </div>
                         Ajouter une note de devoir
@@ -635,26 +650,32 @@ export function GradesCalculator() {
         /* CONTENT: MES OBJECTIFS */
         <div className="space-y-8 animate-fade-in-up animation-delay-150">
           
-          <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <div className="border rounded-[28px] p-6 md:p-8 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
               <Star className="w-6 h-6 text-yellow-400" /> Objectif Principal de l'Année
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Moyenne Générale Visée (sur 20)</label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Combien veux-tu avoir de moyenne au total ?</p>
+                <label className="block text-sm font-bold mb-2" style={{ color: palette.ink }}>Moyenne Générale Visée (sur 20)</label>
+                <p className="text-xs mb-4" style={{ color: palette.ink2 }}>Combien veux-tu avoir de moyenne au total ?</p>
                 <input 
                   type="number" 
                   step="0.5" min="0" max="20"
                   value={draftGoals.generalAverage || ''}
                   onChange={handleGeneralAverageChange}
                   placeholder="Ex: 12"
-                  className="w-full px-4 py-3 text-lg font-bold border rounded-xl focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 text-lg font-bold border rounded-[16px] focus:outline-none focus:ring-2 transition-colors"
+                  style={{ 
+                    background: palette.bg2,
+                    borderColor: palette.line,
+                    color: palette.ink,
+                    ['--tw-ring-color' as any]: palette.accent
+                  }}
                 />
               </div>
               
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 flex flex-col justify-center">
-                <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2">Objectif de Points (BAC)</label>
+              <div className="rounded-[20px] p-6 flex flex-col justify-center" style={{ background: `${palette.accent}10` }}>
+                <label className="block text-sm font-bold mb-2" style={{ color: palette.accent }}>Objectif de Points (BAC)</label>
                 <div className="flex items-end gap-2">
                   <input 
                     type="number" 
@@ -662,11 +683,17 @@ export function GradesCalculator() {
                     value={draftGoals.bacPoints || ''}
                     onChange={handleBacPointsChange}
                     placeholder="Ex: 280"
-                    className="w-full max-w-[150px] px-4 py-3 text-2xl font-black text-blue-600 dark:text-blue-400 bg-white/80 dark:bg-[#161B22] border border-blue-200 dark:border-blue-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full max-w-[150px] px-4 py-3 text-2xl font-black border rounded-[16px] focus:outline-none focus:ring-2"
+                    style={{
+                      background: palette.bg,
+                      borderColor: `${palette.accent}30`,
+                      color: palette.accent,
+                      ['--tw-ring-color' as any]: palette.accent
+                    }}
                   />
-                  <span className="text-xl font-medium text-blue-600 dark:text-blue-400 mb-3">Points</span>
+                  <span className="text-xl font-medium mb-3" style={{ color: palette.accent }}>Points</span>
                 </div>
-                <p className="text-xs text-blue-600/70 dark:text-blue-300/70 mt-2">
+                <p className="text-xs mt-2 font-medium" style={{ color: palette.accent, opacity: 0.8 }}>
                   Ton objectif de points pour le BAC.
                 </p>
               </div>
@@ -675,8 +702,8 @@ export function GradesCalculator() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Trimestres */}
-            <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Objectifs par Trimestre</h2>
+            <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
+              <h2 className="text-lg font-bold mb-6" style={{ color: palette.ink }}>Objectifs par Trimestre</h2>
               <div className="space-y-4">
                 {[
                   { id: 't1', label: 'Trimestre 1' },
@@ -684,7 +711,7 @@ export function GradesCalculator() {
                   { id: 't3', label: 'Trimestre 3' }
                 ].map(trim => (
                   <div key={trim.id} className="flex items-center justify-between">
-                    <label className="font-medium text-gray-700 dark:text-gray-300">{trim.label}</label>
+                    <label className="font-medium" style={{ color: palette.ink2 }}>{trim.label}</label>
                     <div className="flex items-center gap-2">
                       <input 
                         type="number" 
@@ -692,9 +719,15 @@ export function GradesCalculator() {
                         value={draftGoals.trimesterTargets?.[trim.id as 't1'|'t2'|'t3'] || ''}
                         onChange={(e) => handleTrimesterTargetChange(trim.id as 't1'|'t2'|'t3', e.target.value)}
                         placeholder="--"
-                        className="w-20 px-3 py-2 text-center border rounded-lg focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                        className="w-20 px-3 py-2 text-center border rounded-[12px] focus:outline-none focus:ring-2 transition-colors"
+                        style={{
+                          background: palette.bg2,
+                          borderColor: palette.line,
+                          color: palette.ink,
+                          ['--tw-ring-color' as any]: palette.accent
+                        }}
                       />
-                      <span className="text-gray-400">/ 20</span>
+                      <span style={{ color: palette.ink3 }}>/ 20</span>
                     </div>
                   </div>
                 ))}
@@ -702,17 +735,17 @@ export function GradesCalculator() {
             </div>
 
             {/* Matières */}
-            <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Objectifs par Matière</h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">Les matières sont adaptées à ta série.</p>
+            <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
+              <h2 className="text-lg font-bold mb-2" style={{ color: palette.ink }}>Objectifs par Matière</h2>
+              <p className="text-xs mb-6" style={{ color: palette.ink3 }}>Les matières sont adaptées à ta série.</p>
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {subjects.map(subject => (
-                  <div key={subject.id} className="flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 p-2 -mx-2 rounded-lg transition-colors">
+                  <div key={subject.id} className="flex items-center justify-between group hover:bg-black/5 dark:hover:bg-white/5 p-2 -mx-2 rounded-lg transition-colors">
                     <div className="flex items-center gap-3">
-                      <span className="bg-gray-100 dark:bg-gray-800 text-xs font-bold px-2 py-1 rounded text-gray-600 dark:text-gray-300">
+                      <span className="text-xs font-bold px-2 py-1 rounded" style={{ background: palette.bg2, color: palette.ink2 }}>
                         x{subject.coeff}
                       </span>
-                      <label className="font-medium text-gray-700 dark:text-gray-300">{subject.name}</label>
+                      <label className="font-medium" style={{ color: palette.ink }}>{subject.name}</label>
                     </div>
                     <div className="flex items-center gap-2">
                       <input 
@@ -721,9 +754,15 @@ export function GradesCalculator() {
                         value={draftGoals.subjectTargets?.[subject.id] || ''}
                         onChange={(e) => handleSubjectTargetChange(subject.id, e.target.value)}
                         placeholder="--"
-                        className="w-20 px-3 py-2 text-center border rounded-lg focus:ring-2 focus:ring-eductome-magenta focus:border-eductome-magenta transition-colors border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                        className="w-20 px-3 py-2 text-center border rounded-[12px] focus:outline-none focus:ring-2 transition-colors"
+                        style={{
+                          background: palette.bg2,
+                          borderColor: palette.line,
+                          color: palette.ink,
+                          ['--tw-ring-color' as any]: palette.accent
+                        }}
                       />
-                      <span className="text-gray-400">/ 20</span>
+                      <span style={{ color: palette.ink3 }}>/ 20</span>
                     </div>
                   </div>
                 ))}
@@ -735,7 +774,8 @@ export function GradesCalculator() {
           <div className="flex justify-end pt-4">
             <button 
               onClick={handleSaveGoals}
-              className="flex items-center gap-2 bg-eductome-magenta hover:bg-pink-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition-colors"
+              className="flex items-center gap-2 text-white px-8 py-3 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]"
+              style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
             >
               <Save className="w-5 h-5" />
               Enregistrer mes objectifs

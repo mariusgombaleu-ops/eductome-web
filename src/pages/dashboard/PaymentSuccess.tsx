@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, ArrowRight, AlertTriangle } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export const PaymentSuccess = () => {
+  const { palette } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email');
@@ -75,8 +77,8 @@ export const PaymentSuccess = () => {
   }, [email, status, isChecking]);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#0D1117] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-[#161B22] rounded-3xl shadow-xl border border-gray-100 dark:border-[#30363D] p-8 text-center animate-in zoom-in-95 duration-500">
+    <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-300" style={{ background: palette.bg }}>
+      <div className="max-w-md w-full rounded-[28px] shadow-xl border p-8 text-center animate-in zoom-in-95 duration-500 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
 
         {/* Animated Icon */}
         <div className="relative w-24 h-24 mx-auto mb-6">
@@ -89,14 +91,14 @@ export const PaymentSuccess = () => {
         </div>
 
         {/* Text content */}
-        <h1 className="text-2xl md:text-3xl font-playfair font-bold text-[#1A1A2E] dark:text-white mb-4">
+        <h1 className="text-2xl md:text-3xl font-playfair font-bold mb-4 transition-colors" style={{ color: palette.ink }}>
           {status === 'success' ? 'Paiement reçu, champion(ne) !' :
            isChecking ? 'Vérification en cours...' :
            status === 'error' ? 'Petit souci de notre côté' :
            'Vérification de ton paiement'}
         </h1>
 
-        <div className="text-gray-600 dark:text-[#8B949E] mb-8 space-y-2">
+        <div className="mb-8 space-y-2 transition-colors" style={{ color: palette.ink2 }}>
           {status === 'success' && (
             <p className="animate-in fade-in slide-in-from-bottom-2">
               Ton accès au cours <strong>{unlockedProduct}</strong> a été activé avec succès. Tu peux commencer à bosser !
@@ -108,7 +110,7 @@ export const PaymentSuccess = () => {
               <p>
                 Nous interrogeons Selar pour vérifier ton paiement.
               </p>
-              <p className="text-sm font-bold text-[#1976D2] dark:text-blue-400">
+              <p className="text-sm font-bold transition-colors" style={{ color: palette.accent }}>
                 Cela prend généralement quelques secondes...
               </p>
             </>
@@ -125,7 +127,7 @@ export const PaymentSuccess = () => {
               <p>
                 Nous n'avons pas pu retrouver la référence de ta transaction. Si tu as été débité, contacte le support avec ton numéro de téléphone.
               </p>
-              <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs text-left break-all overflow-hidden border border-red-200">
+              <div className="p-2 rounded text-xs text-left break-all overflow-hidden border border-red-200 transition-colors" style={{ background: palette.bg2 }}>
                 <span className="font-bold text-red-500">Debug Info:</span> {debugUrl}
               </div>
             </div>
@@ -138,11 +140,16 @@ export const PaymentSuccess = () => {
             <button
               onClick={checkPayment}
               disabled={isChecking}
-              className={`w-full py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
+              className={`w-full py-4 px-6 rounded-[24px] font-bold flex items-center justify-center gap-2 transition-all duration-300 border ${
                 isChecking
-                  ? 'bg-gray-100 dark:bg-[#30363D] text-gray-400 cursor-not-allowed translate-y-2 opacity-50'
-                  : 'bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/30 translate-y-0 opacity-100'
+                  ? 'cursor-not-allowed translate-y-2 opacity-50'
+                  : 'shadow-lg shadow-green-500/30 translate-y-0 opacity-100'
               }`}
+              style={{
+                background: isChecking ? palette.bg2 : '#10B981',
+                borderColor: isChecking ? palette.line : '#10B981',
+                color: isChecking ? palette.ink3 : '#fff'
+              }}
             >
               {isChecking ? 'Vérification...' : 'J\'ai payé, vérifier mon achat'}
             </button>
@@ -150,11 +157,16 @@ export const PaymentSuccess = () => {
 
           <button
             onClick={() => navigate('/dashboard/courses')}
-            className={`w-full py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
+            className={`w-full py-4 px-6 rounded-[24px] font-bold flex items-center justify-center gap-2 transition-all duration-300 border ${
               status === 'success'
-                ? 'bg-[#1976D2] hover:bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                : 'bg-gray-100 dark:bg-[#30363D] text-gray-600 hover:bg-gray-200 dark:text-gray-300'
+                ? 'text-white shadow-lg shadow-blue-500/30'
+                : 'hover:opacity-80'
             }`}
+            style={
+              status === 'success' 
+              ? { background: palette.accent, borderColor: palette.accent }
+              : { background: palette.bg2, borderColor: palette.line, color: palette.ink }
+            }
           >
             {status === 'success' ? 'Accéder à mon tome' : 'Retour à l\'accueil'}
             {status === 'success' && <ArrowRight className="w-5 h-5" />}

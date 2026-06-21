@@ -1,0 +1,58 @@
+TASK — Implement "Simulateur BAC" feature.
+
+Read only / Context:
+- Target page: "Mes Notes & Objectifs". Add a 3rd tab "Simulateur BAC" inside the existing tab system without altering current tabs.
+- Series collection: users/{uid}.serie (values: TLE_D, TLE_A1, TLE_A2)
+- Target Goal: users/{uid}.objectifPoints
+- Class Averages: Already calculated in codebase (if missing = null).
+- Coefficients: Do NOT hardcode. Calculate totalCoeff dynamically by summing the `.coeff` property from global `IVORIAN_CURRICULUM[serie]`.
+- Persistence: Store inputs in users/{uid}/bacSimulation with a 1000ms debounce.
+
+STRICT RULES (Brand & Architecture):
+1. Backbone Rule #2 (Forbidden words): NEVER use "mortel", "mortelle", "fatal", "fatale", "tuer", "chirurgical". Use ONLY: "piège à éviter", "erreur incontournable à éviter", "point de vigilance", "précision absolue".
+2. Styling: Tailwind CSS mobile-first, native dark mode (#020617), Navy headers (#1A3557), Magenta accents (#D81B60), Red critical alerts (#B71C1C).
+3. Output: Write full, un-truncated React/TypeScript files. Code-only mode, no conversational fluff.
+
+Write complete files:
+
+COMP 1 — BacSimulator.tsx (Main)
+- State: const [notesSimulees, setNotesSimulees] = useState<Record<string, number | null>>({})
+- useMemo calculations:
+  * pointsSimules = Σ(note × coeff)
+  * moyenneSimulee = pointsSimules / totalCoeffSaisi
+  * progression = pointsSimules / objectifPoints (%)
+  * noteMinRequise (for empty inputs uniformly) = (objectifPoints - pointsSimules) / coeffRestants
+- Edge case: If objectifPoints is undefined, display: "Définis ton objectif BAC dans l'onglet Mes Objectifs pour activer le simulateur."
+
+COMP 2 — BacPointsGauge.tsx
+- Render: Display "[pointsSimules] / [objectifPoints] pts" in large text.
+- Progress bar color: #C62828 (<60%), #E67E22 (60–89%), #1E8449 (≥90%).
+- Badge mention: Passable ≥10 / Assez Bien ≥12 / Bien ≥14 / Très Bien ≥16 (calculated on moyenneSimulee).
+- Joker Logic: If pointsSimules is within 15 points of objective/passing limit:
+  * If moyenne_classe_actuelle ≥ 11.5/20 -> Show box: "🟢 Statut : Joker Sécurisé. Ton livret scolaire est propre. En maintenant ce niveau, le jury te repêchera en cas de coup de fatigue au BAC !"
+  * If moyenne_classe_actuelle < 10/20 -> Show box: "🔴 Statut : Zone de Vigilance. Ta moyenne de classe est trop faible pour activer le repêchage du livret scolaire. Booste tes devoirs !"
+
+COMP 3 — BacSubjectRow.tsx
+- Map over IVORIAN_CURRICULUM[serie]. Input: number, min=0, max=20, step=0.5.
+- If empty -> show gray text: "Tu as besoin d'au moins [noteMinRequise]/20 ici"
+- If noteMinRequise > 20 -> show red text: "Objectif hors de portée avec ces notes"
+- If (note_simulée - moyenne_classe) ≥ 1.5 -> inject <BacRealityCheck /> underneath.
+
+COMP 4 — BacRealityCheck.tsx
+- Style: Left border #D81B60 3px, secondary bg, padding 10px 14px.
+- Text: "💡 Champion(ne), tu as simulé un [note_simulée]/20 en [Matière]. Ta moyenne actuelle est de [moyenne_classe]/20 (Écart : [delta] pts)."
+- Subject mapping for action messages:
+  * svt -> "Ouvre Les Clés Sciences SVT. Les points se récupèrent avec la méthode."
+  * maths -> "Ouvre Les Clés Maths. Attaque le tome de ta plus grande faiblesse."
+  * pc -> "Les Clés Sciences PC t'attend. Les points tombent avec la bonne méthode."
+  * français -> "Les Clés Lettres Français te donne les outils pour aller chercher ces points."
+  * philo -> "Philo Facile est fait pour ça. Un tome, une méthode, et cet écart se comble."
+  * hg -> "Travaille tes fiches HG — la régularité est tout ce qu'il te faut."
+  * anglais -> "Anglais Spécial BAC te donne la méthode."
+
+COMP 5 — BacOrientationPredictor.tsx
+- Card component checking simulation data + class averages. Evaluate eligibility criteria for:
+  * INPHB Yamoussoukro (Requires top Maths/PC/Anglais + Mention)
+  * Faculté de Médecine (Requires top SVT/PC/Maths)
+  * Écoles du Numérique (Requires top Maths/Anglais)
+- Render compatibility % bar + dynamic guidance from "Grand Frère" tailored for CampusIvoire orientation.

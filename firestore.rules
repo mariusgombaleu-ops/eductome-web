@@ -4,12 +4,19 @@ service cloud.firestore {
 
     // ─── users ────────────────────────────────────────────────────────────────
     match /users/{uid} {
-      // Owner: full read/write
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      // Owner : lecture totale de son propre profil
+      allow read: if request.auth != null && request.auth.uid == uid;
 
-      // Public read (pour /parent/:uid) est désormais géré par la Cloud Function
-      // getPublicStudentData qui n'expose que les champs sûrs via Admin SDK.
-      // La règle "allow read: if true" a été fermée (FIX 5 — sécurité données).
+      // Owner : écriture autorisée SAUF les champs sensibles contrôlés par les Cloud Functions.
+      // unlockedCourses, unlockedBadges et rewardedActions ne peuvent être modifiés
+      // que via Admin SDK (Cloud Functions) qui bypass ces règles.
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['unlockedCourses', 'unlockedBadges', 'rewardedActions']);
+
+      // Création du profil (premier setDoc à l'inscription) — autorisée
+      allow create: if request.auth != null && request.auth.uid == uid;
 
       // ── achats ──────────────────────────────────────────────────────────────
       // Writes come from Cloud Functions (admin SDK bypasses rules).
@@ -26,6 +33,17 @@ service cloud.firestore {
       // ── assessments ─────────────────────────────────────────────────────────
       match /assessments/{assessmentId} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // ── notifications ────────────────────────────────────────────────────────
+      // Écriture uniquement via Cloud Functions (Admin SDK).
+      match /notifications/{notifId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        // Autoriser la mise à jour du champ "read" uniquement (marquer comme lu)
+        allow update: if request.auth != null
+                      && request.auth.uid == uid
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+        allow create, delete: if false;
       }
     }
 
@@ -51,13 +69,48 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ─── _ratelimit ───────────────────────────────────────────────────────────
+    // Collection interne pour le rate limiting des Cloud Functions.
+    // Aucun accès client direct.
+    match /_ratelimit/{document=**} {
+      allow read, write: if false;
+    }
+
+    // ─── _metadata ────────────────────────────────────────────────────────────
+    // Métadonnées internes (polling Selar, etc.) — aucun accès client.
+    match /_metadata/{document=**} {
+      allow read, write: if false;
+    }
+
+    // ─── achats (racine) ──────────────────────────────────────────────────────
+    // Collection racine des achats — écrite par les Cloud Functions (Admin SDK).
+    // Le frontend lit via onSnapshot pour afficher les cours débloqués.
+    // SÉCURITÉ : lecture restreinte au propriétaire via compte_id.
+    match /achats/{achatId} {
+      allow read: if request.auth != null
+                   && resource.data.compte_id == request.auth.uid;
+      allow write: if false;
+    }
+
+    // ─── purchases ───────────────────────────────────────────────────────────
+    // Données brutes Selar — gérées exclusivement par Cloud Functions.
+    // Contient email client, montant, statut — jamais exposé au client.
+    match /purchases/{purchaseId} {
+      allow read, write: if false;
+    }
+
     // ─── forum_posts ──────────────────────────────────────────────────────────
     match /forum_posts/{postId} {
       // Lire : tout utilisateur authentifié
       allow read: if request.auth != null;
       // Créer : tout utilisateur authentifié (auteur = request.auth.uid)
+      // Les champs obligatoires sont validés ici
       allow create: if request.auth != null
-                    && request.resource.data.authorId == request.auth.uid;
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['authorId', 'content', 'createdAt'])
+                    && request.resource.data.content is string
+                    && request.resource.data.content.size() > 0
+                    && request.resource.data.content.size() <= 5000;
       // Modifier/Supprimer : seulement l'auteur ou un admin
       allow update, delete: if request.auth != null
                             && (resource.data.authorId == request.auth.uid
@@ -68,7 +121,11 @@ service cloud.firestore {
     match /forum_replies/{replyId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null
-                    && request.resource.data.authorId == request.auth.uid;
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['authorId', 'content', 'createdAt'])
+                    && request.resource.data.content is string
+                    && request.resource.data.content.size() > 0
+                    && request.resource.data.content.size() <= 2000;
       allow update, delete: if request.auth != null
                             && (resource.data.authorId == request.auth.uid
                                 || request.auth.token.isAdmin == true);
@@ -78,3 +135,4 @@ service cloud.firestore {
     // Firestore denies by default; all unlisted collections are implicitly denied.
   }
 }
+

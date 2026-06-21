@@ -5,7 +5,7 @@ import { useToast } from '../../contexts/ToastContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export function Settings() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, palette } = useTheme();
   const { addToast } = useToast();
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -36,13 +36,11 @@ export function Settings() {
     });
   };
 
-  const isDark = theme === 'dark';
-
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in-up pb-20 p-4 md:p-8">
+    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in-up pb-20 p-4 md:p-8 transition-colors">
       <div>
-        <h1 className="text-3xl font-playfair font-bold text-[#1A1A2E] dark:text-white mb-2">Paramètres</h1>
-        <p className="text-[#6B7280] dark:text-[#8B949E] mb-6">Configurez votre espace d'apprentissage selon vos préférences.</p>
+        <h1 className="text-3xl font-playfair font-bold mb-2" style={{ color: palette.ink }}>Paramètres</h1>
+        <p className="mb-6" style={{ color: palette.ink2 }}>Configurez votre espace d'apprentissage selon vos préférences.</p>
         <GrandFrereGuide 
           id="settings"
           message="Ton espace, tes règles. Configure ton profil pour qu'il te ressemble. Et n'oublie pas : un profil bien rempli, c'est le début de l'organisation !"
@@ -52,8 +50,8 @@ export function Settings() {
       <form onSubmit={handleSave} className="space-y-8">
         
         {/* Section Apparence */}
-        <div className={`p-6 rounded-2xl shadow-sm border ${isDark ? 'bg-[#161B22] border-[#30363D]' : 'bg-white border-[#E1E4E8]'}`}>
-          <h2 className={`text-lg font-bold mb-6 flex items-center gap-2 ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`}>
+        <div className="p-6 rounded-[28px] shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+          <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
             <Monitor className="w-5 h-5 text-[#1976D2]" /> Apparence
           </h2>
           
@@ -61,11 +59,11 @@ export function Settings() {
             <button
               type="button"
               onClick={() => theme !== 'light' && toggleTheme()}
-              className={`flex-1 flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                theme === 'light' 
-                  ? 'border-[#D81B60] bg-pink-50 text-[#D81B60]' 
-                  : `border-[#E1E4E8] dark:border-[#30363D] ${isDark ? 'text-[#8B949E] hover:bg-[#30363D]' : 'text-[#6B7280] hover:bg-[#F8F9FA]'}`
-              }`}
+              className="flex-1 flex flex-col items-center gap-3 p-4 rounded-[16px] border-2 transition-all hover:bg-black/5"
+              style={theme === 'light' 
+                ? { borderColor: palette.accent, background: `${palette.accent}15`, color: palette.accent }
+                : { borderColor: palette.line, color: palette.ink2 }
+              }
             >
               <Sun className="w-8 h-8" />
               <span className="font-bold">Mode Clair</span>
@@ -74,11 +72,11 @@ export function Settings() {
             <button
               type="button"
               onClick={() => theme !== 'dark' && toggleTheme()}
-              className={`flex-1 flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                theme === 'dark' 
-                  ? 'border-[#D81B60] bg-[#D81B60]/10 text-[#D81B60]' 
-                  : `border-[#E1E4E8] dark:border-[#30363D] ${isDark ? 'text-[#8B949E] hover:bg-[#30363D]' : 'text-[#6B7280] hover:bg-[#F8F9FA]'}`
-              }`}
+              className="flex-1 flex flex-col items-center gap-3 p-4 rounded-[16px] border-2 transition-all hover:bg-black/5"
+              style={theme === 'dark' 
+                ? { borderColor: palette.accent, background: `${palette.accent}15`, color: palette.accent }
+                : { borderColor: palette.line, color: palette.ink2 }
+              }
             >
               <Moon className="w-8 h-8" />
               <span className="font-bold">Mode Sombre</span>
@@ -87,20 +85,20 @@ export function Settings() {
         </div>
 
         {/* Section Notifications */}
-        <div className={`p-6 rounded-2xl shadow-sm border ${isDark ? 'bg-[#161B22] border-[#30363D]' : 'bg-white border-[#E1E4E8]'}`}>
-          <h2 className={`text-lg font-bold mb-6 flex items-center gap-2 ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`}>
+        <div className="p-6 rounded-[28px] shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+          <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
             <Bell className="w-5 h-5 text-yellow-500" /> Notifications
           </h2>
           
           <div className="space-y-4">
-            <label className="flex items-center justify-between p-4 rounded-xl border border-[#E1E4E8] dark:border-[#30363D] cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#30363D]/50 transition-colors">
+            <label className="flex items-center justify-between p-4 rounded-[16px] border cursor-pointer hover:bg-black/5 transition-colors" style={{ borderColor: palette.line }}>
               <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg ${isDark ? 'bg-[#0D1117]' : 'bg-[#F8F9FA]'}`}>
-                  <Smartphone className={`w-5 h-5 ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`} />
+                <div className="p-2 rounded-[12px]" style={{ background: palette.bg2 }}>
+                  <Smartphone className="w-5 h-5" style={{ color: palette.ink }} />
                 </div>
                 <div>
-                  <div className={`font-bold ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`}>Notifications Push</div>
-                  <div className="text-sm text-[#6B7280] dark:text-[#8B949E]">Recevez des alertes pour le forum et vos cours</div>
+                  <div className="font-bold" style={{ color: palette.ink }}>Notifications Push</div>
+                  <div className="text-sm" style={{ color: palette.ink2 }}>Recevez des alertes pour le forum et vos cours</div>
                 </div>
               </div>
               <div className="relative inline-flex items-center cursor-pointer">
@@ -109,14 +107,14 @@ export function Settings() {
               </div>
             </label>
 
-            <label className="flex items-center justify-between p-4 rounded-xl border border-[#E1E4E8] dark:border-[#30363D] cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#30363D]/50 transition-colors">
+            <label className="flex items-center justify-between p-4 rounded-[16px] border cursor-pointer hover:bg-black/5 transition-colors" style={{ borderColor: palette.line }}>
               <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg ${isDark ? 'bg-[#0D1117]' : 'bg-[#F8F9FA]'}`}>
-                  <Bell className={`w-5 h-5 ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`} />
+                <div className="p-2 rounded-[12px]" style={{ background: palette.bg2 }}>
+                  <Bell className="w-5 h-5" style={{ color: palette.ink }} />
                 </div>
                 <div>
-                  <div className={`font-bold ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`}>Actualités EDUCTOME</div>
-                  <div className="text-sm text-[#6B7280] dark:text-[#8B949E]">Nouveaux tomes, offres et annonces importantes</div>
+                  <div className="font-bold" style={{ color: palette.ink }}>Actualités EDUCTOME</div>
+                  <div className="text-sm" style={{ color: palette.ink2 }}>Nouveaux tomes, offres et annonces importantes</div>
                 </div>
               </div>
               <div className="relative inline-flex items-center cursor-pointer">
@@ -128,38 +126,38 @@ export function Settings() {
         </div>
 
         {/* Section Sécurité */}
-        <div className={`p-6 rounded-2xl shadow-sm border ${isDark ? 'bg-[#161B22] border-[#30363D]' : 'bg-white border-[#E1E4E8]'}`}>
-          <h2 className={`text-lg font-bold mb-6 flex items-center gap-2 ${isDark ? 'text-white' : 'text-[#1A1A2E]'}`}>
+        <div className="p-6 rounded-[28px] shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+          <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
             <Shield className="w-5 h-5 text-green-500" /> Sécurité du Compte
           </h2>
           
           <div className="space-y-5">
             <div>
-              <label className={`block text-sm font-medium ${isDark ? 'text-[#8B949E]' : 'text-[#6B7280]'} mb-1`}>Mot de passe actuel</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Mot de passe actuel</label>
               <div className="relative">
-                <input type={showPassword ? "text" : "password"} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-[#D81B60] focus:border-[#D81B60] transition-colors outline-none pr-10 ${isDark ? 'bg-[#0D1117] border-[#30363D] text-white placeholder-[#6E7681]' : 'bg-[#F8F9FA] border-[#E1E4E8] text-[#1A1A2E] placeholder-[#9CA3AF]'}`} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-[#9CA3AF] dark:text-[#6E7681] hover:text-[#1A1A2E] dark:hover:text-white">
+                <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors pr-10" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 opacity-60 hover:opacity-100 transition-opacity" style={{ color: palette.ink }}>
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
             <div>
-              <label className={`block text-sm font-medium ${isDark ? 'text-[#8B949E]' : 'text-[#6B7280]'} mb-1`}>Nouveau mot de passe</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Nouveau mot de passe</label>
               <div className="relative">
-                <input type={showNewPassword ? "text" : "password"} onChange={handlePasswordChange} placeholder="••••••••" className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-[#D81B60] focus:border-[#D81B60] transition-colors outline-none pr-10 ${isDark ? 'bg-[#0D1117] border-[#30363D] text-white placeholder-[#6E7681]' : 'bg-[#F8F9FA] border-[#E1E4E8] text-[#1A1A2E] placeholder-[#9CA3AF]'}`} />
-                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-2.5 text-[#9CA3AF] dark:text-[#6E7681] hover:text-[#1A1A2E] dark:hover:text-white">
+                <input type={showNewPassword ? "text" : "password"} onChange={handlePasswordChange} placeholder="••••••••" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors pr-10" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
+                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-2.5 opacity-60 hover:opacity-100 transition-opacity" style={{ color: palette.ink }}>
                   {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {/* Strength Indicator */}
               <div className="mt-2 flex gap-1 h-1.5">
-                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 1 ? 'bg-red-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
-                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 2 ? 'bg-yellow-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
-                <div className={`flex-1 rounded-full transition-colors ${passwordStrength >= 3 ? 'bg-green-500' : isDark ? 'bg-[#30363D]' : 'bg-gray-200'}`}></div>
+                <div className="flex-1 rounded-full transition-colors" style={{ background: passwordStrength >= 1 ? '#ef4444' : palette.line }}></div>
+                <div className="flex-1 rounded-full transition-colors" style={{ background: passwordStrength >= 2 ? '#eab308' : palette.line }}></div>
+                <div className="flex-1 rounded-full transition-colors" style={{ background: passwordStrength >= 3 ? '#22c55e' : palette.line }}></div>
               </div>
             </div>
             <div className="pt-2">
-              <button type="button" className="text-sm font-bold text-[#1976D2] hover:text-blue-700 transition-colors">
+              <button type="button" className="text-sm font-bold transition-colors hover:opacity-80" style={{ color: palette.accent }}>
                 Mettre à jour le mot de passe
               </button>
             </div>
@@ -169,15 +167,16 @@ export function Settings() {
         <div className="flex justify-end pt-4">
           <button 
             type="submit" 
-            className="flex items-center gap-2 bg-[#D81B60] hover:bg-pink-600 text-white px-8 py-3 rounded-xl font-bold transition-colors shadow-lg shadow-pink-500/30"
+            className="flex items-center gap-2 text-white px-8 py-3 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]"
+            style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
           >
             <Save className="w-5 h-5" /> Enregistrer mes paramètres
           </button>
         </div>
 
         {/* Zone de Danger (Discrète) */}
-        <div className="mt-16 pt-8 border-t border-[#E1E4E8] dark:border-[#30363D] flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity">
-          <h2 className="text-sm font-bold text-[#6B7280] dark:text-[#8B949E] mb-2 flex items-center gap-1.5">
+        <div className="mt-16 pt-8 border-t flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity" style={{ borderColor: palette.line }}>
+          <h2 className="text-sm font-bold mb-2 flex items-center gap-1.5" style={{ color: palette.ink2 }}>
             <Trash2 className="w-4 h-4" /> Zone de danger
           </h2>
           
@@ -185,13 +184,13 @@ export function Settings() {
             <button 
               type="button" 
               onClick={() => setShowDeleteConfirm(true)}
-              className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors underline underline-offset-2"
+              className="text-xs text-red-500 hover:text-red-700 transition-colors underline underline-offset-2"
             >
               Supprimer définitivement mon compte
             </button>
           ) : (
-            <div className="w-full max-w-sm mt-2 p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/10 flex flex-col gap-3">
-              <p className="text-xs text-red-600 dark:text-red-400 font-medium text-center">
+            <div className="w-full max-w-sm mt-2 p-4 rounded-[16px] border bg-red-50/50 flex flex-col gap-3" style={{ borderColor: '#ef444440' }}>
+              <p className="text-xs text-red-600 font-medium text-center">
                 Action irréversible. Pour confirmer, veuillez entrer votre mot de passe :
               </p>
               <input 
@@ -199,9 +198,8 @@ export function Settings() {
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
                 placeholder="Votre mot de passe"
-                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none ${
-                  isDark ? 'bg-[#0D1117] border-red-900/50 text-white placeholder-[#6E7681]' : 'bg-white border-red-200 text-[#1A1A2E] placeholder-[#9CA3AF]'
-                }`}
+                className="w-full px-3 py-2 text-sm border rounded-[12px] focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink }}
               />
               <div className="flex gap-2 justify-center mt-1">
                 <button 
@@ -210,7 +208,8 @@ export function Settings() {
                     setShowDeleteConfirm(false);
                     setDeletePassword('');
                   }}
-                  className="px-3 py-1.5 text-xs font-bold text-[#6B7280] dark:text-[#8B949E] hover:bg-[#E1E4E8] dark:hover:bg-[#30363D] rounded-lg transition-colors"
+                  className="px-3 py-1.5 text-xs font-bold rounded-[12px] transition-colors hover:bg-black/5"
+                  style={{ color: palette.ink2 }}
                 >
                   Annuler
                 </button>
@@ -225,7 +224,7 @@ export function Settings() {
                       addToast({ type: 'error', title: 'Erreur', message: 'Mot de passe requis.' });
                     }
                   }}
-                  className="px-3 py-1.5 text-xs font-bold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                  className="px-3 py-1.5 text-xs font-bold bg-red-500 hover:bg-red-600 text-white rounded-[12px] transition-colors"
                 >
                   Confirmer la suppression
                 </button>

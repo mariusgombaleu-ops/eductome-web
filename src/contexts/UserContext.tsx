@@ -3,7 +3,7 @@ import { useToast } from './ToastContext';
 import { BADGES } from '../constants/badges';
 import { useAuth } from './AuthContext';
 import { db } from '../config/firebase';
-import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, increment, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, increment, collection, query, where } from 'firebase/firestore';
 import { Achat } from '../types';
 
 export interface UserLevel {
@@ -155,16 +155,39 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setRewardedActions(new Set(data.rewardedActions || []));
         setActivityHistory(data.activityHistory || {});
         
+        // SÉCURITÉ (MOY-3) : le rôle est déterminé côté serveur via Firebase Custom Claims.
+        // En DEV uniquement : fallback sur le numéro de téléphone pour éviter de configurer
+        // les Custom Claims pendant le développement. Ce fallback est supprimé en production.
         let computedRole = data.role || 'student';
-        const identifier = currentUser.phoneNumber || currentUser.email || '';
-        if (identifier.includes('0715811398')) {
-          computedRole = 'grand_frere';
-        } else if (identifier.includes('0799506300')) {
-          computedRole = 'admin';
+        if (currentUser) {
+          currentUser.getIdTokenResult().then((tokenResult) => {
+            let claimRole = data.role || 'student';
+            if (tokenResult.claims.isAdmin === true) {
+              claimRole = 'admin';
+            } else if (tokenResult.claims.isGrandFrere === true) {
+              claimRole = 'grand_frere';
+            } else if (tokenResult.claims.isEquipe === true) {
+              claimRole = 'equipe';
+            } else if (import.meta.env.DEV) {
+              // Fallback DEV uniquement — sera supprimé avant la mise en prod
+              const identifier = currentUser.phoneNumber || currentUser.email || '';
+              if (identifier.includes('0715811398')) {
+                claimRole = 'grand_frere';
+              } else if (identifier.includes('0799506300')) {
+                claimRole = 'admin';
+              }
+            }
+            setUserRole(claimRole);
+            setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(claimRole));
+          }).catch(() => {
+            // En cas d'erreur de token, on garde le rôle du document
+            setUserRole(computedRole);
+            setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(computedRole));
+          });
+        } else {
+          setUserRole(computedRole);
+          setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(computedRole));
         }
-
-        setUserRole(computedRole);
-        setIsAdmin(['admin', 'grand_frere', 'equipe'].includes(computedRole));
         
         setPseudo(data.pseudo || 'Champion');
         setSexe(data.sexe);
@@ -348,32 +371,24 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Le Vigile réessaiera au prochain cycle (dans 5 secondes)
           if (!allUnlocked) return;
 
-          // Traitement du code relais si présent
+          // SÉCURITÉ (CRIT-2) : tracking relais via Cloud Function sécurisée.
+          // Remplace les écritures directes dans /relais qui étaient bloquées par les rules.
           const pendingRelaisCode = localStorage.getItem('eductome_pending_relais_code');
-          if (pendingRelaisCode) {
+          if (pendingRelaisCode && currentUser) {
             try {
               const produit = pendingCourseId || data.productId;
-              // Mettre à jour le doc achat avec le relaisCode
-              const achatSnap = await getDocs(query(
-                collection(db, 'achats'),
-                where('compte_id', '==', currentUser.uid)
-              ));
-              const matchingAchat = achatSnap.docs.find(d => d.data().reference === produit);
-              if (matchingAchat) {
-                await updateDoc(matchingAchat.ref, { relaisCode: pendingRelaisCode });
-              }
-              // Incrémenter les totaux du relais et enregistrer la vente
-              const relaisDocRef = doc(db, 'relais', pendingRelaisCode);
-              await updateDoc(relaisDocRef, {
-                totalVentes: increment(1),
-                totalCommission: increment(300)
-              });
-              await addDoc(collection(db, 'relais', pendingRelaisCode, 'ventes'), {
-                date: new Date(),
-                produit,
-                commission: 300,
-                acheteurId: currentUser.uid
-              });
+              const relaisToken = await currentUser.getIdToken();
+              await fetch(
+                'https://us-central1-eductome-web.cloudfunctions.net/trackRelaisSale',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${relaisToken}`,
+                  },
+                  body: JSON.stringify({ relaisCode: pendingRelaisCode, courseId: produit }),
+                }
+              );
             } catch (relaisErr) {
               console.error('Relais tracking error:', relaisErr);
             }
@@ -525,10 +540,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // ─── Fonctions de développement (désactivées en production) ────────────────
+  // SÉCURITÉ (MOY-2) : ces fonctions ne sont actives qu'en mode développement.
+  // En production, elles sont des no-ops silencieux.
+
   const resetUser = async () => {
-    if (!currentUser) return;
+    if (!import.meta.env.DEV || !currentUser) return;
     const userRef = doc(db, 'users', currentUser.uid);
-    // Use updateDoc instead of setDoc to preserve pseudo, goal, highschool, etc.
     await updateDoc(userRef, {
       xp: 0,
       unlockedCourses: [],
@@ -542,9 +560,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const unlockEverything = async () => {
-    if (!currentUser) return;
+    if (!import.meta.env.DEV || !currentUser) return;
     const userRef = doc(db, 'users', currentUser.uid);
-    // Give 5000 XP and unlock main courses + badges
     await updateDoc(userRef, {
       xp: 5000,
       unlockedCourses: ['t1-limites', 't2-derivees', 't3-primitives', 't11-eq-diff'],
@@ -554,10 +571,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addXpDev = async (amount: number) => {
+    if (!import.meta.env.DEV) return;
     await gainXp(amount, 'Dev boost', 'dev_boost');
   };
 
   const devSimulerGratuit = () => {
+    if (!import.meta.env.DEV) return;
     setXp(0);
     setStatut('gratuit');
     setCurrentStreak(0);
@@ -567,6 +586,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const devSimulerFamille = () => {
+    if (!import.meta.env.DEV) return;
     setXp(5000);
     setStatut('famille');
     setCurrentStreak(7);
@@ -574,9 +594,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUnlockedBadges(['badge_curieux', 'badge_studieux', 'badge_pilier_forum', 'badge_sans_faute']);
   };
 
-  const devSetStreak = (n: number) => setCurrentStreak(n);
+  const devSetStreak = (n: number) => { if (import.meta.env.DEV) setCurrentStreak(n); };
 
   const devUnlockCourseTest = () => {
+    if (!import.meta.env.DEV) return;
     setUnlockedCourses(prev => prev.includes('t1-limites') ? prev : [...prev, 't1-limites']);
   };
 

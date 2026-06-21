@@ -243,31 +243,31 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
       const gfBg   = isDark ? '#1A2F4A' : '#EBF3FF';
       const gfText = isDark ? '#93C5FD' : '#1A3557';
       return (
-        <div className="my-5 space-y-3 font-poppins">
+        <div className="my-6 space-y-4 font-poppins">
           {b.pf && (
-            <div className="flex items-start gap-3 max-w-[90%]">
-              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-base bg-gray-100 dark:bg-gray-700">👦</div>
+            <div className="flex items-end gap-2 max-w-[90%]">
+              <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm bg-gray-100 dark:bg-gray-700">👦</div>
               <div
-                className="flex-1 rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed shadow-sm chat-bubble-pf"
-                style={{ backgroundColor: pfBg, color: pfText, '--bubble-tail-color': pfBg } as React.CSSProperties}
+                className="flex-1 rounded-[20px] rounded-bl-sm px-4 py-3 text-[14px] leading-relaxed shadow-sm"
+                style={{ backgroundColor: pfBg, color: pfText }}
                 dangerouslySetInnerHTML={{ __html: parseMarkdown(b.pf) }}
               />
             </div>
           )}
           {b.gf && (
-            <div className="flex items-start gap-3 max-w-[90%] ml-auto flex-row-reverse">
-              <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden bg-blue-100 dark:bg-blue-900/50">
-                <img src="/images/marius-pro.jpeg" alt="Le Gombaleu" className="w-full h-full object-cover" style={{ objectPosition: 'center 5%', transform: 'scale(1.6)' }} />
+            <div className="flex items-end gap-2 max-w-[90%] ml-auto flex-row-reverse">
+              <div className="shrink-0 w-8 h-8 rounded-full shadow-sm overflow-hidden bg-blue-100 dark:bg-blue-900/50">
+                <img src="/grand-frere.jpeg" alt="Le Gombaleu" className="w-full h-full object-cover" />
               </div>
               <div
-                className="flex-1 rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed shadow-sm chat-bubble-gf"
-                style={{ backgroundColor: gfBg, color: gfText, '--bubble-tail-color': gfBg } as React.CSSProperties}
+                className="flex-1 rounded-[20px] rounded-br-sm px-4 py-3 text-[14px] leading-relaxed shadow-sm"
+                style={{ backgroundColor: gfBg, color: gfText }}
                 dangerouslySetInnerHTML={{ __html: parseMarkdown(b.gf) }}
               />
             </div>
           )}
           {b.contenu && !b.pf && !b.gf && (
-            <div className={`px-4 py-3 text-sm italic leading-loose rounded-2xl ${isDark ? 'bg-gray-700/50 text-gray-300' : 'bg-gray-50 text-gray-700'}`}
+            <div className={`px-4 py-3 text-sm italic leading-loose rounded-[20px] ${isDark ? 'bg-gray-700/50 text-gray-300' : 'bg-gray-50 text-gray-700'}`}
               dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
           )}
         </div>

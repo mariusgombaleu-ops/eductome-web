@@ -6,10 +6,11 @@ interface CTAButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary';
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
 }
 
-export function CTAButton({ to, href, children, variant = 'primary', className = '', onClick }: CTAButtonProps) {
+export function CTAButton({ to, href, children, variant = 'primary', className = '', style = {}, onClick }: CTAButtonProps) {
   const baseStyles = "inline-flex items-center justify-center font-bold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 text-center";
   
   const variants = {
@@ -21,7 +22,7 @@ export function CTAButton({ to, href, children, variant = 'primary', className =
 
   if (to) {
     return (
-      <Link to={to} className={combinedStyles} onClick={onClick}>
+      <Link to={to} className={combinedStyles} style={style} onClick={onClick}>
         {children}
       </Link>
     );

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { ChevronRight, ArrowLeft, Target, Lightbulb, UserCheck, CheckCircle2 } from 'lucide-react';
 import { BlockRenderer } from '../components/blocks/BlockRenderer';
 import { PreviewItem } from '../types';
+import { useTheme } from '../contexts/ThemeContext';
 
 export function CollectionDetails() {
   const { slug } = useParams<{ slug: string }>();
@@ -13,6 +14,7 @@ export function CollectionDetails() {
   const [selectedPreview, setSelectedPreview] = useState<PreviewItem | null>(null);
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
+  const { palette } = useTheme();
 
   if (!collection) {
     return <Navigate to={isDashboard ? "/dashboard/boutique" : "/"} replace />;
@@ -40,7 +42,7 @@ export function CollectionDetails() {
   };
 
   return (
-    <div className={`min-h-screen font-poppins pb-0 transition-colors duration-300 ${isDashboard ? 'bg-[#F8F9FA] dark:bg-[#0D1117]' : 'bg-white'}`} data-collection={collection.slug}>
+    <div className="min-h-screen font-poppins pb-0 transition-colors duration-300" style={{ background: isDashboard ? palette.bg2 : '#ffffff' }} data-collection={collection.slug}>
       <SEO 
         title={`${collection.name} | EDUCTOME`} 
         description={collection.shortDescription} 
@@ -137,7 +139,7 @@ export function CollectionDetails() {
           
           {/* Ce que ça t'apporte */}
           <ScrollReveal delay={0.2}>
-            <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300 p-6 md:p-10 border border-gray-100 border-l-4 border-l-[#1976D2] relative overflow-hidden group">
+            <div className="rounded-[28px] shadow-sm hover:shadow-md transition-shadow duration-300 p-6 md:p-10 border border-l-4 relative overflow-hidden group" style={{ background: isDashboard ? palette.bg : '#ffffff', borderColor: isDashboard ? palette.line : '#f3f4f6', borderLeftColor: '#1976D2' }}>
               <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-[#1976D2] opacity-[0.03] rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
               <div className="flex items-center gap-3 mb-6 md:mb-8">
                 <div className="p-3 bg-blue-50 rounded-xl text-[#1976D2]">
@@ -158,7 +160,7 @@ export function CollectionDetails() {
           
           {/* Pour toi si... */}
           <ScrollReveal delay={0.3}>
-            <div className="bg-[#1A3557] rounded-2xl shadow-xl p-6 md:p-10 relative overflow-hidden">
+            <div className="rounded-[28px] shadow-sm p-6 md:p-10 relative overflow-hidden transition-colors" style={{ background: palette.accent }}>
               <div className="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 bg-white opacity-[0.03] rounded-full"></div>
               <div className="flex items-center gap-3 mb-6 md:mb-8">
                 <div className="p-3 bg-white/10 rounded-xl text-white">
@@ -264,7 +266,7 @@ export function CollectionDetails() {
 
       {/* 4. TOMES OU LISTE D'ATTENTE */}
       {collection.status !== 'coming-soon' ? (
-        <section id="tomes-section" className="py-20 bg-gray-50 px-4">
+        <section id="tomes-section" className="py-20 px-4 transition-colors duration-300" style={{ background: isDashboard ? palette.bg2 : '#f9fafb' }}>
           <div className="max-w-6xl mx-auto">
             <ScrollReveal>
               <div className="section-header">
@@ -397,7 +399,7 @@ export function CollectionDetails() {
           </div>
         </section>
       ) : (
-        <section id="waitlist-section" className="py-20 bg-gray-50 px-4">
+        <section id="waitlist-section" className="py-20 px-4 transition-colors duration-300" style={{ background: isDashboard ? palette.bg2 : '#f9fafb' }}>
           <div className="max-w-3xl mx-auto text-center">
             <ScrollReveal>
               <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl border-t-4" style={{ borderColor: collection.primaryColor }}>
@@ -537,7 +539,7 @@ export function CollectionDetails() {
       )}
 
       {/* 8. AUTRES COLLECTIONS */}
-      <section className="bg-[#fafafa] py-16 px-4 border-t border-gray-100">
+      <section className="py-16 px-4 border-t transition-colors duration-300" style={{ background: isDashboard ? palette.bg2 : '#fafafa', borderColor: isDashboard ? palette.line : '#f3f4f6' }}>
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-12">

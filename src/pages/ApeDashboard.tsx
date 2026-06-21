@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Users, TrendingUp, Award, FileText, Plus, Shield, Download, BookOpen, Star } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 // MOCK DATA FOR DEMO/MARKETING
 const mockStudents = [
@@ -13,9 +14,10 @@ export function ApeDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'buy' | 'reports'>('overview');
   const [apeName] = useState("COGES Lycée Classique d'Abidjan");
   const [sponsoredCount] = useState(50);
+  const { palette } = useTheme();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#0D1117] font-poppins pb-20">
+    <div className="min-h-screen font-poppins pb-20 transition-colors duration-300" style={{ background: palette.bg }}>
       {/* Header */}
       <header className="bg-gradient-to-r from-[#1A3557] to-[#1976D2] text-white py-12 px-4 md:px-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-white opacity-10 pointer-events-none"></div>
@@ -48,36 +50,32 @@ export function ApeDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8">
         {/* Navigation */}
-        <div className="flex overflow-x-auto hide-scrollbar gap-2 mb-8 bg-white dark:bg-[#161B22] p-2 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+        <div className="flex overflow-x-auto hide-scrollbar gap-2 mb-8 p-2 rounded-[24px] shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'overview' ? 'bg-[#1A3557] text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2`}
+            style={activeTab === 'overview' ? { background: palette.accent, color: '#fff' } : { color: palette.ink2, background: 'transparent' }}
           >
             <TrendingUp className="w-4 h-4" /> Vue d'ensemble
           </button>
           <button
             onClick={() => setActiveTab('students')}
-            className={`px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'students' ? 'bg-[#1A3557] text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2`}
+            style={activeTab === 'students' ? { background: palette.accent, color: '#fff' } : { color: palette.ink2, background: 'transparent' }}
           >
             <Users className="w-4 h-4" /> Élèves Sponsorisés ({sponsoredCount})
           </button>
           <button
             onClick={() => setActiveTab('buy')}
-            className={`px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'buy' ? 'bg-[#1A3557] text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2`}
+            style={activeTab === 'buy' ? { background: palette.accent, color: '#fff' } : { color: palette.ink2, background: 'transparent' }}
           >
             <Award className="w-4 h-4" /> Offres & Achats
           </button>
           <button
             onClick={() => setActiveTab('reports')}
-            className={`px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'reports' ? 'bg-[#1A3557] text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all flex items-center gap-2`}
+            style={activeTab === 'reports' ? { background: palette.accent, color: '#fff' } : { color: palette.ink2, background: 'transparent' }}
           >
             <FileText className="w-4 h-4" /> Rapports d'Impact
           </button>
@@ -90,38 +88,38 @@ export function ApeDashboard() {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white dark:bg-[#161B22] p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm flex items-start gap-4">
-                  <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-xl text-blue-600 dark:text-blue-400">
+                <div className="p-6 rounded-[24px] border shadow-sm flex items-start gap-4 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+                  <div className="p-3 rounded-xl transition-colors" style={{ background: `${palette.accent}20`, color: palette.accent }}>
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Élèves Sponsorisés</p>
-                    <p className="text-3xl font-black text-[#1A3557] dark:text-white mt-1">{sponsoredCount}</p>
-                    <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium flex items-center gap-1">
+                    <p className="text-sm font-medium transition-colors" style={{ color: palette.ink3 }}>Élèves Sponsorisés</p>
+                    <p className="text-3xl font-black mt-1 transition-colors" style={{ color: palette.ink }}>{sponsoredCount}</p>
+                    <p className="text-xs text-green-500 mt-2 font-medium flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" /> +15 ce mois-ci
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#161B22] p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm flex items-start gap-4">
+                <div className="p-6 rounded-[24px] border shadow-sm flex items-start gap-4 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
                   <div className="bg-[#D81B60]/10 p-3 rounded-xl text-[#D81B60]">
                     <TrendingUp className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Évolution Moyenne (Notes)</p>
-                    <p className="text-3xl font-black text-[#1A3557] dark:text-white mt-1">+2.1 pts</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Depuis le début du trimestre</p>
+                    <p className="text-sm font-medium transition-colors" style={{ color: palette.ink3 }}>Évolution Moyenne (Notes)</p>
+                    <p className="text-3xl font-black mt-1 transition-colors" style={{ color: palette.ink }}>+2.1 pts</p>
+                    <p className="text-xs mt-2 transition-colors" style={{ color: palette.ink3 }}>Depuis le début du trimestre</p>
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#161B22] p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm flex items-start gap-4">
+                <div className="p-6 rounded-[24px] border shadow-sm flex items-start gap-4 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
                   <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-xl text-green-600 dark:text-green-400">
                     <BookOpen className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Temps moyen sur l'app</p>
-                    <p className="text-3xl font-black text-[#1A3557] dark:text-white mt-1">4h 20</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Par élève / semaine</p>
+                    <p className="text-sm font-medium transition-colors" style={{ color: palette.ink3 }}>Temps moyen sur l'app</p>
+                    <p className="text-3xl font-black mt-1 transition-colors" style={{ color: palette.ink }}>4h 20</p>
+                    <p className="text-xs mt-2 transition-colors" style={{ color: palette.ink3 }}>Par élève / semaine</p>
                   </div>
                 </div>
               </div>
@@ -143,25 +141,25 @@ export function ApeDashboard() {
             </div>
           )}
 
-          {/* STUDENTS TAB */}
           {activeTab === 'students' && (
-            <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h3 className="text-xl font-bold text-[#1A3557] dark:text-white">Vos Élèves Sponsorisés</h3>
+            <div className="border rounded-[28px] overflow-hidden shadow-sm transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+              <div className="p-6 border-b flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors" style={{ borderColor: palette.line }}>
+                <h3 className="text-xl font-bold transition-colors" style={{ color: palette.ink }}>Vos Élèves Sponsorisés</h3>
                 <div className="flex gap-2">
                   <input 
                     type="text" 
                     placeholder="Rechercher un élève..." 
-                    className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white text-sm"
+                    className="px-4 py-2 border rounded-xl text-sm transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink }}
                   />
-                  <button className="bg-[#D81B60] text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-[#C2185B]">
+                  <button className="text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors hover:opacity-80" style={{ background: palette.accent }}>
                     <Plus className="w-4 h-4" /> Ajouter
                   </button>
                 </div>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
-                  <thead className="bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 uppercase font-semibold">
+                <table className="w-full text-left text-sm transition-colors" style={{ color: palette.ink2 }}>
+                  <thead className="uppercase font-semibold transition-colors" style={{ background: palette.bg2, color: palette.ink }}>
                     <tr>
                       <th className="px-6 py-4">Nom Complet</th>
                       <th className="px-6 py-4">Classe</th>
@@ -172,17 +170,17 @@ export function ApeDashboard() {
                   </thead>
                   <tbody>
                     {mockStudents.map(student => (
-                      <tr key={student.id} className="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{student.name}</td>
+                      <tr key={student.id} className="border-b transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ borderColor: palette.line }}>
+                        <td className="px-6 py-4 font-bold transition-colors" style={{ color: palette.ink }}>{student.name}</td>
                         <td className="px-6 py-4">{student.classe}</td>
                         <td className="px-6 py-4">{student.phone}</td>
                         <td className="px-6 py-4">
-                          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded font-bold text-xs">
+                          <span className="px-2 py-1 rounded font-bold text-xs" style={{ background: `${palette.accent}20`, color: palette.accent }}>
                             {student.xp} XP
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <span className="text-green-600 dark:text-green-400 font-bold">{student.averageChange} pts</span>
+                          <span className="text-green-500 font-bold">{student.averageChange} pts</span>
                         </td>
                       </tr>
                     ))}
@@ -192,12 +190,11 @@ export function ApeDashboard() {
             </div>
           )}
 
-          {/* BUY TAB */}
           {activeTab === 'buy' && (
             <div className="space-y-6">
               <div className="text-center max-w-2xl mx-auto mb-8">
-                <h3 className="text-2xl font-bold text-[#1A3557] dark:text-white mb-2">Abonnements Groupés (Spécial APE)</h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <h3 className="text-2xl font-bold mb-2 transition-colors" style={{ color: palette.ink }}>Abonnements Groupés (Spécial APE)</h3>
+                <p className="transition-colors" style={{ color: palette.ink2 }}>
                   Équipez vos meilleurs élèves ou soutenez les cas sociaux avec EDUCTOME. Ces offres incluent un accès complet à tous les tomes de l'année.
                 </p>
               </div>
@@ -208,37 +205,33 @@ export function ApeDashboard() {
                   { title: "Pack Promotion", count: 50, price: "50 000 F", unit: "1 000 F / élève", discount: "-33%", color: "magenta", popular: true },
                   { title: "Pack Lycée", count: 200, price: "150 000 F", unit: "750 F / élève", discount: "-50%", color: "marine" }
                 ].map((pack, idx) => (
-                  <div key={idx} className={`relative bg-white dark:bg-[#161B22] rounded-2xl border-2 ${pack.popular ? 'border-[#D81B60]' : 'border-gray-200 dark:border-gray-800'} p-6 md:p-8 flex flex-col`}>
+                  <div key={idx} className={`relative rounded-[28px] border-2 p-6 md:p-8 flex flex-col transition-colors`} style={{ background: palette.bg, borderColor: pack.popular ? palette.accent : palette.line }}>
                     {pack.popular && (
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#D81B60] text-white text-xs font-bold uppercase tracking-widest py-1 px-3 rounded-full">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-bold uppercase tracking-widest py-1 px-3 rounded-full transition-colors" style={{ background: palette.accent }}>
                         Le plus choisi
                       </div>
                     )}
-                    <h4 className="text-xl font-bold text-center mb-1 text-gray-900 dark:text-white">{pack.title}</h4>
-                    <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">{pack.count} accès "Tomes Complets"</p>
+                    <h4 className="text-xl font-bold text-center mb-1 transition-colors" style={{ color: palette.ink }}>{pack.title}</h4>
+                    <p className="text-center text-sm mb-6 transition-colors" style={{ color: palette.ink3 }}>{pack.count} accès "Tomes Complets"</p>
                     
                     <div className="text-center mb-6">
-                      <div className="text-3xl font-black text-[#1A3557] dark:text-white">{pack.price}</div>
-                      <div className="text-sm font-medium text-green-600 dark:text-green-500 mt-1">Soit {pack.unit} ({pack.discount})</div>
+                      <div className="text-3xl font-black transition-colors" style={{ color: palette.ink }}>{pack.price}</div>
+                      <div className="text-sm font-medium text-green-500 mt-1">Soit {pack.unit} ({pack.discount})</div>
                     </div>
 
                     <ul className="space-y-3 mb-8 flex-1">
-                      <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <li className="flex items-center gap-2 text-sm transition-colors" style={{ color: palette.ink2 }}>
                         <CheckIcon /> Accès illimité aux cours
                       </li>
-                      <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <li className="flex items-center gap-2 text-sm transition-colors" style={{ color: palette.ink2 }}>
                         <CheckIcon /> Simulateur de BAC inclus
                       </li>
-                      <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <li className="flex items-center gap-2 text-sm transition-colors" style={{ color: palette.ink2 }}>
                         <CheckIcon /> Tableau de bord de suivi APE
                       </li>
                     </ul>
 
-                    <button className={`w-full py-3 rounded-lg font-bold transition-colors ${
-                      pack.popular 
-                        ? 'bg-[#D81B60] hover:bg-[#C2185B] text-white' 
-                        : 'bg-[#1A3557] hover:bg-[#11233B] text-white'
-                    }`}>
+                    <button className={`w-full py-3 rounded-xl font-bold transition-colors hover:opacity-80`} style={{ background: pack.popular ? palette.accent : palette.bg2, color: pack.popular ? '#fff' : palette.ink }}>
                       Choisir ce pack
                     </button>
                   </div>
@@ -247,13 +240,12 @@ export function ApeDashboard() {
             </div>
           )}
 
-          {/* REPORTS TAB */}
           {activeTab === 'reports' && (
-            <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
+            <div className="border rounded-[28px] p-6 md:p-8 shadow-sm transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                  <h3 className="text-xl font-bold text-[#1A3557] dark:text-white">Rapports d'Impact Mensuels</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                  <h3 className="text-xl font-bold transition-colors" style={{ color: palette.ink }}>Rapports d'Impact Mensuels</h3>
+                  <p className="text-sm mt-1 transition-colors" style={{ color: palette.ink2 }}>
                     Téléchargez les documents officiels pour les présenter en réunion de bureau ou aux parents d'élèves.
                   </p>
                 </div>
@@ -265,21 +257,21 @@ export function ApeDashboard() {
                   { month: "Avril 2026", status: "" },
                   { month: "Mars 2026", status: "" }
                 ].map((report, idx) => (
-                  <div key={idx} className="border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex items-center justify-between hover:border-blue-500 transition-colors group cursor-pointer">
+                  <div key={idx} className="border rounded-2xl p-4 flex items-center justify-between transition-colors group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5" style={{ borderColor: palette.line }}>
                     <div className="flex items-center gap-3">
-                      <div className="bg-red-100 dark:bg-red-900/20 p-2 rounded-lg text-red-600">
+                      <div className="bg-red-100 dark:bg-red-900/20 p-2 rounded-xl text-red-600">
                         <FileText className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">Bilan_{report.month.replace(' ', '_')}.pdf</p>
+                        <p className="font-bold text-sm transition-colors" style={{ color: palette.ink }}>Bilan_{report.month.replace(' ', '_')}.pdf</p>
                         {report.status && (
-                          <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-0.5 rounded font-bold uppercase">
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold uppercase transition-colors" style={{ background: `${palette.accent}20`, color: palette.accent }}>
                             {report.status}
                           </span>
                         )}
                       </div>
                     </div>
-                    <Download className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
+                    <Download className="w-5 h-5 transition-colors" style={{ color: palette.ink3 }} />
                   </div>
                 ))}
               </div>

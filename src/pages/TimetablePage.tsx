@@ -47,9 +47,8 @@ const TYPE_COLORS: Record<string, string> = {
 export const TimetablePage = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { theme } = useTheme();
+  const { palette } = useTheme();
   const { addToast } = useToast();
-  const dark = theme === 'dark';
 
   const currentDayIdx = new Date().getDay();
   const initialDay = currentDayIdx === 0 ? 'Lundi' : DAYS[currentDayIdx - 1];
@@ -147,15 +146,15 @@ export const TimetablePage = () => {
   };
 
   return (
-    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-24 font-poppins max-w-7xl mx-auto">
+    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-24 font-poppins max-w-7xl mx-auto transition-colors">
       {/* Hero Banner avec dégradé EDUCTOME */}
-      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg mb-8 animate-in fade-in slide-in-from-top-4 duration-500 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative bg-gradient-to-r from-[#1A3557] to-[#1976D2] rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg mb-8 animate-in fade-in slide-in-from-top-4 duration-500 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
         
         <div className="relative z-10 text-white flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm shrink-0 shadow-sm">
+            <div className="bg-white/20 p-2.5 rounded-[12px] backdrop-blur-sm shrink-0 shadow-sm">
               <Calendar className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl md:text-3xl font-playfair font-bold">
@@ -168,8 +167,8 @@ export const TimetablePage = () => {
         </div>
 
         {nextMajorAssessment && (
-          <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 flex flex-row items-center gap-4 shadow-sm w-full md:w-auto shrink-0">
-            <div className="bg-white/20 p-2.5 rounded-lg shrink-0 hidden sm:block">
+          <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-[16px] p-4 flex flex-row items-center gap-4 shadow-sm w-full md:w-auto shrink-0">
+            <div className="bg-white/20 p-2.5 rounded-[12px] shrink-0 hidden sm:block">
               <Clock className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -178,7 +177,7 @@ export const TimetablePage = () => {
                 {TYPE_LABELS[nextMajorAssessment.type]} - {nextMajorAssessment.subjectName}
               </p>
             </div>
-            <div className="bg-white text-blue-600 px-4 py-2 rounded-lg font-black text-center shrink-0 shadow-sm">
+            <div className="bg-white px-4 py-2 rounded-[12px] font-black text-center shrink-0 shadow-sm" style={{ color: palette.accent }}>
               <span className="text-lg md:text-xl block leading-none">{daysUntilNext}</span>
               <span className="text-[8px] md:text-[9px] uppercase tracking-widest mt-0.5 block">Jours</span>
             </div>
@@ -192,14 +191,14 @@ export const TimetablePage = () => {
       {pendingAssessments.length > 0 && (
         <div className="space-y-3">
           {pendingAssessments.map(assessment => (
-            <div key={assessment.id} className="bg-orange-50 border border-orange-200 dark:bg-orange-900/20 dark:border-orange-800/50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={assessment.id} className="rounded-[16px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border transition-colors" style={{ background: '#f9731610', borderColor: '#f9731630' }}>
               <div className="flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-orange-700 dark:text-orange-400 text-sm">
+                  <h4 className="font-bold text-orange-500 text-sm">
                     Comment s'est passé ton {TYPE_LABELS[assessment.type]} de {assessment.subjectName} ?
                   </h4>
-                  <p className="text-xs text-orange-600/80 dark:text-orange-300/80 mt-1">
+                  <p className="text-xs text-orange-500/80 mt-1">
                     C'était le {new Date(assessment.date).toLocaleDateString('fr-FR')}. Mets à jour tes notes pour voir si tu as atteint ton objectif !
                   </p>
                 </div>
@@ -207,7 +206,8 @@ export const TimetablePage = () => {
               <div className="flex gap-2 shrink-0">
                 <button 
                   onClick={() => handleMarkAsDone(assessment.id)}
-                  className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-50 flex items-center gap-1 transition-colors"
+                  className="border px-3 py-1.5 rounded-[12px] text-xs font-bold transition-colors hover:bg-black/5 flex items-center gap-1"
+                  style={{ background: palette.bg, color: palette.ink, borderColor: palette.line }}
                 >
                   <CheckCircle2 size={14} /> Ignorer
                 </button>
@@ -216,7 +216,7 @@ export const TimetablePage = () => {
                     handleMarkAsDone(assessment.id);
                     navigate('/dashboard/grades');
                   }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1 transition-colors"
                 >
                   Saisir ma note <ChevronRight size={14} />
                 </button>
@@ -227,9 +227,9 @@ export const TimetablePage = () => {
       )}
 
       {/* Section 1 — Planning Mobile-First (Day Picker) */}
-      <div className={`${dark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border shadow-sm overflow-hidden flex flex-col md:flex-row`}>
+      <div className="rounded-[28px] border shadow-sm overflow-hidden flex flex-col md:flex-row transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
         {/* Sélecteur de jour */}
-        <div className={`md:w-64 shrink-0 flex flex-row md:flex-col overflow-x-auto md:overflow-visible border-b md:border-b-0 md:border-r ${dark ? 'border-gray-700 bg-gray-900/30' : 'border-gray-100 bg-gray-50/50'} p-2 md:p-4 gap-2 custom-scrollbar`}>
+        <div className="md:w-64 shrink-0 flex flex-row md:flex-col overflow-x-auto md:overflow-visible border-b md:border-b-0 md:border-r p-2 md:p-4 gap-2 custom-scrollbar transition-colors" style={{ borderColor: palette.line, background: palette.bg2 }}>
           {DAYS.map(day => {
             const isActive = selectedDay === day;
             const count = slotsByDay(day).length;
@@ -237,15 +237,12 @@ export const TimetablePage = () => {
               <button
                 key={day}
                 onClick={() => setSelectedDay(day)}
-                className={`flex-shrink-0 flex items-center justify-between px-4 md:px-4 py-3 rounded-xl transition-all ${
-                  isActive 
-                    ? 'bg-[#1A3557] text-white shadow-md font-bold' 
-                    : `hover:bg-gray-200 dark:hover:bg-gray-700 font-medium ${dark ? 'text-gray-400' : 'text-gray-600'}`
-                }`}
+                className="flex-shrink-0 flex items-center justify-between px-4 md:px-4 py-3 rounded-[16px] transition-all"
+                style={isActive ? { background: palette.accent, color: 'white', fontWeight: 'bold' } : { color: palette.ink2, fontWeight: '500' }}
               >
                 <span>{day}</span>
                 {count > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full" style={isActive ? { background: 'rgba(255,255,255,0.2)', color: 'white' } : { background: palette.bg, color: palette.ink }}>
                     {count}
                   </span>
                 )}
@@ -257,15 +254,15 @@ export const TimetablePage = () => {
         {/* Cours du jour sélectionné */}
         <div className="flex-1 p-4 md:p-6 min-h-[300px]">
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`font-bold text-lg ${dark ? 'text-white' : 'text-gray-900'}`}>Programme du {selectedDay}</h2>
-            <span className="text-xs text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 rounded-md font-bold">
+            <h2 className="font-bold text-lg" style={{ color: palette.ink }}>Programme du {selectedDay}</h2>
+            <span className="text-xs px-2.5 py-1 rounded-[8px] font-bold" style={{ color: palette.accent, background: `${palette.accent}20` }}>
               {slotsByDay(selectedDay).length} cours
             </span>
           </div>
 
           <div className="space-y-3">
             {slotsByDay(selectedDay).length === 0 ? (
-              <div className={`text-center py-12 border-2 border-dashed rounded-xl ${dark ? 'border-gray-700 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
+              <div className="text-center py-12 border-2 border-dashed rounded-[16px] transition-colors" style={{ borderColor: palette.line, color: palette.ink2 }}>
                 <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p className="font-medium text-sm">Aucun cours programmé ce jour</p>
               </div>
@@ -273,11 +270,12 @@ export const TimetablePage = () => {
               slotsByDay(selectedDay).map(slot => (
                 <div
                   key={slot.id}
-                  className={`group flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all hover:shadow-md ${dark ? 'bg-gray-900/50 border-gray-700 hover:border-gray-600' : 'bg-white border-gray-100 hover:border-gray-200'}`}
+                  className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-[16px] border transition-all hover:shadow-md hover:-translate-y-0.5"
+                  style={{ background: palette.bg, borderColor: palette.line }}
                 >
                   <div className="flex flex-col shrink-0 min-w-[100px]">
-                    <span className={`text-sm font-bold ${dark ? 'text-gray-300' : 'text-gray-700'}`}>{slot.startTime}</span>
-                    <span className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>{slot.endTime}</span>
+                    <span className="text-sm font-bold" style={{ color: palette.ink }}>{slot.startTime}</span>
+                    <span className="text-xs" style={{ color: palette.ink2 }}>{slot.endTime}</span>
                   </div>
                   
                   <div className="w-1.5 h-12 rounded-full hidden sm:block shrink-0" style={{ backgroundColor: getSubjectColor(slot.subjectId) }} />
@@ -285,10 +283,10 @@ export const TimetablePage = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="w-2 h-2 rounded-full sm:hidden" style={{ backgroundColor: getSubjectColor(slot.subjectId) }} />
-                      <h4 className={`font-bold text-base ${dark ? 'text-white' : 'text-gray-900'}`}>{slot.subjectName}</h4>
+                      <h4 className="font-bold text-base" style={{ color: palette.ink }}>{slot.subjectName}</h4>
                     </div>
                     {slot.teacherName && (
-                      <p className={`text-sm ${dark ? 'text-gray-400' : 'text-gray-500'}`}>{slot.teacherName}</p>
+                      <p className="text-sm" style={{ color: palette.ink2 }}>{slot.teacherName}</p>
                     )}
                   </div>
                   
@@ -299,7 +297,8 @@ export const TimetablePage = () => {
                         name: slot.subjectName,
                         color: getSubjectColor(slot.subjectId)
                       })}
-                      className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 rounded-lg transition-colors flex items-center gap-2 text-xs font-bold w-full sm:w-auto justify-center"
+                      className="p-2 rounded-[12px] transition-colors flex items-center gap-2 text-xs font-bold w-full sm:w-auto justify-center opacity-60 hover:opacity-100"
+                      style={{ background: palette.bg2, color: palette.ink }}
                     >
                       <Pencil size={14} /> <span className="sm:hidden">Modifier</span>
                     </button>
@@ -312,22 +311,22 @@ export const TimetablePage = () => {
       </div>
 
       {/* Section 2 — Devoirs & Interros */}
-      <div className={`${dark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl border shadow-sm`}>
-        <div className={`px-6 py-4 border-b ${dark ? 'border-gray-700' : 'border-gray-100'}`}>
-          <h2 className={`font-bold ${dark ? 'text-white' : 'text-gray-900'}`}>Devoirs & Interros Programmés</h2>
-          <p className={`text-xs mt-0.5 ${dark ? 'text-gray-400' : 'text-gray-500'}`}>
+      <div className="rounded-[28px] border shadow-sm transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+        <div className="px-6 py-4 border-b transition-colors" style={{ borderColor: palette.line }}>
+          <h2 className="font-bold" style={{ color: palette.ink }}>Devoirs & Interros Programmés</h2>
+          <p className="text-xs mt-0.5" style={{ color: palette.ink2 }}>
             Triés par date · passés grisés
           </p>
         </div>
 
         {sortedAssessments.length === 0 ? (
-          <div className={`text-center py-14 px-4 ${dark ? 'text-gray-500' : 'text-gray-400'}`}>
+          <div className="text-center py-14 px-4" style={{ color: palette.ink2 }}>
             <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="font-medium text-sm">Aucun devoir programmé</p>
             <p className="text-xs mt-1 opacity-75">Utilise le bouton + pour ajouter un devoir ou une interro.</p>
           </div>
         ) : (
-          <div className={`divide-y ${dark ? 'divide-gray-700/50' : 'divide-gray-100'}`}>
+          <div className="divide-y transition-colors" style={{ borderTopColor: palette.line }}>
             {sortedAssessments.map(assessment => {
               const isPast = assessment.date < todayStr;
               const isSuccess = assessment.status === 'SUCCESS';
@@ -352,7 +351,7 @@ export const TimetablePage = () => {
                       >
                         {assessment.subjectName}
                       </span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${TYPE_COLORS[assessment.type] ?? TYPE_COLORS.INTERRO}`}>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-[8px] border ${TYPE_COLORS[assessment.type] ?? TYPE_COLORS.INTERRO}`}>
                         {TYPE_LABELS[assessment.type] ?? assessment.type}
                       </span>
                       {isSuccess && (
@@ -362,17 +361,17 @@ export const TimetablePage = () => {
                         <span className="text-[10px] font-bold text-red-400">❌ À revoir</span>
                       )}
                     </div>
-                    <h4 className={`text-sm font-semibold mt-1 truncate ${dark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="text-sm font-semibold mt-1 truncate" style={{ color: palette.ink }}>
                       {assessment.title}
                     </h4>
                     {assessment.reviewComment && (
-                      <p className={`text-xs mt-0.5 truncate ${dark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <p className="text-xs mt-0.5 truncate" style={{ color: palette.ink2 }}>
                         Notion : {assessment.reviewComment}
                       </p>
                     )}
                   </div>
                   <div className="shrink-0 text-right">
-                    <span className={`text-xs font-bold ${dark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <span className="text-xs font-bold" style={{ color: palette.ink2 }}>
                       {new Date(assessment.date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                     </span>
                   </div>
@@ -395,15 +394,15 @@ export const TimetablePage = () => {
       {/* Add Assessment Modal */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+          <div className="w-full max-w-sm border rounded-[28px] p-6 space-y-4 shadow-2xl transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Ajouter un devoir / interro</h3>
-              <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors">
+              <h3 className="text-lg font-bold" style={{ color: palette.ink }}>Ajouter un devoir / interro</h3>
+              <button onClick={() => setShowAddForm(false)} className="transition-colors hover:opacity-100 opacity-60" style={{ color: palette.ink }}>
                 <X size={20} />
               </button>
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Matière</label>
+              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Matière</label>
               <select
                 value={fabSubjectId}
                 onChange={e => {
@@ -411,17 +410,19 @@ export const TimetablePage = () => {
                   setFabSubjectId(e.target.value);
                   setFabSubjectName(subj?.name ?? e.target.value);
                 }}
-                className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-2.5 px-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
               >
                 {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Type</label>
+              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Type</label>
               <select
                 value={fabType}
                 onChange={e => setFabType(e.target.value as 'INTERRO' | 'DEVOIR' | 'BAC_BLANC')}
-                className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-2.5 px-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
               >
                 <option value="INTERRO">Interro</option>
                 <option value="DEVOIR">Devoir</option>
@@ -429,28 +430,31 @@ export const TimetablePage = () => {
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Titre (optionnel)</label>
+              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Titre (optionnel)</label>
               <input
                 type="text"
                 placeholder="Ex: Chapitre 3 Limites"
                 value={fabTitle}
                 onChange={e => setFabTitle(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-2.5 px-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 block mb-1">Date</label>
+              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Date</label>
               <input
                 type="date"
                 value={fabDate}
                 onChange={e => setFabDate(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl py-2.5 px-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
               />
             </div>
             <button
               onClick={handleSaveAssessment}
               disabled={!fabDate}
-              className="w-full bg-blue-600 disabled:opacity-40 text-white font-bold py-3 rounded-xl text-sm transition-all hover:bg-blue-700"
+              className="w-full disabled:opacity-40 text-white font-bold py-3 rounded-[16px] text-sm transition-all hover:scale-[1.02]"
+              style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
             >
               Enregistrer
             </button>

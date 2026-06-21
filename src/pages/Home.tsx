@@ -12,10 +12,12 @@ import { ParentsSection } from '../components/home/ParentsSection';
 import { FreeResourcesSection } from '../components/home/FreeResourcesSection';
 import { CTASection } from '../components/home/CTASection';
 import { SEO } from '../components/SEO';
+import { useTheme } from '../contexts/ThemeContext';
 
 export function Home() {
+  const { palette } = useTheme();
   return (
-    <div className="bg-[#fafafa]">
+    <div className="transition-colors duration-300" style={{ background: palette.bg2 }}>
       <SEO title="Accueil" description="Le manuel qui t'explique comme un grand frère. Réussis ton BAC et ton BEPC avec la méthode Eductome." />
       <Hero />
       <RecognizeSection />

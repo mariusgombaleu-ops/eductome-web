@@ -5,6 +5,7 @@ import { blogPosts } from '../data/blogPosts';
 import { SEO } from '../components/SEO';
 import { ChevronLeft, Newspaper, GraduationCap, Calendar, Users, Lightbulb, Compass } from 'lucide-react';
 import { GrandFrereGuide } from '../components/ui/GrandFrereGuide';
+import { useTheme } from '../contexts/ThemeContext';
 
 export function Blog() {
   const location = useLocation();
@@ -13,37 +14,38 @@ export function Blog() {
   const basePath = isDashboard ? '/dashboard/blog' : '/blog';
 
   const [activeCategory, setActiveCategory] = useState('Tous');
+  const { palette } = useTheme();
 
   const categories = [
     { 
       id: 'Tous', icon: Newspaper, label: 'Tous les articles', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-eductome-marine hover:text-eductome-marine dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-eductome-marine text-white border-eductome-marine shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Spécial BAC / BEPC', icon: GraduationCap, label: 'Spécial BAC / BEPC', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#D81B60] hover:text-[#D81B60] hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-[#D81B60] text-white border-[#D81B60] shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Actualités Scolaires', icon: Calendar, label: 'Actualités Scolaires', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#1976D2] hover:text-[#1976D2] hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-[#1976D2] text-white border-[#1976D2] shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Grands Frères', icon: Users, label: 'Grands Frères', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-green-600 dark:hover:border-green-500 hover:text-green-600 dark:hover:text-green-500 hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-green-600 dark:bg-green-500 text-white border-green-600 dark:border-green-500 shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Astuces & Conseils', icon: Lightbulb, label: 'Astuces & Conseils', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-[#E65100] hover:text-[#E65100] hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-[#E65100] text-white border-[#E65100] shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     },
     { 
       id: 'Orientation', icon: Compass, label: 'Orientation', 
-      unselectedClass: 'border-gray-200 dark:border-[#30363D] text-gray-500 dark:text-[#8B949E] hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-[#161B22]',
-      activeClass: 'bg-purple-600 dark:bg-purple-500 text-white border-purple-600 dark:border-purple-500 shadow-md transform scale-[1.02]' 
+      unselectedClass: 'border transition-colors hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100',
+      activeClass: 'shadow-md transform scale-[1.02]' 
     }
   ];
 
@@ -52,13 +54,13 @@ export function Blog() {
     : blogPosts.filter(post => post.category === activeCategory);
 
   return (
-    <div className={`min-h-screen font-poppins pb-20 ${isDashboard ? 'bg-[#F8F9FA] dark:bg-[#0D1117] transition-colors duration-300' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen font-poppins pb-20 transition-colors duration-300`} style={{ background: isDashboard ? 'transparent' : palette.bg }}>
       <SEO title="Le Blog" description="Conseils, méthodologie et astuces pour réussir ton BAC et BEPC en Côte d'Ivoire." />
       
       {/* Hero Banner */}
       {isDashboard && (
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-2">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white mb-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors mb-6 hover:scale-105" style={{ color: palette.ink2 }}>
             <ChevronLeft className="w-4 h-4" /> Retour
           </button>
           
@@ -102,7 +104,7 @@ export function Blog() {
 
       {/* Tabs / Categories */}
       <div className={`max-w-6xl mx-auto px-4 md:px-6 lg:px-8 ${isDashboard ? '' : '-mt-8'} relative z-20 mb-12`}>
-        <div className={`flex flex-wrap justify-center gap-2 sm:gap-4 p-2 rounded-2xl shadow-lg border ${isDashboard ? 'bg-white dark:bg-[#161B22] border-gray-100 dark:border-[#30363D]' : 'bg-white border-gray-100'}`}>
+        <div className={`flex flex-wrap justify-center gap-2 sm:gap-4 p-2 rounded-2xl shadow-lg border transition-colors`} style={{ background: palette.bg, borderColor: palette.line }}>
           {categories.map(cat => (
             <button 
               key={cat.id}
@@ -112,6 +114,11 @@ export function Blog() {
                   ? cat.activeClass
                   : cat.unselectedClass
               }`}
+              style={
+                activeCategory === cat.id 
+                ? { background: palette.accent, color: '#fff', borderColor: palette.accent }
+                : { background: 'transparent', borderColor: palette.line, color: palette.ink }
+              }
             >
               <cat.icon className={`w-4 h-4 md:w-5 md:h-5 mr-2 ${activeCategory === cat.id && cat.id !== 'Tous' ? 'animate-bounce' : ''}`} /> 
               <span className="text-sm md:text-base">{cat.label}</span>
@@ -123,7 +130,7 @@ export function Blog() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post, index) => (
-            <ScrollReveal key={post.id} delay={index * 100} className={`rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full ${isDashboard ? 'bg-white dark:bg-[#161B22] border-gray-100 dark:border-[#30363D]' : 'bg-white border-gray-100'}`}>
+            <ScrollReveal key={post.id} delay={index * 100} className={`rounded-[28px] shadow-sm border overflow-hidden hover:shadow-md transition-all flex flex-col h-full hover:-translate-y-1`} style={{ background: palette.bg, borderColor: palette.line }}>
               <Link to={`${basePath}/${post.slug}`} className="block relative h-48 overflow-hidden group">
                 <img 
                   src={post.coverImage} 
@@ -131,30 +138,31 @@ export function Blog() {
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 dark:bg-[#161B22]/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-eductome-marine dark:text-white">
+                <div className="absolute top-4 left-4 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold" style={{ background: `${palette.bg}e6`, color: palette.ink }}>
                   {post.category}
                 </div>
               </Link>
               
               <div className="p-6 flex flex-col flex-grow">
-                <div className="flex items-center text-xs text-gray-500 dark:text-[#8B949E] mb-3 space-x-4">
+                <div className="flex items-center text-xs mb-3 space-x-4" style={{ color: palette.ink3 }}>
                   <span>📅 {post.date}</span>
                   <span>⏱️ {post.readTime}</span>
                 </div>
                 
-                <h2 className="text-xl font-bold text-eductome-marine dark:text-white mb-3 line-clamp-2 hover:text-eductome-magenta transition-colors">
-                  <Link to={`${basePath}/${post.slug}`}>
+                <h2 className="text-xl font-bold mb-3 line-clamp-2 transition-colors" style={{ color: palette.ink }}>
+                  <Link to={`${basePath}/${post.slug}`} className="hover:opacity-80" style={{ color: palette.ink }}>
                     {post.title}
                   </Link>
                 </h2>
                 
-                <p className="text-gray-600 dark:text-[#8B949E] text-sm mb-6 line-clamp-3 flex-grow">
+                <p className="text-sm mb-6 line-clamp-3 flex-grow" style={{ color: palette.ink2 }}>
                   {post.excerpt}
                 </p>
                 
                 <Link 
                   to={`${basePath}/${post.slug}`}
-                  className="inline-flex items-center font-semibold text-eductome-magenta hover:text-pink-600 transition-colors mt-auto"
+                  className="inline-flex items-center font-semibold transition-colors mt-auto hover:opacity-80"
+                  style={{ color: palette.accent }}
                 >
                   Lire l'article <span className="ml-2">&rarr;</span>
                 </Link>
@@ -162,7 +170,7 @@ export function Blog() {
             </ScrollReveal>
           ))}
           {filteredPosts.length === 0 && (
-             <div className="col-span-full py-20 text-center text-gray-500 dark:text-[#8B949E]">
+             <div className="col-span-full py-20 text-center" style={{ color: palette.ink3 }}>
                Aucun article trouvé dans cette catégorie pour le moment.
              </div>
           )}
