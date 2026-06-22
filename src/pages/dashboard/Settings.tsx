@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Moon, Sun, Bell, Shield, Smartphone, Trash2, Save, Monitor, Eye, EyeOff } from 'lucide-react';
+import { Bell, Shield, Smartphone, Trash2, Save, Monitor, Eye, EyeOff, Sparkles, Focus } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../contexts/ToastContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
 export function Settings() {
-  const { theme, toggleTheme, palette } = useTheme();
+  const { theme, toggleTheme, visualStyle, setVisualStyle, palette } = useTheme();
   const { addToast } = useToast();
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -51,35 +51,101 @@ export function Settings() {
         
         {/* Section Apparence */}
         <div className="p-6 rounded-[28px] shadow-sm border transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
-          <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
+          <h2 className="text-lg font-bold mb-5 flex items-center gap-2" style={{ color: palette.ink }}>
             <Monitor className="w-5 h-5 text-[#1976D2]" /> Apparence
           </h2>
-          
-          <div className="flex flex-col sm:flex-row gap-4">
+
+          {/* Style visuel */}
+          <p className="text-sm font-semibold mb-3" style={{ color: palette.ink2 }}>Style d'interface</p>
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            {/* Mode Vibrant */}
             <button
               type="button"
-              onClick={() => theme !== 'light' && toggleTheme()}
-              className="flex-1 flex flex-col items-center gap-3 p-4 rounded-[16px] border-2 transition-all hover:bg-black/5"
-              style={theme === 'light' 
-                ? { borderColor: palette.accent, background: `${palette.accent}15`, color: palette.accent }
-                : { borderColor: palette.line, color: palette.ink2 }
+              id="btn-style-vibrant"
+              onClick={() => setVisualStyle('studio')}
+              className="flex-1 flex items-center justify-between px-4 py-3 rounded-[16px] border-2 transition-all"
+              style={
+                visualStyle === 'studio'
+                  ? { borderColor: '#D81B60', background: 'rgba(216,27,96,0.07)' }
+                  : { borderColor: palette.line, background: 'transparent' }
               }
             >
-              <Sun className="w-8 h-8" />
-              <span className="font-bold">Mode Clair</span>
+              <div className="flex items-center gap-3">
+                <Sparkles
+                  className="w-5 h-5"
+                  style={{ color: visualStyle === 'studio' ? '#D81B60' : palette.ink2 }}
+                />
+                <div className="text-left">
+                  <div className="font-bold text-sm" style={{ color: visualStyle === 'studio' ? '#D81B60' : palette.ink }}>Studio · Vibrant</div>
+                  <div className="text-xs" style={{ color: palette.ink3 }}>Énergique, glassy, glow</div>
+                </div>
+              </div>
+              <div
+                className="w-3 h-3 rounded-full flex-shrink-0"
+                style={{ background: visualStyle === 'studio' ? '#D81B60' : palette.line }}
+              />
             </button>
-            
+
+            {/* Mode Focus */}
             <button
               type="button"
-              onClick={() => theme !== 'dark' && toggleTheme()}
-              className="flex-1 flex flex-col items-center gap-3 p-4 rounded-[16px] border-2 transition-all hover:bg-black/5"
-              style={theme === 'dark' 
-                ? { borderColor: palette.accent, background: `${palette.accent}15`, color: palette.accent }
-                : { borderColor: palette.line, color: palette.ink2 }
+              id="btn-style-focus"
+              onClick={() => setVisualStyle('focus')}
+              className="flex-1 flex items-center justify-between px-4 py-3 rounded-[16px] border-2 transition-all"
+              style={
+                visualStyle === 'focus'
+                  ? { borderColor: '#1976D2', background: 'rgba(25,118,210,0.07)' }
+                  : { borderColor: palette.line, background: 'transparent' }
               }
             >
-              <Moon className="w-8 h-8" />
-              <span className="font-bold">Mode Sombre</span>
+              <div className="flex items-center gap-3">
+                <Focus
+                  className="w-5 h-5"
+                  style={{ color: visualStyle === 'focus' ? '#1976D2' : palette.ink2 }}
+                />
+                <div className="text-left">
+                  <div className="font-bold text-sm" style={{ color: visualStyle === 'focus' ? '#1976D2' : palette.ink }}>Clair · Focus</div>
+                  <div className="text-xs" style={{ color: palette.ink3 }}>Minimal, aéré, calme</div>
+                </div>
+              </div>
+              <div
+                className="w-3 h-3 rounded-full flex-shrink-0"
+                style={{ background: visualStyle === 'focus' ? '#1976D2' : palette.line }}
+              />
+            </button>
+          </div>
+
+          {/* Ambiance — toujours visible */}
+          <p className="text-sm font-semibold mb-3" style={{ color: palette.ink2 }}>Ambiance</p>
+          <div
+            className="inline-flex rounded-full p-1 border"
+            style={{ background: theme === 'dark' ? palette.bg3 : '#fff', borderColor: palette.line }}
+          >
+            <button
+              type="button"
+              id="btn-theme-light"
+              onClick={() => theme !== 'light' && toggleTheme()}
+              className="px-5 py-1.5 rounded-full text-sm font-bold transition-all"
+              style={
+                theme === 'light'
+                  ? { background: '#1A3557', color: '#fff' }
+                  : { background: 'transparent', color: palette.ink3 }
+              }
+            >
+              ☀︎ Clair
+            </button>
+            <button
+              type="button"
+              id="btn-theme-dark"
+              onClick={() => theme !== 'dark' && toggleTheme()}
+              className="px-5 py-1.5 rounded-full text-sm font-bold transition-all"
+              style={
+                theme === 'dark'
+                  ? { background: '#1A3557', color: '#fff' }
+                  : { background: 'transparent', color: palette.ink3 }
+              }
+            >
+              ☾ Sombre
             </button>
           </div>
         </div>

@@ -223,10 +223,11 @@ export const DashboardLayout = () => {
                 <Download className="w-4 h-4" /> <span className="hidden sm:inline">Installer l'App</span><span className="sm:hidden">Installer</span>
               </button>
             )}
+            {/* Theme toggle */}
             <button 
               onClick={toggleTheme}
               className="p-2 rounded-xl transition-colors relative group text-[#6B7280] dark:text-[#E6EDF3] hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]"
-              title="Changer de thème"
+              title={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
