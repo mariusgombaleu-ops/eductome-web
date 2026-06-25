@@ -1,41 +1,10 @@
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { User, GraduationCap, School, BookOpen, Target, CheckCircle2, ChevronRight, Calendar } from 'lucide-react';
+import { BookOpen, Target, CheckCircle2, ChevronRight, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const LEVEL_LABELS: Record<string, string> = {
-  '3eme': '3ème (BEPC)',
-  '2nde': 'Seconde',
-  '1ere': 'Première',
-  'terminale-c': 'Terminale C',
-  'terminale-d': 'Terminale D',
-  'terminale-a': 'Terminale A',
-};
-
-const SUBJECT_LABELS: Record<string, string> = {
-  maths: 'Mathématiques',
-  pc: 'Physique-Chimie',
-  svt: 'SVT',
-  philo: 'Philosophie',
-  fr: 'Français',
-};
-
-const GOAL_LABELS: Record<string, string> = {
-  passable: 'Mention Passable',
-  bien: 'Mention Bien',
-  'tres-bien': 'Mention Très Bien',
-  excellent: 'Excellent (Bourse)',
-};
-
-const GOAL_EMOJIS: Record<string, string> = {
-  passable: '✅',
-  bien: '🌟',
-  'tres-bien': '⭐',
-  excellent: '🏆',
-};
-
 export const NewUserWelcome = () => {
-  const { pseudo, levelString, highschool, favoriteSubject, goal, xp, goals } = useUser();
+  const { levelString, xp, goals } = useUser();
   const { palette } = useTheme();
   const navigate = useNavigate();
 
