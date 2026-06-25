@@ -24,6 +24,7 @@ import {
   X,
   CheckCheck,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface AppNotification {
   id: string;
@@ -133,90 +134,106 @@ export function NotificationDropdown({ onClose }: Props) {
     onClose();
     if (n.deepLink) navigate(n.deepLink);
   };
-
   return (
-    <div className="absolute right-0 top-full mt-2 w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl border border-slate-800 bg-[#090d16] z-50 overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-[#D81B60]" />
-          <span className="font-bold text-white text-sm font-poppins">Notifications</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={handleMarkAllRead}
-            className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-slate-800"
-          >
-            <CheckCheck className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Tout marquer comme lu</span>
-          </button>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            aria-label="Fermer"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="max-h-[420px] overflow-y-auto">
-        {loading && (
-          <div className="flex items-center justify-center py-10 text-slate-500 text-sm">
-            Chargement...
-          </div>
-        )}
-
-        {!loading && notifications.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 px-4 text-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center">
-              <Bell className="w-6 h-6 text-slate-500" />
+    <>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]" 
+        onClick={onClose} 
+      />
+      <motion.div
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="fixed right-0 top-0 bottom-0 w-[400px] max-w-[100vw] bg-white dark:bg-[#0D1117] border-l border-[#E1E4E8] dark:border-[#30363D] z-[101] shadow-2xl flex flex-col font-poppins"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E1E4E8] dark:border-[#30363D]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#D81B60]/10 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-[#D81B60]" />
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Aucune alerte pour le moment. Tu es à jour, Champion !
-            </p>
+            <span className="font-bold text-[#1A1A2E] dark:text-white text-lg">Notifications</span>
           </div>
-        )}
-
-        {!loading && notifications.map(n => {
-          const color = getIconColor(n.type);
-          return (
+          <div className="flex items-center gap-2">
             <button
-              key={n.id}
-              onClick={() => handleClick(n)}
-              className={`w-full text-left px-4 py-3.5 flex gap-3 items-start transition-colors border-b border-slate-800/50 last:border-0 ${
-                n.read
-                  ? 'hover:bg-slate-800/40'
-                  : 'bg-slate-800/60 hover:bg-slate-700/60'
-              }`}
+              onClick={handleMarkAllRead}
+              className="text-xs text-[#6B7280] dark:text-[#8B949E] hover:text-[#1976D2] dark:hover:text-[#1976D2] flex items-center gap-1.5 transition-colors px-3 py-2 rounded-xl hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]"
             >
-              <div
-                className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
-                style={{ backgroundColor: `${color}22`, color }}
-              >
-                {getIcon(n.type)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <p className={`text-sm font-semibold leading-tight ${n.read ? 'text-slate-300' : 'text-white'}`}>
-                    {n.title}
-                  </p>
-                  {!n.read && (
-                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#D81B60] mt-1.5" />
-                  )}
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
-                  {n.message}
-                </p>
-                <p className="text-xs text-slate-600 mt-1.5">
-                  {formatTime(n.createdAt)}
-                </p>
-              </div>
+              <CheckCheck className="w-4 h-4" />
+              <span className="hidden sm:inline font-medium">Tout marquer comme lu</span>
             </button>
-          );
-        })}
-      </div>
-    </div>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl text-[#6B7280] dark:text-[#8B949E] hover:text-[#1A1A2E] dark:hover:text-white hover:bg-[#F8F9FA] dark:hover:bg-[#161B22] transition-colors"
+              aria-label="Fermer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto">
+          {loading && (
+            <div className="flex items-center justify-center py-12 text-[#6B7280] dark:text-[#8B949E] text-sm">
+              Chargement...
+            </div>
+          )}
+
+          {!loading && notifications.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#F8F9FA] dark:bg-[#161B22] flex items-center justify-center">
+                <Bell className="w-8 h-8 text-[#9CA3AF] dark:text-[#6E7681]" />
+              </div>
+              <p className="text-[#6B7280] dark:text-[#8B949E] text-sm leading-relaxed max-w-[250px]">
+                Aucune alerte pour le moment. Tu es à jour, Champion !
+              </p>
+            </div>
+          )}
+
+          {!loading && notifications.map(n => {
+            const color = getIconColor(n.type);
+            return (
+              <button
+                key={n.id}
+                onClick={() => handleClick(n)}
+                className={`w-full text-left px-6 py-4 flex gap-4 items-start transition-colors border-b border-[#E1E4E8]/50 dark:border-[#30363D]/50 last:border-0 ${
+                  n.read
+                    ? 'hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]'
+                    : 'bg-[#1976D2]/5 hover:bg-[#1976D2]/10 dark:bg-[#1A3557]/20 dark:hover:bg-[#1A3557]/40'
+                }`}
+              >
+                <div
+                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-0.5"
+                  style={{ backgroundColor: `${color}15`, color }}
+                >
+                  {getIcon(n.type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className={`text-sm font-semibold leading-tight ${n.read ? 'text-[#6B7280] dark:text-[#8B949E]' : 'text-[#1A1A2E] dark:text-white'}`}>
+                      {n.title}
+                    </p>
+                    {!n.read && (
+                      <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-[#D81B60] mt-1" />
+                    )}
+                  </div>
+                  <p className={`text-xs mt-1.5 line-clamp-2 leading-relaxed ${n.read ? 'text-[#9CA3AF] dark:text-[#6E7681]' : 'text-[#6B7280] dark:text-[#8B949E]'}`}>
+                    {n.message}
+                  </p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#6E7681] mt-2 font-medium">
+                    {formatTime(n.createdAt)}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+    </>
   );
 }

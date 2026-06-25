@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Target, ShoppingBag, User } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { motion } from 'framer-motion';
 
 const TABS = [
   { key: 'accueil', label: 'Accueil', href: '/dashboard', icon: LayoutDashboard, end: true },
@@ -19,7 +20,7 @@ export const BottomTabBar = () => {
 
   return (
     <nav
-      className="fixed left-0 right-0 bottom-0 z-40 lg:hidden flex items-center"
+      className="fixed left-0 right-0 bottom-0 z-40 lg:hidden flex items-center justify-around"
       style={{
         padding: '8px 8px calc(env(safe-area-inset-bottom, 0px) + 8px)',
         background: palette.glass,
@@ -38,20 +39,39 @@ export const BottomTabBar = () => {
             key={tab.key}
             to={tab.href}
             end={tab.end}
-            className="flex-1 flex flex-col items-center gap-1 py-2 border-none bg-transparent no-underline transition-colors"
+            className="flex-1 flex flex-col items-center gap-1 py-1 relative no-underline transition-colors"
             style={{ color: isActive ? palette.accent : palette.ink3 }}
           >
-            <tab.icon
-              className="w-5 h-5 transition-all"
-              style={{
-                filter: isActive ? 'none' : 'grayscale(1) opacity(.65)',
-                transform: isActive ? 'translateY(-1px)' : 'none',
-              }}
-            />
-            <span className="text-[9.5px] font-bold">{tab.label}</span>
+            {/* Active Bubble Indicator */}
+            {isActive && (
+              <motion.div
+                layoutId="bottomTabBubble"
+                className="absolute top-0.5 w-12 h-7 rounded-full z-0"
+                style={{ backgroundColor: `${palette.accent}20` }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              />
+            )}
+
+            {/* Icon with Bounce Effect */}
+            <motion.div
+              className="z-10 flex items-center justify-center mt-1"
+              animate={isActive ? { scale: [1, 0.8, 1.15, 1] } : { scale: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <tab.icon
+                className="w-[22px] h-[22px]"
+                style={{
+                  filter: isActive ? 'none' : 'grayscale(1) opacity(.65)',
+                }}
+              />
+            </motion.div>
+
+            {/* Label */}
+            <span className="text-[10px] font-bold z-10 mt-0.5">{tab.label}</span>
           </NavLink>
         );
       })}
     </nav>
   );
 };
+

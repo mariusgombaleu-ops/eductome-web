@@ -103,6 +103,7 @@ export function Flashcards() {
   const [direction, setDirection] = useState(0);
   const [stats, setStats] = useState({ mastered: 0, toReview: 0 });
   const [isFinished, setIsFinished] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -123,6 +124,7 @@ export function Flashcards() {
     setStats({ mastered: 0, toReview: 0 });
     setIsFinished(false);
     setDirection(0);
+    setIsFlipped(false);
     setView('cards');
   };
 
@@ -243,7 +245,7 @@ export function Flashcards() {
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {unlockedCourses.map(courseId => {
+              {Array.from(new Set([...unlockedCourses, 't1-limites'])).map(courseId => {
                 const meta = COURSE_METADATA[courseId];
                 if (!meta) return null;
                 return (
@@ -291,7 +293,7 @@ export function Flashcards() {
   const currentCard = cards[currentIndex];
 
   const swipe = (isMastered: boolean) => {
-    if (currentIndex >= cards.length) return;
+    if (currentIndex >= cards.length || !isFlipped) return;
     setDirection(isMastered ? 1 : -1);
     if (isMastered) {
       setStats(prev => ({ ...prev, mastered: prev.mastered + 1 }));
@@ -302,6 +304,7 @@ export function Flashcards() {
       if (currentIndex + 1 < cards.length) {
         setCurrentIndex(prev => prev + 1);
         setDirection(0);
+        setIsFlipped(false);
       } else {
         setIsFinished(true);
       }
@@ -346,6 +349,7 @@ export function Flashcards() {
     setStats({ mastered: 0, toReview: 0 });
     setIsFinished(false);
     setDirection(0);
+    setIsFlipped(false);
   };
 
   return (
@@ -382,7 +386,7 @@ export function Flashcards() {
 
         {!isFinished ? (
           <div className="relative w-full max-w-sm h-[60vh] flex items-center justify-center">
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {currentCard && (
                 <motion.div
                   key={currentCard.id}
@@ -396,7 +400,7 @@ export function Flashcards() {
                   }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  drag="x"
+                  drag={isFlipped ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
                   onDragEnd={(_, { offset }) => {
                     const swipeThreshold = 50;
@@ -406,24 +410,58 @@ export function Flashcards() {
                       swipe(false);
                     }
                   }}
-                  className={`absolute w-full h-full bg-gradient-to-br ${getCardColor(currentCard.type)} rounded-3xl border-2 shadow-xl p-6 flex flex-col cursor-grab active:cursor-grabbing`}
+                  onClick={() => !isFlipped && setIsFlipped(true)}
+                  className={`absolute w-full h-full bg-gradient-to-br ${getCardColor(currentCard.type)} rounded-3xl border-2 shadow-xl p-6 flex flex-col ${!isFlipped ? 'cursor-pointer hover:shadow-2xl transition-shadow' : 'cursor-grab active:cursor-grabbing'}`}
                 >
-                  <div className="flex items-center gap-3 mb-6">
-                    {getCardIcon(currentCard.type)}
-                    <h2 className="font-bold text-lg uppercase tracking-wider" style={{ color: palette.ink }}>
-                      {currentCard.titre || getCardTitle(currentCard.type)}
-                    </h2>
-                  </div>
-                  
-                  <div className="flex-1 overflow-y-auto hide-scrollbar text-lg leading-relaxed flex items-center" style={{ color: palette.ink }}>
-                    <div>
-                      {renderContent(currentCard.contenu)}
-                    </div>
-                  </div>
+                  <AnimatePresence mode="wait">
+                    {!isFlipped ? (
+                      <motion.div 
+                        key="front"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex-1 flex flex-col items-center justify-center text-center space-y-6"
+                      >
+                        <div className="p-6 rounded-full bg-white/50 dark:bg-black/20 shadow-sm border border-black/5 dark:border-white/5">
+                          {getCardIcon(currentCard.type)}
+                        </div>
+                        <h2 className="font-bold text-2xl uppercase tracking-wider px-4" style={{ color: palette.ink }}>
+                          {currentCard.titre || getCardTitle(currentCard.type)}
+                        </h2>
+                        <div className="absolute bottom-8 flex flex-col items-center animate-bounce opacity-70">
+                          <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: palette.ink2 }}>
+                            Appuyez pour révéler
+                          </p>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div 
+                        key="back"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex-1 flex flex-col h-full"
+                      >
+                        <div className="flex items-center gap-3 mb-6 shrink-0 border-b pb-4 border-black/5 dark:border-white/5">
+                          {getCardIcon(currentCard.type)}
+                          <h2 className="font-bold text-sm uppercase tracking-wider opacity-80" style={{ color: palette.ink }}>
+                            {currentCard.titre || getCardTitle(currentCard.type)}
+                          </h2>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto hide-scrollbar text-lg leading-relaxed flex items-center" style={{ color: palette.ink }}>
+                          <div className="w-full">
+                            {renderContent(currentCard.contenu)}
+                          </div>
+                        </div>
 
-                  <div className="mt-6 text-center text-xs font-medium uppercase tracking-widest" style={{ color: palette.ink3 }}>
-                    Swipe pour répondre
-                  </div>
+                        <div className="mt-6 text-center text-xs font-bold uppercase tracking-widest opacity-50 shrink-0" style={{ color: palette.ink3 }}>
+                          Swipe pour répondre
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -474,7 +512,12 @@ export function Flashcards() {
           <div className="w-full max-w-sm mt-8 flex justify-center gap-8 relative z-10">
             <button 
               onClick={() => swipe(false)}
-              className="w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all hover:scale-105 shadow-lg"
+              disabled={!isFlipped}
+              className={`w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                !isFlipped 
+                  ? 'opacity-40 cursor-not-allowed grayscale' 
+                  : 'hover:scale-105 active:scale-95'
+              }`}
               title="À revoir"
               style={{ background: palette.bg, borderColor: '#ef4444', color: '#ef4444' }}
             >
@@ -482,7 +525,12 @@ export function Flashcards() {
             </button>
             <button 
               onClick={() => swipe(true)}
-              className="w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all hover:scale-105 shadow-lg"
+              disabled={!isFlipped}
+              className={`w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                !isFlipped 
+                  ? 'opacity-40 cursor-not-allowed grayscale' 
+                  : 'hover:scale-105 active:scale-95'
+              }`}
               title="Je maîtrise"
               style={{ background: palette.bg, borderColor: '#22c55e', color: '#22c55e' }}
             >

@@ -1,4 +1,5 @@
-import { Outlet } from 'react-router-dom';
+import { useLocation, useOutlet } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
@@ -6,12 +7,25 @@ import { X, Share, PlusSquare } from 'lucide-react';
 
 export const MainLayout = () => {
   const { showIOSPrompt, setShowIOSPrompt } = useInstallPWA();
+  const location = useLocation();
+  const outlet = useOutlet();
 
   return (
     <div className="min-h-screen flex flex-col font-poppins">
       <Navbar />
       <main className="flex-grow">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="w-full h-full"
+          >
+            {outlet}
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer />
 

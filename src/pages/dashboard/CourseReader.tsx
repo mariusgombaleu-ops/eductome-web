@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   ChevronRight, ChevronLeft, ChevronUp, Lightbulb, AlertTriangle,
   Activity, CheckCircle, X,
-  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save, Download
+  List, ArrowLeft, ArrowRight, Edit3, Flag, Send, Save, Download,
+  Cloud, DownloadCloud, WifiOff, Loader2
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -16,6 +17,7 @@ import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
 import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
+import { ChapterCompletionModal } from '../../components/ui/ChapterCompletionModal';
 import { fireConfetti } from '../../utils/confetti';
 import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
@@ -114,7 +116,7 @@ const QuizSection = ({ quiz, onComplete, courseId, chapterId }: { quiz: QuizBloc
         
         {passed ? (
           <button onClick={onComplete} className="px-6 py-3 rounded-xl font-bold text-white bg-[#1976D2] hover:bg-blue-600 transition-colors w-full md:w-auto shadow-md">
-            Passer au chapitre suivant →
+            Terminer le chapitre →
           </button>
         ) : (
           <button onClick={restart} className="px-6 py-3 rounded-xl font-bold transition-colors w-full md:w-auto bg-white dark:bg-[#161B22] text-[#1A1A2E] dark:text-white border border-[#E1E4E8] dark:border-[#30363D] shadow-sm hover:bg-[#F8F9FA] dark:hover:bg-[#30363D]">
@@ -206,6 +208,26 @@ export const CourseReader = () => {
   const [paymentItemName, setPaymentItemName] = useState('');
   const [paymentType, setPaymentType] = useState<'chapter' | 'tome' | 'collection'>('chapter');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+
+  // Gbaka Mode (Offline) State
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isDownloaded, setIsDownloaded] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+
 
   useEffect(() => {
     if (isNotesOpen && courseId) {
@@ -224,6 +246,35 @@ export const CourseReader = () => {
   const course = courseId && courseRegistry[courseId] ? courseRegistry[courseId] : courseT1;
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const chapter = course.chapitres[activeChapterIndex] || course.chapitres[0];
+
+  useEffect(() => {
+    if (courseId && chapter.id) {
+      const isDl = localStorage.getItem(`eductome_gbaka_${courseId}_${chapter.id}`);
+      setIsDownloaded(!!isDl);
+    }
+  }, [courseId, chapter.id]);
+
+  const handleDownloadGbaka = () => {
+    if (isDownloaded) {
+      addToast({ type: 'success', title: 'Déjà téléchargé', message: 'Ce chapitre est déjà disponible hors-ligne.' });
+      return;
+    }
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    const interval = setInterval(() => {
+      setDownloadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsDownloading(false);
+          setIsDownloaded(true);
+          localStorage.setItem(`eductome_gbaka_${courseId}_${chapter.id}`, 'true');
+          addToast({ type: 'success', title: 'Mode Gbaka activé', message: 'Ce chapitre est disponible hors-ligne.' });
+          return 100;
+        }
+        return prev + 20;
+      });
+    }, 200);
+  };
   const [activeSectionId, setActiveSectionId] = useState<string>(
     () => chapter.sections[0]?.id ?? ''
   );
@@ -502,9 +553,15 @@ export const CourseReader = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  const handleFinishChapter = () => {
+    setShowCompletionModal(true);
+  };
+
   const handleNextChapter = () => {
     if (activeChapterIndex < course.chapitres.length - 1) {
       goToChapter(activeChapterIndex + 1);
+    } else {
+      navigate('/dashboard/courses');
     }
   };
 
@@ -577,6 +634,14 @@ export const CourseReader = () => {
       {/* ── Floating Top Bar (Premium Design) ── */}
       <div className="sticky top-4 z-40 px-4 lg:px-8 mb-4 pointer-events-none transition-colors duration-300">
         <div className="max-w-3xl mx-auto">
+          {isOffline && (
+            <div className="pointer-events-auto mb-2 rounded-[12px] p-2.5 flex items-center justify-center gap-2 shadow-md bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700/50 animate-fade-in-up">
+              <WifiOff className="w-4 h-4 text-yellow-600 dark:text-yellow-500" />
+              <span className="text-[11px] font-bold text-yellow-700 dark:text-yellow-400 text-center leading-tight">
+                Mode Gbaka actif 🚌. Vous êtes hors-ligne. Votre progression sera synchronisée au retour de la connexion.
+              </span>
+            </div>
+          )}
           <header className="pointer-events-auto rounded-[18px] p-[9px] pr-3 flex items-center gap-2 shadow-lg transition-colors duration-300" style={{ background: palette.glass, backdropFilter: 'blur(16px) saturate(160%)', WebkitBackdropFilter: 'blur(16px) saturate(160%)', border: `1px solid ${palette.glassLine}` }}>
             <button onClick={() => navigate('/dashboard/courses')}
               className="w-8 h-8 shrink-0 rounded-[9px] flex items-center justify-center transition-colors hover:opacity-80" style={{ background: palette.accentSoft, color: palette.accent }}>
@@ -596,7 +661,23 @@ export const CourseReader = () => {
               className="lg:hidden w-8 h-8 shrink-0 rounded-[9px] flex items-center justify-center transition-colors hover:opacity-80" style={{ background: palette.bg3, color: palette.ink2 }}>
               <List className="w-5 h-5" strokeWidth={2.2} />
             </button>
-            <div className="hidden lg:flex w-8 h-8 shrink-0"></div>
+            
+            <div className="hidden lg:flex items-center gap-2">
+              <button 
+                onClick={handleDownloadGbaka}
+                disabled={isDownloading}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-[9px] text-[11px] font-bold transition-all duration-300 ${isDownloaded ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'hover:opacity-80 cursor-pointer'}`}
+                style={!isDownloaded ? { background: palette.bg3, color: palette.ink2 } : {}}
+              >
+                {isDownloading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {downloadProgress}%</>
+                ) : isDownloaded ? (
+                  <><Cloud className="w-4 h-4" /> Mode Gbaka Actif</>
+                ) : (
+                  <><DownloadCloud className="w-4 h-4" /> Télécharger</>
+                )}
+              </button>
+            </div>
           </header>
           {/* Progress Bar under header */}
           <div className="h-[3px] mx-1 mt-2 rounded-full overflow-hidden transition-colors duration-300" style={{ background: palette.bg3 }}>
@@ -634,6 +715,15 @@ export const CourseReader = () => {
           <button onClick={downloadCorrectionsPDF} disabled={isGeneratingPDF} className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50" style={{ color: palette.ink2 }}>
             {isGeneratingPDF ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin" /> : <Download className="w-5 h-5" strokeWidth={2} />}
             <span className="text-[10px] font-semibold">PDF</span>
+          </button>
+          <button 
+            onClick={handleDownloadGbaka} 
+            disabled={isDownloading} 
+            className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50" 
+            style={{ color: isDownloaded ? '#16a34a' : palette.ink2 }}
+          >
+            {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" strokeWidth={2} /> : isDownloaded ? <Cloud className="w-5 h-5" strokeWidth={2} /> : <DownloadCloud className="w-5 h-5" strokeWidth={2} />}
+            <span className="text-[10px] font-semibold">Gbaka</span>
           </button>
           <div className="w-[1px] h-[30px]" style={{ background: palette.glassLine }}></div>
           <div className="flex items-center gap-[7px] px-3">
@@ -787,7 +877,7 @@ export const CourseReader = () => {
                   {chapter.quiz && chapter.quiz.length > 0 && (
                     <QuizSection
                       quiz={chapter.quiz}
-                      onComplete={handleNextChapter}
+                      onComplete={handleFinishChapter}
                       courseId={courseId || 'unknown'}
                       chapterId={chapter.id}
                     />
@@ -818,18 +908,31 @@ export const CourseReader = () => {
               
               {activeChapterIndex < course.chapitres.length - 1 ? (
                 <button
-                  onClick={() => goToChapter(activeChapterIndex + 1)}
+                  onClick={handleFinishChapter}
                   className="flex-1 flex items-center justify-between gap-3 px-6 py-4 rounded-2xl transition-all border border-transparent bg-[#1A3557] hover:bg-[#1976D2] dark:bg-[#1976D2] dark:hover:bg-blue-600 text-white shadow-sm hover:shadow-md group"
                 >
                   <div className="text-right min-w-0 flex-1">
-                    <span className="block text-[10px] uppercase font-bold tracking-wider text-blue-200">Chapitre Suivant</span>
+                    <span className="block text-[10px] uppercase font-bold tracking-wider text-blue-200">Terminer le Chapitre</span>
                     <span className="block text-sm font-bold truncate">
                       {course.chapitres[activeChapterIndex + 1].titre}
                     </span>
                   </div>
                   <ArrowRight className="w-5 h-5 shrink-0 text-blue-200 group-hover:translate-x-1 transition-transform" />
                 </button>
-              ) : <div className="flex-1" />}
+              ) : (
+                <button
+                  onClick={handleFinishChapter}
+                  className="flex-1 flex items-center justify-between gap-3 px-6 py-4 rounded-2xl transition-all border border-transparent bg-[#1A3557] hover:bg-[#1976D2] dark:bg-[#1976D2] dark:hover:bg-blue-600 text-white shadow-sm hover:shadow-md group"
+                >
+                  <div className="text-right min-w-0 flex-1">
+                    <span className="block text-[10px] uppercase font-bold tracking-wider text-blue-200">Terminer le Chapitre</span>
+                    <span className="block text-sm font-bold truncate">
+                      Retour à l'accueil
+                    </span>
+                  </div>
+                  <ArrowRight className="w-5 h-5 shrink-0 text-blue-200 group-hover:translate-x-1 transition-transform" />
+                </button>
+              )}
             </div>
 
           </div>
@@ -935,6 +1038,15 @@ export const CourseReader = () => {
           onClose={() => setIsPaymentModalOpen(false)}
         />
       )}
+
+      <ChapterCompletionModal
+        isOpen={showCompletionModal}
+        onClose={() => setShowCompletionModal(false)}
+        onNextChapter={handleNextChapter}
+        xpEarned={chapter.xpGain || 50}
+        chapterTitle={chapter.titre}
+        hasNextChapter={activeChapterIndex < course.chapitres.length - 1}
+      />
 
       {/* ── Back to Top ── */}
       <button

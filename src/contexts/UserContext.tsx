@@ -219,7 +219,39 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (lastStudyDate !== today) {
             const newStreak = lastStudyDate === yesterday ? storedStreak + 1 : 1;
             setCurrentStreak(newStreak);
-            updateDoc(userRef, { currentStreak: newStreak, lastStudyDate: today }).catch(console.error);
+            
+            const updates: any = { currentStreak: newStreak, lastStudyDate: today };
+            
+            let streakBonus = 0;
+            let streakMsg = '';
+            let streakActionId = '';
+            
+            if (newStreak % 7 === 0) { // Bonus tous les 7 jours
+              streakBonus = 100;
+              streakMsg = `Série de ${newStreak} jours ! 🔥🔥`;
+              streakActionId = `streak_7_${today}`;
+            } else if (newStreak === 3) {
+              streakBonus = 30;
+              streakMsg = 'Série de 3 jours ! 🔥';
+              streakActionId = `streak_3_${today}`;
+            }
+
+            if (streakBonus > 0) {
+              updates.xp = increment(streakBonus);
+              updates[`activityHistory.${today}`] = increment(streakBonus);
+              updates.rewardedActions = arrayUnion(streakActionId);
+              
+              setTimeout(() => {
+                addToast({
+                  type: 'xp',
+                  title: 'Série Maintenue !',
+                  message: streakMsg,
+                  xpAmount: streakBonus
+                });
+              }, 1500);
+            }
+            
+            updateDoc(userRef, updates).catch(console.error);
           }
         }
 

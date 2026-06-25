@@ -27,7 +27,8 @@ import {
   PlusSquare,
   Calculator,
   TrendingUp,
-  X
+  X,
+  Flame
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
 import { useHasUnreadNotifications } from '../../hooks/useHasUnreadNotifications';
@@ -37,7 +38,7 @@ import { NotificationDropdown } from '../notifications/NotificationDropdown';
 
 export const DashboardLayout = () => {
   const { currentUser, loading, logout } = useAuth();
-  const { pseudo, levelString, photoURL, isRelais } = useUser();
+  const { pseudo, levelString, photoURL, isRelais, currentStreak } = useUser();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -223,6 +224,28 @@ export const DashboardLayout = () => {
                 <Download className="w-4 h-4" /> <span className="hidden sm:inline">Installer l'App</span><span className="sm:hidden">Installer</span>
               </button>
             )}
+            {/* Streak Flame */}
+            <div 
+              className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg border transition-all ${
+                currentStreak >= 3 
+                  ? 'bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/30' 
+                  : 'bg-[#F8F9FA] dark:bg-[#161B22] border-[#E1E4E8] dark:border-[#30363D]'
+              }`} 
+              title={`${currentStreak} jour(s) de suite !`}
+            >
+              <Flame className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                currentStreak >= 3 
+                  ? 'text-orange-500 animate-pulse' 
+                  : 'text-[#9CA3AF] dark:text-[#6E7681]'
+              }`} />
+              <span className={`font-bold text-xs sm:text-sm ${
+                currentStreak >= 3 
+                  ? 'text-orange-600 dark:text-orange-400' 
+                  : 'text-[#6B7280] dark:text-[#8B949E]'
+              }`}>
+                {currentStreak}
+              </span>
+            </div>
             {/* Theme toggle */}
             <button 
               onClick={toggleTheme}
@@ -242,9 +265,11 @@ export const DashboardLayout = () => {
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
                 )}
               </button>
-              {showNotifications && (
-                <NotificationDropdown onClose={() => setShowNotifications(false)} />
-              )}
+              <AnimatePresence>
+                {showNotifications && (
+                  <NotificationDropdown onClose={() => setShowNotifications(false)} />
+                )}
+              </AnimatePresence>
             </div>
             <Link to="/dashboard/profile" className="flex items-center space-x-2 p-1 pr-2 sm:pr-3 rounded-full sm:rounded-xl transition-colors hover:bg-[#F8F9FA] dark:hover:bg-[#161B22]">
               <div className="w-8 h-8 rounded-full bg-eductome-magenta flex items-center justify-center text-white font-bold text-sm shadow-sm uppercase overflow-hidden">

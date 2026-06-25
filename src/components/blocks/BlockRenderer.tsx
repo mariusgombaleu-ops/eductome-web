@@ -5,6 +5,7 @@ import { useUser } from '../../contexts/UserContext';
 import { XP } from '../../constants/xp';
 import { fireConfetti } from '../../utils/confetti';
 import katex from 'katex';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const KATEX_FALLBACK = (tex: string) =>
   `<code style="font-family:monospace;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;font-size:0.875em">${tex}</code>`;
@@ -76,6 +77,7 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
   const { gainXp, hasActionBeenRewarded } = useUser();
   const [step, setStep] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showXP, setShowXP] = useState(false);
   
   const isMiniEx = (block.id && block.id.includes('micro-ex')) || (block.enonce && block.enonce.toLowerCase().includes("à toi de jouer"));
 
@@ -150,7 +152,21 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
           )}
         </div>
 
-        <div className={`px-4 py-3 flex items-center gap-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+        <div className={`px-4 py-3 flex items-center gap-3 border-t relative ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+          <AnimatePresence>
+            {showXP && (
+              <motion.div
+                initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                animate={{ opacity: 1, y: -40, scale: 1.2 }}
+                exit={{ opacity: 0, y: -60 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-50 pointer-events-none font-black text-xl text-[#D81B60] drop-shadow-md"
+              >
+                +{XP.EXERCISE} XP
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {step < block.etapes.length - 1 ? (
             <button
               onClick={() => {
@@ -164,6 +180,8 @@ const InteractiveExercise = ({ block, isDark, courseId, chapterId, sectionId }: 
                      if (step === -1) {
                        fireConfetti();
                        gainXp(XP.EXERCISE, 'Entraînement interactif complété', actionId);
+                       setShowXP(true);
+                       setTimeout(() => setShowXP(false), 2000);
                      }
                    }
                 }
