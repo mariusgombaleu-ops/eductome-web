@@ -17,6 +17,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { HeroLevelCard } from '../../components/dashboard/HeroLevelCard';
 import { WeeklyStreak } from '../../components/dashboard/WeeklyStreak';
 import { ContinueReading } from '../../components/dashboard/ContinueReading';
+import { NewUserWelcome } from '../../components/dashboard/NewUserWelcome';
 
 export const Overview = () => {
   const { xp, statut, gainXp, rewardedActions, level } = useUser();
@@ -75,6 +76,12 @@ export const Overview = () => {
     );
     if (due) setPostAssessment(due);
   }, [assessments, todayStr]);
+
+  useEffect(() => {
+    const handleOpenGoals = () => setIsGoalsModalOpen(true);
+    window.addEventListener('open_goals_modal', handleOpenGoals as EventListener);
+    return () => window.removeEventListener('open_goals_modal', handleOpenGoals as EventListener);
+  }, []);
 
   const DAY_NAMES = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
   const todayName = DAY_NAMES[new Date().getDay()];
@@ -178,8 +185,11 @@ export const Overview = () => {
       <HeroLevelCard />
       <WeeklyStreak />
 
+      {/* New User Onboarding Recap */}
+      {isNewUser && <NewUserWelcome />}
+
       {/* Reprends ta lecture */}
-      {lastCourseRead && (
+      {lastCourseRead && !isNewUser && (
         <ContinueReading 
           courseId={lastCourseRead}
           tomeName="TOME"
