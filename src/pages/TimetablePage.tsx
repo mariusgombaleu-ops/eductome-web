@@ -58,9 +58,19 @@ export const TimetablePage = () => {
   const [assessments, setAssessments] = useState<AssessmentEvent[]>([]);
   const [editSubject, setEditSubject] = useState<{ id: string; name: string; color: string } | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<'COURS' | 'DEVOIR' | 'INTERRO' | 'BAC_BLANC'>('COURS');
+  
+  // States for Cours
+  const [courseSubjectId, setCourseSubjectId] = useState('maths');
+  const [courseSubjectName, setCourseSubjectName] = useState('Mathématiques');
+  const [courseDayOfWeek, setCourseDayOfWeek] = useState<Day>('Lundi');
+  const [courseStartTime, setCourseStartTime] = useState('08:00');
+  const [courseEndTime, setCourseEndTime] = useState('10:00');
+  const [courseTeacherName, setCourseTeacherName] = useState('');
+
+  // States for Assessment
   const [fabSubjectId, setFabSubjectId] = useState('maths');
   const [fabSubjectName, setFabSubjectName] = useState('Mathématiques');
-  const [fabType, setFabType] = useState<'INTERRO' | 'DEVOIR' | 'BAC_BLANC'>('INTERRO');
   const [fabDate, setFabDate] = useState('');
   const [fabTitle, setFabTitle] = useState('');
 
@@ -106,10 +116,11 @@ export const TimetablePage = () => {
   const handleSaveAssessment = async () => {
     if (!currentUser || !fabDate) return;
     const now = Date.now();
+    const type = activeTab === 'COURS' ? 'INTERRO' : activeTab; // Safety check
     await addDoc(collection(db, 'users', currentUser.uid, 'assessments'), {
       id: `assessment_${now}`,
-      title: fabTitle || `${TYPE_LABELS[fabType]} ${fabSubjectName}`,
-      type: fabType,
+      title: fabTitle || `${TYPE_LABELS[type] || type} ${fabSubjectName}`,
+      type: type,
       subjectId: fabSubjectId,
       subjectName: fabSubjectName,
       date: fabDate,
@@ -117,10 +128,27 @@ export const TimetablePage = () => {
       status: 'UPCOMING',
       createdAt: now
     });
-    addToast({ type: 'success', title: 'Devoir ajouté', message: `${fabSubjectName} le ${fabDate}.` });
+    addToast({ type: 'success', title: 'Évaluation ajoutée', message: `${fabSubjectName} le ${fabDate}.` });
     setShowAddForm(false);
     setFabDate('');
     setFabTitle('');
+  };
+
+  const handleSaveCourse = async () => {
+    if (!currentUser) return;
+    const slotId = `${courseDayOfWeek}-${courseStartTime.replace(':', '')}`;
+    await setDoc(doc(db, 'users', currentUser.uid, 'timetable', slotId), {
+      id: slotId, 
+      dayOfWeek: courseDayOfWeek, 
+      startTime: courseStartTime, 
+      endTime: courseEndTime,
+      subjectId: courseSubjectId, 
+      subjectName: courseSubjectName,
+      teacherName: courseTeacherName || null
+    });
+    addToast({ type: 'success', title: 'Cours ajouté', message: `${courseSubjectName} ajouté au ${courseDayOfWeek}.` });
+    setShowAddForm(false);
+    setCourseTeacherName('');
   };
 
   const todayStr = new Date().toISOString().split('T')[0];
@@ -391,73 +419,154 @@ export const TimetablePage = () => {
         <Plus size={24} />
       </button>
 
-      {/* Add Assessment Modal */}
+      {/* Add Modal */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
-          <div className="w-full max-w-sm border rounded-[28px] p-6 space-y-4 shadow-2xl transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold" style={{ color: palette.ink }}>Ajouter un devoir / interro</h3>
+          <div className="w-full max-w-md border rounded-[28px] p-6 space-y-5 shadow-2xl transition-colors max-h-[90vh] overflow-y-auto custom-scrollbar" style={{ background: palette.bg, borderColor: palette.line }}>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-bold" style={{ color: palette.ink }}>Ajouter à l'agenda</h3>
               <button onClick={() => setShowAddForm(false)} className="transition-colors hover:opacity-100 opacity-60" style={{ color: palette.ink }}>
                 <X size={20} />
               </button>
             </div>
-            <div>
-              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Matière</label>
-              <select
-                value={fabSubjectId}
-                onChange={e => {
-                  const subj = SUBJECTS.find(s => s.id === e.target.value);
-                  setFabSubjectId(e.target.value);
-                  setFabSubjectName(subj?.name ?? e.target.value);
-                }}
-                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
-                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
-              >
-                {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
+            
+            {/* Tabs */}
+            <div className="flex overflow-x-auto gap-2 pb-2 custom-scrollbar">
+              {['COURS', 'DEVOIR', 'INTERRO', 'BAC_BLANC'].map(tab => {
+                const isActive = activeTab === tab;
+                const label = tab === 'COURS' ? 'Cours' : tab === 'DEVOIR' ? 'Devoir' : tab === 'INTERRO' ? 'Interro' : 'Bac Blanc';
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab as any)}
+                    className="flex-shrink-0 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all border"
+                    style={isActive 
+                      ? { background: palette.accent, color: 'white', borderColor: palette.accent } 
+                      : { background: palette.bg2, color: palette.ink2, borderColor: palette.line }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
-            <div>
-              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Type</label>
-              <select
-                value={fabType}
-                onChange={e => setFabType(e.target.value as 'INTERRO' | 'DEVOIR' | 'BAC_BLANC')}
-                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
-                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
-              >
-                <option value="INTERRO">Interro</option>
-                <option value="DEVOIR">Devoir</option>
-                <option value="BAC_BLANC">Bac Blanc</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Titre (optionnel)</label>
-              <input
-                type="text"
-                placeholder="Ex: Chapitre 3 Limites"
-                value={fabTitle}
-                onChange={e => setFabTitle(e.target.value)}
-                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
-                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Date</label>
-              <input
-                type="date"
-                value={fabDate}
-                onChange={e => setFabDate(e.target.value)}
-                className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
-                style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
-              />
-            </div>
-            <button
-              onClick={handleSaveAssessment}
-              disabled={!fabDate}
-              className="w-full disabled:opacity-40 text-white font-bold py-3 rounded-[16px] text-sm transition-all hover:scale-[1.02]"
-              style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
-            >
-              Enregistrer
-            </button>
+
+            {activeTab === 'COURS' ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Matière</label>
+                  <select
+                    value={courseSubjectId}
+                    onChange={e => {
+                      const subj = SUBJECTS.find(s => s.id === e.target.value);
+                      setCourseSubjectId(e.target.value);
+                      setCourseSubjectName(subj?.name ?? e.target.value);
+                    }}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  >
+                    {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Jour</label>
+                  <select
+                    value={courseDayOfWeek}
+                    onChange={e => setCourseDayOfWeek(e.target.value as Day)}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  >
+                    {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Heure de début</label>
+                    <input
+                      type="time"
+                      value={courseStartTime}
+                      onChange={e => setCourseStartTime(e.target.value)}
+                      className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                      style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Heure de fin</label>
+                    <input
+                      type="time"
+                      value={courseEndTime}
+                      onChange={e => setCourseEndTime(e.target.value)}
+                      className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                      style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Nom du professeur (optionnel)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: M. Koné"
+                    value={courseTeacherName}
+                    onChange={e => setCourseTeacherName(e.target.value)}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  />
+                </div>
+                <button
+                  onClick={handleSaveCourse}
+                  className="w-full text-white font-bold py-3 rounded-[16px] text-sm transition-all hover:scale-[1.02] mt-2"
+                  style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
+                >
+                  Ajouter le cours
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Matière</label>
+                  <select
+                    value={fabSubjectId}
+                    onChange={e => {
+                      const subj = SUBJECTS.find(s => s.id === e.target.value);
+                      setFabSubjectId(e.target.value);
+                      setFabSubjectName(subj?.name ?? e.target.value);
+                    }}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  >
+                    {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Titre ou instructions (optionnel)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Chapitre 3 Limites, Ex 4 page 12"
+                    value={fabTitle}
+                    onChange={e => setFabTitle(e.target.value)}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold block mb-1" style={{ color: palette.ink2 }}>Date {activeTab === 'DEVOIR' ? 'de rendu' : 'de l\'épreuve'}</label>
+                  <input
+                    type="date"
+                    value={fabDate}
+                    onChange={e => setFabDate(e.target.value)}
+                    className="w-full border rounded-[16px] py-2.5 px-3 text-sm focus:outline-none focus:ring-2 transition-colors"
+                    style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                  />
+                </div>
+                <button
+                  onClick={handleSaveAssessment}
+                  disabled={!fabDate}
+                  className="w-full disabled:opacity-40 text-white font-bold py-3 rounded-[16px] text-sm transition-all hover:scale-[1.02] mt-2"
+                  style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
+                >
+                  Enregistrer
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

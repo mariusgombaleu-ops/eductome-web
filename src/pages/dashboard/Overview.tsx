@@ -1,4 +1,4 @@
-import { Trophy, Star, Book, Target, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Plus, Calendar } from 'lucide-react';
+import { Trophy, Star, Book, Target, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { WelcomeModal } from '../../components/dashboard/WelcomeModal';
 import { GoalsOnboardingModal } from '../../components/dashboard/GoalsOnboardingModal';
 // removed CircularProgress
 import { useAuth } from '../../contexts/AuthContext';
-import { collection, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { TimetableDashboardWidget } from '../../components/TimetableDashboardWidget';
 import { PostAssessmentModal } from '../../components/PostAssessmentModal';
@@ -20,12 +20,35 @@ import { ContinueReading } from '../../components/dashboard/ContinueReading';
 import { NewUserWelcome } from '../../components/dashboard/NewUserWelcome';
 
 export const Overview = () => {
-  const { xp, statut, gainXp, rewardedActions, level } = useUser();
+  const { xp, statut, gainXp, rewardedActions, level, levelString, goals, grades } = useUser();
   const { palette } = useTheme();
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
   const [showFamilleWelcome, setShowFamilleWelcome] = useState(
     () => statut === 'famille' && localStorage.getItem('famille_welcomed') !== 'true'
   );
+
+
+
+  // --- Calculs pour les objectifs ---
+  const calculateAverage = (gradesRecord?: Record<string, (number | string)[]>) => {
+    if (!gradesRecord) return null;
+    let total = 0;
+    let count = 0;
+    Object.values(gradesRecord).forEach(subjectGrades => {
+      subjectGrades.forEach(g => {
+        const num = Number(g);
+        if (!isNaN(num)) { total += num; count++; }
+      });
+    });
+    return count > 0 ? (total / count).toFixed(2) : null;
+  };
+  
+  const currentT1Avg = calculateAverage(grades?.t1);
+  const targetT1Avg = goals?.trimesterTargets?.t1;
+  const bacGoal = goals?.bacPoints;
+  
+  const isCollege = levelString === '3eme';
+  const examName = isCollege ? 'BEPC' : 'BAC';
 
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -34,12 +57,6 @@ export const Overview = () => {
   const [timetableSlots, setTimetableSlots] = useState<TimetableSlot[]>([]);
   const [assessments, setAssessments] = useState<AssessmentEvent[]>([]);
   const [postAssessment, setPostAssessment] = useState<AssessmentEvent | null>(null);
-  const [showAddAssessment, setShowAddAssessment] = useState(false);
-  const [fabSubjectId, setFabSubjectId] = useState('maths');
-  const [fabSubjectName, setFabSubjectName] = useState('Mathématiques');
-  const [fabType, setFabType] = useState<'INTERRO' | 'DEVOIR' | 'BAC_BLANC'>('INTERRO');
-  const [fabDate, setFabDate] = useState('');
-  const [fabTitle, setFabTitle] = useState('');
 
   const dismissFamilleWelcome = () => {
     localStorage.setItem('famille_welcomed', 'true');
@@ -95,15 +112,6 @@ export const Overview = () => {
     .filter(a => a.status === 'UPCOMING' && a.date >= todayStr)
     .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
 
-  const ASSESSMENT_SUBJECTS = [
-    { id: 'maths', name: 'Mathématiques' },
-    { id: 'pc', name: 'Physique-Chimie' },
-    { id: 'svt', name: 'SVT' },
-    { id: 'philo', name: 'Philosophie' },
-    { id: 'français', name: 'Français' },
-    { id: 'anglais', name: 'Anglais' },
-    { id: 'hg', name: 'Histoire-Géographie' },
-  ];
 
   const handleAssessmentAction = (_assessment: AssessmentEvent) => {
     navigate(`/dashboard/revisions`);
@@ -129,23 +137,7 @@ export const Overview = () => {
     }
   };
 
-  const handleSaveAssessment = async () => {
-    if (!currentUser || !fabDate) return;
-    const title = fabTitle.trim() || `${fabType} de ${fabSubjectName}`;
-    await addDoc(collection(db, 'users', currentUser.uid, 'assessments'), {
-      title,
-      type: fabType,
-      subjectId: fabSubjectId,
-      subjectName: fabSubjectName,
-      date: fabDate,
-      reminderEnabled: true,
-      status: 'UPCOMING',
-      createdAt: Date.now()
-    });
-    setShowAddAssessment(false);
-    setFabDate('');
-    setFabTitle('');
-  };
+
 
   const handleWelcomeComplete = () => {
     setIsGoalsModalOpen(true);
@@ -186,7 +178,10 @@ export const Overview = () => {
       <WeeklyStreak />
 
       {/* New User Onboarding Recap */}
-      {isNewUser && <NewUserWelcome />}
+      <NewUserWelcome 
+        hasTimetable={timetableSlots.length > 0} 
+        hasReadFirstCourse={!!lastCourseRead} 
+      />
 
       {/* Reprends ta lecture */}
       {lastCourseRead && !isNewUser && (
@@ -209,11 +204,11 @@ export const Overview = () => {
         />
         <button
           onClick={() => navigate('/dashboard/emploi-du-temps')}
-          className="w-full mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 font-bold text-sm transition-all duration-300"
-          style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink }}
+          className="w-full mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
+          style={{ background: palette.accent, color: palette.onAccent }}
         >
           <Calendar className="w-5 h-5" />
-          Voir mon emploi du temps complet
+          Mon emploi du temps
         </button>
       </div>
 
@@ -249,10 +244,57 @@ export const Overview = () => {
         <div className="p-4 rounded-[20px] border" style={{ background: palette.bg2, borderColor: palette.line }}>
           <div className="flex items-center gap-2 mb-2">
             <Trophy className="w-4 h-4 text-green-500" />
-            <span className="text-[10px] font-bold uppercase" style={{ color: palette.ink3 }}>Obj. BAC</span>
+            <span className="text-[10px] font-bold uppercase" style={{ color: palette.ink3 }}>Obj. {examName}</span>
           </div>
           <div className="text-2xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
             <AnimatedCounter value={isNewUser ? 0 : Math.min(50 + level.level * 5, 99)} suffix="%" />
+          </div>
+        </div>
+      </div>
+
+      {/* Mes Objectifs */}
+      <div className="mt-8 space-y-3">
+        <h2 className="text-[15px] font-bold flex items-center gap-2" style={{ color: palette.ink }}>
+          <Target className="w-5 h-5" style={{ color: palette.accent }} /> Mes Objectifs
+        </h2>
+        
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {/* Objectif Trimestre */}
+          <div className="p-3.5 rounded-[16px] border flex flex-col justify-between" style={{ background: palette.bg2, borderColor: palette.line }}>
+            <div className="flex items-center gap-2 mb-2">
+              <BookOpen className="w-4 h-4" style={{ color: palette.accent2 }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: palette.ink3 }}>1er Trimestre</span>
+            </div>
+            
+            <div className="flex items-end justify-between mt-1">
+              <div>
+                <span className="text-[10px] text-gray-500 block">Moyenne</span>
+                <div className="text-xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
+                  {currentT1Avg ? currentT1Avg : '--'} <span className="text-xs text-gray-400 font-normal">/20</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-gray-500 block">Objectif</span>
+                <div className="text-sm font-bold" style={{ color: palette.accent2 }}>
+                  {targetT1Avg ? targetT1Avg : '--'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Objectif BAC / BEPC */}
+          <div className="p-3.5 rounded-[16px] border flex flex-col justify-between" style={{ background: palette.bg2, borderColor: palette.line }}>
+            <div className="flex items-center gap-2 mb-2">
+              <Trophy className="w-4 h-4" style={{ color: palette.accent }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: palette.ink3 }}>{examName}</span>
+            </div>
+            
+            <div className="mt-1">
+              <span className="text-[10px] text-gray-500 block">Points à viser</span>
+              <div className="text-xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
+                {bacGoal ? bacGoal : '--'} <span className="text-xs text-gray-400 font-normal">pts</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -313,102 +355,6 @@ export const Overview = () => {
         </div>
       </div>
 
-      {/* FAB: Ajouter un devoir */}
-      <button
-        onClick={() => setShowAddAssessment(true)}
-        className="fixed bottom-20 lg:bottom-6 right-4 z-40 w-14 h-14 rounded-[20px] flex items-center justify-center shadow-xl transition-all hover:scale-105"
-        style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 8px 24px ${palette.accentSoft}` }}
-        title="Ajouter une évaluation"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
-
-      {/* Bottom Sheet Modal */}
-      {showAddAssessment && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAddAssessment(false)} />
-          <div 
-            className="relative w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-8 duration-300"
-            style={{ background: palette.bg2 }}
-          >
-            <div className="w-12 h-1.5 rounded-full mx-auto mb-6 sm:hidden" style={{ background: palette.line }} />
-            <h3 className="text-[17px] font-bold mb-6 flex justify-between items-center" style={{ color: palette.ink }}>
-              Nouvelle évaluation
-              <button onClick={() => setShowAddAssessment(false)} style={{ color: palette.ink3 }}>
-                <X className="w-5 h-5" />
-              </button>
-            </h3>
-            <div className="space-y-5">
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: palette.ink2 }}>Type</label>
-                <div className="flex flex-wrap gap-2">
-                  {['INTERRO', 'DEVOIR', 'BAC_BLANC'].map(t => (
-                    <button
-                      key={t}
-                      onClick={() => setFabType(t as any)}
-                      className="px-4 py-2 rounded-xl text-[13px] font-bold transition-colors"
-                      style={{
-                        background: fabType === t ? palette.accent : palette.bg,
-                        color: fabType === t ? palette.onAccent : palette.ink2,
-                        border: `1px solid ${fabType === t ? palette.accent : palette.line}`
-                      }}
-                    >
-                      {t.replace('_', ' ')}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: palette.ink2 }}>Matière</label>
-                <select
-                  value={fabSubjectId}
-                  onChange={(e) => {
-                    const subject = ASSESSMENT_SUBJECTS.find(s => s.id === e.target.value);
-                    if (subject) { setFabSubjectId(subject.id); setFabSubjectName(subject.name); }
-                  }}
-                  className="w-full rounded-xl py-3.5 px-4 text-sm font-semibold outline-none"
-                  style={{ background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
-                >
-                  {ASSESSMENT_SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: palette.ink2 }}>Titre (optionnel)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Devoir de niveau"
-                  value={fabTitle}
-                  onChange={(e) => setFabTitle(e.target.value)}
-                  className="w-full rounded-xl py-3.5 px-4 text-sm font-semibold outline-none"
-                  style={{ background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: palette.ink2 }}>Date</label>
-                <input
-                  type="date"
-                  value={fabDate}
-                  onChange={(e) => setFabDate(e.target.value)}
-                  className="w-full rounded-xl py-3.5 px-4 text-sm font-semibold outline-none"
-                  style={{ background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
-                />
-              </div>
-
-              <button
-                onClick={handleSaveAssessment}
-                disabled={!fabDate}
-                className="w-full py-3.5 rounded-xl text-sm font-bold mt-2 disabled:opacity-50"
-                style={{ background: palette.accent, color: palette.onAccent }}
-              >
-                Enregistrer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };

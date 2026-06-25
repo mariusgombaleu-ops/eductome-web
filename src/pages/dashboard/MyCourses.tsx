@@ -52,6 +52,61 @@ const COURSE_METADATA: Record<string, any> = {
   }
 };
 
+const STARTER_COURSES = [
+  {
+    id: "t1-limites",
+    title: "Les Limites",
+    subject: "Mathématiques",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 1,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
+    badge: "Chapitre 1 Gratuit"
+  },
+  {
+    id: "pc-cinematique",
+    title: "Cinématique du Point",
+    subject: "Physique-Chimie",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 1,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-purple-600 to-purple-800", // Violet
+    badge: "Chapitre 1 Gratuit"
+  },
+  {
+    id: "svt-nerveux",
+    title: "Le Système Nerveux",
+    subject: "SVT",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 1,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-green-600 to-green-800", // Vert
+    badge: "Chapitre 1 Gratuit"
+  },
+  {
+    id: "philo-methode",
+    title: "Méthodologie Dissertation",
+    subject: "Philosophie",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C", "Terminale A"],
+    progress: 0,
+    totalQuizzes: 1,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-rose-700 to-rose-900", // Bordeaux
+    badge: "Chapitre 1 Gratuit"
+  }
+];
+
 export const MyCourses = () => {
   const navigate = useNavigate();
   const { unlockedCourses } = useUser();
@@ -60,9 +115,14 @@ export const MyCourses = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'progress' | 'completed'>('all');
 
   // Build myCourses dynamically from unlockedCourses
-  const myCourses = unlockedCourses
+  const purchasedCourses = unlockedCourses
     .map(id => ({ id, ...COURSE_METADATA[id] }))
     .filter(c => c && c.title);
+
+  // Add the free starter courses that haven't been purchased yet
+  const freeStarterCourses = STARTER_COURSES.filter(c => !unlockedCourses.includes(c.id));
+
+  const myCourses = [...purchasedCourses, ...freeStarterCourses];
 
   const filteredCourses = myCourses.filter(course => {
     // Filter by serie

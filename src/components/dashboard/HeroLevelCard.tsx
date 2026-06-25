@@ -12,13 +12,19 @@ const QUOTES = [
   "Celui qui comprend domine. Celui qui mémorise subit.",
   "Chaque minute d'étude est un pas de plus vers ton but.",
   "Le Caïman ne dort pas — il prépare sa victoire.",
+  "Faut pas gnan Champion, la répétition est la mère du succès.",
+  "La Règle d'Or : Ne commence jamais un calcul sans avoir compris la formule."
 ];
 
 export const HeroLevelCard = () => {
   const { xp, level, statut, pseudo, sexe } = useUser();
   const { palette } = useTheme();
   const [animIn, setAnimIn] = useState(false);
-  const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)]);
+
+  // Rotate quote every 3 hours
+  const currentHour = new Date().getHours();
+  const quoteIndex = Math.floor(currentHour / 3) % QUOTES.length;
+  const quote = QUOTES[quoteIndex];
 
   useEffect(() => {
     requestAnimationFrame(() => setAnimIn(true));
@@ -113,11 +119,15 @@ export const HeroLevelCard = () => {
           </div>
         </div>
 
-        {/* Quote */}
-        <div className="mt-4 p-3 rounded-xl bg-white/[.16] backdrop-blur-sm">
-          <p className={`m-0 text-[12.5px] leading-[1.5] text-white ${!isNewUser && 'italic'}`}>
-            {displayQuote}
-          </p>
+        {/* Quote / Mot du jour */}
+        <div className="mt-4 p-3.5 rounded-xl bg-white/[.16] backdrop-blur-sm flex gap-3 items-start">
+          <div className="text-xl">💡</div>
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 block mb-0.5">Le mot du Grand Frère</span>
+            <p className={`m-0 text-[13px] leading-[1.5] text-white font-medium ${!isNewUser && 'italic'}`}>
+              {displayQuote}
+            </p>
+          </div>
         </div>
       </div>
     </div>

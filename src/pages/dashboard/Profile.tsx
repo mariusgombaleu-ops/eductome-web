@@ -644,8 +644,8 @@ export const Profile = () => {
         </div>
       )}
 
-      {/* Admin / Dev Tools Panel — visible en mode DEV uniquement */}
-      {import.meta.env.DEV && (
+      {/* Admin / Dev Tools Panel — visible en mode DEV uniquement et pour l'Admin */}
+      {import.meta.env.DEV && isAdmin && (
         <div className="mt-12 p-6 rounded-[28px] border-2 border-dashed transition-colors shadow-sm animate-fade-in-up" style={{ background: '#a855f710', borderColor: '#a855f740' }}>
           <div className="flex items-center gap-2 mb-4 text-purple-600 dark:text-purple-400">
             <Settings className="w-6 h-6 animate-spin-slow" />
