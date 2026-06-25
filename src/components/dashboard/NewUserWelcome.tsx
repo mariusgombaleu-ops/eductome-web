@@ -1,6 +1,6 @@
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { User, GraduationCap, School, BookOpen, Target, CheckCircle2, ChevronRight } from 'lucide-react';
+import { User, GraduationCap, School, BookOpen, Target, CheckCircle2, ChevronRight, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LEVEL_LABELS: Record<string, string> = {
@@ -128,6 +128,25 @@ export const NewUserWelcome = () => {
             </div>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isGoalsSet ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 group-hover:bg-[#E65100] group-hover:text-white'}`}>
               {isGoalsSet ? <CheckCircle2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </div>
+          </button>
+
+          <button
+            onClick={() => navigate('/dashboard/planning')}
+            className="w-full flex justify-between items-center p-3 rounded-2xl group transition-all"
+            style={{ background: palette.bg, border: `1px solid ${palette.line}` }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#1976D215', color: '#1976D2' }}>
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold" style={{ color: palette.ink }}>Définir mon emploi du temps</p>
+                <p className="text-xs font-medium" style={{ color: palette.ink3 }}>Organise tes révisions</p>
+              </div>
+            </div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 group-hover:bg-[#1976D2] group-hover:text-white transition-colors">
+              <ChevronRight className="w-4 h-4" />
             </div>
           </button>
         </div>

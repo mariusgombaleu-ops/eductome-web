@@ -57,15 +57,15 @@ export const HeroLevelCard = () => {
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-[10.5px] font-bold tracking-[.12em] uppercase text-white/80">
-              Niveau {level.level}
+              Niveau {level.level} • {level.title}
             </div>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-[26px]">{LEVEL_EMOJIS[level.level] || '📚'}</span>
               <span
-                className="text-2xl font-extrabold text-white leading-none whitespace-nowrap"
+                className="text-2xl font-extrabold text-white leading-none whitespace-nowrap truncate max-w-[200px]"
                 style={{ fontFamily: palette.display }}
               >
-                {level.title}
+                {pseudo || championWord}
               </span>
             </div>
           </div>
