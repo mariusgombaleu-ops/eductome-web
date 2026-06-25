@@ -22,6 +22,7 @@ import { Settings } from './pages/dashboard/Settings';
 import { CourseReader } from './pages/dashboard/CourseReader';
 import { DashboardBoutique } from './pages/dashboard/DashboardBoutique';
 import { StarterPack } from './pages/dashboard/StarterPack';
+import { OnboardingWelcome } from './pages/dashboard/OnboardingWelcome';
 import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
 import { ClaimPurchase } from './pages/dashboard/ClaimPurchase';
 import { GradesCalculator } from './pages/dashboard/GradesCalculator';
@@ -60,6 +61,7 @@ function App() {
 
             {/* Private Routes (Espace Élève & Forum) */}
             <Route element={<DashboardLayout />}>
+              <Route path="/dashboard/bienvenue" element={<OnboardingWelcome />} />
               <Route path="/dashboard" element={<DashboardOverview />} />
               <Route path="/dashboard/starter-pack" element={<StarterPack />} />
               <Route path="/dashboard/courses" element={<MyCourses />} />

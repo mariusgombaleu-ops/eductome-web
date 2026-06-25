@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface WelcomeModalProps {
   onComplete?: () => void;
@@ -11,8 +12,9 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [showButton, setShowButton] = useState(false);
-  const { pseudo, sexe, levelString } = useUser();
+  const { pseudo, sexe, levelString, highschool, goal } = useUser();
   const { currentUser } = useAuth();
+  const { palette } = useTheme();
   
   const isCollege = levelString === '3eme';
 
@@ -25,13 +27,18 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
 
   const determineWord = sexe === 'M' ? 'déterminé' : sexe === 'F' ? 'déterminée' : 'déterminé(e)';
   const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
+  
+  const highschoolText = highschool ? ` du ${highschool}` : '';
+  const goalText = goal ? (goal === 'passable' ? 'ton BAC' : goal === 'bien' ? 'la mention Bien' : goal === 'tres-bien' ? 'la mention Très Bien' : 'la Bourse') : 'ton examen';
+
   const parts = [
     { text: 'Bienvenue ', bold: false },
     { text: pseudo || championWord, bold: true },
     { text: ', ', bold: false },
     { text: titleWord, bold: true },
+    { text: highschoolText, bold: true },
     { text: ' ! Tu as fait le meilleur choix en nous rejoignant. Si tu es ici, c\'est que tu es ' + determineWord + ' à t\'engager pour de vrai et ', bold: false },
-    { text: 'à réussir ton examen', bold: true },
+    { text: 'à réussir ' + goalText, bold: true },
     { text: '. Nous avons conçu ', bold: false },
     { text: 'le système parfait', bold: true },
     { text: ' pour t\'accompagner jusqu\'à ', bold: false },
@@ -108,7 +115,7 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
           clearInterval(typingInterval);
           setTimeout(() => setShowButton(true), 500);
         }
-      }, 60); // Typing speed
+      }, 40); // slightly faster typing speed
       return () => clearInterval(typingInterval);
     }
   }, [isOpen, totalLength]);
@@ -121,7 +128,7 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
       remainingChars -= part.text.length;
       
       if (part.bold) {
-        return <strong key={index} className="font-bold text-gray-900 dark:text-white">{currentText}</strong>;
+        return <strong key={index} className="font-bold" style={{ color: palette.ink }}>{currentText}</strong>;
       }
       return <span key={index}>{currentText}</span>;
     });
@@ -130,7 +137,7 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-500">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-500 font-poppins">
       <div className="w-full max-w-2xl flex flex-col md:flex-row items-start justify-center gap-4 animate-in slide-in-from-bottom-10 duration-500 delay-150 relative">
         
         {/* Close Button - positioned outside or top right of the message */}
@@ -144,7 +151,7 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
         {/* Photo Profil Circle */}
         <div className="shrink-0 flex flex-col items-center gap-2 mx-auto md:mx-0">
           <div className="relative">
-            <img src="/images/marius.jpeg" alt="Grand Frère" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-[#D81B60] shadow-xl" />
+            <img src="/images/marius.jpeg" alt="Grand Frère" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 shadow-xl" style={{ borderColor: palette.accent }} />
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
           </div>
           <div className="bg-black/60 backdrop-blur-md rounded-xl px-3 py-1 mt-1 text-center border border-white/10 shadow-xl">
@@ -153,28 +160,28 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
         </div>
 
         {/* Message Bubble */}
-        <div className="flex-1 bg-white dark:bg-[#161B22] p-6 md:p-8 rounded-3xl md:rounded-tl-none shadow-2xl relative mt-4 md:mt-0 w-full max-w-lg mx-auto md:mx-0">
+        <div className="flex-1 p-6 md:p-8 rounded-3xl md:rounded-tl-none shadow-2xl relative mt-4 md:mt-0 w-full max-w-lg mx-auto md:mx-0" style={{ background: palette.bg2 }}>
           
           {/* Chat bubble pointer (triangle) - Desktop (Left) */}
-          <div className="hidden md:block absolute top-6 -left-4 w-0 h-0 border-y-[12px] border-y-transparent border-r-[16px] border-r-white dark:border-r-[#161B22] z-10"></div>
+          <div className="hidden md:block absolute top-6 -left-4 w-0 h-0 border-y-[12px] border-y-transparent border-r-[16px] z-10" style={{ borderRightColor: palette.bg2 }}></div>
           
           {/* Chat bubble pointer (triangle) - Mobile (Up) */}
-          <div className="md:hidden absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-x-[12px] border-x-transparent border-b-[16px] border-b-white dark:border-b-[#161B22] z-10"></div>
+          <div className="md:hidden absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-x-[12px] border-x-transparent border-b-[16px] z-10" style={{ borderBottomColor: palette.bg2 }}></div>
           
           <div className="mb-4 inline-flex">
-            <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+            <span className="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2" style={{ background: palette.accentSoft, color: palette.accent }}>
               <span>Message du Grand Frère</span>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: palette.accent }}></span>
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: palette.accent }}></span>
               </span>
             </span>
           </div>
 
           <div className="min-h-[160px] md:min-h-[220px]">
-            <p className="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium leading-relaxed font-poppins">
+            <p className="text-base md:text-lg font-medium leading-relaxed" style={{ color: palette.ink }}>
               "{renderAnimatedText()}"
-              <span className="animate-pulse inline-block w-[3px] h-5 bg-gray-500 ml-1 translate-y-1"></span>
+              <span className="animate-pulse inline-block w-[3px] h-5 ml-1 translate-y-1" style={{ background: palette.accent }}></span>
             </p>
           </div>
 
@@ -184,7 +191,8 @@ export function WelcomeModal({ onComplete }: WelcomeModalProps) {
                 setIsOpen(false);
                 if (onComplete) onComplete();
               }}
-              className="w-full py-3.5 bg-[#D81B60] hover:bg-[#C2185B] text-white rounded-xl font-bold transition-all shadow-lg shadow-pink-900/20 active:scale-95 text-base md:text-lg flex items-center justify-center gap-2"
+              className="w-full py-3.5 text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 text-base md:text-lg flex items-center justify-center gap-2"
+              style={{ background: palette.accent, boxShadow: `0 8px 24px ${palette.accentSoft}` }}
             >
               Je m'engage pour mon {isCollege ? 'BEPC' : 'BAC'} 🎯
             </button>

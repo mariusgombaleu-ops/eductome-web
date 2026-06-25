@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Phone, Lock, User as UserIcon, GraduationCap, Eye, EyeOff, BookOpen, Target } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
@@ -14,7 +14,6 @@ export const Register = () => {
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,9 +90,8 @@ export const Register = () => {
         }
         
         localStorage.setItem('eductome_user_logged_in', 'true');
-        const searchParams = new URLSearchParams(location.search);
-        const redirect = searchParams.get('redirect') || '/dashboard';
-        navigate(redirect);
+        // Redirection vers l'onboarding pour une première inscription
+        navigate('/dashboard/bienvenue');
       } catch (err: any) {
         console.error("Profile save error:", err);
         setError(`Erreur lors de l'enregistrement du profil: ${err.message || err}`);

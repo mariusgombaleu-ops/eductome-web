@@ -15,7 +15,7 @@ const QUOTES = [
 ];
 
 export const HeroLevelCard = () => {
-  const { xp, level, statut } = useUser();
+  const { xp, level, statut, pseudo, sexe } = useUser();
   const { palette } = useTheme();
   const [animIn, setAnimIn] = useState(false);
   const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)]);
@@ -24,6 +24,7 @@ export const HeroLevelCard = () => {
     requestAnimationFrame(() => setAnimIn(true));
   }, []);
 
+  const championWord = sexe === 'M' ? 'Champion' : sexe === 'F' ? 'Championne' : 'Champion(ne)';
   const nextLevel = USER_LEVELS.find(l => l.level === level.level + 1);
   const progressPct = level.maxXp
     ? ((xp - level.minXp) / (level.maxXp - level.minXp)) * 100
@@ -32,6 +33,12 @@ export const HeroLevelCard = () => {
 
   const ringPct = Math.min(progressPct, 100);
   const ringStrokeDashoffset = animIn ? 339 * (1 - ringPct / 100) : 339;
+
+  // Message spécial si c'est un nouvel utilisateur (0 XP)
+  const isNewUser = xp === 0;
+  const displayQuote = isNewUser
+    ? `Bienvenue, ${pseudo || championWord} ! Tu viens d'arriver — commence ton premier cours pour gagner tes premiers XP !`
+    : `« ${quote} »`;
 
   return (
     <div
@@ -108,8 +115,8 @@ export const HeroLevelCard = () => {
 
         {/* Quote */}
         <div className="mt-4 p-3 rounded-xl bg-white/[.16] backdrop-blur-sm">
-          <p className="m-0 text-[12.5px] leading-[1.5] text-white italic">
-            « {quote} »
+          <p className={`m-0 text-[12.5px] leading-[1.5] text-white ${!isNewUser && 'italic'}`}>
+            {displayQuote}
           </p>
         </div>
       </div>
