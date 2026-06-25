@@ -1,36 +1,20 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Lock, User as UserIcon, GraduationCap, Eye, EyeOff, BookOpen, Target } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { ConfirmationResult } from 'firebase/auth';
 import { db } from '../config/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTheme } from '../contexts/ThemeContext';
 
 export const Register = () => {
   const { palette } = useTheme();
-  const { setupRecaptcha, sendVerificationCode, verifyCodeAndCreateAccount, currentUser } = useAuth();
-  const [password, setPassword] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const { registerWithPhoneAndPassword, currentUser } = useAuth();
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const otpRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null)
-  ];
-
-  useEffect(() => {
-    setupRecaptcha('recaptcha-container');
-  }, [setupRecaptcha]);
 
   const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,47 +25,39 @@ export const Register = () => {
       const pass = (document.getElementById('password') as HTMLInputElement).value;
       const confirmPass = (document.getElementById('confirmPassword') as HTMLInputElement).value;
 
+      if (!phoneInput || phoneInput.replace(/\s+/g, '').length < 10) {
+        setError("Entre un numéro de téléphone valide (10 chiffres).");
+        return;
+      }
+
+      if (pass.length < 6) {
+        setError("Le mot de passe doit contenir au moins 6 caractères.");
+        return;
+      }
+
       if (pass !== confirmPass) {
-        setError("Les mots de passe ne correspondent pas");
+        setError("Les mots de passe ne correspondent pas.");
         return;
       }
 
       try {
         setIsLoading(true);
-        const confirmation = await sendVerificationCode(phoneInput);
-        setConfirmationResult(confirmation);
-        setPassword(pass); // Save password for step 2
+        await registerWithPhoneAndPassword(phoneInput, pass);
         setStep(2);
       } catch (err: any) {
-        console.error("SMS Error:", err);
-        setError(`Erreur: ${err.message || "Impossible d'envoyer le SMS"}`);
-      } finally {
-        setIsLoading(false);
-      }
-    } else if (step === 2) {
-      const code = otp.join('');
-      if (code.length < 6) {
-        setError("Le code doit contenir 6 chiffres.");
-        return;
-      }
-      if (!confirmationResult) return;
-
-      try {
-        setIsLoading(true);
-        await verifyCodeAndCreateAccount(confirmationResult, code, password);
-        setStep(3);
-      } catch (err: any) {
-        console.error("Code verification error:", err);
-        // Si l'erreur vient de la création de compte et non du code SMS
+        console.error("Registration Error:", err);
         if (err.code === 'auth/email-already-in-use') {
-          setError("Ce numéro est déjà inscrit. Retourne à la page de connexion.");
+          setError("Ce numéro est déjà inscrit. Va plutôt sur la page de connexion.");
+        } else if (err.code === 'auth/weak-password') {
+          setError("Le mot de passe doit contenir au moins 6 caractères.");
         } else {
-          setError(`Erreur: ${err.message || "Le code est incorrect ou a expiré."}`);
+          setError(`Erreur: ${err.message || "Impossible de créer le compte."}`);
         }
       } finally {
         setIsLoading(false);
       }
     } else {
+      // Étape 2 — Profil
       const levelSelect = document.getElementById('level') as HTMLSelectElement;
       const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
       const sexe = (document.getElementById('sexe') as HTMLSelectElement).value;
@@ -127,24 +103,6 @@ export const Register = () => {
     }
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Prevent multiple chars
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto-focus next
-    if (value && index < 5) {
-      otpRefs[index + 1].current?.focus();
-    }
-  };
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      otpRefs[index - 1].current?.focus();
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center font-poppins px-4 py-12 transition-colors duration-300" style={{ background: palette.bg2 }}>
       <div className="max-w-md w-full space-y-8 p-8 rounded-[28px] shadow-sm border transition-colors duration-300" style={{ background: palette.bg, borderColor: palette.line }}>
@@ -162,11 +120,10 @@ export const Register = () => {
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleNextStep}>
-          <div id="recaptcha-container"></div>
           
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 1 / 3 — Tes identifiants</p>
+              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 1 / 2 — Tes identifiants</p>
               
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Numéro de téléphone</label>
@@ -259,7 +216,7 @@ export const Register = () => {
                   className="w-full flex justify-center py-3 px-4 border border-transparent rounded-[24px] shadow-sm text-sm font-bold text-white transition-colors focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
                   style={{ background: palette.accent }}
                 >
-                  {isLoading ? 'Envoi en cours...' : 'Recevoir mon code SMS'}
+                  {isLoading ? 'Création en cours...' : 'Créer mon compte 🚀'}
                 </button>
               </div>
             </div>
@@ -267,52 +224,7 @@ export const Register = () => {
 
           {step === 2 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 2 / 3 — Vérifie ton numéro</p>
-              <p className="text-sm mb-6 transition-colors" style={{ color: palette.ink2 }}>Code envoyé au +225 XX XX XX XX XX</p>
-              
-              <div className="flex justify-between gap-2">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    ref={otpRefs[index]}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className="w-12 h-14 text-center text-xl font-bold border rounded-lg focus:outline-none transition-colors"
-                    style={{
-                      borderColor: palette.line,
-                      background: palette.bg,
-                      color: palette.ink,
-                      outlineColor: palette.accent
-                    }}
-                  />
-                ))}
-              </div>
-
-              <div className="pt-6">
-                <button 
-                  type="submit" 
-                  disabled={isLoading}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-[24px] shadow-sm text-sm font-bold text-white transition-colors focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
-                  style={{ background: palette.accent }}
-                >
-                  {isLoading ? 'Vérification...' : 'Vérifier le code'}
-                </button>
-              </div>
-              <div className="text-center">
-                <button type="button" onClick={() => setStep(1)} className="text-sm transition-colors hover:opacity-80" style={{ color: palette.ink2 }}>
-                  Retour
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 3 / 3 — Ton profil</p>
+              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 2 / 2 — Ton profil</p>
               
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Prénom / Pseudo</label>
@@ -494,3 +406,4 @@ export const Register = () => {
     </div>
   );
 };
+
