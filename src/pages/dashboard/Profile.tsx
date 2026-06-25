@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { RoleBadge } from '../../components/forum/RoleBadge';
 import { StudyChart } from '../../components/dashboard/StudyChart';
-import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { ImageCropperModal } from '../../components/dashboard/ImageCropperModal';
 import { useToast } from '../../contexts/ToastContext';
@@ -46,6 +46,20 @@ export const Profile = () => {
   const [relaisCodeCopied, setRelaisCodeCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [selectedSubjectForTimetable, setSelectedSubjectForTimetable] = useState<{ id: string; name: string; color: string } | null>(null);
+
+  const [formPseudo, setFormPseudo] = useState(pseudo);
+  const [formLevel, setFormLevel] = useState(levelString);
+  const [formSubject, setFormSubject] = useState(favoriteSubject || "Mathématiques");
+  const [formGoal, setFormGoal] = useState(goal || "Mention Bien");
+  const [formHighschool, setFormHighschool] = useState(highschool || "");
+
+  useEffect(() => {
+    setFormPseudo(pseudo);
+    setFormLevel(levelString);
+    setFormSubject(favoriteSubject || "Mathématiques");
+    setFormGoal(goal || "Mention Bien");
+    setFormHighschool(highschool || "");
+  }, [pseudo, levelString, favoriteSubject, goal, highschool]);
 
   const nextLevelData = USER_LEVELS.find(l => l.level === level.level + 1);
   const nextLevelXp = nextLevelData ? nextLevelData.minXp : level.minXp;
@@ -104,6 +118,24 @@ export const Profile = () => {
     }
     addToast({ type: 'success', title: 'Cours enregistré', message: `${selectedSubjectForTimetable.name} ajouté à ton emploi du temps.` });
     setSelectedSubjectForTimetable(null);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    try {
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        pseudo: formPseudo,
+        level: formLevel,
+        favoriteSubject: formSubject,
+        goal: formGoal,
+        highschool: formHighschool
+      });
+      addToast({ type: 'success', title: 'Profil mis à jour', message: 'Tes informations ont été sauvegardées avec succès.' });
+    } catch (err: any) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Erreur', message: 'Impossible de sauvegarder tes informations.' });
+    }
   };
 
   const handleApplyCoupon = (e: React.FormEvent) => {
@@ -290,15 +322,15 @@ export const Profile = () => {
               <User className="w-5 h-5 opacity-60" /> Informations Personnelles
             </h2>
             
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSaveProfile}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Prénom / Pseudo</label>
-                  <input type="text" defaultValue={pseudo} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
+                  <input type="text" value={formPseudo} onChange={e => setFormPseudo(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Niveau d'études</label>
-                  <select defaultValue={levelString} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
+                  <select value={formLevel} onChange={e => setFormLevel(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Terminale</option>
                     <option>Première</option>
                     <option>Seconde</option>
@@ -307,16 +339,17 @@ export const Profile = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Matière préférée</label>
-                  <select defaultValue={favoriteSubject || "Mathématiques"} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
+                  <select value={formSubject} onChange={e => setFormSubject(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Mathématiques</option>
                     <option>Physique-Chimie</option>
                     <option>SVT</option>
                     <option>Philosophie</option>
+                    <option>Français</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Objectif principal</label>
-                  <select defaultValue={goal || "Mention Bien"} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
+                  <select value={formGoal} onChange={e => setFormGoal(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}>
                     <option>Mention Très Bien</option>
                     <option>Mention Bien</option>
                     <option>Mention Assez Bien</option>
@@ -325,7 +358,7 @@ export const Profile = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1" style={{ color: palette.ink2 }}>Lycée</label>
-                  <input type="text" defaultValue={highschool || ""} placeholder="Ex: Lycée Classique d'Abidjan" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
+                  <input type="text" value={formHighschool} onChange={e => setFormHighschool(e.target.value)} placeholder="Ex: Lycée Classique d'Abidjan" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:outline-none transition-colors" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }} />
                 </div>
               </div>
               
@@ -333,12 +366,12 @@ export const Profile = () => {
                 <label className="block text-sm font-medium mb-1 flex items-center gap-2" style={{ color: palette.ink2 }}>
                   <Mail className="w-4 h-4" /> Numéro de téléphone (Identifiant)
                 </label>
-                <input type="text" defaultValue={currentUser?.phoneNumber || "Non renseigné"} disabled className="w-full px-4 py-2 border rounded-lg cursor-not-allowed opacity-70" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink3 }} />
-                <p className="text-xs mt-1" style={{ color: palette.ink3 }}>Le numéro de téléphone ne peut pas être modifié.</p>
+                <input type="text" value={currentUser?.phoneNumber || "Non renseigné"} disabled className="w-full px-4 py-2 border rounded-lg cursor-not-allowed opacity-70" style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink3 }} />
+                <p className="text-xs mt-1" style={{ color: palette.ink3 }}>Le numéro de téléphone ne peut pas être modifié. <a href="mailto:contact@eductome.ci" className="underline" style={{ color: palette.accent }}>Contacte le support</a> pour changer de numéro ou de mot de passe.</p>
               </div>
 
               <div className="pt-4 flex justify-end">
-                <button type="button" className="flex items-center gap-2 text-white px-6 py-2 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]" style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}>
+                <button type="submit" className="flex items-center gap-2 text-white px-6 py-2 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]" style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}>
                   <Save className="w-4 h-4" /> Enregistrer les modifications
                 </button>
               </div>

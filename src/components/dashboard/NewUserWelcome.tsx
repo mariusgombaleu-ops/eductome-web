@@ -45,14 +45,6 @@ export const NewUserWelcome = () => {
   const isCollege = levelString === '3eme';
   const examName = isCollege ? 'BEPC' : 'BAC';
 
-  const profileItems = [
-    { icon: User, label: 'Prénom', value: pseudo || 'Champion(ne)', color: palette.accent },
-    { icon: GraduationCap, label: 'Série', value: LEVEL_LABELS[levelString] || levelString, color: '#1976D2' },
-    ...(highschool ? [{ icon: School, label: 'Lycée / Collège', value: highschool, color: '#2E7D32' }] : []),
-    { icon: BookOpen, label: 'Matière', value: SUBJECT_LABELS[favoriteSubject] || favoriteSubject || '—', color: '#E65100' },
-    { icon: Target, label: 'Objectif', value: `${GOAL_EMOJIS[goal] || '🎯'} ${GOAL_LABELS[goal] || goal || 'Non défini'}`, color: palette.accent },
-  ];
-
   const isGoalsSet = goals?.bacPoints !== undefined;
 
   return (
@@ -62,34 +54,6 @@ export const NewUserWelcome = () => {
       </h2>
       
       <div className="rounded-3xl border shadow-sm overflow-hidden" style={{ background: palette.bg2, borderColor: palette.line }}>
-        <div className="p-4 md:p-5 border-b" style={{ borderColor: palette.line, background: palette.bg }}>
-          <h3 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: palette.ink3 }}>Tes informations</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {profileItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-2 p-2 rounded-xl transition-all duration-300"
-                style={{ background: palette.bg3 || palette.bg }}
-              >
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: `${item.color}15`, color: item.color }}
-                >
-                  <item.icon className="w-4 h-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[9px] font-bold uppercase tracking-wider truncate" style={{ color: palette.ink3 }}>
-                    {item.label}
-                  </p>
-                  <p className="text-xs font-bold truncate" style={{ color: palette.ink }}>
-                    {item.value}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="p-4 md:p-5 space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: palette.ink3 }}>Mission du jour</h3>
           
@@ -132,7 +96,7 @@ export const NewUserWelcome = () => {
           </button>
 
           <button
-            onClick={() => navigate('/dashboard/planning')}
+            onClick={() => navigate('/dashboard/emploi-du-temps')}
             className="w-full flex justify-between items-center p-3 rounded-2xl group transition-all"
             style={{ background: palette.bg, border: `1px solid ${palette.line}` }}
           >
