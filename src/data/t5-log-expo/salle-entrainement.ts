@@ -1,0 +1,227 @@
+import { Chapitre } from '../../types/course';
+
+export const chapitreSalle: Chapitre = {
+  id: 't5-salle',
+  titre: `La Salle d'Entraînement`,
+  duree: 45,
+  niveau: 'BAC',
+  xpGain: 40,
+  objectifs: [
+    `Affronter sereinement les grands types d'exercices de logarithme et d'exponentielle au BAC ivoirien`,
+    `Gérer ton temps sur un problème log-exp en conditions réelles d'examen`,
+    `Rédiger une copie qui coche tous les points de barème du correcteur`,
+  ],
+  sections: [
+    {
+      id: 's-a',
+      titre: `Section A — Stratégie BAC`,
+      blocs: [
+        {
+          type: 'dialogue',
+          id: 'dlg-a1',
+          pf: `Grand Frère, quand je vois un exercice avec des $\\ln$ et des $e^x$ partout, je panique. Par où j'attrape ça pour ne pas perdre de temps ?`,
+        },
+        {
+          type: 'dialogue',
+          id: 'dlg-a2',
+          gf: `Champion(ne), je vais te donner six réflexes automatiques. Grave-les comme les numéros de téléphone de ta famille. Quand tu ouvres ta copie et que tu vois $\\ln$ ou $e^x$, ces réflexes doivent se déclencher avant même que tu aies fini de lire l'énoncé. On va drill ça : dix exercices façon BAC ivoirien.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-reflexes',
+          headers: [`Réflexe`, `Ce que tu fais immédiatement`, `Pourquoi c'est essentiel`],
+          rows: [
+            [`🔍 Domaine d'abord`, `Pose « quantité sous $\\ln$ $> 0$ » avant tout calcul.`, `Sans ensemble de définition, la question entière s'écroule.`],
+            [`✂️ Casser les $\\ln$`, `Produit → somme, quotient → différence, puissance → coefficient.`, `Toute simplification logarithmique part de là.`],
+            [`♻️ Réciprocité`, `$e^{\\ln x} = x$ et $\\ln(e^x) = x$ pour défaire l'un par l'autre.`, `Débloque la plupart des équations mixtes.`],
+            [`🔁 Changement de variable`, `$X = e^x$ (avec $X > 0$) dès que $e^{2x}$ et $e^x$ cohabitent.`, `Ramène une équation effrayante à un second degré.`],
+            [`🏁 Croissance comparée`, `L'exponentielle gagne, le logarithme perd.`, `Lève les formes indéterminées sans tâtonner.`],
+            [`✅ Vérifier le domaine`, `Chaque solution doit appartenir à l'ensemble de validité.`, `Une solution hors domaine est à rejeter : piège classique.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-b',
+      titre: `Section B — Les 10 Exercices BAC`,
+      blocs: [
+        {
+          type: 'exercise',
+          id: 'exo-1',
+          niveau: 'BASE',
+          enonce: `🟢 **Exercice 1 — Simplifier et résoudre.** (1) Écris $A = \\ln 8 + \\ln 2 - \\ln 4$ sous la forme $k\\ln 2$. (2) Résous dans $\\left]\\,0\\ ;\\ +\\infty\\,\\right[$ l'équation $\\ln x = A$.`,
+          etapes: [],
+          reponse: `(1) $\\ln 8 = 3\\ln 2$, $\\ln 4 = 2\\ln 2$, donc $A = 3\\ln 2 + \\ln 2 - 2\\ln 2 = 2\\ln 2$. (2) $\\ln x = 2\\ln 2 = \\ln 4$, donc par stricte croissance de $\\ln$, $x = 4$. *[Barème : Q1 : 2 pts · Q2 : 1,5 pt — Total : 3,5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-2',
+          niveau: 'MOYEN',
+          enonce: `🟡 **Exercice 2 — Ensemble de définition et inéquation.** Soit $f(x) = \\ln(x - 1) + \\ln(5 - x)$. (1) Détermine l'ensemble de définition $D_f$. (2) Résous $\\ln(x - 1) + \\ln(5 - x) = \\ln 3$.`,
+          etapes: [],
+          reponse: `(1) $f$ existe si $x - 1 > 0$ et $5 - x > 0$, soit $1 < x < 5$ : $D_f = \\left]\\,1\\ ;\\ 5\\,\\right[$. (2) Sur $D_f$ : $\\ln\\big[(x-1)(5-x)\\big] = \\ln 3 \\iff (x-1)(5-x) = 3 \\iff x^2 - 6x + 8 = 0$. Racines $2$ et $4$, toutes deux dans $\\left]\\,1\\ ;\\ 5\\,\\right[$. $S = \\{\\,2\\ ;\\ 4\\,\\}$. *[Barème : Q1 : 1,5 pt · Q2 : 2,5 pts — Total : 4 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-3',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 3 — Étude d'une fonction logarithme.** Soit $f(x) = x - \\ln x$ sur $\\left]\\,0\\ ;\\ +\\infty\\,\\right[$. (1) Calcule les limites en $0^+$ et en $+\\infty$. (2) Étudie le signe de $f'(x)$ et dresse le tableau de variations. (3) Déduis-en que $f(x) > 0$ pour tout $x > 0$.`,
+          etapes: [],
+          reponse: `(1) En $0^+$ : $x \\to 0$ et $-\\ln x \\to +\\infty$, donc $f(x) \\to +\\infty$. En $+\\infty$ : $f(x) = x\\left(1 - \\dfrac{\\ln x}{x}\\right)$, et $\\dfrac{\\ln x}{x} \\to 0$, donc $f(x) \\to +\\infty$. (2) $f'(x) = 1 - \\dfrac{1}{x} = \\dfrac{x - 1}{x}$ : $f'(x) < 0$ pour $x < 1$, $> 0$ pour $x > 1$ : minimum en $x = 1$. (3) $f(1) = 1 - \\ln 1 = 1 > 0$. Le minimum vaut $1 > 0$, donc $f(x) > 0$ pour tout $x > 0$. *[Barème : Q1 : 2 pts · Q2 : 2 pts · Q3 : 1 pt — Total : 5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-4',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 4 — Équation exponentielle.** Résous dans $\\mathbb{R}$ l'équation $e^{2x} - 5e^x + 4 = 0$.`,
+          etapes: [],
+          reponse: `Posons $X = e^x$, $X > 0$. L'équation devient $X^2 - 5X + 4 = 0$, de racines $X = 1$ et $X = 4$ (toutes deux positives). Retour à $x$ : $e^x = 1 \\Rightarrow x = 0$ ; $e^x = 4 \\Rightarrow x = \\ln 4 = 2\\ln 2$. $S = \\{\\,0\\ ;\\ 2\\ln 2\\,\\}$. *[Barème : changement de variable : 1,5 pt · résolution : 1,5 pt · retour à $x$ : 1,5 pt · conclusion : 0,5 pt — Total : 5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-5',
+          niveau: 'MOYEN',
+          enonce: `🟡 **Exercice 5 — Problème de seuil.** La population d'un quartier d'Abobo croît de $3\\,\\%$ par an. On note $P_n = 50\\,000 \\times 1{,}03^{\\,n}$ le nombre d'habitants après $n$ années. À partir de quelle année la population dépasse-t-elle $80\\,000$ habitants ?`,
+          etapes: [],
+          reponse: `On cherche le plus petit entier $n$ tel que $1{,}03^{\\,n} > 1{,}6$. En appliquant le logarithme : $n\\ln 1{,}03 > \\ln 1{,}6$, et comme $\\ln 1{,}03 > 0$, $n > \\dfrac{\\ln 1{,}6}{\\ln 1{,}03} \\approx 15{,}9$. Le plus petit entier est $n = 16$ : la population dépasse $80\\,000$ habitants à partir de la 16ᵉ année. *[Barème : mise en inéquation : 1 pt · application du $\\ln$ : 1,5 pt · conclusion entière : 1,5 pt — Total : 4 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-6',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 6 — Primitive et calcul d'aire.** Soit $f(x) = \\dfrac{2x}{x^2 + 1}$ sur $\\left[\\,0\\ ;\\ 1\\,\\right]$. (1) Détermine une primitive $F$ de $f$. (2) Calcule l'aire $\\mathcal{A}$ sous la courbe de $f$ entre $0$ et $1$.`,
+          etapes: [],
+          reponse: `(1) On reconnaît la forme $\\dfrac{u'}{u}$ avec $u = x^2 + 1 > 0$, $u' = 2x$. Donc $F(x) = \\ln(x^2 + 1)$. (2) $\\mathcal{A} = \\displaystyle\\int_0^1 \\dfrac{2x}{x^2+1}\\,dx = \\big[\\ln(x^2+1)\\big]_0^1 = \\ln 2 - \\ln 1 = \\ln 2$ (unités d'aire). *[Barème : Q1 (forme $u'/u$) : 2 pts · Q2 (calcul intégral) : 2 pts — Total : 4 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-7',
+          niveau: 'MOYEN',
+          enonce: `🟡 **Exercice 7 — Logarithme décimal et pH.** (1) Calcule $\\log 1000 - \\log 10$. (2) Une solution a $[\\mathrm{H_3O^+}] = 10^{-5}\\ \\mathrm{mol/L}$. Détermine son pH et précise sa nature.`,
+          etapes: [],
+          reponse: `(1) $\\log 1000 = 3$ et $\\log 10 = 1$, donc $\\log 1000 - \\log 10 = 2$. (2) $\\mathrm{pH} = -\\log(10^{-5}) = -(-5) = 5$. Comme $5 < 7$, la solution est acide. *[Barème : Q1 : 1,5 pt · Q2 : 2,5 pts — Total : 4 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-8',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 8 — Étude d'une fonction exponentielle.** Soit $g(x) = (x - 1)e^x$ sur $\\mathbb{R}$. (1) Calcule $\\displaystyle\\lim_{x\\to-\\infty} g(x)$ et $\\displaystyle\\lim_{x\\to+\\infty} g(x)$. (2) Calcule $g'(x)$, étudie son signe et dresse le tableau de variations.`,
+          etapes: [],
+          reponse: `(1) En $-\\infty$ : $g(x) = x e^x - e^x$ ; or $x e^x \\to 0$ et $e^x \\to 0$, donc $g(x) \\to 0$. En $+\\infty$ : $x - 1 \\to +\\infty$ et $e^x \\to +\\infty$, donc $g(x) \\to +\\infty$. (2) $g'(x) = e^x + (x-1)e^x = x\\,e^x$. Comme $e^x > 0$, $g'(x)$ est du signe de $x$ : $g$ décroît sur $\\left]\\,-\\infty\\ ;\\ 0\\,\\right]$, croît sur $\\left[\\,0\\ ;\\ +\\infty\\,\\right[$, minimum $g(0) = -1$. *[Barème : Q1 : 2 pts · Q2 : 3 pts — Total : 5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-9',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 9 — Vrai ou Faux justifié.** Pour chaque affirmation, réponds par Vrai ou Faux en justifiant. (1) $\\ln(a + b) = \\ln a + \\ln b$. (2) $e^{x} = 0$ admet une solution. (3) $\\displaystyle\\lim_{x\\to+\\infty}\\dfrac{\\ln x}{x} = 0$.`,
+          etapes: [],
+          reponse: `(1) **Faux.** Le logarithme transforme le produit en somme : $\\ln(ab) = \\ln a + \\ln b$, mais pas l'addition. (2) **Faux.** $e^x > 0$ pour tout réel $x$ : l'équation $e^x = 0$ n'a aucune solution. (3) **Vrai.** Par croissance comparée, la puissance $x$ l'emporte sur $\\ln x$ : la limite est $0$. *[Barème : 1 pt par affirmation justifiée — Total : 3 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-10',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 10 — Problème de synthèse (M1 à M6).** Soit $f(x) = \\ln(x^2 + 1)$ sur $\\mathbb{R}$. (1) Justifie que $f$ est définie sur $\\mathbb{R}$. (2) Calcule $f'(x)$, étudie son signe et dresse le tableau de variations. (3) Détermine la limite de $f$ en $+\\infty$.`,
+          etapes: [],
+          reponse: `(1) Pour tout réel $x$, $x^2 + 1 \\geq 1 > 0$ : la quantité sous le logarithme est toujours strictement positive, donc $D_f = \\mathbb{R}$. (2) $f'(x) = \\dfrac{2x}{x^2 + 1}$ ; le dénominateur est strictement positif, donc $f'(x)$ a le signe de $2x$ : $f$ décroît sur $\\left]\\,-\\infty\\ ;\\ 0\\,\\right]$, croît sur $\\left[\\,0\\ ;\\ +\\infty\\,\\right[$, minimum $f(0) = \\ln 1 = 0$. (3) En $+\\infty$, $x^2 + 1 \\to +\\infty$, donc $f(x) \\to +\\infty$. *[Barème : Q1 : 1,5 pt · Q2 : 3 pts · Q3 : 1,5 pt — Total : 6 pts]*`,
+        },
+      ],
+    },
+    {
+      id: 's-c',
+      titre: `Section C — La check-list du correcteur`,
+      blocs: [
+        {
+          type: 'text',
+          id: 'b-c-intro',
+          contenu: `Avant de rendre, relis ta copie avec les yeux du correcteur. Chaque ligne est un point qu'on te donne ou qu'on te retire.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-checklist',
+          headers: [`Point contrôlé`, `Ce que le correcteur cherche`],
+          rows: [
+            [`Ensemble de définition`, `« Quantité sous le $\\ln$ $> 0$ » posé et résolu avant tout calcul.`],
+            [`Propriétés bien appliquées`, `Produit/quotient cassés, puissances descendues — jamais l'addition.`],
+            [`Condition $e^x > 0$`, `Toute solution $X \\leq 0$ rejetée après un changement de variable.`],
+            [`Dérivées exactes`, `$(\\ln u)' = \\dfrac{u'}{u}$ et $(e^u)' = u'e^u$ — $u'$ jamais oublié.`],
+            [`Croissance comparée citée`, `Le résultat de référence écrit explicitement pour lever la FI.`],
+            [`Valeur absolue`, `$\\ln|u|$ dans une primitive si l'intervalle l'exige.`],
+            [`Retour à l'inconnue`, `Après $X = e^x$, retour effectif à $x$ par $x = \\ln X$.`],
+            [`Phrase de conclusion`, `Résultat final énoncé en phrase complète, domaine vérifié.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-d',
+      titre: `Section D — Les pièges à éviter au BAC`,
+      blocs: [
+        {
+          type: 'table',
+          id: 'tbl-pieges',
+          headers: [`Notion`, `Le piège classique`, `La correction exigée`],
+          rows: [
+            [`Propriétés du $\\ln$`, `Écrire $\\ln(a+b) = \\ln a + \\ln b$.`, `Seuls produits et quotients se cassent.`],
+            [`Exponentielle`, `Croire que $e^x = 0$ a une solution.`, `$e^x > 0$ pour tout réel : aucune solution.`],
+            [`Dérivée composée`, `Oublier $u'$ dans $(e^u)'$ ou $(\\ln u)'$.`, `$(e^u)' = u'e^u$, $(\\ln u)' = \\dfrac{u'}{u}$.`],
+            [`Origine`, `Écrire $\\displaystyle\\lim_{x\\to 0^+} x\\ln x = -\\infty$.`, `La puissance gagne : la limite vaut $0$.`],
+            [`Changement de variable`, `S'arrêter à $X$ sans revenir à $x$.`, `Revenir à $x$ par $x = \\ln X$, et rejeter $X \\leq 0$.`],
+            [`Seuil`, `Garder un rang décimal ($n \\approx 15{,}9$).`, `Arrondir à l'entier supérieur et vérifier.`],
+            [`Base $a$`, `Confondre $(a^x)'$ et $x^{a}$.`, `$(a^x)' = a^x\\ln a$, pas $x\\,a^{x-1}$.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-e',
+      titre: `Section E — Planning du bloc log-exp (sur l'épreuve de 4 h)`,
+      blocs: [
+        {
+          type: 'text',
+          id: 'b-e-intro',
+          contenu: `Gérer son temps, c'est tout un art. Si tu restes bloqué(e) une heure sur une étude de fonction, tu sacrifies ta géométrie ou tes probabilités. Voici une organisation équilibrée pour un problème de logarithme-exponentielle.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-planning',
+          headers: [`Durée indicative`, `Tâche`, `Objectif`],
+          rows: [
+            [`10 min`, `Lecture complète + ensemble de définition`, `Poser les domaines avant tout calcul.`],
+            [`15 min`, `Brouillon : dérivées, limites de référence, changement de variable`, `Préparer les outils dans un coin propre.`],
+            [`90 min`, `Rédaction soignée, question par question`, `Sauter les questions qui bloquent et y revenir.`],
+            [`15 min`, `Vérification (domaines, signes, retour à $x$)`, `Récupérer les points perdus par étourderie.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-eval',
+      titre: `Auto-évaluation — Salle d'Entraînement`,
+      blocs: [
+        {
+          type: 'recap',
+          id: 'eval-salle',
+          titre: `Auto-évaluation`,
+          contenu: [
+            `Je simplifie et résous une équation logarithmique en posant le domaine (Ex. 1, 2).`,
+            `Je mène l'étude complète d'une fonction $\\ln$ ou $e^x$ : limites, dérivée, variations (Ex. 3, 8, 10).`,
+            `Je résous une équation exponentielle par changement de variable (Ex. 4).`,
+            `Je traite un problème de seuil et un calcul de pH (Ex. 5, 7).`,
+            `Je lève une forme indéterminée par croissance comparée (Ex. 3, 9).`,
+          ],
+        },
+        {
+          type: 'tip',
+          id: 'eval-score-salle',
+          titre: `Ton score`,
+          contenu: [
+            `🟢 **5/5** → Tu es paré(e), Champion(ne). La mention t'attend.`,
+            `🟡 **3 ou 4** → Relis la Section D (pièges) et refais l'exercice qui t'a bloqué(e).`,
+            `🔴 **0 à 2** → Pas de panique : reprends les modules correspondants. Chaque module est une marche.`,
+          ],
+        },
+      ],
+    },
+  ],
+};

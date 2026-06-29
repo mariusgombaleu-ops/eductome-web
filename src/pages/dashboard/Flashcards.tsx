@@ -5,6 +5,7 @@ import { tomeLesLimites } from '../../data/t1-limites';
 import { tomeDerivees } from '../../data/t2-derivees';
 import { tomePrimitives } from '../../data/t3-primitives';
 import { tomeSuites } from '../../data/t4-suites';
+import { tomeLogExpo } from '../../data/t5-log-expo';
 import { EncadreBlock, MathBlock } from '../../types/course';
 import { parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -51,13 +52,19 @@ export const COURSE_METADATA: Record<string, any> = {
     subject: 'Mathématiques',
     level: 'Terminale D',
     colorClass: 'from-blue-600 to-blue-800'
+  },
+  't5-log-expo': {
+    title: 'Logarithme & Exponentielle',
+    subject: 'Mathématiques',
+    level: 'Terminale D',
+    colorClass: 'from-blue-600 to-blue-800'
   }
 };
 
 const extractFlashcards = (courseId: string) => {
   const cards: FlashcardItem[] = [];
   // Tomes actifs avec de vraies données. Ajouter chaque nouveau tome (T3→T12) ici.
-  const tomeData = courseId === 't1-limites' ? tomeLesLimites : courseId === 't2-derivees' ? tomeDerivees : courseId === 't3-primitives' ? tomePrimitives : courseId === 't4-suites' ? tomeSuites : null;
+  const tomeData = courseId === 't1-limites' ? tomeLesLimites : courseId === 't2-derivees' ? tomeDerivees : courseId === 't3-primitives' ? tomePrimitives : courseId === 't4-suites' ? tomeSuites : courseId === 't5-log-expo' ? tomeLogExpo : null;
   
   if (tomeData) {
     tomeData.chapitres.forEach(chap => {

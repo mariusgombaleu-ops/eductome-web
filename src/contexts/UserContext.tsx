@@ -363,7 +363,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           if (pendingCourseId) {
             if (pendingCourseId === 'cles-maths' || pendingCourseId.includes('cles')) {
-               coursesToAdd = ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites'];
+               coursesToAdd = ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites', 't5-log-expo'];
             } else {
                coursesToAdd = [pendingCourseId];
             }
@@ -596,7 +596,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userRef = doc(db, 'users', currentUser.uid);
     await updateDoc(userRef, {
       xp: 5000,
-      unlockedCourses: ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites'],
+      unlockedCourses: ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites', 't5-log-expo'],
       unlockedBadges: ['badge_curieux', 'badge_studieux', 'badge_pilier_forum', 'badge_sans_faute']
     });
     addToast({ type: 'success', title: 'Mode Caïman Activé', message: '5000 XP et tous les contenus débloqués.' });
@@ -622,7 +622,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setXp(5000);
     setStatut('famille');
     setCurrentStreak(7);
-    setUnlockedCourses(['t1-limites', 't2-derivees', 't3-primitives', 't4-suites']);
+    setUnlockedCourses(['t1-limites', 't2-derivees', 't3-primitives', 't4-suites', 't5-log-expo']);
     setUnlockedBadges(['badge_curieux', 'badge_studieux', 'badge_pilier_forum', 'badge_sans_faute']);
   };
 

@@ -16,6 +16,7 @@ import { courseT1 } from '../../data/course-t1';
 import { courseT2 } from '../../data/course-t2';
 import { courseT3 } from '../../data/course-t3';
 import { courseT4 } from '../../data/course-t4';
+import { courseT5 } from '../../data/course-t5';
 import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
 import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
@@ -250,6 +251,7 @@ export const CourseReader = () => {
     't2-derivees': courseT2,
     't3-primitives': courseT3,
     't4-suites': courseT4,
+    't5-log-expo': courseT5,
   };
 
   const course = courseId && courseRegistry[courseId] ? courseRegistry[courseId] : courseT1;

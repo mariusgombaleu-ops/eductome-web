@@ -49,6 +49,17 @@ const COURSE_METADATA: Record<string, any> = {
     completedQuizzes: 0,
     progress: 0,
     status: 'nouveau'
+  },
+  't5-log-expo': {
+    title: 'Logarithme & Exponentielle',
+    subject: 'Mathématiques',
+    level: 'Terminale D',
+    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
+    series: ['Terminale D', 'Terminale C'],
+    totalQuizzes: 6,
+    completedQuizzes: 0,
+    progress: 0,
+    status: 'nouveau'
   }
 };
 
@@ -100,6 +111,19 @@ const STARTER_COURSES = [
     series: ["Terminale D", "Terminale C"],
     progress: 0,
     totalQuizzes: 5,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
+    badge: "Aperçu gratuit"
+  },
+  {
+    id: "t5-log-expo",
+    title: "Logarithme & Exponentielle",
+    subject: "Mathématiques",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 6,
     completedQuizzes: 0,
     status: "nouveau",
     colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine

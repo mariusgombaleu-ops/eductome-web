@@ -40,7 +40,7 @@ export const PaymentSuccess = () => {
           if (pendingCourseId === 'cles-maths' || pendingCourseId.includes('cles')) {
             // Tomes maths actifs débloqués avec la collection. Ajouter les nouveaux
             // slugs (t2-derivees…t12-revisions-bac) au fur et à mesure de leur mise en ligne.
-            const tomesMaths = ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites'];
+            const tomesMaths = ['t1-limites', 't2-derivees', 't3-primitives', 't4-suites', 't5-log-expo'];
             tomesMaths.forEach(t => unlockCourse(t));
             setUnlockedProduct(pendingCourseId);
           } else {
