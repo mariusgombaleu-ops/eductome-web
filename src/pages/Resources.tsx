@@ -3,17 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { Download, Eye, EyeOff, BookOpen, PenTool, BookMarked, CheckCircle, MessageCircle, X, Filter, ChevronLeft, ArrowRight, Calculator, FlaskConical, Dna, Globe, Brain, Languages } from 'lucide-react';
 import { tomesRegistry } from '../data/exercices-registry';
-import { exercicesT1, Exercise, ExerciseLevel } from '../data/exercices-t1';
-import { exercicesT2 } from '../data/exercices-t2';
-import { exercicesT3 } from '../data/exercices-t3';
-import { exercicesT4 } from '../data/exercices-t4';
-import { exercicesT5 } from '../data/exercices-t5';
-import { exercicesT6 } from '../data/exercices-t6';
-import { exercicesT7 } from '../data/exercices-t7';
-import { exercicesT8 } from '../data/exercices-t8';
-import { exercicesT9 } from '../data/exercices-t9';
-import { exercicesT10 } from '../data/exercices-t10';
-import { exercicesT11 } from '../data/exercices-t11';
+import { allExercises, ExerciseLevel } from '../data/exercices';
 import { SEO } from '../components/SEO';
 import { useProgress } from '../hooks/useProgress';
 import { LeadCaptureModal } from '../components/ui/LeadCaptureModal';
@@ -96,15 +86,11 @@ const vitrineFiches = [
   }
 ];
 
-const allExercises: Record<number, Exercise[]> = {
-  1: exercicesT1, 2: exercicesT2, 3: exercicesT3, 4: exercicesT4, 
-  5: exercicesT5, 6: exercicesT6, 7: exercicesT7, 8: exercicesT8, 
-  9: exercicesT9, 10: exercicesT10, 11: exercicesT11
-};
-
+// La banque d'exercices (`allExercises`) est importée depuis ../data/exercices.
+// Elle repart vide : le nouveau contenu T1→T12 sera recâblé tome par tome.
 const vitrineExercicesTomes = [
-  { id: 1, title: "Les Limites", subject: "Mathématiques", theme: "#1976D2", isUpcoming: false, icon: Calculator },
-  { id: 2, title: "Les Dérivées", subject: "Mathématiques", theme: "#1976D2", isUpcoming: false, icon: Calculator },
+  { id: 1, title: "Les Limites", subject: "Mathématiques", theme: "#1976D2", isUpcoming: true, icon: Calculator },
+  { id: 2, title: "Les Dérivées", subject: "Mathématiques", theme: "#1976D2", isUpcoming: true, icon: Calculator },
   { id: 13, title: "Cinématique", subject: "Physique-Chimie", theme: "#1B5E20", isUpcoming: true, icon: FlaskConical },
   { id: 14, title: "Acides et Bases", subject: "Physique-Chimie", theme: "#1B5E20", isUpcoming: true, icon: FlaskConical },
   { id: 15, title: "La Génétique", subject: "SVT", theme: "#D81B60", isUpcoming: true, icon: Dna },

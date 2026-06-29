@@ -1,4 +1,4 @@
-import { Trophy, Star, Book, Target, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Calendar } from 'lucide-react';
+import { Trophy, Star, Book, Target, BookOpen, ShoppingBag, Unlock, ChevronRight, Heart, X, Calendar, RotateCcw, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,10 +18,13 @@ import { HeroLevelCard } from '../../components/dashboard/HeroLevelCard';
 import { WeeklyStreak } from '../../components/dashboard/WeeklyStreak';
 import { ContinueReading } from '../../components/dashboard/ContinueReading';
 import { NewUserWelcome } from '../../components/dashboard/NewUserWelcome';
+import { useFlashcardProgress } from '../../hooks/useFlashcardProgress';
+import { COURSE_METADATA } from './Flashcards';
 
 export const Overview = () => {
-  const { xp, statut, gainXp, rewardedActions, level, levelString, goals, grades } = useUser();
+  const { xp, statut, gainXp, rewardedActions, level, levelString, goals, grades, unlockedCourses } = useUser();
   const { palette } = useTheme();
+  const { isDue } = useFlashcardProgress();
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
   const [showFamilleWelcome, setShowFamilleWelcome] = useState(
     () => statut === 'famille' && localStorage.getItem('famille_welcomed') !== 'true'
@@ -145,6 +148,12 @@ export const Overview = () => {
 
   const lastCourseRead = localStorage.getItem('eductome_last_chapter_read');
 
+  // Répétition espacée : chapitres « à réviser » aujourd'hui (cf. Hub de Révision)
+  const dueCourses = Array.from(new Set([...(unlockedCourses || []), 't1-limites']))
+    .filter(c => COURSE_METADATA[c] && isDue(c))
+    .map(c => ({ id: c, title: COURSE_METADATA[c].title as string }));
+  const dueCount = dueCourses.length;
+
   return (
     <div className="space-y-6 px-4 md:px-6 lg:px-8 pt-6 pb-24 font-poppins min-h-screen" style={{ background: palette.bg }}>
       {postAssessment && (
@@ -210,6 +219,53 @@ export const Overview = () => {
           <Calendar className="w-5 h-5" />
           Mon emploi du temps
         </button>
+      </div>
+
+      {/* Révisions du jour (répétition espacée — flashcards) */}
+      <div className="mt-8">
+        <div className="rounded-2xl border p-5" style={{ background: palette.bg2, borderColor: dueCount > 0 ? palette.accent : palette.line }}>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: palette.accentSoft, color: palette.accent }}>
+                <RotateCcw className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-[15px] font-bold" style={{ color: palette.ink }}>Révisions du jour</h2>
+                {dueCount > 0 ? (
+                  <p className="text-xs font-semibold" style={{ color: palette.accent }}>
+                    {dueCount} chapitre{dueCount > 1 ? 's' : ''} à réviser aujourd'hui
+                  </p>
+                ) : (
+                  <p className="text-xs font-semibold" style={{ color: palette.ink3 }}>Tout est à jour — beau travail.</p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/dashboard/revisions')}
+              className="px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all hover:scale-[1.02]"
+              style={dueCount > 0
+                ? { background: palette.accent, color: palette.onAccent }
+                : { background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
+            >
+              {dueCount > 0 ? 'Réviser maintenant' : 'Ouvrir mes révisions'} <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {dueCount > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {dueCourses.slice(0, 3).map(c => (
+                <span key={c.id} className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: palette.accentSoft, color: palette.accent }}>
+                  <Clock className="w-3 h-3" /> {c.title}
+                </span>
+              ))}
+              {dueCourses.length > 3 && (
+                <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: palette.bg3, color: palette.ink3 }}>
+                  +{dueCourses.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}

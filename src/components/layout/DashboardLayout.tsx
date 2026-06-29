@@ -28,7 +28,8 @@ import {
   Calculator,
   TrendingUp,
   X,
-  Flame
+  Flame,
+  RotateCcw
 } from 'lucide-react';
 import { useInstallPWA } from '../../hooks/useInstallPWA';
 import { useHasUnreadNotifications } from '../../hooks/useHasUnreadNotifications';
@@ -65,6 +66,7 @@ export const DashboardLayout = () => {
     { name: 'Mon Profil', href: '/dashboard/profile', icon: User },
     { name: 'Mes Cours', href: '/dashboard/courses', icon: BookOpen },
     { name: 'Mes Notes & Objectifs', href: '/dashboard/objectifs', icon: Calculator },
+    { name: 'Révision', href: '/dashboard/revisions', icon: RotateCcw },
     { name: 'Forum d\'Entraide', href: '/forum', icon: MessageSquare },
     { name: 'Ressources Gratuites', href: '/dashboard/ressources', icon: FileText },
     { name: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag },

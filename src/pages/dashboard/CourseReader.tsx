@@ -8,11 +8,14 @@ import {
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useReaderSettings } from '../../hooks/useReaderSettings';
+import { ReaderControls } from '../../components/reader/ReaderControls';
+import { FocusExitButton } from '../../components/reader/FocusExitButton';
 import { useToast } from '../../contexts/ToastContext';
 import { courseT1 } from '../../data/course-t1';
 import { courseT2 } from '../../data/course-t2';
 import { courseT3 } from '../../data/course-t3';
-import { courseT11 } from '../../data/course-t11';
+import { courseT4 } from '../../data/course-t4';
 import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
 import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
@@ -195,6 +198,10 @@ export const CourseReader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const {
+    sizeLabel, canDecrease, canIncrease, decSize, incSize,
+    readerZoom, focusMode, enterFocus, exitFocus,
+  } = useReaderSettings();
   // Modals state
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
@@ -236,11 +243,13 @@ export const CourseReader = () => {
     }
   }, [isNotesOpen, courseId]);
 
+  // Registre des cours actifs. Ajouter chaque nouveau tome (T2→T12) ici dès que
+  // son contenu est prêt : 'tN-slug': courseTN (voir src/data/<slug>/index.ts).
   const courseRegistry: Record<string, Tome> = {
     't1-limites': courseT1,
     't2-derivees': courseT2,
     't3-primitives': courseT3,
-    't11-eq-diff': courseT11
+    't4-suites': courseT4,
   };
 
   const course = courseId && courseRegistry[courseId] ? courseRegistry[courseId] : courseT1;
@@ -631,7 +640,10 @@ export const CourseReader = () => {
   return (
     <div className="min-h-screen font-poppins transition-colors duration-300" style={{ background: palette.bg }}>
 
+      {focusMode && <FocusExitButton palette={palette} onExit={exitFocus} />}
+
       {/* ── Floating Top Bar (Premium Design) ── */}
+      {!focusMode && (
       <div className="sticky top-4 z-40 px-4 lg:px-8 mb-4 pointer-events-none transition-colors duration-300">
         <div className="max-w-3xl mx-auto">
           {isOffline && (
@@ -679,12 +691,22 @@ export const CourseReader = () => {
               </button>
             </div>
           </header>
+          <ReaderControls
+            palette={palette}
+            sizeLabel={sizeLabel}
+            canDecrease={canDecrease}
+            canIncrease={canIncrease}
+            onDecrease={decSize}
+            onIncrease={incSize}
+            onEnterFocus={enterFocus}
+          />
           {/* Progress Bar under header */}
           <div className="h-[3px] mx-1 mt-2 rounded-full overflow-hidden transition-colors duration-300" style={{ background: palette.bg3 }}>
             <div className="h-full rounded-full transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%`, background: palette.accent }} />
           </div>
         </div>
       </div>
+      )}
 
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
@@ -702,6 +724,7 @@ export const CourseReader = () => {
       )}
 
       {/* ── Floating Mobile Bottom Dock (Premium Design) ── */}
+      {!focusMode && (
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden pb-safe px-4 pb-6 pointer-events-none transition-colors duration-300">
         <div className="pointer-events-auto rounded-[20px] p-2 flex items-center gap-1.5 transition-colors duration-300" style={{ background: palette.glass, backdropFilter: 'blur(16px) saturate(160%)', WebkitBackdropFilter: 'blur(16px) saturate(160%)', border: `1px solid ${palette.glassLine}`, boxShadow: `0 10px 30px ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(120,90,40,0.18)'}` }}>
           <button onClick={() => setIsNotesOpen(true)} className="flex-1 flex flex-col items-center gap-[3px] p-2 rounded-xl transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: palette.ink2 }}>
@@ -737,6 +760,7 @@ export const CourseReader = () => {
           </div>
         </div>
       </div>
+      )}
 
       <div className="flex relative items-start">
 
@@ -757,7 +781,10 @@ export const CourseReader = () => {
             {isDesktopSidebarCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
 
-          <div className={`mx-auto transition-all duration-300 ${isDesktopSidebarCollapsed ? 'max-w-4xl' : 'max-w-3xl'}`}>
+          <div
+            className={`ed-reader-prose mx-auto transition-all duration-300 ${isDesktopSidebarCollapsed ? 'max-w-4xl' : 'max-w-3xl'}`}
+            style={{ zoom: readerZoom }}
+          >
 
             {/* Chapter Header (Premium Design) */}
             <div className="mb-6 animate-in fade-in slide-in-from-bottom-4 mt-2">

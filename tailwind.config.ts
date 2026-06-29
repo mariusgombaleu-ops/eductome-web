@@ -24,6 +24,7 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         playfair: ['Playfair Display', 'serif'],
         caveat: ['Caveat', 'cursive'],
+        reader: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
       }
     },
   },

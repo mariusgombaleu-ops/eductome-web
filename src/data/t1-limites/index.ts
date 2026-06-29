@@ -1,15 +1,16 @@
-// src/data/t1-limites/index.ts
-// MÉTADONNÉES — TOME 1 : LES LIMITES
-// Collection Les Clés Maths · EDUCTOME
-
 import { Tome } from '../../types/course';
-import { chapitreIntro } from './chap1';
-import { chapitre1 } from './chap2';
-import { chapitre2 } from './chap3';
-import { chapitre3 } from './chap4';
-import { chapitre4 } from './chap5';
-import { chapitre5 } from './chap6';
-import { chapitre6 } from './chap7';
+import { chapitreIntro } from './message-grand-frere';
+import { chapitreSocle } from './socle';
+import { chapitreM1 } from './m1';
+import { chapitreM2 } from './m2';
+import { chapitreM3 } from './m3';
+import { chapitreM4 } from './m4';
+import { chapitreM5 } from './m5';
+import { chapitreM6 } from './m6';
+import { chapitreM7 } from './m7';
+import { chapitreSalle } from './salle-entrainement';
+import { chapitreAnnexe } from './annexe';
+import { chapitreConclusion } from './conclusion';
 
 export const tomeLesLimites: Tome = {
   id: 'les-limites-t1',
@@ -28,12 +29,17 @@ export const tomeLesLimites: Tome = {
   ],
   chapitres: [
     chapitreIntro,
-    chapitre1,
-    chapitre2,
-    chapitre3,
-    chapitre4,
-    chapitre5,
-    chapitre6,
+    chapitreSocle,
+    chapitreM1,
+    chapitreM2,
+    chapitreM3,
+    chapitreM4,
+    chapitreM5,
+    chapitreM6,
+    chapitreM7,
+    chapitreSalle,
+    chapitreAnnexe,
+    chapitreConclusion,
   ],
   prix: {
     chapitre: 300,
@@ -42,4 +48,3 @@ export const tomeLesLimites: Tome = {
   couleurCollection: '#1A3557',
   couverture: '/covers/t1-limites.png',
 };
-

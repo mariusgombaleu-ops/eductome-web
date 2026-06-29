@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, RotateCcw, AlertTriangle, Lightbulb, BookOpen, Target, ArrowLeft, Clock, PlayCircle } from 'lucide-react';
+import { RotateCcw, AlertTriangle, Lightbulb, BookOpen, Target, ArrowLeft, Clock, PlayCircle, Timer, PenTool, ChevronRight, Sigma } from 'lucide-react';
 import { tomeLesLimites } from '../../data/t1-limites';
+import { tomeDerivees } from '../../data/t2-derivees';
+import { tomePrimitives } from '../../data/t3-primitives';
+import { tomeSuites } from '../../data/t4-suites';
 import { EncadreBlock, MathBlock } from '../../types/course';
 import { parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -12,6 +15,7 @@ import { AssessmentEvent } from '../../components/types';
 import { useNavigate } from 'react-router-dom';
 import { getRecommendedTome } from '../../utils/getRecommendedTome';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useFlashcardProgress } from '../../hooks/useFlashcardProgress';
 
 export interface FlashcardItem {
   id: string;
@@ -20,8 +24,10 @@ export interface FlashcardItem {
   contenu: string | string[];
 }
 
-// Map temporaire pour les métadonnées des cours
-const COURSE_METADATA: Record<string, any> = {
+// Map temporaire pour les métadonnées des cours.
+// Exporté : c'est la source unique des chapitres disposant d'un paquet de
+// flashcards (réutilisé par l'Overview pour le compteur « Révisions du jour »).
+export const COURSE_METADATA: Record<string, any> = {
   't1-limites': {
     title: 'Les Limites',
     subject: 'Mathématiques',
@@ -32,26 +38,26 @@ const COURSE_METADATA: Record<string, any> = {
     title: 'Les Dérivées',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'from-purple-600 to-purple-800'
+    colorClass: 'from-blue-600 to-blue-800'
   },
   't3-primitives': {
-    title: 'Les Primitives',
+    title: 'Primitives & Intégrales',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'from-indigo-600 to-indigo-800'
+    colorClass: 'from-blue-600 to-blue-800'
   },
-  't11-eq-diff': {
-    title: 'Équations Différentielles',
+  't4-suites': {
+    title: 'Suites Numériques',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'from-teal-600 to-teal-800'
+    colorClass: 'from-blue-600 to-blue-800'
   }
 };
 
 const extractFlashcards = (courseId: string) => {
   const cards: FlashcardItem[] = [];
-  // Pour l'instant, seul t1-limites a des vraies données. Pour les autres, on simule ou on retourne vide.
-  const tomeData = courseId === 't1-limites' ? tomeLesLimites : null;
+  // Tomes actifs avec de vraies données. Ajouter chaque nouveau tome (T3→T12) ici.
+  const tomeData = courseId === 't1-limites' ? tomeLesLimites : courseId === 't2-derivees' ? tomeDerivees : courseId === 't3-primitives' ? tomePrimitives : courseId === 't4-suites' ? tomeSuites : null;
   
   if (tomeData) {
     tomeData.chapitres.forEach(chap => {
@@ -91,6 +97,7 @@ export function Flashcards() {
   const { currentUser } = useAuth();
   const { unlockedCourses } = useUser();
   const { palette } = useTheme();
+  const { isDue, markReviewed } = useFlashcardProgress();
   const [view, setView] = useState<'hub' | 'cards'>('hub');
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   
@@ -101,9 +108,12 @@ export function Flashcards() {
   const [cards, setCards] = useState<FlashcardItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [stats, setStats] = useState({ mastered: 0, toReview: 0 });
+  const [stats, setStats] = useState({ acquis: 0, presque: 0, aRevoir: 0 });
   const [isFinished, setIsFinished] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  // Répétition espacée légère : cartes ratées à re-proposer + indicateur de 2e tour
+  const [aRevoirCards, setARevoirCards] = useState<FlashcardItem[]>([]);
+  const [isReRound, setIsReRound] = useState(false);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -116,16 +126,71 @@ export function Flashcards() {
     return () => unsub();
   }, [currentUser]);
 
+  // Auto-évaluation à 3 niveaux + passage à la fiche suivante
+  const grade = (level: 'aRevoir' | 'presque' | 'acquis') => {
+    if (!isFlipped || currentIndex >= cards.length) return;
+    const card = cards[currentIndex];
+    setStats(prev => ({ ...prev, [level]: prev[level] + 1 }));
+    if (level === 'aRevoir' && card) setARevoirCards(prev => [...prev, card]);
+    setDirection(level === 'acquis' ? 1 : level === 'aRevoir' ? -1 : 0);
+    setTimeout(() => {
+      if (currentIndex + 1 < cards.length) {
+        setCurrentIndex(i => i + 1);
+        setDirection(0);
+        setIsFlipped(false);
+      } else {
+        // Fin de session : on planifie la prochaine échéance (1er tour seulement)
+        if (!isReRound && selectedCourse) {
+          const finalAcquis = stats.acquis + (level === 'acquis' ? 1 : 0);
+          const pct = Math.round((finalAcquis / (cards.length || 1)) * 100);
+          markReviewed(selectedCourse, pct);
+        }
+        setIsFinished(true);
+      }
+    }, 240);
+  };
+
+  // Clavier : Espace/Entrée pour retourner la fiche, 1·2·3 pour s'auto-évaluer
+  useEffect(() => {
+    if (view !== 'cards' || isFinished) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        setIsFlipped(true);
+      } else if (e.key === '1') grade('aRevoir');
+      else if (e.key === '2') grade('presque');
+      else if (e.key === '3') grade('acquis');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, isFinished, isFlipped, currentIndex, cards.length]);
+
   const launchRevision = (courseId: string) => {
     const extracted = extractFlashcards(courseId);
     setCards(extracted);
     setSelectedCourse(courseId);
     setCurrentIndex(0);
-    setStats({ mastered: 0, toReview: 0 });
+    setStats({ acquis: 0, presque: 0, aRevoir: 0 });
     setIsFinished(false);
     setDirection(0);
     setIsFlipped(false);
+    setARevoirCards([]);
+    setIsReRound(false);
     setView('cards');
+  };
+
+  // 2e tour : on rejoue uniquement les cartes marquées « à revoir »
+  const restartARevoir = () => {
+    if (aRevoirCards.length === 0) return;
+    setCards(aRevoirCards);
+    setCurrentIndex(0);
+    setStats({ acquis: 0, presque: 0, aRevoir: 0 });
+    setIsFinished(false);
+    setDirection(0);
+    setIsFlipped(false);
+    setARevoirCards([]);
+    setIsReRound(true);
   };
 
   const todayStr = new Date().toISOString().split('T')[0];
@@ -150,9 +215,12 @@ export function Flashcards() {
             <div className="p-2.5 rounded-xl shrink-0" style={{ background: `${palette.accent}20` }}>
               <RotateCcw className="w-6 h-6" style={{ color: palette.accent }} />
             </div>
-            <h1 className="text-2xl font-bold font-playfair" style={{ color: palette.ink }}>
-              Hub de Révision
-            </h1>
+            <div>
+              <h1 className="text-2xl font-bold font-playfair" style={{ color: palette.ink }}>
+                Hub de Révision
+              </h1>
+              <p className="text-sm" style={{ color: palette.ink2 }}>Mémorise, entraîne-toi, puis compose — tout au même endroit.</p>
+            </div>
           </div>
 
           {/* Plan de Bataille */}
@@ -237,11 +305,84 @@ export function Flashcards() {
             </div>
           )}
 
-          {/* Révisions Libres */}
+          {/* Parcours d'entraînement — 3 paliers d'intensité croissante */}
           <div>
-            <h3 className="font-bold mb-4 text-lg" style={{ color: palette.ink }}>Révisions Libres (À la carte)</h3>
+            <h3 className="font-bold mb-1 text-lg" style={{ color: palette.ink }}>Ton parcours d'entraînement</h3>
+            <p className="text-sm mb-5" style={{ color: palette.ink2 }}>
+              Trois étapes, l'effort qui monte : mémorise, entraîne-toi, puis compose en conditions réelles.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Étape 1 — Mémoriser (flashcards) */}
+              <button
+                onClick={() => document.getElementById('revisions-libres')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-left border rounded-[24px] p-5 transition-all hover:shadow-md flex flex-col"
+                style={{ background: palette.bg2, borderColor: palette.line }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: `${palette.accent}1A`, color: palette.accent }}>
+                    <RotateCcw size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: palette.ink3 }}>Étape 1</span>
+                </div>
+                <h4 className="font-bold mb-1" style={{ color: palette.ink }}>Mémoriser</h4>
+                <p className="text-xs leading-relaxed" style={{ color: palette.ink2 }}>Flashcards : tes formules & pièges sur le bout des doigts.</p>
+                <span className="text-[11px] font-bold mt-3 flex items-center gap-1" style={{ color: palette.accent }}>Choisir un chapitre <ChevronRight size={13} /></span>
+              </button>
+
+              {/* Étape 2 — S'entraîner (exos corrigés) */}
+              <button
+                onClick={() => navigate('/dashboard/ressources?tab=exercices')}
+                className="text-left border rounded-[24px] p-5 transition-all hover:shadow-md flex flex-col"
+                style={{ background: palette.bg2, borderColor: palette.line }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)', color: '#16a34a' }}>
+                    <PenTool size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: palette.ink3 }}>Étape 2</span>
+                </div>
+                <h4 className="font-bold mb-1" style={{ color: palette.ink }}>S'entraîner</h4>
+                <p className="text-xs leading-relaxed" style={{ color: palette.ink2 }}>Exos corrigés : t'exercer avec le corrigé sous la main.</p>
+                <span className="text-[11px] font-bold mt-3 flex items-center gap-1" style={{ color: '#16a34a' }}>Voir les exos <ChevronRight size={13} /></span>
+              </button>
+
+              {/* Étape 3 — Composer (simulateur) */}
+              <button
+                onClick={() => navigate('/dashboard/simulateur')}
+                className="text-left border rounded-[24px] p-5 transition-all hover:shadow-md flex flex-col"
+                style={{ background: palette.bg2, borderColor: palette.accent }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center text-white" style={{ background: palette.accent }}>
+                    <Timer size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: palette.accent }}>Étape 3</span>
+                </div>
+                <h4 className="font-bold mb-1" style={{ color: palette.ink }}>Composer</h4>
+                <p className="text-xs leading-relaxed" style={{ color: palette.ink2 }}>Simulateur : QCM auto-corrigé, puis devoir au barème.</p>
+                <span className="text-[11px] font-bold mt-3 flex items-center gap-1" style={{ color: palette.accent }}>Entrer en composition <ChevronRight size={13} /></span>
+              </button>
+            </div>
+          </div>
+
+          {/* Révisions Libres */}
+          <div id="revisions-libres">
+            <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+              <h3 className="font-bold text-lg" style={{ color: palette.ink }}>Révisions Libres (À la carte)</h3>
+              {(() => {
+                const due = Array.from(new Set([...unlockedCourses, 't1-limites'])).filter(c => COURSE_METADATA[c] && isDue(c)).length;
+                return due > 0 ? (
+                  <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold px-3 py-1 rounded-full" style={{ background: `${palette.accent}1A`, color: palette.accent }}>
+                    <Clock size={13} /> {due} à réviser aujourd'hui
+                  </span>
+                ) : (
+                  <span className="text-[11.5px] font-semibold" style={{ color: palette.tipBar }}>Tout est à jour</span>
+                );
+              })()}
+            </div>
             <p className="text-sm mb-6" style={{ color: palette.ink2 }}>
-              Choisis un chapitre que tu as déjà débloqué pour une session de 10-15 minutes chronos. Parfait pour tester ta mémoire après un cours !
+              Choisis un chapitre débloqué pour une session de 10–15 minutes. Les chapitres « à réviser » réapparaissent selon ta mémoire.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -264,6 +405,13 @@ export function Flashcards() {
                     <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: palette.ink3 }}>
                       {meta.subject}
                     </p>
+                    {isDue(courseId) ? (
+                      <span className="inline-flex items-center gap-1 self-start text-[10.5px] font-bold mt-3 px-2.5 py-1 rounded-full" style={{ background: `${palette.accent}1A`, color: palette.accent }}>
+                        <Clock size={11} /> à réviser
+                      </span>
+                    ) : (
+                      <span className="text-[10.5px] font-semibold mt-3" style={{ color: palette.ink3 }}>revu récemment</span>
+                    )}
                   </div>
                 );
               })}
@@ -292,253 +440,191 @@ export function Flashcards() {
 
   const currentCard = cards[currentIndex];
 
-  const swipe = (isMastered: boolean) => {
-    if (currentIndex >= cards.length || !isFlipped) return;
-    setDirection(isMastered ? 1 : -1);
-    if (isMastered) {
-      setStats(prev => ({ ...prev, mastered: prev.mastered + 1 }));
-    } else {
-      setStats(prev => ({ ...prev, toReview: prev.toReview + 1 }));
-    }
-    setTimeout(() => {
-      if (currentIndex + 1 < cards.length) {
-        setCurrentIndex(prev => prev + 1);
-        setDirection(0);
-        setIsFlipped(false);
-      } else {
-        setIsFinished(true);
-      }
-    }, 300);
-  };
-
-  const getCardIcon = (type?: string) => {
+  // Libellé, couleur d'accent et icône par type de fiche (piloté par la palette)
+  const typeMeta = (type?: string): { label: string; color: string; Icon: typeof BookOpen } => {
     switch (type) {
-      case 'warning': return <AlertTriangle className="w-8 h-8 text-red-500" />;
-      case 'tip': return <Lightbulb className="w-8 h-8 text-green-500" />;
-      case 'rule': return <BookOpen className="w-8 h-8 text-blue-500" />;
-      case 'recap': return <Target className="w-8 h-8 text-orange-500" />;
-      case 'math': return <span className="text-2xl">🧮</span>;
-      default: return null;
-    }
-  };
-
-  const getCardColor = (type?: string) => {
-    switch (type) {
-      case 'warning': return 'border-red-500 from-red-50 to-white dark:from-red-900/20 dark:to-[#161B22]';
-      case 'tip': return 'border-green-500 from-green-50 to-white dark:from-green-900/20 dark:to-[#161B22]';
-      case 'rule': return 'border-blue-500 from-blue-50 to-white dark:from-blue-900/20 dark:to-[#161B22]';
-      case 'recap': return 'border-orange-500 from-orange-50 to-white dark:from-orange-900/20 dark:to-[#161B22]';
-      case 'math': return 'border-purple-500 from-purple-50 to-white dark:from-purple-900/20 dark:to-[#161B22]';
-      default: return 'border-gray-200 from-gray-50 to-white dark:from-gray-800 dark:to-[#161B22]';
-    }
-  };
-
-  const getCardTitle = (type?: string) => {
-    switch (type) {
-      case 'warning': return 'Piège à éviter';
-      case 'tip': return 'Conseil Grand Frère';
-      case 'rule': return 'Règle d\'Or / Méthode';
-      case 'recap': return 'Récapitulatif';
-      case 'math': return 'Formule à maîtriser';
-      default: return 'Fiche';
+      case 'warning': return { label: 'Piège à éviter', color: '#E2504F', Icon: AlertTriangle };
+      case 'tip': return { label: 'Conseil du grand frère', color: palette.tipBar, Icon: Lightbulb };
+      case 'rule': return { label: 'Règle d\'or', color: palette.accent, Icon: BookOpen };
+      case 'recap': return { label: 'Récapitulatif', color: palette.anaBar, Icon: Target };
+      case 'math': return { label: 'Formule à connaître', color: palette.accent2, Icon: Sigma };
+      default: return { label: 'Fiche', color: palette.ink2, Icon: BookOpen };
     }
   };
 
   const reset = () => {
     setCurrentIndex(0);
-    setStats({ mastered: 0, toReview: 0 });
+    setStats({ acquis: 0, presque: 0, aRevoir: 0 });
     setIsFinished(false);
     setDirection(0);
     setIsFlipped(false);
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-poppins pb-20 md:pb-0 transition-colors" style={{ background: palette.bg }}>
-      
+    <div className="min-h-screen flex flex-col font-poppins pb-24 md:pb-10 transition-colors" style={{ background: palette.bg }}>
+
       {/* HEADER */}
-      <header className="border-b px-4 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md" style={{ background: `${palette.bg}cc`, borderColor: palette.line }}>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => setView('hub')}
-            className="p-2 -ml-2 rounded-full transition-colors hover:bg-black/5"
-            style={{ color: palette.ink2 }}
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="font-bold" style={{ color: palette.ink }}>Révision Express</h1>
-            <p className="text-xs" style={{ color: palette.ink3 }}>{selectedCourse ? COURSE_METADATA[selectedCourse]?.title : 'Chapitre'}</p>
-          </div>
+      <header className="w-full max-w-2xl mx-auto px-4 pt-5 pb-3 flex items-center gap-3">
+        <button
+          onClick={() => setView('hub')}
+          className="p-2 -ml-2 rounded-full transition-opacity hover:opacity-70"
+          style={{ color: palette.ink2 }}
+          aria-label="Retour au Hub"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h1 className="font-bold text-[15px] leading-tight" style={{ color: palette.ink }}>Fiches de révision</h1>
+          <p className="text-xs truncate" style={{ color: palette.ink3 }}>{selectedCourse ? COURSE_METADATA[selectedCourse]?.title : 'Chapitre'}</p>
         </div>
         {!isFinished && (
-          <div className="px-3 py-1 rounded-[12px] text-sm font-bold" style={{ background: palette.bg2, color: palette.ink2 }}>
-            {currentIndex + 1} / {cards.length}
-          </div>
+          <span className="text-[13px] font-bold tabular-nums" style={{ color: palette.ink2 }}>
+            {Math.min(currentIndex + 1, cards.length)} / {cards.length}
+          </span>
         )}
       </header>
 
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        
-        {/* Background Decorative Circles */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#D81B60]/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Progression */}
+      {!isFinished && (
+        <div className="w-full max-w-2xl mx-auto px-5">
+          <div className="h-[5px] rounded-full overflow-hidden" style={{ background: palette.bg3 }}>
+            <div className="h-full rounded-full transition-all duration-300 ease-out" style={{ width: `${(currentIndex / (cards.length || 1)) * 100}%`, background: palette.accent }} />
+          </div>
+        </div>
+      )}
 
+      {/* MAIN */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full px-4 py-6">
         {!isFinished ? (
-          <div className="relative w-full max-w-sm h-[60vh] flex items-center justify-center">
+          <div className="w-full max-w-md">
             <AnimatePresence mode="wait">
-              {currentCard && (
-                <motion.div
-                  key={currentCard.id}
-                  initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                  animate={{ 
-                    scale: 1, 
-                    opacity: 1, 
-                    y: 0,
-                    x: direction !== 0 ? direction * 300 : 0,
-                    rotate: direction !== 0 ? direction * 15 : 0
-                  }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  drag={isFlipped ? "x" : false}
-                  dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={(_, { offset }) => {
-                    const swipeThreshold = 50;
-                    if (offset.x > swipeThreshold) {
-                      swipe(true);
-                    } else if (offset.x < -swipeThreshold) {
-                      swipe(false);
-                    }
-                  }}
-                  onClick={() => !isFlipped && setIsFlipped(true)}
-                  className={`absolute w-full h-full bg-gradient-to-br ${getCardColor(currentCard.type)} rounded-3xl border-2 shadow-xl p-6 flex flex-col ${!isFlipped ? 'cursor-pointer hover:shadow-2xl transition-shadow' : 'cursor-grab active:cursor-grabbing'}`}
-                >
-                  <AnimatePresence mode="wait">
-                    {!isFlipped ? (
-                      <motion.div 
-                        key="front"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-1 flex flex-col items-center justify-center text-center space-y-6"
-                      >
-                        <div className="p-6 rounded-full bg-white/50 dark:bg-black/20 shadow-sm border border-black/5 dark:border-white/5">
-                          {getCardIcon(currentCard.type)}
-                        </div>
-                        <h2 className="font-bold text-2xl uppercase tracking-wider px-4" style={{ color: palette.ink }}>
-                          {currentCard.titre || getCardTitle(currentCard.type)}
-                        </h2>
-                        <div className="absolute bottom-8 flex flex-col items-center animate-bounce opacity-70">
-                          <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: palette.ink2 }}>
-                            Appuyez pour révéler
-                          </p>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div 
-                        key="back"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-1 flex flex-col h-full"
-                      >
-                        <div className="flex items-center gap-3 mb-6 shrink-0 border-b pb-4 border-black/5 dark:border-white/5">
-                          {getCardIcon(currentCard.type)}
-                          <h2 className="font-bold text-sm uppercase tracking-wider opacity-80" style={{ color: palette.ink }}>
-                            {currentCard.titre || getCardTitle(currentCard.type)}
-                          </h2>
-                        </div>
-                        
-                        <div className="flex-1 overflow-y-auto hide-scrollbar text-lg leading-relaxed flex items-center" style={{ color: palette.ink }}>
-                          <div className="w-full">
-                            {renderContent(currentCard.contenu)}
-                          </div>
-                        </div>
+              {currentCard && (() => {
+                const meta = typeMeta(currentCard.type);
+                const MetaIcon = meta.Icon;
+                return (
+                  <motion.div
+                    key={currentCard.id}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0, x: direction * 70 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ type: 'spring', stiffness: 340, damping: 30 }}
+                    onClick={() => !isFlipped && setIsFlipped(true)}
+                    className={`rounded-[24px] border p-7 flex flex-col ${!isFlipped ? 'cursor-pointer' : ''}`}
+                    style={{ background: palette.bg2, borderColor: isFlipped ? `${meta.color}59` : palette.line, minHeight: 'clamp(320px, 50vh, 440px)' }}
+                  >
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold px-2.5 py-1 rounded-full" style={{ background: `${meta.color}1A`, color: meta.color }}>
+                        <MetaIcon className="w-3.5 h-3.5" strokeWidth={2.4} /> {meta.label}
+                      </span>
+                    </div>
 
-                        <div className="mt-6 text-center text-xs font-bold uppercase tracking-widest opacity-50 shrink-0" style={{ color: palette.ink3 }}>
-                          Swipe pour répondre
+                    {!isFlipped ? (
+                      <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+                        <h2 className="text-[21px] font-bold leading-snug" style={{ color: palette.ink }}>
+                          {currentCard.titre || meta.label}
+                        </h2>
+                        <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold" style={{ color: palette.ink3 }}>
+                          <RotateCcw className="w-4 h-4" /> Retourner pour la réponse
+                        </span>
+                      </div>
+                    ) : (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="flex-1 flex flex-col">
+                        {currentCard.titre && (
+                          <h2 className="text-[14.5px] font-bold mb-3 pb-3 border-b" style={{ color: palette.ink, borderColor: palette.line }}>
+                            {currentCard.titre}
+                          </h2>
+                        )}
+                        <div className="flex-1 text-[16.5px] leading-[1.7]" style={{ color: palette.ink, fontFamily: "'Newsreader', Georgia, Cambria, serif" }}>
+                          {renderContent(currentCard.contenu)}
                         </div>
                       </motion.div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
-              )}
+                  </motion.div>
+                );
+              })()}
             </AnimatePresence>
+
+            {/* Auto-évaluation à 3 niveaux */}
+            {isFlipped ? (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-3 gap-2.5 mt-4">
+                {([
+                  { lvl: 'aRevoir', label: 'À revoir', color: '#E2504F', key: '1' },
+                  { lvl: 'presque', label: 'Presque', color: palette.anaBar, key: '2' },
+                  { lvl: 'acquis', label: 'Acquis', color: palette.tipBar, key: '3' },
+                ] as const).map(b => (
+                  <button
+                    key={b.lvl}
+                    onClick={() => grade(b.lvl)}
+                    className="flex flex-col items-center gap-0.5 py-3 rounded-[16px] border font-bold text-[14px] transition-transform active:scale-95"
+                    style={{ background: `${b.color}14`, borderColor: `${b.color}40`, color: b.color }}
+                  >
+                    {b.label}
+                    <span className="text-[10px] font-semibold" style={{ color: palette.ink3 }}>{b.key}</span>
+                  </button>
+                ))}
+              </motion.div>
+            ) : (
+              <p className="text-center text-[12px] mt-4" style={{ color: palette.ink3 }}>
+                Espace pour retourner · 1 · 2 · 3 pour t'auto-évaluer
+              </p>
+            )}
           </div>
         ) : (
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-sm border rounded-[32px] shadow-xl p-8 text-center relative z-10"
-            style={{ background: palette.bg, borderColor: palette.line }}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md border rounded-[24px] p-8 text-center"
+            style={{ background: palette.bg2, borderColor: palette.line }}
           >
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' }}>
-              <Check className="w-10 h-10" />
-            </div>
-            <h2 className="text-2xl font-black mb-2" style={{ color: palette.ink }}>Session Terminée !</h2>
-            <p className="mb-8" style={{ color: palette.ink2 }}>Tu as passé en revue {cards.length} fiches.</p>
-            
-            <div className="flex justify-between gap-4 mb-8">
-              <div className="rounded-[20px] p-4 flex-1 border" style={{ background: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.3)' }}>
-                <p className="text-3xl font-black" style={{ color: '#16a34a' }}>{stats.mastered}</p>
-                <p className="text-xs font-medium mt-1 uppercase" style={{ color: '#15803d' }}>Maîtrisées</p>
-              </div>
-              <div className="rounded-[20px] p-4 flex-1 border" style={{ background: 'rgba(249, 115, 22, 0.1)', borderColor: 'rgba(249, 115, 22, 0.3)' }}>
-                <p className="text-3xl font-black" style={{ color: '#ea580c' }}>{stats.toReview}</p>
-                <p className="text-xs font-medium mt-1 uppercase" style={{ color: '#c2410c' }}>À revoir</p>
-              </div>
-            </div>
+            {(() => {
+              const total = cards.length || 1;
+              const pct = Math.round((stats.acquis / total) * 100);
+              const C = 2 * Math.PI * 52;
+              return (
+                <>
+                  <div className="relative w-32 h-32 mx-auto mb-5">
+                    <svg width="128" height="128" viewBox="0 0 128 128" className="-rotate-90">
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={palette.bg3} strokeWidth="10" />
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="10" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - (C * pct) / 100} style={{ transition: 'stroke-dashoffset 0.6s ease-out' }} />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-[30px] font-extrabold leading-none" style={{ color: palette.ink }}>{pct}%</span>
+                      <span className="text-[10px] font-bold tracking-wide mt-1" style={{ color: palette.ink3 }}>acquis</span>
+                    </div>
+                  </div>
 
-            <button 
-              onClick={reset}
-              className="w-full text-white py-4 rounded-[20px] font-bold flex items-center justify-center gap-2 transition-colors mb-3 shadow-md"
-              style={{ background: palette.accent }}
-            >
-              <RotateCcw className="w-5 h-5" /> Recommencer
-            </button>
-            <button 
-              onClick={() => setView('hub')}
-              className="w-full border-2 py-3.5 rounded-[20px] font-bold transition-colors hover:bg-black/5"
-              style={{ borderColor: palette.line, color: palette.ink }}
-            >
-              Retour au Hub
-            </button>
+                  <h2 className="text-[20px] font-bold mb-1" style={{ color: palette.ink }}>Bilan de session</h2>
+                  <p className="text-[13.5px] mb-6" style={{ color: palette.ink2 }}>Tu as passé {cards.length} fiches en revue.</p>
+
+                  <div className="grid grid-cols-3 gap-2.5 mb-7">
+                    {([
+                      { label: 'Acquis', val: stats.acquis, color: palette.tipBar },
+                      { label: 'Presque', val: stats.presque, color: palette.anaBar },
+                      { label: 'À revoir', val: stats.aRevoir, color: '#E2504F' },
+                    ] as const).map(s => (
+                      <div key={s.label} className="rounded-[16px] py-3 border" style={{ background: `${s.color}12`, borderColor: `${s.color}30` }}>
+                        <p className="text-[24px] font-extrabold leading-none" style={{ color: s.color }}>{s.val}</p>
+                        <p className="text-[11px] font-semibold mt-1.5" style={{ color: palette.ink2 }}>{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {aRevoirCards.length > 0 && (
+                    <button onClick={restartARevoir} className="w-full text-white py-3.5 rounded-[16px] font-bold flex items-center justify-center gap-2 mb-2.5" style={{ background: palette.accent }}>
+                      <RotateCcw className="w-5 h-5" /> Refaire les {aRevoirCards.length} à revoir
+                    </button>
+                  )}
+                  <button onClick={reset} className="w-full py-3 rounded-[16px] font-bold flex items-center justify-center gap-2 mb-2.5 border transition-opacity hover:opacity-80" style={aRevoirCards.length > 0 ? { borderColor: palette.line, color: palette.ink } : { background: palette.accent, color: '#fff', borderColor: 'transparent' }}>
+                    <RotateCcw className="w-5 h-5" /> Recommencer
+                  </button>
+                  <button onClick={() => setView('hub')} className="w-full border py-3 rounded-[16px] font-bold transition-opacity hover:opacity-80" style={{ borderColor: palette.line, color: palette.ink }}>
+                    Retour au Hub
+                  </button>
+                </>
+              );
+            })()}
           </motion.div>
         )}
-
-        {/* CONTROLS (Only show when not finished) */}
-        {!isFinished && (
-          <div className="w-full max-w-sm mt-8 flex justify-center gap-8 relative z-10">
-            <button 
-              onClick={() => swipe(false)}
-              disabled={!isFlipped}
-              className={`w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all shadow-lg ${
-                !isFlipped 
-                  ? 'opacity-40 cursor-not-allowed grayscale' 
-                  : 'hover:scale-105 active:scale-95'
-              }`}
-              title="À revoir"
-              style={{ background: palette.bg, borderColor: '#ef4444', color: '#ef4444' }}
-            >
-              <X className="w-8 h-8" />
-            </button>
-            <button 
-              onClick={() => swipe(true)}
-              disabled={!isFlipped}
-              className={`w-16 h-16 border-2 rounded-full flex items-center justify-center transition-all shadow-lg ${
-                !isFlipped 
-                  ? 'opacity-40 cursor-not-allowed grayscale' 
-                  : 'hover:scale-105 active:scale-95'
-              }`}
-              title="Je maîtrise"
-              style={{ background: palette.bg, borderColor: '#22c55e', color: '#22c55e' }}
-            >
-              <Check className="w-8 h-8" />
-            </button>
-          </div>
-        )}
-
       </main>
     </div>
   );

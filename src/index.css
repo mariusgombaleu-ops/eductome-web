@@ -1193,3 +1193,24 @@ mjx-container:not([display="true"]) {
   font-weight: 600;
   color: #D81B60;
 }
+
+/* ============================================ */
+/* COURSE READER — corps de lecture éditorial   */
+/* ============================================ */
+.ed-reader-prose {
+  font-family: 'Newsreader', Georgia, Cambria, serif;
+}
+/* Les titres et l'interface restent en Poppins */
+.ed-reader-prose h1,
+.ed-reader-prose h2,
+.ed-reader-prose h3,
+.ed-reader-prose .font-poppins,
+.ed-reader-prose button,
+.ed-reader-prose [class*="uppercase"] {
+  font-family: 'Poppins', sans-serif;
+}
+/* Confort de lecture sur le texte courant rendu par BlockRenderer */
+.ed-reader-prose p,
+.ed-reader-prose li {
+  line-height: 1.72;
+}

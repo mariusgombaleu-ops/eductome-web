@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Target, ShoppingBag, User } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Target, RotateCcw, ShoppingBag, User } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { motion } from 'framer-motion';
 
@@ -7,6 +7,7 @@ const TABS = [
   { key: 'accueil', label: 'Accueil', href: '/dashboard', icon: LayoutDashboard, end: true },
   { key: 'cours', label: 'Cours', href: '/dashboard/courses', icon: BookOpen, end: false },
   { key: 'objectifs', label: 'Objectifs', href: '/dashboard/objectifs', icon: Target, end: false },
+  { key: 'revision', label: 'Révision', href: '/dashboard/revisions', icon: RotateCcw, end: false },
   { key: 'boutique', label: 'Boutique', href: '/dashboard/boutique', icon: ShoppingBag, end: false },
   { key: 'profil', label: 'Profil', href: '/dashboard/profile', icon: User, end: false },
 ];

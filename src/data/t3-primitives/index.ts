@@ -1,31 +1,49 @@
-// src/data/t3-primitives/index.ts
 import { Tome } from '../../types/course';
-import { chapitreIntro } from './chap1';
-import { chapitre1 } from './chap2';
+import { chapitreIntro } from './message-grand-frere';
+import { chapitreSocle } from './socle';
+import { chapitreM1 } from './m1';
+import { chapitreM2 } from './m2';
+import { chapitreM3 } from './m3';
+import { chapitreM4 } from './m4';
+import { chapitreM5 } from './m5';
+import { chapitreM6 } from './m6';
+import { chapitreSalle } from './salle-examen';
+import { chapitreAnnexe } from './annexe';
+import { chapitreConclusion } from './conclusion';
 
-export const tomeLesPrimitives: Tome = {
-  id: 'primitives-integrales-t3',
-  titre: 'Primitives & Calcul Intégral (Tome 3)',
+export const tomePrimitives: Tome = {
+  id: 't3-primitives',
+  titre: 'Primitives & Intégrales (Tome 3)',
   collection: 'les-cles-maths',
   matiere: 'Mathématiques',
   niveau: 'Terminale D',
   description:
-    'Découvre le remontage de fonctions. Apprends à retrouver la fonction d\'origine à partir de sa variation, à manipuler les intégrales définies, à calculer des aires sur la lagune et à déjouer tous les pièges du BAC.',
+    'Si les dérivées mesurent la vitesse, les primitives reconstruisent le trajet. Du gbaka qui accumule les kilomètres au volume d\'un vase de potier, ce tome dompte les primitives, l\'intégrale définie, l\'intégration par parties, le calcul d\'aires et les volumes de révolution — avec la méthode de rédaction qui rafle tous les points.',
   objectifs: [
-    'Comprendre intuitivement qu\'une primitive est l\'opération inverse de la dérivée',
-    'Calculer la primitive générale et l\'unique primitive vérifiant une condition initiale',
-    'Maîtriser les propriétés de l\'intégrale définie (Chasles, linéarité, positivité)',
-    'Calculer des aires exactes sous une courbe et entre deux courbes en unités d\'aire',
-    'Dominer les exercices de synthèse de type BAC sur les primitives et la cinématique',
+    'Reconnaître la fonction de départ à partir de sa dérivée et maîtriser les primitives de référence',
+    'Repérer les formes composées ($u\'u^n$, $\\dfrac{u\'}{u}$, $u\'e^u$…) et les primitiver d\'un geste',
+    'Calculer une intégrale définie et une valeur moyenne sans erreur de signe',
+    'Dompter l\'Intégration Par Parties, l\'outil avancé du BAC',
+    'Mesurer une aire exacte entre courbes et rédiger la justification proprement',
+    'Calculer le volume d\'un solide de révolution engendré par une rotation autour de $(Ox)$',
   ],
   chapitres: [
     chapitreIntro,
-    chapitre1,
+    chapitreSocle,
+    chapitreM1,
+    chapitreM2,
+    chapitreM3,
+    chapitreM4,
+    chapitreM5,
+    chapitreM6,
+    chapitreSalle,
+    chapitreAnnexe,
+    chapitreConclusion,
   ],
   prix: {
     chapitre: 300,
     tome: 1500,
   },
   couleurCollection: '#1A3557',
-  couverture: '/covers/t3-primitives.png',
+  couverture: '/covers/tomes/cover-t3.png',
 };

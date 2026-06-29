@@ -21,31 +21,31 @@ const COURSE_METADATA: Record<string, any> = {
     title: 'Les Dérivées',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-purple-600 to-purple-800',
+    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
     series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 4,
+    totalQuizzes: 6,
     completedQuizzes: 0,
     progress: 0,
     status: 'nouveau'
   },
   't3-primitives': {
-    title: 'Les Primitives',
+    title: 'Primitives & Intégrales',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-indigo-600 to-indigo-800',
+    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
     series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 4,
+    totalQuizzes: 6,
     completedQuizzes: 0,
     progress: 0,
     status: 'nouveau'
   },
-  't11-eq-diff': {
-    title: 'Équations Différentielles',
+  't4-suites': {
+    title: 'Suites Numériques',
     subject: 'Mathématiques',
     level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-teal-600 to-teal-800',
+    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
     series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 3,
+    totalQuizzes: 5,
     completedQuizzes: 0,
     progress: 0,
     status: 'nouveau'
@@ -65,6 +65,45 @@ const STARTER_COURSES = [
     status: "nouveau",
     colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
     badge: "Chapitre 1 Gratuit"
+  },
+  {
+    id: "t2-derivees",
+    title: "Les Dérivées",
+    subject: "Mathématiques",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 6,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
+    badge: "Aperçu gratuit"
+  },
+  {
+    id: "t3-primitives",
+    title: "Primitives & Intégrales",
+    subject: "Mathématiques",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 6,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
+    badge: "Aperçu gratuit"
+  },
+  {
+    id: "t4-suites",
+    title: "Suites Numériques",
+    subject: "Mathématiques",
+    level: "Terminale",
+    series: ["Terminale D", "Terminale C"],
+    progress: 0,
+    totalQuizzes: 5,
+    completedQuizzes: 0,
+    status: "nouveau",
+    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
+    badge: "Aperçu gratuit"
   },
   {
     id: "pc-cinematique",

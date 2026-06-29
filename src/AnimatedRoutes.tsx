@@ -26,6 +26,7 @@ import { OnboardingWelcome } from './pages/dashboard/OnboardingWelcome';
 import { PaymentSuccess } from './pages/dashboard/PaymentSuccess';
 import { ClaimPurchase } from './pages/dashboard/ClaimPurchase';
 import { GradesCalculator } from './pages/dashboard/GradesCalculator';
+import { Simulateur } from './pages/dashboard/Simulateur';
 import { Flashcards } from './pages/dashboard/Flashcards';
 import { RelaisDashboard } from './pages/RelaisDashboard';
 import { ParentDashboard } from './pages/ParentDashboard';
@@ -61,6 +62,8 @@ export const AnimatedRoutes = () => {
         <Route path="/dashboard/courses" element={<MyCourses />} />
         <Route path="/dashboard/course/:courseId" element={<CourseReader />} />
         <Route path="/dashboard/objectifs" element={<GradesCalculator />} />
+        <Route path="/dashboard/simulateur" element={<Simulateur />} />
+        <Route path="/dashboard/simulateur/:examId" element={<Simulateur />} />
         <Route path="/dashboard/revisions" element={<Flashcards />} />
         <Route path="/dashboard/profile" element={<Profile />} />
         <Route path="/dashboard/settings" element={<Settings />} />

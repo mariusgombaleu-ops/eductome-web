@@ -215,13 +215,13 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
       if (isAccroche) {
         return (
           <div key={b.id || Math.random()} className={`mt-8 mb-6 p-5 rounded-2xl shadow-sm border ${isDark ? 'bg-gradient-to-br from-[#D81B60]/10 to-transparent border-[#D81B60]/30' : 'bg-gradient-to-br from-pink-50 to-white border-pink-100'}`}>
-            <p className={`font-poppins text-[17px] font-medium leading-relaxed ${isDark ? 'text-pink-100' : 'text-[#880E4F]'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
+            <p className={`text-[17px] font-medium leading-relaxed ${isDark ? 'text-pink-100' : 'text-[#880E4F]'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
           </div>
         );
       } else if (isTransition) {
         return (
           <div key={b.id || Math.random()} className={`mt-6 mb-10 p-5 rounded-r-xl border-l-4 shadow-sm ${isDark ? 'bg-[#1976D2]/10 border-l-[#1976D2]' : 'bg-[#1976D2]/5 border-l-[#1976D2]'}`}>
-            <p className={`font-poppins italic leading-relaxed ${isDark ? 'text-blue-100' : 'text-[#1A3557]'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
+            <p className={`italic leading-relaxed ${isDark ? 'text-blue-100' : 'text-[#1A3557]'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
           </div>
         );
       }
@@ -233,7 +233,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
               {b.titre}
             </div>
           )}
-          <div className={`my-4 font-poppins leading-relaxed text-base ${isDark ? 'text-gray-300' : 'text-gray-700'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
+          <div className={`my-4 leading-relaxed text-base ${isDark ? 'text-gray-300' : 'text-gray-700'}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(b.contenu) }} />
         </div>
       );
     }
@@ -461,9 +461,10 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
         <div className={`my-5 rounded-2xl overflow-hidden border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200 shadow-sm'}`}>
           <img src={b.src} alt={b.alt} className="w-full max-h-[60vh] object-contain" />
           {b.legende && (
-            <div className={`px-4 py-2 text-center text-xs italic ${isDark ? 'text-gray-400 bg-gray-900/50' : 'text-gray-500 bg-gray-50'}`}>
-              {b.legende}
-            </div>
+            <div
+              className={`px-4 py-2 text-center text-xs italic ${isDark ? 'text-gray-400 bg-gray-900/50' : 'text-gray-500 bg-gray-50'}`}
+              dangerouslySetInnerHTML={{ __html: renderMath(b.legende) }}
+            />
           )}
         </div>
       );
