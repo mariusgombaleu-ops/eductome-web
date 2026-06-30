@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { collectionsData } from '../../data/collections';
-import { ShoppingBag, Lock, Unlock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Lock, Unlock, ChevronDown, ChevronUp } from 'lucide-react';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { PageHero } from '../../components/dashboard/PageHero';
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BottomSheet } from '../../components/ui/system';
@@ -30,6 +31,11 @@ export const DashboardBoutique = () => {
     setModalOpen(true);
   };
 
+  // Infos clés réelles : tomes possédés (déblocage tome complet) vs à débloquer.
+  const allTomes = collectionsData.flatMap(c => c.tomes ?? []);
+  const ownedTomes = allTomes.filter(t => unlockedCourses.includes(t.id)).length;
+  const lockedTomes = Math.max(0, allTomes.length - ownedTomes);
+
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       
@@ -38,31 +44,16 @@ export const DashboardBoutique = () => {
         message="C'est ici que tu t'armes pour la bataille finale. Investis en toi-même, prends les tomes qui te manquent et domine tes faiblesses."
       />
 
-      {/* Banner */}
-      <div className="relative rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6" style={{ background: palette.heroBg }}>
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white/10 pointer-events-none blur-2xl"></div>
-        
-        <div className="relative z-10 text-white flex-1">
-          <div className="w-12 h-12 rounded-[14px] flex items-center justify-center mb-3.5" style={{ background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.16)' }}>
-            <ShoppingBag className="w-[22px] h-[22px]" />
-          </div>
-          <h1 className="text-[26px] md:text-[28px] font-extrabold mb-2 leading-tight" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
-            Débloque ton contenu
-          </h1>
-          <p className="text-white/85 max-w-lg text-[13px] md:text-[15px] font-medium leading-relaxed mb-4">
-            Tome complet, chapitre par chapitre dès 300 F, ou toute la collection. Corrections du Grand Frère incluses.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {['Wave', 'Orange Money', 'MTN'].map(m => (
-              <span key={m} className="text-[11px] font-bold px-3 py-1.5 rounded-full font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.16)' }}>
-                {m}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Collections"
+        title="Boutique"
+        description="Investis en toi : débloque tes tomes à la carte dès 300 F, ou passe VIP pour tout le programme."
+        stats={[
+          { value: ownedTomes, label: ownedTomes > 1 ? 'Tomes à toi' : 'Tome à toi', progress: allTomes.length ? Math.round((ownedTomes / allTomes.length) * 100) : 0 },
+          { value: lockedTomes, label: 'À débloquer', progress: allTomes.length ? Math.round((lockedTomes / allTomes.length) * 100) : 100 },
+          { value: 'VIP', label: 'Accès total' },
+        ]}
+      />
 
       {/* VIP Collection Complete Banner */}
       <div 

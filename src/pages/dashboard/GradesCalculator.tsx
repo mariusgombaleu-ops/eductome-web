@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Target, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp } from 'lucide-react';
 import { BacSimulator } from '../../components/bac/BacSimulator';
 import confetti from 'canvas-confetti';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { PageHero, PageHeroStat } from '../../components/dashboard/PageHero';
 import { useToast } from '../../contexts/ToastContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
@@ -248,7 +249,7 @@ export function GradesCalculator() {
   });
 
   return (
-    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-20 font-poppins max-w-7xl mx-auto">
+    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-20 font-poppins">
       <GrandFrereGuide 
         id="grades"
         message={mainTab === 'notes' 
@@ -256,59 +257,56 @@ export function GradesCalculator() {
           : "Fixe tes objectifs d'abord. On ne navigue pas à vue ! Remplis tes cibles et valide en bas de la page."}
       />
       
-      <h1 className="text-[26px] md:text-3xl font-extrabold tracking-tight -mb-2" style={{ color: palette.ink, fontFamily: palette.display }}>
-        Notes &amp; Objectifs
-      </h1>
-
-      {/* Hero — moyenne du trimestre (maquette #7) */}
       {(() => {
         const trimLabels: Record<'t1' | 't2' | 't3', string> = { t1: '1er trimestre', t2: '2ᵉ trimestre', t3: '3ᵉ trimestre' };
-        const prevTrim = activeTab === 't2' ? 't1' : activeTab === 't3' ? 't2' : null;
-        const prevAvg = prevTrim ? calculateSpecificTrimesterAverage(prevTrim) : null;
-        const delta = trimesterAvg !== null && prevAvg !== null ? trimesterAvg - prevAvg : null;
-        const pct = trimesterAvg !== null && targetTrimester ? Math.min(100, Math.round((trimesterAvg / targetTrimester) * 100)) : null;
         const remaining = trimesterAvg !== null && targetTrimester ? Math.max(0, targetTrimester - trimesterAvg) : null;
-        return (
-          <div className="relative overflow-hidden rounded-[28px] p-6 md:p-7 animate-fade-in-up" style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}>
-            <div className="absolute -top-12 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ border: '1.5px solid rgba(255,255,255,.14)' }} />
-            <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
-            <div className="relative max-w-2xl">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] opacity-85 font-poppins">Moyenne · {trimLabels[activeTab]}</span>
-                  <div className="text-[40px] font-extrabold leading-none mt-2" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
-                    {trimesterAvg !== null ? trimesterAvg.toFixed(2).replace('.', ',') : '—'}<span className="text-[16px] font-semibold opacity-80">/20</span>
-                  </div>
-                </div>
-                {delta !== null && Math.abs(delta) >= 0.05 && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.18)' }}>
-                    {delta >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />} {delta >= 0 ? '+' : ''}{delta.toFixed(1).replace('.', ',')}
-                  </span>
-                )}
-              </div>
-              {targetTrimester ? (
-                <>
-                  <div className="flex items-center justify-between text-[11px] font-semibold mt-4 mb-1.5 opacity-90 font-poppins">
-                    <span>Objectif : {targetTrimester}/20</span>
-                    <span className="font-extrabold">{pct}%</span>
-                  </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,.2)' }}>
-                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct ?? 0}%`, background: 'linear-gradient(90deg, rgba(255,255,255,.65), #fff)', boxShadow: '0 0 12px rgba(255,255,255,.5)' }} />
-                  </div>
-                  <p className="mt-2.5 text-[12px] font-medium opacity-85 font-poppins">
-                    {trimesterAvg === null
-                      ? 'Ajoute tes notes pour suivre ta progression.'
-                      : remaining && remaining > 0
-                        ? `Plus que ${remaining.toFixed(1).replace('.', ',')} pt pour atteindre ton objectif 💪`
-                        : 'Objectif atteint, bravo 🎉'}
-                  </p>
-                </>
-              ) : (
-                <p className="mt-4 text-[12px] font-medium opacity-85 font-poppins">Définis un objectif de trimestre dans l'onglet « Mes Objectifs » pour suivre ta progression.</p>
-              )}
-            </div>
-          </div>
-        );
+        const fmt2 = (n: number | null | undefined) => (n !== null && n !== undefined ? n.toFixed(2).replace('.', ',') : '—');
+        const pct20 = (n: number | null | undefined) => (n !== null && n !== undefined ? Math.round((n / 20) * 100) : 0);
+        const subjectTargetCount = Object.values(goals.subjectTargets || {}).filter(v => typeof v === 'number').length;
+        const tA = { t1: calculateSpecificTrimesterAverage('t1'), t2: calculateSpecificTrimesterAverage('t2'), t3: calculateSpecificTrimesterAverage('t3') };
+
+        // Le hero s'adapte à l'onglet actif (Notes / Objectifs / Simulateur / Évolution).
+        const cfg: { eyebrow: string; title: string; description: string; stats?: PageHeroStat[] } =
+          mainTab === 'objectifs'
+            ? {
+                eyebrow: 'Notes & objectifs',
+                title: 'Mes objectifs',
+                description: "Fixe ta moyenne cible, tes points BAC et tes objectifs par matière — un cap clair pour chaque effort.",
+                stats: [
+                  { value: goals.generalAverage ? fmt2(goals.generalAverage) : '—', label: 'Moyenne visée /20', progress: pct20(goals.generalAverage) },
+                  { value: goals.bacPoints ? String(goals.bacPoints) : '—', label: 'Points BAC visés' },
+                  { value: subjectTargetCount || '—', label: 'Matières ciblées', progress: subjects.length ? Math.round((subjectTargetCount / subjects.length) * 100) : 0 },
+                ],
+              }
+            : mainTab === 'simulateur'
+            ? {
+                eyebrow: 'Notes & objectifs',
+                title: 'Simulateur BAC',
+                description: "Projette ton BAC : saisis tes notes prévues et découvre ta mention et ton total de points.",
+              }
+            : mainTab === 'evolution'
+            ? {
+                eyebrow: 'Notes & objectifs',
+                title: 'Mon évolution',
+                description: "Visualise ta progression trimestre après trimestre — et l'effort qui finit par payer.",
+                stats: [
+                  { value: fmt2(tA.t1), label: 'Moyenne T1', progress: pct20(tA.t1) },
+                  { value: fmt2(tA.t2), label: 'Moyenne T2', progress: pct20(tA.t2) },
+                  { value: fmt2(tA.t3), label: 'Moyenne T3', progress: pct20(tA.t3) },
+                ],
+              }
+            : {
+                eyebrow: `Notes & objectifs · ${trimLabels[activeTab]}`,
+                title: 'Mes notes',
+                description: "Pilote ta moyenne en temps réel, fixe tes objectifs et garde le cap vers ta mention au BAC.",
+                stats: [
+                  { value: fmt2(trimesterAvg), label: 'Moyenne /20', progress: pct20(trimesterAvg) },
+                  { value: targetTrimester ? String(targetTrimester) : '—', label: 'Objectif /20', progress: pct20(targetTrimester) },
+                  { value: remaining === null ? '—' : remaining <= 0 ? 'Atteint' : `+${remaining.toFixed(1).replace('.', ',')}`, label: 'Pour l’objectif', progress: (trimesterAvg !== null && targetTrimester) ? Math.min(100, Math.round((trimesterAvg / targetTrimester) * 100)) : 0 },
+                ],
+              };
+
+        return <PageHero eyebrow={cfg.eyebrow} title={cfg.title} description={cfg.description} stats={cfg.stats} />;
       })()}
 
       {/* Main Navigation Tabs */}

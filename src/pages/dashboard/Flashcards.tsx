@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { getRecommendedTome } from '../../utils/getRecommendedTome';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useFlashcardProgress } from '../../hooks/useFlashcardProgress';
+import { PageHero } from '../../components/dashboard/PageHero';
 
 export interface FlashcardItem {
   id: string;
@@ -140,7 +141,7 @@ const extractFlashcards = (courseId: string, tomeData: Tome | null) => {
 export function Flashcards() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { unlockedCourses } = useUser();
+  const { unlockedCourses, currentStreak } = useUser();
   const { palette } = useTheme();
   const { isDue, markReviewed } = useFlashcardProgress();
   const [view, setView] = useState<'hub' | 'cards'>('hub');
@@ -260,46 +261,32 @@ export function Flashcards() {
   if (view === 'hub') {
     return (
       <div className="min-h-screen font-poppins pb-24 md:pb-10 transition-colors" style={{ background: palette.bg }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-8">
+        <div className="px-4 md:px-6 lg:px-8 pt-6 space-y-8">
           
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl shrink-0" style={{ background: `${palette.accent}20` }}>
-              <RotateCcw className="w-6 h-6" style={{ color: palette.accent }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
-                Hub de Révision
-              </h1>
-              <p className="text-sm" style={{ color: palette.ink2 }}>Mémorise, entraîne-toi, puis compose — tout au même endroit.</p>
-            </div>
-          </div>
-
-          {/* Hero révision — répétition espacée (maquette #8) */}
           {(() => {
-            const dueList = Array.from(new Set([...unlockedCourses, 't1-limites'])).filter(c => COURSE_METADATA[c] && isDue(c));
+            const revisable = Array.from(new Set([...unlockedCourses, 't1-limites'])).filter(c => COURSE_METADATA[c]);
+            const dueList = revisable.filter(c => isDue(c));
             const dueCount = dueList.length;
             return (
-              <div className="relative overflow-hidden rounded-[22px] p-6" style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}>
-                <div className="absolute -top-12 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ border: '1.5px solid rgba(255,255,255,.14)' }} />
-                <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
-                <div className="relative">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.18)' }}>
-                    <RotateCcw className="w-3 h-3" /> Répétition espacée
-                  </span>
-                  <h2 className="mt-3 mb-1.5 text-[22px] font-extrabold leading-tight" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
-                    {dueCount > 0 ? `${dueCount} chapitre${dueCount > 1 ? 's' : ''} t'attend${dueCount > 1 ? 'ent' : ''}` : 'Tout est à jour 🎉'}
-                  </h2>
-                  <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,.85)' }}>
-                    {dueCount > 0 ? '5 minutes par jour suffisent pour ancrer tes cours durablement.' : 'Reviens demain, ou révise un chapitre librement ci-dessous.'}
-                  </p>
-                  <button
-                    onClick={() => dueCount > 0 ? launchRevision(dueList[0]) : document.getElementById('revisions-libres')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="inline-flex items-center gap-2 rounded-[14px] px-6 py-3 text-[14px] font-extrabold transition-transform hover:scale-[1.02]"
-                    style={{ background: '#fff', color: palette.accent2, boxShadow: '0 4px 12px rgba(0,0,0,.16)' }}
-                  >
-                    <PlayCircle className="w-[18px] h-[18px]" /> {dueCount > 0 ? 'Commencer la révision' : 'Réviser librement'}
-                  </button>
-                </div>
+              <div className="space-y-4">
+                <PageHero
+                  eyebrow="Entraînement"
+                  title="Révision"
+                  description="Ancre tes cours dans la durée : flashcards, exercices et simulateur d'examen, réunis au même endroit."
+                  stats={[
+                    { value: dueCount, label: 'À réviser', progress: revisable.length ? Math.round((dueCount / revisable.length) * 100) : 0 },
+                    { value: revisable.length, label: 'Chapitres' },
+                    { value: currentStreak, label: 'Jours de suite', progress: Math.min(100, Math.round((currentStreak / 7) * 100)) },
+                  ]}
+                />
+                <button
+                  onClick={() => dueCount > 0 ? launchRevision(dueList[0]) : document.getElementById('revisions-libres')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 rounded-[14px] px-6 py-3 text-[14px] font-extrabold transition-transform hover:scale-[1.02]"
+                  style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 4px 12px ${palette.accent}40` }}
+                >
+                  <PlayCircle className="w-[18px] h-[18px]" />
+                  {dueCount > 0 ? 'Commencer la révision' : 'Réviser librement'}
+                </button>
               </div>
             );
           })()}

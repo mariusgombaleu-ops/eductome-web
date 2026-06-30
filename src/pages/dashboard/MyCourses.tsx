@@ -6,6 +6,7 @@ import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import type { PaletteTokens } from '../../contexts/ThemeContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
+import { PageHero } from '../../components/dashboard/PageHero';
 
 // ──────────────────────────────────────────────────────────────────────────
 // Source unique des tomes de la collection « Les Clés Maths » (seul contenu
@@ -143,6 +144,9 @@ export const MyCourses = () => {
 
   const owned = TOMES.filter(t => isOwned(t.id));
   const locked = TOMES.filter(t => !isOwned(t.id));
+  const avgPct = owned.length
+    ? Math.round(owned.reduce((s, t) => s + progressOf(t).pct, 0) / owned.length)
+    : 0;
 
   // Tome mis en avant dans « Reprendre » : le dernier ouvert, sinon le premier
   // tome possédé, sinon le Tome 1 (dont l'aperçu est gratuit pour tous).
@@ -246,55 +250,25 @@ export const MyCourses = () => {
         message="Voici ta bibliothèque. Reprends là où tu t'es arrêté, avance tome par tome — la régularité fait la différence, pas la vitesse."
       />
 
-      {/* ── En-tête ── */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[26px] sm:text-3xl font-bold leading-tight" style={{ color: palette.ink, fontFamily: palette.display }}>
-            Mes cours
-          </h1>
-          <div className="mt-2 h-[3px] w-9 rounded-full" style={{ background: palette.accent }} />
-          <p className="mt-3 text-sm max-w-lg" style={{ color: palette.ink2 }}>
-            Ta collection « Les Clés Maths », tome par tome.
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/dashboard/revisions')}
-          className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-[12.5px] font-semibold border transition-colors hover:opacity-80"
-          style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink2 }}
-        >
-          <RotateCcw className="w-4 h-4" /> Réviser
-        </button>
-      </div>
-
-      {/* ── Hero « bibliothèque » (stats réelles) ── */}
-      <section
-        className="relative overflow-hidden rounded-[22px] p-5 sm:p-6"
-        style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}
-      >
-        <div className="absolute -top-12 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ border: '1.5px solid rgba(255,255,255,.14)' }} />
-        <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
-        <div className="relative">
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] opacity-85 font-poppins">Ta bibliothèque</span>
-          <h2 className="mt-2 mb-1.5 text-[20px] sm:text-[22px] font-extrabold leading-[1.18]" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
-            Débloque tes cours, entraîne-toi, vise haut.
-          </h2>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,.85)' }}>
-            C'est ici que tu lis tes tomes et t'entraînes pour décrocher ta mention au BAC.
-          </p>
-          <div className="grid grid-cols-3 gap-2.5 max-w-md">
-            {[
-              { n: owned.length, label: owned.length > 1 ? 'Tomes débloqués' : 'Tome débloqué' },
-              { n: locked.length, label: 'À débloquer' },
-              { n: 1, label: 'Collection' },
-            ].map((s, i) => (
-              <div key={i} className="rounded-[14px] px-3 py-2.5" style={{ background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.16)' }}>
-                <div className="text-[22px] font-extrabold leading-none" style={{ fontFamily: palette.display }}>{s.n}</div>
-                <div className="text-[10px] font-semibold opacity-85 mt-1 leading-tight">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Ma bibliothèque"
+        title="Mes cours"
+        description="Débloque tes tomes : comprends chaque notion en profondeur, entraîne-toi et décroche ta mention au BAC."
+        stats={[
+          { value: owned.length, label: owned.length > 1 ? 'Tomes débloqués' : 'Tome débloqué', progress: Math.round((owned.length / TOMES.length) * 100) },
+          { value: locked.length, label: 'À débloquer', progress: Math.round((locked.length / TOMES.length) * 100) },
+          { value: `${avgPct}%`, label: 'Progression moy.', progress: avgPct },
+        ]}
+        action={
+          <button
+            onClick={() => navigate('/dashboard/revisions')}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-[12.5px] font-semibold transition-colors hover:opacity-90"
+            style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.22)', color: '#fff' }}
+          >
+            <RotateCcw className="w-4 h-4" /> Réviser
+          </button>
+        }
+      />
 
       {/* ── Reprendre ── */}
       <section>
