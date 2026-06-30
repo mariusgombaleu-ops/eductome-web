@@ -1,0 +1,208 @@
+import { Chapitre } from '../../types/course';
+
+export const chapitreSalle: Chapitre = {
+  id: 't9-salle',
+  titre: `La Salle d'Entraînement`,
+  duree: 45,
+  niveau: 'BAC',
+  xpGain: 40,
+  objectifs: [
+    `Affronter sereinement les grands types d'exercices de géométrie dans l'espace au BAC ivoirien`,
+    `Gérer ton temps sur un exercice de géométrie en conditions réelles d'examen`,
+    `Rédiger une copie qui coche tous les points de barème du correcteur`,
+  ],
+  sections: [
+    {
+      id: 's-a',
+      titre: `Section A — Les 6 réflexes de survie`,
+      blocs: [
+        {
+          type: 'dialogue',
+          id: 'dlg-a1',
+          pf: `Grand Frère, j'ai lu tous les modules. Mais le jour du BAC, je bloque toujours au moment de me lancer. Comment je m'entraîne pour de vrai ?`,
+        },
+        {
+          type: 'dialogue',
+          id: 'dlg-a2',
+          gf: `Bienvenue dans l'arène, Champion(ne). Ici, on enchaîne $10$ exercices de type BAC, tous corrigés avec la Copie Parfaite et le barème. Ils sont dérivés des annales ivoiriennes (la géométrie dans l'espace est le 2ᵉ thème le plus fréquent au BAC). Travaille-les à livre fermé, chronomètre en main. C'est en transpirant ici que tu seras tranquille le jour J.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-reflexes',
+          headers: [`Le Réflexe`, `Pourquoi c'est indispensable`],
+          rows: [
+            [`1. Arrivée moins départ`, `Tout vecteur $\\vec{AB}$ se calcule $B - A$. Une erreur de signe ici fait tomber tout l'exercice.`],
+            [`2. Le juge de paix`, `Un système de coplanarité ou d'intersection se résout sur 2 lignes, se VÉRIFIE sur la 3ᵉ.`],
+            [`3. $t$ pour l'un, $t'$ pour l'autre`, `Comparer deux droites avec le même paramètre, c'est l'erreur n°1 du Lycée Classique.`],
+            [`4. Directeur ou normal ?`, `Droite $\\perp$ plan = colinéarité (directeur $\\parallel$ normal). Orthogonalité = produit scalaire nul. Ne les confonds pas.`],
+            [`5. La valeur absolue`, `Une distance est toujours positive : barres $|\\cdot|$ obligatoires au numérateur.`],
+            [`6. Nommer le cas final`, `« gauches », « sécants », « tangent », « cercle »… Le mot exact vaut des points.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-b',
+      titre: `Section B — Les 10 Exercices BAC`,
+      blocs: [
+        {
+          type: 'exercise',
+          id: 'exo-1',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 1 — Tétraèdre (vecteurs et coplanarité)** *(M1)*. L'espace est rapporté à un repère orthonormé. On donne $A(0 ; 0 ; 0)$, $B(2 ; 0 ; 0)$, $C(0 ; 2 ; 0)$ et $D(0 ; 0 ; 2)$. **1.** Calcule $\\vec{AB}$, $\\vec{AC}$, $\\vec{AD}$. **2.** Démontre que $ABCD$ est un tétraèdre (les quatre points ne sont pas coplanaires).`,
+          etapes: [],
+          reponse: `$\\vec{AB}(2 ; 0 ; 0)$, $\\vec{AC}(0 ; 2 ; 0)$, $\\vec{AD}(0 ; 0 ; 2)$. On cherche $a$, $b$ tels que $\\vec{AD} = a\\vec{AB} + b\\vec{AC}$ : la ligne de $z$ donne $2 = 0$, impossible. **Copie Parfaite :** $\\vec{AD}$ ne s'écrit pas comme combinaison de $\\vec{AB}$ et $\\vec{AC}$ (la coordonnée $z$ donne $2 = 0$). Les vecteurs ne sont pas coplanaires, donc $A$, $B$, $C$, $D$ ne sont pas coplanaires : $ABCD$ est un tétraèdre. *[Barème : vecteurs = 1 pt — système = 1 pt — conclusion = 0,5 pt — Total : 2,5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-2',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 2 — Barycentre et centre de gravité** *(M2)*. Avec les points $A(0 ; 0 ; 0)$, $B(2 ; 0 ; 0)$, $C(0 ; 2 ; 0)$ de l'Exercice 1 : **1.** Calcule le centre de gravité $G_0$ du triangle $ABC$. **2.** Calcule le barycentre $G$ de $(A,2)$, $(B,1)$, $(C,1)$.`,
+          etapes: [],
+          reponse: `$G_0\\left(\\dfrac{2}{3} ; \\dfrac{2}{3} ; 0\\right)$. Pour $G$ : $S = 4$, $x_G = \\dfrac{0+2+0}{4} = \\dfrac{1}{2}$, $y_G = \\dfrac{0+0+2}{4} = \\dfrac{1}{2}$, $z_G = 0$. **Copie Parfaite :** La somme des coefficients vaut $3 \\neq 0$ : $G_0\\left(\\dfrac{2}{3} ; \\dfrac{2}{3} ; 0\\right)$. Pour le système pondéré, $S = 4 \\neq 0$ et $G\\left(\\dfrac{1}{2} ; \\dfrac{1}{2} ; 0\\right)$. *[Barème : $G_0$ = 1 pt — $G$ pondéré = 1,5 pt — Total : 2,5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-3',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 3 — Mesure d'un angle (produit scalaire)** *(M3)*. On donne $A(1 ; 1 ; 0)$, $B(2 ; 3 ; 1)$ et $C(0 ; 2 ; 2)$. Détermine la mesure de l'angle $\\widehat{BAC}$.`,
+          etapes: [],
+          reponse: `$\\vec{AB}(1 ; 2 ; 1)$, $\\vec{AC}(-1 ; 1 ; 2)$. $\\vec{AB}\\cdot\\vec{AC} = -1 + 2 + 2 = 3$. $\\|\\vec{AB}\\| = \\|\\vec{AC}\\| = \\sqrt{6}$. **Copie Parfaite :** $\\vec{AB}\\cdot\\vec{AC} = 3$ et $\\|\\vec{AB}\\| = \\|\\vec{AC}\\| = \\sqrt{6}$, donc $\\cos\\widehat{BAC} = \\dfrac{3}{6} = \\dfrac{1}{2}$, d'où $\\widehat{BAC} = 60°$. *[Barème : vecteurs = 0,5 pt — produit scalaire = 0,5 pt — normes = 0,5 pt — angle = 0,5 pt — Total : 2 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-4',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 4 — Droite paramétrique et équation de plan** *(M4)*. Soit $A(1 ; -1 ; 2)$ et $\\vec{u}(2 ; 1 ; -1)$. **1.** Donne une représentation paramétrique de la droite $D$ passant par $A$, dirigée par $\\vec{u}$. **2.** Détermine l'équation cartésienne du plan $P$ passant par $A$ et de vecteur normal $\\vec{n}(1 ; 2 ; 2)$.`,
+          etapes: [],
+          reponse: `**1.** $x = 1 + 2t$, $y = -1 + t$, $z = 2 - t$, $t \\in \\mathbb{R}$. **2.** $x + 2y + 2z + d = 0$ ; avec $A$ : $1 - 2 + 4 + d = 0$, soit $d = -3$. **Copie Parfaite :** $D : x = 1 + 2t \\,;\\, y = -1 + t \\,;\\, z = 2 - t$ ($t \\in \\mathbb{R}$). Le plan $P$ a pour équation $x + 2y + 2z + d = 0$ ; comme $A \\in P$, $1 - 2 + 4 + d = 0$, d'où $d = -3$ : $P : x + 2y + 2z - 3 = 0$. *[Barème : représentation = 1 pt — forme avec $\\vec{n}$ = 0,5 pt — calcul de $d$ = 1 pt — Total : 2,5 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-5',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 5 — Position relative de deux droites** *(M5)*. Soit $D_1 : x = 1 + t \\,;\\, y = 2 - t \\,;\\, z = t$ et $D_2 : x = 2t' \\,;\\, y = 1 + t' \\,;\\, z = 3 - t'$. Étudie leur position relative.`,
+          etapes: [],
+          reponse: `Directeurs $\\vec{u}(1 ; -1 ; 1)$, $\\vec{v}(2 ; 1 ; -1)$ non colinéaires. Système : $t' = \\dfrac{2}{3}$, $t = \\dfrac{1}{3}$ ; la 3ᵉ ligne donne $\\dfrac{1}{3} \\neq \\dfrac{7}{3}$. **Copie Parfaite :** Les directeurs ne sont pas colinéaires (pas parallèles). Le système d'intersection n'a pas de solution. Les droites $D_1$ et $D_2$ sont donc non coplanaires (gauches). *[Barème : directeurs = 1 pt — système = 1 pt — conclusion = 1 pt — Total : 3 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-6',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 6 — Intersection droite / plan** *(M5)*. Soit $D : x = 1 + 2k \\,;\\, y = -1 + k \\,;\\, z = 2 - k$ et $P : x - y + 2z - 6 = 0$. Détermine l'intersection de $D$ et $P$.`,
+          etapes: [],
+          reponse: `Substitution : $(1+2k) - (-1+k) + 2(2-k) - 6 = -k = 0$, donc $k = 0$, point $(1 ; -1 ; 2)$. **Copie Parfaite :** En substituant $D$ dans $P$, on obtient $-k = 0$, soit $k = 0$ : $D$ et $P$ sont sécants au point $A(1 ; -1 ; 2)$. *[Barème : substitution = 1 pt — résolution = 1 pt — point = 1 pt — Total : 3 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-7',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 7 — Droite perpendiculaire à un plan** *(M6)*. Soit $P : x - 2y + 5z - 7 = 0$, $A(1 ; 1 ; 0)$ et $B(3 ; -3 ; 10)$. Montre que $(AB) \\perp P$.`,
+          etapes: [],
+          reponse: `$\\vec{n}(1 ; -2 ; 5)$, $\\vec{AB}(2 ; -4 ; 10) = 2\\vec{n}$ : colinéaires. **Copie Parfaite :** Le vecteur normal de $P$ est $\\vec{n}(1 ; -2 ; 5)$ et $\\vec{AB}(2 ; -4 ; 10) = 2\\vec{n}$. Le directeur de $(AB)$ étant colinéaire au normal de $P$, la droite $(AB)$ est perpendiculaire au plan $P$. *[Barème : normal = 0,5 pt — $\\vec{AB}$ = 0,5 pt — colinéarité = 0,5 pt — conclusion = 0,5 pt — Total : 2 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-8',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 8 — Distance et projeté orthogonal** *(M6–M7)*. Soit le plan $P : 2x - y + 2z - 3 = 0$ et le point $M(1 ; 2 ; 3)$. **1.** Calcule la distance de $M$ à $P$. **2.** Détermine le projeté orthogonal $H$ de $M$ sur $P$.`,
+          etapes: [],
+          reponse: `**1.** $d(M,P) = \\dfrac{|2 - 2 + 6 - 3|}{\\sqrt{9}} = \\dfrac{3}{3} = 1$. **2.** Droite $x = 1+2t$, $y = 2-t$, $z = 3+2t$ ; substitution : $9t + 3 = 0$, $t = -\\dfrac{1}{3}$, d'où $H\\left(\\dfrac{1}{3} ; \\dfrac{7}{3} ; \\dfrac{7}{3}\\right)$. **Copie Parfaite :** $d(M,P) = \\dfrac{|2(1) - 2 + 2(3) - 3|}{\\sqrt{2^2 + (-1)^2 + 2^2}} = 1$. La droite par $M$ dirigée par $\\vec{n}(2 ; -1 ; 2)$ coupe $P$ pour $t = -\\dfrac{1}{3}$ : $H\\left(\\dfrac{1}{3} ; \\dfrac{7}{3} ; \\dfrac{7}{3}\\right)$. *[Barème : distance = 1,5 pt — droite = 1 pt — projeté $H$ = 1,5 pt — Total : 4 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-9',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 9 — Intersection sphère / plan** *(M7)*. Soit $P : 2x - y + 2z - 5 = 0$ et la sphère $S$ de centre $\\Omega(3 ; 1 ; 2)$, de rayon $r = 3$. **1.** Calcule $d(\\Omega, P)$. **2.** Donne la nature de l'intersection et le rayon $\\rho$ du cercle obtenu.`,
+          etapes: [],
+          reponse: `**1.** $d = \\dfrac{|6 - 1 + 4 - 5|}{3} = \\dfrac{4}{3}$. **2.** $\\dfrac{4}{3} < 3$ : cercle. Rayon : $\\rho = \\sqrt{r^2 - d^2} = \\sqrt{9 - \\dfrac{16}{9}} = \\dfrac{\\sqrt{65}}{3}$. **Copie Parfaite :** $d(\\Omega, P) = \\dfrac{4}{3}$. Comme $\\dfrac{4}{3} < 3 = r$, l'intersection est un cercle. Son rayon vérifie $\\rho^2 = r^2 - d^2 = 9 - \\dfrac{16}{9} = \\dfrac{65}{9}$, donc $\\rho = \\dfrac{\\sqrt{65}}{3}$. *[Barème : distance = 1 pt — nature = 1 pt — rayon $\\rho$ = 1 pt — Total : 3 pts]*`,
+        },
+        {
+          type: 'exercise',
+          id: 'exo-10',
+          niveau: 'BAC',
+          enonce: `🔴 **Exercice 10 — Sphère tangente à un plan** *(M7)*. Détermine l'équation de la sphère $S$ de centre $A(1 ; 0 ; -1)$, tangente au plan $Q : x + 2y - 2z + 1 = 0$, puis donne le point de contact.`,
+          etapes: [],
+          reponse: `$r = d(A, Q) = \\dfrac{|1 + 0 + 2 + 1|}{3} = \\dfrac{4}{3}$. Sphère : $(x-1)^2 + y^2 + (z+1)^2 = \\dfrac{16}{9}$. Point de contact = projeté de $A$ sur $Q$ : droite $x = 1+t$, $y = 2t$, $z = -1-2t$ ; $9t + 4 = 0$, $t = -\\dfrac{4}{9}$, d'où $H\\left(\\dfrac{5}{9} ; -\\dfrac{8}{9} ; -\\dfrac{1}{9}\\right)$. **Copie Parfaite :** $S$ étant tangente à $Q$, $r = d(A, Q) = \\dfrac{4}{3}$. Donc $S : (x-1)^2 + y^2 + (z+1)^2 = \\dfrac{16}{9}$. Le point de contact est le projeté orthogonal de $A$ sur $Q$ : $H\\left(\\dfrac{5}{9} ; -\\dfrac{8}{9} ; -\\dfrac{1}{9}\\right)$. *[Barème : rayon = 1 pt — équation = 1,5 pt — point de contact = 1,5 pt — Total : 4 pts]*`,
+        },
+      ],
+    },
+    {
+      id: 's-c',
+      titre: `Section C — La check-list du correcteur`,
+      blocs: [
+        {
+          type: 'text',
+          id: 'b-c-intro',
+          contenu: `Avant de rendre ta copie, passe chaque exercice au crible de ces 8 points. C'est ce que le correcteur vérifie.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-checklist',
+          headers: [`Le correcteur vérifie…`, `Ton contrôle`],
+          rows: [
+            [`Le sens des vecteurs`, `Toujours $B - A$, jamais l'inverse`],
+            [`La justification de colinéarité / coplanarité`, `Le même $k$ sur les trois coordonnées, ou le test de la 3ᵉ ligne`],
+            [`Les paramètres distincts $t$ et $t'$`, `Une lettre par droite`],
+            [`Le mot exact de position`, `« sécants », « gauches », « parallèles », « inclus »`],
+            [`La valeur absolue dans la distance`, `Numérateur toujours positif`],
+            [`La comparaison $d$ et $r$`, `Énoncée explicitement avant la conclusion`],
+            [`Les phrases de conclusion`, `Une phrase complète, pas seulement un résultat brut`],
+            [`La cohérence des signes`, `Vérification finale par substitution`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-d',
+      titre: `Section D — Ton planning pour l'exercice de géométrie`,
+      blocs: [
+        {
+          type: 'text',
+          id: 'b-d-intro',
+          contenu: `Au BAC, vise environ $42$ minutes sur l'exercice de géométrie dans l'espace. Voici comment les répartir.`,
+        },
+        {
+          type: 'table',
+          id: 'tbl-planning',
+          headers: [`Temps`, `Ce que tu fais`],
+          rows: [
+            [`0 - 3 min`, `Lecture complète de l'énoncé, repérage des points et des plans donnés.`],
+            [`3 - 8 min`, `Au brouillon : tous les vecteurs utiles ($\\vec{AB}$, $\\vec{AC}$, normaux, directeurs).`],
+            [`8 - 30 min`, `Traiter les questions dans l'ordre : repérage, puis positions, puis distances.`],
+            [`30 - 38 min`, `Rédiger les Copies Parfaites avec les phrases de conclusion exactes.`],
+            [`38 - 42 min`, `Vérification : signes, valeurs absolues, substitutions de contrôle.`],
+          ],
+        },
+      ],
+    },
+    {
+      id: 's-eval',
+      titre: `Auto-évaluation`,
+      blocs: [
+        {
+          type: 'recap',
+          id: 'eval-salle',
+          titre: `Auto-évaluation — Salle d'Entraînement`,
+          contenu: [
+            `J'ai traité au moins 8 exercices sur 10 sans rouvrir le cours.`,
+            `Je nomme toujours le cas final avec le mot officiel exact.`,
+            `Je n'oublie jamais la valeur absolue dans une distance.`,
+            `Je vérifie mes systèmes sur la troisième ligne.`,
+            `Je rédige chaque conclusion en phrase complète.`,
+          ],
+        },
+        {
+          type: 'tip',
+          id: 'eval-score-salle',
+          titre: `Ton score`,
+          contenu: [
+            `🟢 **5/5** → Tu es prêt(e) pour l'épreuve, l'espace t'appartient, Champion(ne).`,
+            `🟡 **3 ou 4** → Refais l'Exercice 8, il combine distance et projeté, le cœur du chapitre.`,
+            `🔴 **0 à 2** → Pas de panique. Relis les fiches de descente des modules et reprends les calculs de base.`,
+          ],
+        },
+      ],
+    },
+  ],
+};

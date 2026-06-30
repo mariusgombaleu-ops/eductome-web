@@ -1,22 +1,44 @@
 import { Tome } from '../../types/course';
+import { chapitreIntro } from './message-grand-frere';
+import { chapitreSocle } from './socle';
+import { chapitreM1 } from './m1';
+import { chapitreM2 } from './m2';
+import { chapitreM3 } from './m3';
+import { chapitreM4 } from './m4';
+import { chapitreM5 } from './m5';
+import { chapitreM6 } from './m6';
+import { chapitreSalle } from './salle-entrainement';
+import { chapitreAnnexe } from './annexe';
+import { chapitreConclusion } from './conclusion';
 
-// ⚠️ SCAFFOLD — contenu à venir (nouvelle base V4 PREMIUM).
-// Étapes pour activer ce tome quand le contenu est prêt :
-//   1. Ajouter les fichiers de chapitres dans ce dossier en suivant la
-//      nomenclature T1 : message-grand-frere.ts, socle.ts, m1.ts … mN.ts,
-//      salle-entrainement.ts, annexe.ts, conclusion.ts.
-//   2. Les importer ici et remplir `chapitres` (+ `description`, `objectifs`).
-//   3. Créer src/data/course-t6.ts : export const courseT6: Tome = tomeTrigonometrie;
-//   4. Enregistrer dans CourseReader.tsx : 't6-trigonometrie': courseT6.
 export const tomeTrigonometrie: Tome = {
   id: 't6-trigonometrie',
   titre: 'Fonctions Trigonométriques (Tome 6)',
   collection: 'les-cles-maths',
   matiere: 'Mathématiques',
   niveau: 'Terminale D',
-  description: '',
-  objectifs: [],
-  chapitres: [],
+  description:
+    "Le courant de la CIE qui ondule, la marée de Grand-Lahou, l'aiguille du surveillant général au marché du Cacao : tout ce qui tourne, oscille et vibre se met en équation avec le cosinus, le sinus et la tangente. Ce tome dompte le radian et le cercle, la périodicité et la parité, les formules d'addition et de duplication, les limites de référence et les dérivées composées, jusqu'à l'étude complète d'une fonction trigonométrique — la reine de l'épreuve. Même moteur que $\\ln u$ et $e^u$ du Tome 5, nouveau terrain.",
+  objectifs: [
+    "Placer n'importe quel angle en radians sur le cercle et en lire la mesure principale",
+    "Exploiter périodicité et parité de $\\cos$, $\\sin$ et $\\tan$ pour réduire le domaine d'étude",
+    "Manier les formules d'addition, de duplication et de linéarisation, et la forme $R\\cos(x - \\varphi)$",
+    "Connaître les limites de référence en $0$ et dériver $\\sin u$, $\\cos u$, $\\tan u$ sans trembler",
+    "Résoudre équations et inéquations trigonométriques et mener l'étude complète d'une fonction",
+  ],
+  chapitres: [
+    chapitreIntro,
+    chapitreSocle,
+    chapitreM1,
+    chapitreM2,
+    chapitreM3,
+    chapitreM4,
+    chapitreM5,
+    chapitreM6,
+    chapitreSalle,
+    chapitreAnnexe,
+    chapitreConclusion,
+  ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
   couverture: '/covers/tomes/cover-t6.png',

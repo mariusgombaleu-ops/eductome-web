@@ -27,8 +27,26 @@ export const getRecommendedTome = (subjectId: string, title: string): { tomeId: 
   if (cleanTitle.includes('logarithme') || cleanTitle.includes('exp') || cleanTitle.includes('ln')) {
     return { tomeId: 't5-log-expo', tomeName: 'Tome 5 : Fonctions Ln & Exp' };
   }
+  if (cleanTitle.includes('trigo') || cleanTitle.includes('cosinus') || cleanTitle.includes('sinus') || cleanTitle.includes('radian')) {
+    return { tomeId: 't6-trigonometrie', tomeName: 'Tome 6 : Fonctions Trigonométriques' };
+  }
+  if (cleanTitle.includes('probabilit') || cleanTitle.includes('dénombr') || cleanTitle.includes('denombr') || cleanTitle.includes('binomial')) {
+    return { tomeId: 't7-probabilites', tomeName: 'Tome 7 : Les Probabilités' };
+  }
+  if (cleanTitle.includes('statisti') || cleanTitle.includes('corrélation') || cleanTitle.includes('correlation') || cleanTitle.includes('nuage de points') || cleanTitle.includes('ajustement')) {
+    return { tomeId: 't8-statistiques', tomeName: 'Tome 8 : Statistiques' };
+  }
+  if (cleanTitle.includes('espace') || cleanTitle.includes('barycentre') || cleanTitle.includes('vecteur') || cleanTitle.includes('produit scalaire') || cleanTitle.includes('sphère') || cleanTitle.includes('sphere')) {
+    return { tomeId: 't9-geometrie-espace', tomeName: 'Tome 9 : Géométrie dans l\'Espace' };
+  }
   if (cleanTitle.includes('complexe')) {
     return { tomeId: 't10-complexes', tomeName: 'Tome 10 : Nombres Complexes' };
+  }
+  if (cleanTitle.includes('équation différentielle') || cleanTitle.includes('equation differentielle') || cleanTitle.includes('différentielle') || cleanTitle.includes('differentielle')) {
+    return { tomeId: 't11-equations-diff', tomeName: 'Tome 11 : Les Équations Différentielles' };
+  }
+  if (cleanTitle.includes('révision') || cleanTitle.includes('revision') || cleanTitle.includes('bac blanc') || cleanTitle.includes('annale')) {
+    return { tomeId: 't12-revisions-bac', tomeName: 'Tome 12 : Révisions BAC Complètes' };
   }
 
   return null;

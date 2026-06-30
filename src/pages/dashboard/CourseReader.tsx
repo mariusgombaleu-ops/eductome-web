@@ -12,11 +12,7 @@ import { useReaderSettings } from '../../hooks/useReaderSettings';
 import { ReaderControls } from '../../components/reader/ReaderControls';
 import { FocusExitButton } from '../../components/reader/FocusExitButton';
 import { useToast } from '../../contexts/ToastContext';
-import { courseT1 } from '../../data/course-t1';
-import { courseT2 } from '../../data/course-t2';
-import { courseT3 } from '../../data/course-t3';
-import { courseT4 } from '../../data/course-t4';
-import { courseT5 } from '../../data/course-t5';
+import { loadTome } from '../../data/tomeLoaders';
 import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
 import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
@@ -244,28 +240,32 @@ export const CourseReader = () => {
     }
   }, [isNotesOpen, courseId]);
 
-  // Registre des cours actifs. Ajouter chaque nouveau tome (T2→T12) ici dès que
-  // son contenu est prêt : 'tN-slug': courseTN (voir src/data/<slug>/index.ts).
-  const courseRegistry: Record<string, Tome> = {
-    't1-limites': courseT1,
-    't2-derivees': courseT2,
-    't3-primitives': courseT3,
-    't4-suites': courseT4,
-    't5-log-expo': courseT5,
-  };
-
-  const course = courseId && courseRegistry[courseId] ? courseRegistry[courseId] : courseT1;
+  // Tome chargé à la demande (code-splitting) : voir src/data/tomeLoaders.ts.
+  // Chaque tome est un chunk séparé, récupéré seulement à l'ouverture du cours.
+  const [course, setCourse] = useState<Tome | null>(null);
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
-  const chapter = course.chapitres[activeChapterIndex] || course.chapitres[0];
 
   useEffect(() => {
-    if (courseId && chapter.id) {
+    let cancelled = false;
+    setCourse(null);
+    setActiveChapterIndex(0);
+    loadTome(courseId).then(tome => {
+      if (!cancelled) setCourse(tome);
+    });
+    return () => { cancelled = true; };
+  }, [courseId]);
+
+  const chapter = course ? (course.chapitres[activeChapterIndex] || course.chapitres[0]) : undefined;
+
+  useEffect(() => {
+    if (courseId && chapter?.id) {
       const isDl = localStorage.getItem(`eductome_gbaka_${courseId}_${chapter.id}`);
       setIsDownloaded(!!isDl);
     }
-  }, [courseId, chapter.id]);
+  }, [courseId, chapter?.id]);
 
   const handleDownloadGbaka = () => {
+    if (!chapter) return;
     if (isDownloaded) {
       addToast({ type: 'success', title: 'Déjà téléchargé', message: 'Ce chapitre est déjà disponible hors-ligne.' });
       return;
@@ -287,20 +287,21 @@ export const CourseReader = () => {
     }, 200);
   };
   const [activeSectionId, setActiveSectionId] = useState<string>(
-    () => chapter.sections[0]?.id ?? ''
+    () => chapter?.sections[0]?.id ?? ''
   );
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
     return new Set<string>();
   });
-  const chapterDisplayNumber = chapter.number ?? activeChapterIndex;
+  const chapterDisplayNumber = chapter?.number ?? activeChapterIndex;
 
-  const isUnlocked = chapter.gratuit ||
+  const isUnlocked = !!chapter && (chapter.gratuit ||
     unlockedCourses.includes(courseId || '') ||
     (localStorage.getItem('eductome_unlocked_tomes') || '').includes(courseId || '') ||
-    (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id);
+    (localStorage.getItem('eductome_unlocked_chapters') || '').includes(chapter.id));
 
 
   const handleUnlockChapter = () => {
+    if (!chapter) return;
     setPaymentAmount(300);
     setPaymentItemName(chapter.titre);
     setPaymentType('chapter');
@@ -308,7 +309,7 @@ export const CourseReader = () => {
   };
 
   // Calcul global du Booster Déductible pour ce tome
-  const chaptersInTome = course.chapitres.map(c => c.id);
+  const chaptersInTome = course?.chapitres.map(c => c.id) ?? [];
   const ownedChapters = chaptersInTome.filter(cId => unlockedCourses.includes(cId));
   const deduction = ownedChapters.length * 300;
   const finalTomePrice = Math.max(0, 1500 - deduction);
@@ -328,6 +329,7 @@ export const CourseReader = () => {
   };
 
   const handleRequestParent = async () => {
+    if (!chapter) return;
     // 1. Générer le texte WhatsApp avec l'explication de EDUCTOME
     const text = `Papa/Maman, j'ai besoin du cours "${chapter.titre}" sur EDUCTOME.\n\nC'est une plateforme éducative qui m'aide à comprendre mes leçons et à mieux préparer mes devoirs. Tu peux débloquer ce cours pour moi directement via ce lien sécurisé :\n\nhttps://eductome.com/pay/${courseId || 'tome'}/${chapter.id}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -352,6 +354,7 @@ export const CourseReader = () => {
   // Ancienne fonction de succès de paiement retirée car c'est géré via Selar et Firebase maintenant
 
   const downloadCorrectionsPDF = async () => {
+    if (!chapter) return;
     setIsGeneratingPDF(true);
     try {
       const html2canvasLib = (await import('html2canvas')).default;
@@ -512,14 +515,14 @@ export const CourseReader = () => {
 
   // Reset active section + accordion when chapter changes
   useEffect(() => {
-    const firstId = chapter.sections[0]?.id;
+    const firstId = chapter?.sections[0]?.id;
     setActiveSectionId(firstId ?? '');
     setExpandedSections(new Set<string>());
-  }, [activeChapterIndex]);
+  }, [activeChapterIndex, course]);
 
   // Highlight which section is currently in the viewport
   useEffect(() => {
-    if (!isUnlocked || chapter.sections.length === 0) return;
+    if (!chapter || !isUnlocked || chapter.sections.length === 0) return;
     const observers: IntersectionObserver[] = [];
     chapter.sections.forEach(sec => {
       const el = document.getElementById(`section-${sec.id}`);
@@ -532,7 +535,7 @@ export const CourseReader = () => {
       observers.push(obs);
     });
     return () => observers.forEach(obs => obs.disconnect());
-  }, [activeChapterIndex, isUnlocked]);
+  }, [activeChapterIndex, isUnlocked, course]);
 
   // Auto-expand on scroll is removed per user request
   // Auto-scroll the sidebar nav to keep the active section item visible
@@ -569,12 +572,22 @@ export const CourseReader = () => {
   };
 
   const handleNextChapter = () => {
-    if (activeChapterIndex < course.chapitres.length - 1) {
+    if (course && activeChapterIndex < course.chapitres.length - 1) {
       goToChapter(activeChapterIndex + 1);
     } else {
       navigate('/dashboard/courses');
     }
   };
+
+  // Écran d'attente pendant le chargement du chunk du tome (code-splitting).
+  if (!course || !chapter) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 font-poppins transition-colors duration-300" style={{ background: palette.bg }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: palette.accent }} />
+        <p className="text-sm font-medium" style={{ color: palette.ink2 }}>Chargement du tome…</p>
+      </div>
+    );
+  }
 
   // ── Sidebar (shared for mobile drawer & desktop) ─
   const SidebarContent = () => (
@@ -793,7 +806,7 @@ export const CourseReader = () => {
               <span className="inline-block text-[10px] font-bold tracking-[0.12em] uppercase px-[11px] py-[5px] rounded-full transition-colors duration-300" style={{ color: palette.accent, background: palette.accentSoft }}>
                 Les Clés · Maths · Chapitre {chapterDisplayNumber ?? 1}
               </span>
-              <h1 className="font-poppins text-[34px] md:text-4xl lg:text-5xl font-black leading-[1.08] mt-[14px] tracking-[-0.01em] transition-colors duration-300" style={{ color: palette.ink }}>
+              <h1 className="text-[34px] md:text-4xl lg:text-5xl font-black leading-[1.08] mt-[14px] tracking-[-0.01em] transition-colors duration-300" style={{ color: palette.ink, fontFamily: palette.display }}>
                 {chapter.titre}
               </h1>
               <div className="mt-[14px] h-1 w-[54px] rounded-full transition-colors duration-300" style={{ background: palette.accent }} />
@@ -813,14 +826,14 @@ export const CourseReader = () => {
               </div>
 
               {/* Author Box */}
-              <div className="flex items-center gap-3 mt-[18px] p-3 rounded-[18px] border shadow-sm transition-colors duration-300" style={{ background: palette.bg2, borderColor: palette.line, boxShadow: `0 4px 16px ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(120,90,40,0.1)'}` }}>
+              <div className="flex items-center gap-3 mt-[18px] p-3.5 rounded-[18px] transition-colors duration-300" style={{ background: palette.gfBubble }}>
                 <div className="relative shrink-0">
-                  <img src="/grand-frere.jpeg" alt="Marius" className="w-[46px] h-[46px] rounded-[14px] object-cover object-[50%_14%]" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Marius&background=1A3557&color=fff' }} />
-                  <span className="absolute -bottom-[3px] -right-[3px] w-4 h-4 rounded-full border-2 transition-colors duration-300" style={{ background: 'var(--tipBar, #1E8449)', borderColor: palette.bg2 }}></span>
+                  <img src="/images/profil.jpeg" alt="Marius" className="w-[46px] h-[46px] rounded-full object-cover object-center border-2" style={{ borderColor: palette.accent }} onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=Marius&background=1A3557&color=fff' }} />
+                  <span className="absolute -bottom-[3px] -right-[3px] w-4 h-4 rounded-full border-2 transition-colors duration-300" style={{ background: 'var(--tipBar, #1E8449)', borderColor: palette.gfBubble }}></span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-bold transition-colors duration-300" style={{ color: palette.ink }}>Marius · ton grand frère</div>
-                  <div className="text-[11.5px] leading-[1.4] transition-colors duration-300" style={{ color: palette.ink2 }}>« On affûte tes outils, puis tu voles sur les limites. »</div>
+                  <div className="text-[12px] font-bold font-poppins transition-colors duration-300" style={{ color: palette.gfInk }}>Marius · ton grand frère</div>
+                  <div className="text-[18px] leading-[1.15] font-caveat transition-colors duration-300" style={{ color: palette.gfInk }}>« On affûte tes outils, puis tu voles sur les limites. »</div>
                 </div>
               </div>
             </div>
@@ -878,7 +891,7 @@ export const CourseReader = () => {
                               <span className="block text-[10px] font-bold tracking-[0.1em] uppercase transition-colors duration-300" style={{ color: palette.accent }}>
                                 Section {section.id.replace(/\D/g, '') || (chapter.sections.indexOf(section) + 1)}
                               </span>
-                              <span className="font-poppins text-[20px] md:text-[24px] font-bold transition-colors duration-300" style={{ color: palette.ink }}>
+                              <span className="text-[20px] md:text-[24px] font-bold transition-colors duration-300" style={{ color: palette.ink, fontFamily: palette.display }}>
                                 {section.titre}
                               </span>
                             </span>
