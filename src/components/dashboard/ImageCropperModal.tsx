@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Cropper from 'react-easy-crop';
 import { X, Check } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
@@ -77,8 +78,8 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, 
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
       <div className="bg-white dark:bg-[#161B22] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col h-[500px]">
         <div className="p-4 border-b border-[#E1E4E8] dark:border-[#30363D] flex justify-between items-center bg-[#F8F9FA] dark:bg-[#0D1117]">
           <h3 className="font-bold text-[#1A1A2E] dark:text-white">Recadrer la photo</h3>
@@ -139,6 +140,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, 
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
