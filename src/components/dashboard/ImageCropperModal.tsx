@@ -18,6 +18,11 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
     image.src = url;
   });
 
+// Taille de sortie de l'avatar. 640px = net sur le grand en-tête plein cadre
+// (mobile retina + desktop), tout en restant ~100 Ko en base64 → bien sous la
+// limite de 1 Mo d'un document Firestore.
+const OUTPUT_SIZE = 640;
+
 const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
@@ -27,8 +32,12 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> 
     throw new Error('No 2d context');
   }
 
-  canvas.width = 128;
-  canvas.height = 128;
+  canvas.width = OUTPUT_SIZE;
+  canvas.height = OUTPUT_SIZE;
+
+  // Lissage de qualité pour le redimensionnement.
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
 
   ctx.drawImage(
     image,
@@ -38,11 +47,11 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height,
     0,
     0,
-    128,
-    128
+    OUTPUT_SIZE,
+    OUTPUT_SIZE
   );
 
-  return canvas.toDataURL('image/jpeg', 0.5);
+  return canvas.toDataURL('image/jpeg', 0.82);
 };
 
 export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ imageSrc, onClose, onCropComplete }) => {

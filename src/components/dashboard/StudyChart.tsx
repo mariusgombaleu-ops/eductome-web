@@ -5,7 +5,7 @@ import { useUser } from '../../contexts/UserContext';
 const DAYS_SHORT = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 export const StudyChart = () => {
-  const { theme } = useTheme();
+  const { theme, palette } = useTheme();
   const { activityHistory } = useUser();
   const isDark = theme === 'dark';
 
@@ -52,9 +52,9 @@ export const StudyChart = () => {
           />
           <Bar dataKey="xp" radius={[4, 4, 0, 0]}>
             {data.map((_, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={index === 6 ? '#D81B60' : '#1976D2'} 
+              <Cell
+                key={`cell-${index}`}
+                fill={index === 6 ? palette.accent : palette.accent2}
                 fillOpacity={index === 6 ? 1 : 0.8}
               />
             ))}

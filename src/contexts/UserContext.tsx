@@ -684,7 +684,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       grades,
       createdAt,
       photoURL,
-      gainXp, 
+      gainXp,
       hasActionBeenRewarded, 
       unlockCourse,
       resetUser,
