@@ -3,8 +3,9 @@ import { useMemo } from 'react';
 interface Props {
   levelString: string;
   notesSimulees: Record<string, number | null>;
-  moyennesParMatiere: Record<string, number | null>;
   moyenneSimulee: number | null;
+  /** Affiche le détail par matière clé (uniquement en mode « par notes »). */
+  showSubjectDetail: boolean;
 }
 
 interface KeySubject {
@@ -92,32 +93,31 @@ const ORIENTATIONS: OrientationConfig[] = [
   },
 ];
 
-function getBestNote(subjectId: string, notesSimulees: Record<string, number | null>, moyennesParMatiere: Record<string, number | null>): number | null {
+// Note simulée pour une matière (le simulateur n'utilise PAS les notes de classe).
+function getSimNote(subjectId: string, notesSimulees: Record<string, number | null>): number | null {
   const sim = notesSimulees[subjectId];
-  if (sim !== null && sim !== undefined) return sim;
-  return moyennesParMatiere[subjectId] ?? null;
+  return sim !== null && sim !== undefined ? sim : null;
 }
 
 function computeCompatibility(
   orientation: OrientationConfig,
   levelString: string,
   notesSimulees: Record<string, number | null>,
-  moyennesParMatiere: Record<string, number | null>,
   moyenneSimulee: number | null,
 ): number {
   if (!orientation.eligibleSeries.includes(levelString)) return 0;
 
   const scores: number[] = [];
 
-  // Score per key subject
+  // Score par matière clé (uniquement si des notes ont été simulées).
   orientation.keySubjects.forEach(sub => {
-    const note = getBestNote(sub.id, notesSimulees, moyennesParMatiere);
+    const note = getSimNote(sub.id, notesSimulees);
     if (note !== null) {
       scores.push(Math.min(1, note / sub.threshold));
     }
   });
 
-  // Mention score
+  // Score sur la mention (toujours présent : modes points / mention).
   if (moyenneSimulee !== null) {
     scores.push(Math.min(1, moyenneSimulee / orientation.mentionMin));
   }
@@ -127,121 +127,149 @@ function computeCompatibility(
   return Math.round(avg * 100);
 }
 
-function getCompatColor(compat: number): string {
-  if (compat >= 75) return '#1E8449';
-  if (compat >= 45) return '#E67E22';
-  return '#C62828';
+// Filières éligibles classées par compatibilité pour une moyenne donnée
+// (basé sur la mention seule — réutilisé par la comparaison de scénarios).
+export function rankFilieres(levelString: string, moyenneSimulee: number | null) {
+  return ORIENTATIONS
+    .filter(o => o.eligibleSeries.includes(levelString))
+    .map(o => ({
+      id: o.id,
+      name: o.name,
+      icon: o.icon,
+      compat: computeCompatibility(o, levelString, {}, moyenneSimulee),
+    }))
+    .sort((a, b) => b.compat - a.compat);
 }
 
-function getCompatLabel(compat: number): string {
-  if (compat >= 75) return 'Profil compatible';
-  if (compat >= 45) return 'Profil en développement';
-  return 'Objectif à construire';
+function getCompatColor(compat: number): string {
+  if (compat >= 75) return 'var(--ed-tipBar)';
+  if (compat >= 45) return 'var(--ed-anaBar)';
+  return 'var(--ed-warnBar)';
+}
+
+function getCompatBadge(compat: number): string {
+  if (compat >= 75) return 'Accessible';
+  if (compat >= 45) return 'À ta portée';
+  return 'Ambitieux';
+}
+
+function mentionName(moyenne: number): string {
+  if (moyenne >= 16) return 'Très Bien';
+  if (moyenne >= 14) return 'Bien';
+  if (moyenne >= 12) return 'Assez Bien';
+  if (moyenne >= 10) return 'Passable';
+  return 'Bac requis';
 }
 
 export function BacOrientationPredictor({
   levelString,
   notesSimulees,
-  moyennesParMatiere,
   moyenneSimulee,
+  showSubjectDetail,
 }: Props) {
   const results = useMemo(() =>
     ORIENTATIONS.map(o => {
-      const compat = computeCompatibility(o, levelString, notesSimulees, moyennesParMatiere, moyenneSimulee);
+      const compat = computeCompatibility(o, levelString, notesSimulees, moyenneSimulee);
+      const isEligible = o.eligibleSeries.includes(levelString);
       const gaps = o.keySubjects
         .filter(sub => {
-          const note = getBestNote(sub.id, notesSimulees, moyennesParMatiere);
+          const note = getSimNote(sub.id, notesSimulees);
           return note === null || note < sub.threshold;
         })
         .map(sub => sub.name);
-      return { orientation: o, compat, gaps };
-    }),
-    [levelString, notesSimulees, moyennesParMatiere, moyenneSimulee],
+      return { orientation: o, compat, gaps, isEligible };
+    })
+    // Classées : éligibles d'abord, puis par compatibilité décroissante.
+    .sort((a, b) => (Number(b.isEligible) - Number(a.isEligible)) || (b.compat - a.compat)),
+    [levelString, notesSimulees, moyenneSimulee],
   );
 
   const hasAnyEligible = results.some(r => r.orientation.eligibleSeries.includes(levelString));
 
   return (
-    <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm space-y-6">
-      <div>
-        <h2 className="text-lg font-bold text-[#1A3557] dark:text-white mb-1">
-          🎯 Prédicteur d'Orientation
-        </h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          Basé sur ta simulation et tes moyennes de classe actuelles — CampusIvoire, Grand Frère t'éclaire.
-        </p>
-      </div>
+    <div className="space-y-5">
+      <p className="text-xs text-[var(--ed-ink3)]">
+        Basé sur ta simulation BAC — CampusIvoire, Grand Frère t'éclaire.
+      </p>
 
       {!hasAnyEligible && (
-        <div className="bg-gray-50 dark:bg-[#0D1117] rounded-xl p-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+        <div className="bg-[var(--ed-bg3)] rounded-xl p-4 text-sm text-[var(--ed-ink3)] text-center">
           Les prédictions d'orientation sont disponibles pour les élèves de Terminale D, C et A.
         </div>
       )}
 
       <div className="space-y-5">
-        {results.map(({ orientation, compat, gaps }) => {
-          const isEligible = orientation.eligibleSeries.includes(levelString);
-          const color = isEligible ? getCompatColor(compat) : '#6B7280';
+        {results.map(({ orientation, compat, gaps, isEligible }) => {
+          const color = isEligible ? getCompatColor(compat) : 'var(--ed-ink3)';
           const displayCompat = isEligible ? compat : 0;
-          const label = isEligible ? getCompatLabel(compat) : 'Série non éligible';
+          const badge = isEligible ? getCompatBadge(compat) : 'Série non éligible';
           const message = isEligible
             ? orientation.grandFrereMessage(compat, gaps)
             : `Cette filière est réservée aux séries ${orientation.eligibleSeries.map(s => s.replace('terminale-', 'Tle ').toUpperCase()).join(', ')}.`;
+          const seuilCles = orientation.keySubjects.map(s => `${s.name} ≥${s.threshold}`).join(' · ');
 
           return (
             <div
               key={orientation.id}
-              className="border border-gray-100 dark:border-gray-800 rounded-xl p-4 space-y-3"
+              className="border border-[var(--ed-line)] rounded-xl p-4 space-y-3"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-2xl shrink-0">{orientation.icon}</span>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-[#1A3557] dark:text-white text-sm leading-tight">
+                    <h3 className="font-bold text-[var(--ed-ink)] text-sm leading-tight">
                       {orientation.name}
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{orientation.description}</p>
+                    <p className="text-xs text-[var(--ed-ink3)] mt-0.5">{orientation.description}</p>
                   </div>
                 </div>
-                <span
-                  className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full text-white whitespace-nowrap"
-                  style={{ backgroundColor: color }}
-                >
-                  {displayCompat}%
-                </span>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <span
+                    className="text-xs font-bold px-3 py-1.5 rounded-full text-white whitespace-nowrap"
+                    style={{ backgroundColor: color }}
+                  >
+                    {displayCompat}%
+                  </span>
+                  <span
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap"
+                    style={{ background: isEligible ? 'var(--ed-bg3)' : 'var(--ed-bg3)', color }}
+                  >
+                    {badge}
+                  </span>
+                </div>
               </div>
 
+              {/* Seuil d'admission (toujours visible) */}
+              <p className="text-[11px] text-[var(--ed-ink3)]">
+                Seuil : <strong style={{ color: 'var(--ed-ink2)' }}>Mention {mentionName(orientation.mentionMin)}</strong> (≥{orientation.mentionMin}/20)
+                <span className="block mt-0.5">Matières clés : {seuilCles}</span>
+              </p>
+
               {/* Progress bar */}
-              <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[var(--ed-bg3)] rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${displayCompat}%`, backgroundColor: color }}
                 />
               </div>
 
-              <p
-                className="text-xs font-semibold"
-                style={{ color }}
-              >
-                {label}
-              </p>
-
-              {/* Key subjects status */}
-              {isEligible && (
+              {/* Détail par matière clé — uniquement en mode « par notes » */}
+              {isEligible && showSubjectDetail && (
                 <div className="flex flex-wrap gap-2">
                   {orientation.keySubjects.map(sub => {
-                    const note = getBestNote(sub.id, notesSimulees, moyennesParMatiere);
+                    const note = getSimNote(sub.id, notesSimulees);
                     const ok = note !== null && note >= sub.threshold;
                     return (
                       <span
                         key={sub.id}
-                        className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                        className="text-xs px-2.5 py-1 rounded-full font-medium"
+                        style={
                           note === null
-                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                            ? { background: 'var(--ed-bg3)', color: 'var(--ed-ink3)' }
                             : ok
-                            ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                            : 'bg-red-50 dark:bg-red-900/30 text-[#B71C1C] dark:text-red-400'
-                        }`}
+                            ? { background: 'var(--ed-tipBg)', color: 'var(--ed-tipBar)' }
+                            : { background: 'var(--ed-warnBg)', color: 'var(--ed-warnBar)' }
+                        }
                       >
                         {sub.name} {note !== null ? `${note.toFixed(1)}/20` : '—'}{' '}
                         {note !== null && (ok ? '✓' : `(seuil : ${sub.threshold})`)}
@@ -253,10 +281,10 @@ export function BacOrientationPredictor({
 
               {/* Grand Frère guidance */}
               <div
-                className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed rounded-r-lg"
-                style={{ borderLeft: '3px solid #1A3557', padding: '8px 12px', background: 'transparent' }}
+                className="text-sm leading-relaxed rounded-r-lg"
+                style={{ color: 'var(--ed-ink2)', borderLeft: '3px solid var(--ed-accent2)', padding: '8px 12px', background: 'transparent' }}
               >
-                <span className="font-bold text-[#1A3557] dark:text-white text-xs uppercase tracking-wide block mb-1">
+                <span className="font-bold text-[var(--ed-ink)] text-xs uppercase tracking-wide block mb-1">
                   Grand Frère dit
                 </span>
                 {message}

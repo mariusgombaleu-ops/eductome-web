@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp } from 'lucide-react';
+import { Target, ChevronDown, Plus, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp, TrendingDown } from 'lucide-react';
 import { BacSimulator } from '../../components/bac/BacSimulator';
 import confetti from 'canvas-confetti';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
@@ -10,6 +10,46 @@ import { PageHero, PageHeroStat } from '../../components/dashboard/PageHero';
 import { useToast } from '../../contexts/ToastContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+
+// Pastille de couleur stable par matière (décoratif, cohérent partout).
+const SUBJECT_DOT: Record<string, string> = {
+  maths: '#1976D2',
+  pc: '#1B9E5B',
+  svt: '#E67E22',
+  francais: '#D81B60',
+  philo: '#6A1B9A',
+  anglais: '#00897B',
+  hg: '#8D6E63',
+  edhc: '#5C6BC0',
+};
+
+// Mention visée déduite de la moyenne générale cible.
+function mentionFor(avg?: number): string | null {
+  if (avg === undefined || avg === null) return null;
+  if (avg >= 16) return 'Mention Très Bien visée';
+  if (avg >= 14) return 'Mention Bien visée';
+  if (avg >= 12) return 'Mention Assez Bien visée';
+  if (avg >= 10) return 'Mention Passable visée';
+  return 'Objectif : décrocher le BAC';
+}
+
+// Couleur de statut d'une moyenne : vert / orange / rouge selon l'objectif fixé
+// (repli sur le barème /20 quand aucun objectif n'est défini).
+function gradeStatusColor(
+  avg: number | null,
+  target: number | undefined,
+  palette: { tipBar: string; anaBar: string; warnBar: string; ink3: string },
+): string {
+  if (avg === null) return palette.ink3;
+  if (target !== undefined) {
+    if (avg >= target) return palette.tipBar;
+    if (avg >= target - 2) return palette.anaBar;
+    return palette.warnBar;
+  }
+  if (avg >= 14) return palette.tipBar;
+  if (avg >= 10) return palette.anaBar;
+  return palette.warnBar;
+}
 
 export function GradesCalculator() {
   const { levelString, goals, grades, updateGrades, updateGoals, xp } = useUser();
@@ -242,7 +282,13 @@ export function GradesCalculator() {
 
   const trimesterAvg = calculateTrimesterAverage();
   const targetTrimester = goals.trimesterTargets?.[activeTab];
-  
+
+  // Tendance vs trimestre précédent (T1 = pas de précédent)
+  const prevTab: 't1' | 't2' | null = activeTab === 't2' ? 't1' : activeTab === 't3' ? 't2' : null;
+  const prevLabels: Record<'t1' | 't2', string> = { t1: '1er trim.', t2: '2ᵉ trim.' };
+  const prevAvg = prevTab ? calculateSpecificTrimesterAverage(prevTab) : null;
+  const trendDelta = trimesterAvg !== null && prevAvg !== null ? trimesterAvg - prevAvg : null;
+
   const hasGradesForTrimester = subjects.some(sub => {
     const subGrades = grades[activeTab]?.[sub.id] || [];
     return subGrades.some(g => g !== '' && !isNaN(Number(g)));
@@ -309,56 +355,31 @@ export function GradesCalculator() {
         return <PageHero eyebrow={cfg.eyebrow} title={cfg.title} description={cfg.description} stats={cfg.stats} />;
       })()}
 
-      {/* Main Navigation Tabs */}
-      <div className="flex flex-wrap p-1.5 rounded-[20px] w-full md:w-fit animate-fade-in-up animation-delay-100 gap-1" style={{ background: palette.bg2 }}>
-        <button
-          onClick={() => setMainTab('notes')}
-          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
-          style={{ 
-            background: mainTab === 'notes' ? palette.bg : 'transparent',
-            color: mainTab === 'notes' ? palette.accent : palette.ink3,
-            boxShadow: mainTab === 'notes' ? `0 4px 12px ${palette.shadow}` : 'none'
-          }}
-        >
-          <BookOpen className="w-4 h-4" />
-          Mes Notes
-        </button>
-        <button
-          onClick={() => setMainTab('objectifs')}
-          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
-          style={{ 
-            background: mainTab === 'objectifs' ? palette.bg : 'transparent',
-            color: mainTab === 'objectifs' ? palette.accent : palette.ink3,
-            boxShadow: mainTab === 'objectifs' ? `0 4px 12px ${palette.shadow}` : 'none'
-          }}
-        >
-          <Target className="w-4 h-4" />
-          Mes Objectifs
-        </button>
-        <button
-          onClick={() => setMainTab('simulateur')}
-          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
-          style={{ 
-            background: mainTab === 'simulateur' ? palette.bg : 'transparent',
-            color: mainTab === 'simulateur' ? palette.accent : palette.ink3,
-            boxShadow: mainTab === 'simulateur' ? `0 4px 12px ${palette.shadow}` : 'none'
-          }}
-        >
-          <BarChart2 className="w-4 h-4" />
-          Simulateur BAC
-        </button>
-        <button
-          onClick={() => setMainTab('evolution')}
-          className="flex-1 min-w-[120px] md:px-6 py-3 rounded-[16px] font-bold text-sm transition-all flex items-center justify-center gap-2"
-          style={{ 
-            background: mainTab === 'evolution' ? palette.bg : 'transparent',
-            color: mainTab === 'evolution' ? palette.accent : palette.ink3,
-            boxShadow: mainTab === 'evolution' ? `0 4px 12px ${palette.shadow}` : 'none'
-          }}
-        >
-          <TrendingUp className="w-4 h-4" />
-          Évolution (ROI)
-        </button>
+      {/* Onglets principaux — grille 2×2 (2 en haut, 2 en bas) */}
+      <div className="grid grid-cols-2 gap-2 animate-fade-in-up animation-delay-100">
+        {([
+          { id: 'notes', label: 'Mes Notes', Icon: BookOpen },
+          { id: 'objectifs', label: 'Mes Objectifs', Icon: Target },
+          { id: 'simulateur', label: 'Simulateur BAC', Icon: BarChart2 },
+          { id: 'evolution', label: 'Évolution', Icon: TrendingUp },
+        ] as const).map(({ id, label, Icon }) => {
+          const active = mainTab === id;
+          return (
+            <button
+              key={id}
+              onClick={() => setMainTab(id)}
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-[14px] font-bold text-[13px] whitespace-nowrap transition-colors"
+              style={{
+                background: active ? palette.accent : palette.bg3,
+                color: active ? palette.onAccent : palette.ink2,
+                boxShadow: active ? `0 4px 12px ${palette.accent}33` : 'none',
+              }}
+            >
+              <Icon className="w-4 h-4 shrink-0" />
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       {/* CONTENT: SIMULATEUR BAC */}
@@ -454,59 +475,82 @@ export function GradesCalculator() {
       {/* CONTENT: MES NOTES */}
       {mainTab === 'notes' ? (
         <div className="space-y-6 animate-fade-in-up animation-delay-150">
-          {/* Trimester Tabs */}
-          <div className="flex gap-2 p-1 rounded-[20px] w-fit" style={{ background: palette.bg2 }}>
-            {[
-              { id: 't1', label: 'Trimestre 1' },
-              { id: 't2', label: 'Trimestre 2' },
-              { id: 't3', label: 'Trimestre 3' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className="px-6 py-2 rounded-[16px] font-medium text-sm transition-all"
-                style={{
-                  background: activeTab === tab.id ? palette.bg : 'transparent',
-                  color: activeTab === tab.id ? palette.accent : palette.ink3,
-                  boxShadow: activeTab === tab.id ? `0 4px 12px ${palette.shadow}` : 'none'
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
+          {/* Sous-onglets trimestre — segmented control pleine largeur (aligné sur la grille du dessus) */}
+          <div className="flex w-full gap-1 p-1 rounded-full border" style={{ background: palette.bg3, borderColor: palette.line }}>
+            {([
+              { id: 't1', label: '1er trim.' },
+              { id: 't2', label: '2ᵉ trim.' },
+              { id: 't3', label: '3ᵉ trim.' }
+            ] as const).map(tab => {
+              const active = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className="flex-1 px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap text-center transition-colors"
+                  style={{
+                    background: active ? palette.accent : 'transparent',
+                    color: active ? palette.onAccent : palette.ink2,
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Global Average Card */}
-          <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-center md:text-left">
-                <h2 className="font-medium" style={{ color: palette.ink2 }}>Moyenne {activeTab.toUpperCase()} Actuelle</h2>
-                <div className="text-4xl md:text-5xl font-black mt-2" style={{ color: palette.ink }}>
-                  {trimesterAvg !== null ? trimesterAvg.toFixed(2) : '-.--'} <span className="text-xl md:text-2xl font-normal" style={{ color: palette.ink3 }}>/ 20</span>
-                </div>
+          {/* Carte moyenne actuelle — 2 blocs égaux (même largeur & hauteur) */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Bloc Moyenne actuelle */}
+            <div className="border rounded-[20px] p-4 flex flex-col items-center justify-center text-center" style={{ background: palette.bg2, borderColor: palette.line }}>
+              <span className="text-[11px] font-semibold" style={{ color: palette.ink3 }}>Moyenne {activeTab.toUpperCase()} actuelle</span>
+              <div className="text-[30px] leading-none font-black mt-1.5" style={{ color: gradeStatusColor(trimesterAvg, targetTrimester, palette), fontFamily: palette.display }}>
+                {trimesterAvg !== null ? trimesterAvg.toFixed(2).replace('.', ',') : '-,--'}
+                <span className="text-sm font-semibold ml-0.5" style={{ color: palette.ink3 }}>/20</span>
               </div>
-
-              {targetTrimester ? (
-                <div className="p-4 rounded-[20px] text-center min-w-[200px]" style={{ background: `${palette.accent}15` }}>
-                  <p className="text-sm font-bold mb-1" style={{ color: palette.accent }}>Objectif {activeTab.toUpperCase()}</p>
-                  <p className="text-2xl font-bold" style={{ color: palette.accent }}>{targetTrimester} / 20</p>
-                  {trimesterAvg !== null && (
-                    <div className={`mt-2 flex items-center justify-center gap-1 text-xs font-bold ${trimesterAvg >= targetTrimester ? 'text-green-600' : 'text-orange-500'}`}>
-                      {trimesterAvg >= targetTrimester ? (
-                        <>Objectif atteint ! 🎉</>
-                      ) : (
-                        <>Encore {(targetTrimester - trimesterAvg).toFixed(2)} pts à rattraper 💪</>
-                      )}
-                    </div>
+              {trendDelta !== null && prevTab && (
+                <span
+                  className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold"
+                  style={{ color: trendDelta > 0 ? palette.tipBar : trendDelta < 0 ? palette.warnBar : palette.ink3 }}
+                >
+                  {trendDelta > 0 ? <TrendingUp className="w-3 h-3" /> : trendDelta < 0 ? <TrendingDown className="w-3 h-3" /> : null}
+                  {trendDelta > 0 ? '+' : ''}{trendDelta.toFixed(1).replace('.', ',')} vs {prevLabels[prevTab]}
+                </span>
+              )}
+              {trimesterAvg !== null && (
+                <span className="block relative w-full mt-2.5 h-1.5 rounded-full overflow-hidden" style={{ background: palette.bg3 }}>
+                  <span className="absolute inset-y-0 left-0 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (trimesterAvg / 20) * 100)}%`, background: gradeStatusColor(trimesterAvg, targetTrimester, palette) }} />
+                  {targetTrimester && (
+                    <span className="absolute inset-y-0 w-[2px]" style={{ left: `${Math.min(100, (targetTrimester / 20) * 100)}%`, background: palette.ink }} title={`Objectif : ${targetTrimester}`} />
                   )}
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-[20px] text-sm">
-                  <AlertCircle className="w-5 h-5" />
-                  <span>Tu n'as pas défini d'objectif pour ce trimestre.</span>
-                </div>
+                </span>
               )}
             </div>
+
+            {/* Bloc Objectif */}
+            <button
+              onClick={() => setMainTab('objectifs')}
+              className="rounded-[20px] p-4 flex flex-col items-center justify-center text-center transition-opacity hover:opacity-90"
+              style={{ background: palette.accentSoft }}
+            >
+              <span className="text-[11px] font-bold" style={{ color: palette.accent }}>Objectif {activeTab.toUpperCase()}</span>
+              <div className="text-[30px] leading-none font-black mt-1.5" style={{ color: palette.accent, fontFamily: palette.display }}>
+                {targetTrimester ? targetTrimester : '—'}
+                <span className="text-sm font-semibold ml-0.5" style={{ color: palette.accent, opacity: 0.7 }}>/20</span>
+              </div>
+              <span
+                className="text-[10px] font-bold mt-1"
+                style={{ color: !targetTrimester ? palette.accent : trimesterAvg === null ? palette.ink3 : trimesterAvg >= targetTrimester ? palette.tipBar : palette.anaInk }}
+              >
+                {!targetTrimester
+                  ? 'À définir'
+                  : trimesterAvg === null
+                    ? '—'
+                    : trimesterAvg >= targetTrimester
+                      ? 'Atteint 🎉'
+                      : `Encore ${(targetTrimester - trimesterAvg).toFixed(1).replace('.', ',')} pt 💪`}
+              </span>
+            </button>
           </div>
 
           {/* Empty State */}
@@ -522,280 +566,251 @@ export function GradesCalculator() {
             </div>
           )}
 
-          {/* Subjects Accordion */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold" style={{ color: palette.ink }}>Détails par matière</h3>
-            {(() => {
-              const allValidAvgs = subjects.map(s => calculateSubjectAverage(s.id)).filter(a => a !== null) as number[];
-              const maxAvg = allValidAvgs.length > 0 ? Math.max(...allValidAvgs) : null;
-              
-              return subjects.map(subject => {
-                const isOpen = openSubject === subject.id;
-                const avg = calculateSubjectAverage(subject.id);
-                const target = goals.subjectTargets?.[subject.id];
-                const subjectGrades = grades[activeTab]?.[subject.id] || [];
-                
-                const isChampion = avg !== null && avg === maxAvg && avg >= 10;
-                const isAlert = avg !== null && avg < 10;
+          {/* Matières — carte unifiée à lignes repliables (maquette #7) */}
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-2.5 ml-0.5" style={{ color: palette.ink3 }}>
+              Mes matières · {activeTab.toUpperCase()}
+            </p>
+            <div className="rounded-[20px] border overflow-hidden" style={{ background: palette.bg2, borderColor: palette.line }}>
+              {(() => {
+                const allValidAvgs = subjects.map(s => calculateSubjectAverage(s.id)).filter(a => a !== null) as number[];
+                const maxAvg = allValidAvgs.length > 0 ? Math.max(...allValidAvgs) : null;
 
-              let nextTargetText = "";
-              if (avg !== null && target && subjectGrades.length > 0) {
-                if (avg >= target) {
-                  nextTargetText = `Défi : ${target}/20 au prochain devoir`;
-                } else {
-                  nextTargetText = `Pas le choix : au moins ${target}/20 au prochain devoir !`;
-                }
-              }
+                return subjects.map((subject, i) => {
+                  const isOpen = openSubject === subject.id;
+                  const avg = calculateSubjectAverage(subject.id);
+                  const target = goals.subjectTargets?.[subject.id];
+                  const subjectGrades = grades[activeTab]?.[subject.id] || [];
+                  const isChampion = avg !== null && avg === maxAvg && avg >= 10;
+                  const statusColor = gradeStatusColor(avg, target, palette);
+                  const dot = SUBJECT_DOT[subject.id] || palette.accent;
+                  const fillPct = avg !== null ? Math.min(100, (avg / 20) * 100) : 0;
 
-              return (
-                <div key={subject.id} className="rounded-[24px] border overflow-hidden transition-all shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
-                  {/* Header / Toggle */}
-                  <button 
-                    onClick={() => setOpenSubject(isOpen ? null : subject.id)}
-                    className="w-full flex items-start md:items-center justify-between p-4 md:p-5 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                  >
-                    <div className="flex items-start md:items-center gap-3 md:gap-4">
-                      <div className="w-12 h-12 rounded-[16px] flex items-center justify-center font-bold shrink-0 mt-0.5 md:mt-0" style={{ background: palette.bg2, color: palette.ink }}>
-                        x{subject.coeff}
-                      </div>
-                      <div className="text-left flex-1 min-w-0">
-                        <h4 className="font-bold flex items-center gap-2 flex-wrap" style={{ color: palette.ink }}>
-                          {subject.name}
-                          {isChampion && <span title="Meilleure matière" className="text-sm md:text-lg leading-none">⭐</span>}
-                          {isAlert && <span title="Moyenne critique (< 10)" className="text-sm md:text-lg leading-none animate-pulse">🔴</span>}
-                        </h4>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm mt-1" style={{ color: palette.ink3 }}>
-                          {target && <span>Objectif: <strong style={{ color: palette.accent }}>{target}</strong></span>}
-                          {avg !== null && target && <span>Actuelle: <strong className={avg >= target ? "text-green-500" : "text-orange-500"}>{avg.toFixed(2)}</strong></span>}
-                          {avg !== null && !target && <span>Actuelle: <strong style={{ color: palette.ink }}>{avg.toFixed(2)}</strong></span>}
-                        </div>
-                        {/* Progress Bar (Mini-jauge) */}
-                        {avg !== null && target && (
-                          <div className="w-full mt-2 h-1.5 rounded-full overflow-hidden relative" style={{ background: palette.bg2 }}>
-                            <div 
-                              className={`absolute top-0 left-0 h-full ${avg >= target ? 'bg-green-500' : 'bg-orange-500'} transition-all duration-1000 ease-out`}
-                              style={{ width: `${Math.min(100, (avg / 20) * 100)}%` }}
-                            />
-                            <div 
-                              className="absolute top-0 h-full w-[2px] z-10"
-                              style={{ left: `${(target / 20) * 100}%`, background: palette.ink }}
-                              title={`Objectif: ${target}`}
-                            />
+                  return (
+                    <div key={subject.id} style={{ borderTop: i > 0 ? `1px solid ${palette.line}` : 'none' }}>
+                      <button
+                        onClick={() => setOpenSubject(isOpen ? null : subject.id)}
+                        className="w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--ed-bg3)]"
+                      >
+                        {/* Coefficient en tuile teintée (couleur matière) */}
+                        <span
+                          className="w-9 h-9 rounded-[12px] shrink-0 flex items-center justify-center text-sm font-black"
+                          style={{ background: `${dot}22`, color: dot, fontFamily: palette.display }}
+                        >
+                          ×{subject.coeff}
+                        </span>
+                        <span className="flex-1 min-w-0">
+                          <span className="flex items-center gap-1.5 font-bold text-sm" style={{ color: palette.ink }}>
+                            {subject.name}
+                            {isChampion && <span title="Meilleure matière" className="leading-none">⭐</span>}
+                          </span>
+                          {/* Ligne Objectif · Actuelle */}
+                          <span className="block text-[11px] font-medium mt-0.5" style={{ color: palette.ink3 }}>
+                            {avg === null ? (
+                              'Aucune note pour l’instant'
+                            ) : target !== undefined ? (
+                              <>Objectif : <strong style={{ color: palette.ink2 }}>{target}</strong> · Actuelle : <strong style={{ color: statusColor }}>{avg.toFixed(2).replace('.', ',')}</strong></>
+                            ) : (
+                              <>
+                                Actuelle : <strong style={{ color: statusColor }}>{avg.toFixed(2).replace('.', ',')}</strong>
+                                {' · '}
+                                <span
+                                  role="button"
+                                  onClick={(e) => { e.stopPropagation(); setMainTab('objectifs'); }}
+                                  className="font-bold cursor-pointer"
+                                  style={{ color: palette.accent }}
+                                >
+                                  En définir un
+                                </span>
+                              </>
+                            )}
+                          </span>
+                          {/* Barre de progression colorée (moyenne vs objectif) */}
+                          {avg !== null && (
+                            <span className="block relative mt-1.5 h-1.5 rounded-full overflow-hidden" style={{ background: palette.bg3 }}>
+                              <span className="absolute inset-y-0 left-0 rounded-full transition-all duration-500" style={{ width: `${fillPct}%`, background: statusColor }} />
+                              {target !== undefined && (
+                                <span className="absolute inset-y-0 w-[2px]" style={{ left: `${Math.min(100, (target / 20) * 100)}%`, background: palette.ink }} title={`Objectif : ${target}`} />
+                              )}
+                            </span>
+                          )}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 shrink-0 mt-1.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} style={{ color: palette.ink3 }} />
+                      </button>
+
+                      {isOpen && (
+                        <div className="px-4 pb-4">
+                          <div className="h-px mb-3" style={{ background: palette.line }} />
+                          <div className="flex flex-wrap items-center gap-2">
+                            {subjectGrades.map((val, idx) => (
+                              <span key={idx} className="inline-flex items-center rounded-[11px] border overflow-hidden" style={{ background: palette.bg3, borderColor: palette.line }}>
+                                <input
+                                  type="number" step="0.25" min="0" max="20"
+                                  value={val}
+                                  onChange={(e) => handleUpdateGrade(subject.id, idx, e.target.value)}
+                                  placeholder="--"
+                                  className="w-12 py-2 pl-3 text-sm font-bold text-center bg-transparent focus:outline-none"
+                                  style={{ color: palette.ink }}
+                                />
+                                <button
+                                  onClick={() => handleRemoveGrade(subject.id, idx)}
+                                  className="px-2 py-2 transition-opacity hover:opacity-60"
+                                  style={{ color: palette.warnBar }}
+                                  title="Supprimer cette note"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </span>
+                            ))}
+                            <button
+                              onClick={() => handleAddGrade(subject.id)}
+                              className="inline-flex items-center justify-center w-10 h-10 rounded-[11px] border-[1.5px] border-dashed transition-opacity hover:opacity-70"
+                              style={{ borderColor: palette.accent, color: palette.accent }}
+                              title="Ajouter une note"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
                           </div>
-                        )}
-                        {/* Message on Mobile */}
-                        {avg !== null && target && (
-                          <div className={`md:hidden mt-2.5 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-md ${avg >= target ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                            {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
-                          </div>
-                        )}
-                        {/* Next Target Line */}
-                        {nextTargetText && (
-                          <div className="mt-2 text-xs font-medium flex items-center gap-1.5" style={{ color: palette.ink3 }}>
-                            <ArrowRight className="w-3.5 h-3.5" style={{ color: palette.accent }} />
-                            {nextTargetText}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 shrink-0 pt-2 md:pt-0">
-                      {/* Message on Desktop */}
-                      {avg !== null && target && (
-                        <div className={`hidden md:flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-md ${avg >= target ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                          {avg >= target ? "C'est ça qu'on veut voir ! 🔥" : "Courage, on ajuste le tir ! 💪"}
+
+                          {avg !== null && target !== undefined ? (
+                            <div className="flex items-center gap-1.5 mt-3 text-xs font-bold" style={{ color: avg >= target ? palette.tipBar : palette.anaInk }}>
+                              {avg >= target ? (
+                                <>Objectif {target}/20 · atteint 🎉</>
+                              ) : (
+                                <><ArrowRight className="w-3.5 h-3.5" /> Plus que {(target - avg).toFixed(1).replace('.', ',')} pt pour ton objectif de {target}/20</>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="mt-3 text-xs" style={{ color: palette.ink3 }}>
+                              Pas d’objectif fixé.{' '}
+                              <button onClick={() => setMainTab('objectifs')} className="font-bold" style={{ color: palette.accent }}>En définir un</button>
+                            </p>
+                          )}
                         </div>
                       )}
-                      {isOpen ? <ChevronUp style={{ color: palette.ink3 }} /> : <ChevronDown style={{ color: palette.ink3 }} />}
                     </div>
-                  </button>
-
-                  {/* Content */}
-                  {isOpen && (
-                    <div className="p-4 border-t" style={{ borderColor: palette.line, background: palette.bg2 }}>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        {subjectGrades.map((val, idx) => (
-                          <div key={idx} className="relative group">
-                            <label className="text-xs mb-1 block" style={{ color: palette.ink3 }}>Note {idx + 1}</label>
-                            <div className="flex items-center">
-                              <input 
-                                type="number" 
-                                step="0.25"
-                                value={val}
-                                onChange={(e) => handleUpdateGrade(subject.id, idx, e.target.value)}
-                                placeholder="/ 20"
-                                min="0" max="20"
-                                className="w-full p-2 border rounded-l-lg focus:outline-none focus:ring-2"
-                                style={{ 
-                                  background: palette.bg, 
-                                  borderColor: palette.line,
-                                  color: palette.ink,
-                                  ['--tw-ring-color' as any]: palette.accent
-                                }}
-                              />
-                              <button 
-                                onClick={() => handleRemoveGrade(subject.id, idx)}
-                                className="px-3 py-2 rounded-r-lg transition-colors border-y border-r flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-500"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <button 
-                        onClick={() => handleAddGrade(subject.id)}
-                        className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                        style={{ color: palette.accent }}
-                      >
-                        <div className="p-1 rounded-md" style={{ background: `${palette.accent}20` }}>
-                          <Plus className="w-4 h-4" />
-                        </div>
-                        Ajouter une note de devoir
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-              });
-            })()}
+                  );
+                });
+              })()}
+            </div>
           </div>
         </div>
       ) : mainTab === 'objectifs' ? (
         /* CONTENT: MES OBJECTIFS */
-        <div className="space-y-8 animate-fade-in-up animation-delay-150">
-          
-          <div className="border rounded-[28px] p-6 md:p-8 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
-              <Star className="w-6 h-6 text-yellow-400" /> Objectif Principal de l'Année
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: palette.ink }}>Moyenne Générale Visée (sur 20)</label>
-                <p className="text-xs mb-4" style={{ color: palette.ink2 }}>Combien veux-tu avoir de moyenne au total ?</p>
-                <input 
-                  type="number" 
-                  step="0.5" min="0" max="20"
-                  value={draftGoals.generalAverage || ''}
-                  onChange={handleGeneralAverageChange}
-                  placeholder="Ex: 12"
-                  className="w-full px-4 py-3 text-lg font-bold border rounded-[16px] focus:outline-none focus:ring-2 transition-colors"
-                  style={{ 
-                    background: palette.bg2,
-                    borderColor: palette.line,
-                    color: palette.ink,
-                    ['--tw-ring-color' as any]: palette.accent
-                  }}
-                />
+        <div className="space-y-4 animate-fade-in-up animation-delay-150">
+
+          {/* Objectif de l'année — compact (maquette #13) */}
+          <div className="border rounded-[20px] p-[18px]" style={{ background: palette.bg2, borderColor: palette.line }}>
+            <h2 className="text-[15px] font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>Objectif de l'année</h2>
+            <p className="text-xs mt-1 mb-4" style={{ color: palette.ink2 }}>Ta cible finale — on s'en sert pour mesurer ton cap.</p>
+            <div className="flex gap-2.5">
+              <div className="flex-1">
+                <label className="block text-[11px] font-semibold mb-1.5" style={{ color: palette.ink2 }}>Moyenne générale</label>
+                <div className="flex items-baseline gap-1 border rounded-[14px] px-3.5 py-2.5" style={{ background: palette.bg, borderColor: palette.line }}>
+                  <input
+                    type="number" step="0.5" min="0" max="20"
+                    value={draftGoals.generalAverage || ''}
+                    onChange={handleGeneralAverageChange}
+                    placeholder="15"
+                    className="flex-1 min-w-0 bg-transparent text-[22px] font-black focus:outline-none"
+                    style={{ color: palette.ink, fontFamily: palette.display }}
+                  />
+                  <span className="text-xs font-semibold shrink-0" style={{ color: palette.ink3 }}>/20</span>
+                </div>
               </div>
-              
-              <div className="rounded-[20px] p-6 flex flex-col justify-center" style={{ background: `${palette.accent}10` }}>
-                <label className="block text-sm font-bold mb-2" style={{ color: palette.accent }}>Objectif de Points (BAC)</label>
-                <div className="flex items-end gap-2">
-                  <input 
-                    type="number" 
-                    step="1" min="0"
+              <div className="flex-1">
+                <label className="block text-[11px] font-semibold mb-1.5" style={{ color: palette.ink2 }}>Points au BAC</label>
+                <div className="flex items-baseline gap-1 border rounded-[14px] px-3.5 py-2.5" style={{ background: palette.bg, borderColor: palette.line }}>
+                  <input
+                    type="number" step="1" min="0"
                     value={draftGoals.bacPoints || ''}
                     onChange={handleBacPointsChange}
-                    placeholder="Ex: 280"
-                    className="w-full max-w-[150px] px-4 py-3 text-2xl font-black border rounded-[16px] focus:outline-none focus:ring-2"
-                    style={{
-                      background: palette.bg,
-                      borderColor: `${palette.accent}30`,
-                      color: palette.accent,
-                      ['--tw-ring-color' as any]: palette.accent
-                    }}
+                    placeholder="165"
+                    className="flex-1 min-w-0 bg-transparent text-[22px] font-black focus:outline-none"
+                    style={{ color: palette.ink, fontFamily: palette.display }}
                   />
-                  <span className="text-xl font-medium mb-3" style={{ color: palette.accent }}>Points</span>
+                  <span className="text-xs font-semibold shrink-0" style={{ color: palette.ink3 }}>pts</span>
                 </div>
-                <p className="text-xs mt-2 font-medium" style={{ color: palette.accent, opacity: 0.8 }}>
-                  Ton objectif de points pour le BAC.
-                </p>
               </div>
+            </div>
+            {mentionFor(draftGoals.generalAverage) && (
+              <div className="flex items-center gap-2 mt-3 px-3 py-2.5 rounded-[12px]" style={{ background: palette.accentSoft }}>
+                <Star className="w-4 h-4" style={{ color: palette.accent }} />
+                <span className="text-xs font-bold" style={{ color: palette.accent }}>{mentionFor(draftGoals.generalAverage)}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Cibles par trimestre */}
+          <div className="border rounded-[20px] p-[18px]" style={{ background: palette.bg2, borderColor: palette.line }}>
+            <h2 className="text-[15px] font-bold mb-3.5" style={{ color: palette.ink, fontFamily: palette.display }}>Cibles par trimestre</h2>
+            <div className="flex gap-2.5">
+              {([
+                { id: 't1', label: 'TRIM. 1' },
+                { id: 't2', label: 'TRIM. 2' },
+                { id: 't3', label: 'TRIM. 3' }
+              ] as const).map(trim => (
+                <div key={trim.id} className="flex-1 text-center border rounded-[14px] py-3 px-1.5" style={{ borderColor: palette.line }}>
+                  <div className="text-[10px] font-bold mb-1" style={{ color: palette.ink3 }}>{trim.label}</div>
+                  <input
+                    type="number" step="0.5" min="0" max="20"
+                    value={draftGoals.trimesterTargets?.[trim.id] || ''}
+                    onChange={(e) => handleTrimesterTargetChange(trim.id, e.target.value)}
+                    placeholder="--"
+                    className="w-full bg-transparent text-center text-[19px] font-black focus:outline-none"
+                    style={{ color: palette.accent, fontFamily: palette.display }}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Trimestres */}
-            <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
-              <h2 className="text-lg font-bold mb-6" style={{ color: palette.ink }}>Objectifs par Trimestre</h2>
-              <div className="space-y-4">
-                {[
-                  { id: 't1', label: 'Trimestre 1' },
-                  { id: 't2', label: 'Trimestre 2' },
-                  { id: 't3', label: 'Trimestre 3' }
-                ].map(trim => (
-                  <div key={trim.id} className="flex items-center justify-between">
-                    <label className="font-medium" style={{ color: palette.ink2 }}>{trim.label}</label>
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="number" 
-                        step="0.5" min="0" max="20"
-                        value={draftGoals.trimesterTargets?.[trim.id as 't1'|'t2'|'t3'] || ''}
-                        onChange={(e) => handleTrimesterTargetChange(trim.id as 't1'|'t2'|'t3', e.target.value)}
-                        placeholder="--"
-                        className="w-20 px-3 py-2 text-center border rounded-[12px] focus:outline-none focus:ring-2 transition-colors"
-                        style={{
-                          background: palette.bg2,
-                          borderColor: palette.line,
-                          color: palette.ink,
-                          ['--tw-ring-color' as any]: palette.accent
-                        }}
-                      />
-                      <span style={{ color: palette.ink3 }}>/ 20</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Matières */}
-            <div className="border rounded-[28px] p-6 shadow-sm" style={{ background: palette.bg, borderColor: palette.line }}>
-              <h2 className="text-lg font-bold mb-2" style={{ color: palette.ink }}>Objectifs par Matière</h2>
-              <p className="text-xs mb-6" style={{ color: palette.ink3 }}>Les matières sont adaptées à ta série.</p>
-              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {subjects.map(subject => (
-                  <div key={subject.id} className="flex items-center justify-between group hover:bg-black/5 dark:hover:bg-white/5 p-2 -mx-2 rounded-lg transition-colors">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold px-2 py-1 rounded" style={{ background: palette.bg2, color: palette.ink2 }}>
-                        x{subject.coeff}
-                      </span>
-                      <label className="font-medium" style={{ color: palette.ink }}>{subject.name}</label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="number" 
-                        step="0.5" min="0" max="20"
-                        value={draftGoals.subjectTargets?.[subject.id] || ''}
-                        onChange={(e) => handleSubjectTargetChange(subject.id, e.target.value)}
-                        placeholder="--"
-                        className="w-20 px-3 py-2 text-center border rounded-[12px] focus:outline-none focus:ring-2 transition-colors"
-                        style={{
-                          background: palette.bg2,
-                          borderColor: palette.line,
-                          color: palette.ink,
-                          ['--tw-ring-color' as any]: palette.accent
-                        }}
-                      />
-                      <span style={{ color: palette.ink3 }}>/ 20</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Objectifs par matière — carte unifiée à lignes */}
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-2.5 ml-0.5" style={{ color: palette.ink3 }}>
+              Objectifs par matière
+            </p>
+            <div className="border rounded-[20px] px-4" style={{ background: palette.bg2, borderColor: palette.line }}>
+              {subjects.map((subject, i) => (
+                <div
+                  key={subject.id}
+                  className="flex items-center justify-between gap-3 py-3"
+                  style={{ borderTop: i > 0 ? `1px solid ${palette.line}` : 'none' }}
+                >
+                  <span className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className="w-9 h-9 rounded-[12px] shrink-0 flex items-center justify-center text-sm font-black"
+                      style={{ background: `${SUBJECT_DOT[subject.id] || palette.accent}22`, color: SUBJECT_DOT[subject.id] || palette.accent, fontFamily: palette.display }}
+                    >
+                      ×{subject.coeff}
+                    </span>
+                    <span className="font-bold text-sm truncate" style={{ color: palette.ink }}>{subject.name}</span>
+                  </span>
+                  <span className="flex items-baseline gap-1 shrink-0">
+                    <input
+                      type="number" step="0.5" min="0" max="20"
+                      value={draftGoals.subjectTargets?.[subject.id] || ''}
+                      onChange={(e) => handleSubjectTargetChange(subject.id, e.target.value)}
+                      placeholder="--"
+                      className="w-14 px-2 py-1.5 text-center text-sm font-bold border rounded-[10px] focus:outline-none focus:ring-2"
+                      style={{ background: palette.bg, borderColor: palette.line, color: palette.ink, ['--tw-ring-color' as any]: palette.accent }}
+                    />
+                    <span className="text-[11px] font-semibold" style={{ color: palette.ink3 }}>/20</span>
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Action Bar */}
-          <div className="flex justify-end pt-4">
-            <button 
-              onClick={handleSaveGoals}
-              className="flex items-center gap-2 text-white px-8 py-3 rounded-[16px] font-bold shadow-md transition-all hover:scale-[1.02]"
-              style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
-            >
-              <Save className="w-5 h-5" />
-              Enregistrer mes objectifs
-            </button>
-          </div>
+          {/* Enregistrer — pleine largeur */}
+          <button
+            onClick={handleSaveGoals}
+            className="w-full flex items-center justify-center gap-2 text-white py-3.5 rounded-[16px] font-bold transition-all hover:scale-[1.01]"
+            style={{ background: palette.accent, boxShadow: `0 4px 14px ${palette.accent}40` }}
+          >
+            <Save className="w-5 h-5" />
+            Enregistrer mes objectifs
+          </button>
 
         </div>
       ) : null}

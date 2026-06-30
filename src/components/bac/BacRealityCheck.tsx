@@ -23,8 +23,8 @@ export function BacRealityCheck({ noteSim, moyenneClasse, matiereName, matiereId
 
   return (
     <div
-      className="bg-gray-50 dark:bg-[#0D1117] rounded-r-lg mt-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
-      style={{ borderLeft: '3px solid #D81B60', padding: '10px 14px' }}
+      className="rounded-r-lg mt-1 text-sm leading-relaxed"
+      style={{ background: 'var(--ed-bg3)', color: 'var(--ed-ink2)', borderLeft: '3px solid var(--ed-accent)', padding: '10px 14px' }}
     >
       <span className="mr-1">💡</span>
       Champion(ne), tu as simulé un <strong>{noteSim}/20</strong> en <strong>{matiereName}</strong>.
