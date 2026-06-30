@@ -1,393 +1,485 @@
-import { useState } from 'react';
-import { BookOpen, PlayCircle, Star, ShoppingBag, Book, Zap } from 'lucide-react';
+import { useState, ReactNode } from 'react';
+import { ArrowRight, Lock, Check, RotateCcw, ShoppingBag, BookOpen, Sparkles, ChevronRight, Atom, Leaf, Feather } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import type { PaletteTokens } from '../../contexts/ThemeContext';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 
-const COURSE_METADATA: Record<string, any> = {
-  't1-limites': {
-    title: 'Les Limites',
-    subject: 'Mathématiques',
-    level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
-    series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 5,
-    completedQuizzes: 0,
-    progress: 0,
-    status: 'nouveau'
-  },
-  't2-derivees': {
-    title: 'Les Dérivées',
-    subject: 'Mathématiques',
-    level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
-    series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    progress: 0,
-    status: 'nouveau'
-  },
-  't3-primitives': {
-    title: 'Primitives & Intégrales',
-    subject: 'Mathématiques',
-    level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
-    series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    progress: 0,
-    status: 'nouveau'
-  },
-  't4-suites': {
-    title: 'Suites Numériques',
-    subject: 'Mathématiques',
-    level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
-    series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 5,
-    completedQuizzes: 0,
-    progress: 0,
-    status: 'nouveau'
-  },
-  't5-log-expo': {
-    title: 'Logarithme & Exponentielle',
-    subject: 'Mathématiques',
-    level: 'Terminale D',
-    colorClass: 'bg-gradient-to-br from-[#1976D2] to-[#1A3557]',
-    series: ['Terminale D', 'Terminale C'],
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    progress: 0,
-    status: 'nouveau'
+// ──────────────────────────────────────────────────────────────────────────
+// Source unique des tomes de la collection « Les Clés Maths » (seul contenu
+// réel de l'app). `total` = nombre de chapitres notés par un quiz (= modules
+// M1..Mn), qui sert de dénominateur à la progression réelle.
+// ──────────────────────────────────────────────────────────────────────────
+interface TomeInfo {
+  id: string;
+  n: number;
+  title: string;
+  total: number;
+  cover?: string;
+}
+
+const TOMES: TomeInfo[] = [
+  { id: 't1-limites', n: 1, title: 'Les Limites', total: 5, cover: '/covers/tomes/cover-t1.png' },
+  { id: 't2-derivees', n: 2, title: 'Les Dérivées', total: 6, cover: '/covers/tomes/cover-t2.png' },
+  { id: 't3-primitives', n: 3, title: 'Primitives & Intégrales', total: 6, cover: '/covers/tomes/cover-t3.png' },
+  { id: 't4-suites', n: 4, title: 'Suites Numériques', total: 5, cover: '/covers/tomes/cover-t4.png' },
+  { id: 't5-log-expo', n: 5, title: 'Logarithme & Exponentielle', total: 6, cover: '/covers/tomes/cover-t5.png' },
+  { id: 't6-trigonometrie', n: 6, title: 'Fonctions Trigonométriques', total: 6, cover: '/covers/tomes/cover-t6.png' },
+  { id: 't7-probabilites', n: 7, title: 'Probabilités', total: 6, cover: '/covers/tomes/cover-t7.png' },
+  { id: 't8-statistiques', n: 8, title: 'Statistiques', total: 6, cover: '/covers/tomes/cover-t8.png' },
+  { id: 't9-geometrie-espace', n: 9, title: "Géométrie dans l'Espace", total: 7, cover: '/covers/tomes/cover-t9.jpeg' },
+  { id: 't10-complexes', n: 10, title: 'Nombres Complexes', total: 6, cover: '/covers/tomes/cover-t10.png' },
+  { id: 't11-equations-diff', n: 11, title: 'Équations Différentielles', total: 6, cover: '/covers/tomes/cover-t11.png' },
+  { id: 't12-revisions-bac', n: 12, title: 'Révisions BAC', total: 4 },
+];
+
+// Collections dont le contenu n'existe pas encore : présentées en « Bientôt »,
+// non cliquables (déroulé = message d'attente). Reprend la grammaire de la
+// maquette #5 (Histoire-Géo « Bientôt »).
+interface SoonCollection {
+  id: string;
+  name: string;
+  teaser: string;
+  gradient: string;
+  Icon: typeof BookOpen;
+}
+
+const SOON: SoonCollection[] = [
+  { id: 'soon-pc', name: 'Les Clés Physique-Chimie', teaser: 'Cinématique, énergie, ondes — on prépare tout ça pour bientôt.', gradient: 'linear-gradient(135deg,#1B9E5B,#117A45)', Icon: Atom },
+  { id: 'soon-svt', name: 'Les Clés SVT', teaser: 'Système nerveux, génétique, immunologie — en cours de préparation.', gradient: 'linear-gradient(135deg,#14A6A6,#0E7C7C)', Icon: Leaf },
+  { id: 'soon-philo', name: 'Les Clés Philosophie', teaser: 'Méthodo dissert & explication de texte — on y travaille.', gradient: 'linear-gradient(135deg,#E67E22,#C0610F)', Icon: Feather },
+];
+
+const LAST_READ_KEY = 'eductome_last_chapter_read';
+
+// ──────────────────────────────────────────────────────────────────────────
+// Couverture de tome avec repli typographique si l'image manque (ex. T12).
+// ──────────────────────────────────────────────────────────────────────────
+const TomeCover = ({ tome, className, muted }: { tome: TomeInfo; className?: string; muted?: boolean }) => {
+  const { palette } = useTheme();
+  const [errored, setErrored] = useState(false);
+
+  if (!tome.cover || errored) {
+    return (
+      <div
+        className={`flex flex-col items-center justify-center text-center px-2 ${className || ''}`}
+        style={{ background: palette.accentSoft }}
+      >
+        <span className="text-[11px] font-bold tracking-wide" style={{ color: palette.accent }}>
+          Tome {tome.n}
+        </span>
+        <span className="text-[10px] leading-tight mt-0.5 line-clamp-2" style={{ color: palette.ink2 }}>
+          {tome.title}
+        </span>
+      </div>
+    );
   }
+
+  return (
+    <img
+      src={tome.cover}
+      alt={`Couverture du Tome ${tome.n} — ${tome.title}`}
+      onError={() => setErrored(true)}
+      loading="lazy"
+      className={`object-cover ${className || ''}`}
+      style={muted ? { filter: 'grayscale(1)', opacity: 0.55 } : undefined}
+    />
+  );
 };
 
-const STARTER_COURSES = [
-  {
-    id: "t1-limites",
-    title: "Les Limites",
-    subject: "Mathématiques",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 1,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
-    badge: "Chapitre 1 Gratuit"
-  },
-  {
-    id: "t2-derivees",
-    title: "Les Dérivées",
-    subject: "Mathématiques",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
-    badge: "Aperçu gratuit"
-  },
-  {
-    id: "t3-primitives",
-    title: "Primitives & Intégrales",
-    subject: "Mathématiques",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
-    badge: "Aperçu gratuit"
-  },
-  {
-    id: "t4-suites",
-    title: "Suites Numériques",
-    subject: "Mathématiques",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 5,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
-    badge: "Aperçu gratuit"
-  },
-  {
-    id: "t5-log-expo",
-    title: "Logarithme & Exponentielle",
-    subject: "Mathématiques",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 6,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-[#1976D2] to-[#1A3557]", // Bleu Marine
-    badge: "Aperçu gratuit"
-  },
-  {
-    id: "pc-cinematique",
-    title: "Cinématique du Point",
-    subject: "Physique-Chimie",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 1,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-purple-600 to-purple-800", // Violet
-    badge: "Chapitre 1 Gratuit"
-  },
-  {
-    id: "svt-nerveux",
-    title: "Le Système Nerveux",
-    subject: "SVT",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C"],
-    progress: 0,
-    totalQuizzes: 1,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-green-600 to-green-800", // Vert
-    badge: "Chapitre 1 Gratuit"
-  },
-  {
-    id: "philo-methode",
-    title: "Méthodologie Dissertation",
-    subject: "Philosophie",
-    level: "Terminale",
-    series: ["Terminale D", "Terminale C", "Terminale A"],
-    progress: 0,
-    totalQuizzes: 1,
-    completedQuizzes: 0,
-    status: "nouveau",
-    colorClass: "bg-gradient-to-br from-rose-700 to-rose-900", // Bordeaux
-    badge: "Chapitre 1 Gratuit"
-  }
-];
+// ──────────────────────────────────────────────────────────────────────────
+const SectionHeader = ({
+  title,
+  count,
+  palette,
+  action,
+}: {
+  title: string;
+  count?: number;
+  palette: PaletteTokens;
+  action?: { label: string; to: string };
+}) => (
+  <div className="flex items-end justify-between gap-3 mb-3">
+    <h2 className="text-[15px] sm:text-base font-bold flex items-center gap-2" style={{ color: palette.ink }}>
+      {title}
+      {typeof count === 'number' && (
+        <span className="text-[12px] font-semibold" style={{ color: palette.ink3 }}>
+          {count}
+        </span>
+      )}
+    </h2>
+    {action && (
+      <Link
+        to={action.to}
+        className="text-[12.5px] font-semibold flex items-center gap-1 transition-opacity hover:opacity-70 shrink-0"
+        style={{ color: palette.accent }}
+      >
+        {action.label} <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    )}
+  </div>
+);
 
 export const MyCourses = () => {
   const navigate = useNavigate();
-  const { unlockedCourses } = useUser();
+  const { unlockedCourses, statut, rewardedActions } = useUser();
   const { palette } = useTheme();
-  const userSerie = localStorage.getItem('eductome_user_serie') || '';
-  const [activeTab, setActiveTab] = useState<'all' | 'progress' | 'completed'>('all');
 
-  // Build myCourses dynamically from unlockedCourses
-  const purchasedCourses = unlockedCourses
-    .map(id => ({ id, ...COURSE_METADATA[id] }))
-    .filter(c => c && c.title);
+  // Progression réelle : on compte les chapitres validés (quiz réussi →
+  // actionId `quiz_<courseId>_<chapterId>` enregistré dans rewardedActions).
+  const progressOf = (tome: TomeInfo) => {
+    let done = 0;
+    rewardedActions.forEach(a => {
+      if (a.startsWith(`quiz_${tome.id}_`)) done++;
+    });
+    done = Math.min(done, tome.total);
+    const pct = tome.total ? Math.round((done / tome.total) * 100) : 0;
+    return { done, total: tome.total, pct, started: done > 0 };
+  };
 
-  // Add the free starter courses that haven't been purchased yet
-  const freeStarterCourses = STARTER_COURSES.filter(c => !unlockedCourses.includes(c.id));
+  const isOwned = (id: string) => statut === 'famille' || unlockedCourses.includes(id);
 
-  const myCourses = [...purchasedCourses, ...freeStarterCourses];
+  const owned = TOMES.filter(t => isOwned(t.id));
+  const locked = TOMES.filter(t => !isOwned(t.id));
 
-  const filteredCourses = myCourses.filter(course => {
-    // Filter by serie
-    if (userSerie && course.series) {
-      const normalizedUser = userSerie.toLowerCase().replace('-', ' ');
-      const match = course.series.some((s: string) => s.toLowerCase().replace('-', ' ') === normalizedUser);
-      if (!match) return false;
-    }
-    
-    // Filter by tab
-    if (activeTab === 'all') return true;
-    if (activeTab === 'progress') return (course.progress < 100 && course.progress > 0) || course.status === 'nouveau';
-    if (activeTab === 'completed') return course.progress === 100;
-    return true;
-  });
+  // Tome mis en avant dans « Reprendre » : le dernier ouvert, sinon le premier
+  // tome possédé, sinon le Tome 1 (dont l'aperçu est gratuit pour tous).
+  const lastReadId = localStorage.getItem(LAST_READ_KEY) || '';
+  const heroTome =
+    TOMES.find(t => t.id === lastReadId) || owned[0] || TOMES[0];
+  const heroProgress = progressOf(heroTome);
+
+  const open = (id: string) => navigate(`/dashboard/course/${id}`);
+
+  // État d'ouverture des collections dépliables (Maths ouverte par défaut).
+  const [openCol, setOpenCol] = useState<Record<string, boolean>>({ maths: true });
+  const isColOpen = (id: string, defaultOpen: boolean) => (openCol[id] === undefined ? defaultOpen : openCol[id]);
+  const toggleCol = (id: string, defaultOpen: boolean) =>
+    setOpenCol(m => ({ ...m, [id]: !isColOpen(id, defaultOpen) }));
+
+  // ── Ligne de tome dans une collection dépliable (maquette #5) ──
+  const renderTomeRow = (tome: TomeInfo, idx: number) => {
+    const unlocked = isOwned(tome.id);
+    const { done, total, pct, started } = progressOf(tome);
+    const actionText = unlocked ? (started ? 'Continuer' : 'Ouvrir') : 'Aperçu';
+    return (
+      <div key={tome.id}>
+        {idx > 0 && <div className="h-px ml-[58px]" style={{ background: palette.line }} />}
+        <button onClick={() => open(tome.id)} className="group w-full flex items-center gap-3 px-3.5 py-3 text-left">
+          <span
+            className="relative w-8 h-[42px] rounded-md flex items-center justify-center text-[10px] font-extrabold shrink-0 font-poppins"
+            style={{ background: unlocked ? palette.accentSoft : palette.bg3, color: unlocked ? palette.accent : palette.ink3 }}
+          >
+            T{tome.n}
+            {!unlocked && (
+              <span className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,.45)' }}>
+                <Lock className="w-2 h-2 text-white" />
+              </span>
+            )}
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-[14px] font-bold leading-snug truncate" style={{ color: palette.ink }}>{tome.title}</span>
+            {unlocked && !started ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold" style={{ color: palette.tipBar }}>
+                <Check className="w-3 h-3" /> Débloqué
+              </span>
+            ) : unlocked ? (
+              <span className="block text-[11px] font-semibold tabular-nums" style={{ color: palette.ink2 }}>{done}/{total} chapitres · {pct}%</span>
+            ) : (
+              <span className="block text-[11px] font-semibold" style={{ color: palette.ink3 }}>Aperçu gratuit · intro + socle</span>
+            )}
+          </span>
+          <span className="inline-flex items-center gap-1 text-[12px] font-bold shrink-0" style={{ color: palette.accent }}>
+            {actionText} <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </button>
+      </div>
+    );
+  };
+
+  // ── Carte de collection dépliable (en-tête icône + corps animé) ──
+  const renderCollection = ({
+    id, gradient, icon, title, subtitle, badge, badgeTone = 'accent', defaultOpen = false, children,
+  }: {
+    id: string; gradient: string; icon: ReactNode; title: string; subtitle: string;
+    badge?: string; badgeTone?: 'accent' | 'ana'; defaultOpen?: boolean; children: ReactNode;
+  }) => {
+    const opened = isColOpen(id, defaultOpen);
+    return (
+      <div key={id} className="rounded-[20px] border overflow-hidden transition-colors" style={{ background: palette.bg2, borderColor: palette.line }}>
+        <button onClick={() => toggleCol(id, defaultOpen)} className="w-full flex items-center gap-3 p-3.5 text-left" aria-expanded={opened}>
+          <span className="w-[42px] h-[42px] rounded-[12px] flex items-center justify-center shrink-0" style={{ background: gradient, boxShadow: '0 5px 14px rgba(20,40,70,.18)' }}>{icon}</span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-[15px] font-bold truncate" style={{ color: palette.ink, fontFamily: palette.display }}>{title}</span>
+            <span className="block text-[12px] font-medium" style={{ color: palette.ink2 }}>{subtitle}</span>
+          </span>
+          {badge && (
+            <span
+              className="shrink-0 rounded-full px-2.5 py-1 font-poppins"
+              style={badgeTone === 'ana'
+                ? { background: palette.anaBg, color: palette.anaInk, fontWeight: 800, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.06em' }
+                : { background: palette.accentSoft, color: palette.accent, fontWeight: 800, fontSize: 11 }}
+            >
+              {badge}
+            </span>
+          )}
+          <motion.span animate={{ rotate: opened ? 90 : 0 }} transition={{ duration: 0.2 }} className="shrink-0" style={{ color: palette.ink3 }}>
+            <ChevronRight className="w-[18px] h-[18px]" strokeWidth={2.4} />
+          </motion.span>
+        </button>
+        {opened && (
+          <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }} style={{ overflow: 'hidden' }}>
+            <div className="h-px mx-3.5" style={{ background: palette.line }} />
+            {children}
+          </motion.div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
-      <GrandFrereGuide 
+    <div className="space-y-9 px-4 md:px-6 lg:px-8 pt-6 pb-12 font-poppins">
+      <GrandFrereGuide
         id="courses"
-        message="Voici tes armes de guerre. Tu retrouveras ici tous les tomes que tu as débloqués. Continue là où tu t'es arrêté et n'oublie pas : la régularité fait la différence."
+        message="Voici ta bibliothèque. Reprends là où tu t'es arrêté, avance tome par tome — la régularité fait la différence, pas la vitesse."
       />
-      {/* Banner */}
-      <div className="relative bg-gradient-to-br from-[#1A3557] to-[#1976D2] rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white/10 pointer-events-none blur-2xl"></div>
-        
-        <div className="relative z-10 text-white flex-1">
-          <h1 className="text-3xl font-playfair font-bold mb-2 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 opacity-80" />
-            Mes Cours
+
+      {/* ── En-tête ── */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[26px] sm:text-3xl font-bold leading-tight" style={{ color: palette.ink, fontFamily: palette.display }}>
+            Mes cours
           </h1>
-          <p className="text-white/80 max-w-lg mt-2 text-[15px] font-medium leading-relaxed">
-            Retrouve ici tous les tomes et chapitres que tu as débloqués. Continue ton entraînement !
+          <div className="mt-2 h-[3px] w-9 rounded-full" style={{ background: palette.accent }} />
+          <p className="mt-3 text-sm max-w-lg" style={{ color: palette.ink2 }}>
+            Ta collection « Les Clés Maths », tome par tome.
           </p>
         </div>
-      </div>
-
-      {/* Banner Révisions Express */}
-      <div className="rounded-[28px] p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border" style={{ background: palette.glass, borderColor: palette.glassLine, backdropFilter: 'blur(20px) saturate(160%)' }}>
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-[20px] shrink-0" style={{ background: 'rgba(216, 27, 96, 0.1)' }}>
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: palette.accent }} />
-          </div>
-          <div>
-            <h2 className="text-base sm:text-lg font-bold" style={{ color: palette.ink }}>Mode Révision Express</h2>
-            <p className="text-xs sm:text-[14px] font-medium" style={{ color: palette.ink2 }}>
-              15 minutes chrono. Révise les essentiels à connaître avant un devoir !
-            </p>
-          </div>
-        </div>
-        <button 
+        <button
           onClick={() => navigate('/dashboard/revisions')}
-          className="w-full sm:w-auto px-6 py-3 text-white rounded-[20px] font-bold flex items-center justify-center gap-2 transition-transform hover:scale-105 shrink-0 shadow-lg"
-          style={{ background: palette.accent, boxShadow: `0 8px 24px ${palette.accent}40` }}
+          className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-[12.5px] font-semibold border transition-colors hover:opacity-80"
+          style={{ background: palette.bg2, borderColor: palette.line, color: palette.ink2 }}
         >
-          Lancer une révision <Zap className="w-5 h-5 fill-current" />
+          <RotateCcw className="w-4 h-4" /> Réviser
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-2 p-1.5 rounded-[20px] border w-full max-w-md transition-colors duration-300" style={{ background: palette.bg2, borderColor: palette.line }}>
-        <button 
-          onClick={() => setActiveTab('all')}
-          className={`flex-1 py-2 text-sm font-medium rounded-[16px] transition-all duration-300 ${activeTab === 'all' ? 'shadow-sm text-white' : 'hover:bg-black/5 dark:hover:bg-white/5'}`}
-          style={{ 
-            background: activeTab === 'all' ? palette.accent : 'transparent',
-            color: activeTab === 'all' ? '#FFF' : palette.ink2
-          }}
-        >
-          Tous
-        </button>
-        <button 
-          onClick={() => setActiveTab('progress')}
-          className={`flex-1 py-2 text-sm font-medium rounded-[16px] transition-all duration-300 ${activeTab === 'progress' ? 'shadow-sm text-white' : 'hover:bg-black/5 dark:hover:bg-white/5'}`}
-          style={{ 
-            background: activeTab === 'progress' ? palette.accent : 'transparent',
-            color: activeTab === 'progress' ? '#FFF' : palette.ink2
-          }}
-        >
-          En cours
-        </button>
-        <button 
-          onClick={() => setActiveTab('completed')}
-          className={`flex-1 py-2 text-sm font-medium rounded-[16px] transition-all duration-300 ${activeTab === 'completed' ? 'shadow-sm text-white' : 'hover:bg-black/5 dark:hover:bg-white/5'}`}
-          style={{ 
-            background: activeTab === 'completed' ? palette.accent : 'transparent',
-            color: activeTab === 'completed' ? '#FFF' : palette.ink2
-          }}
-        >
-          Terminés
-        </button>
-      </div>
-
-      {/* Course Grid */}
-      {filteredCourses.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-          {filteredCourses.map((course, index) => (
-            <div key={course.id} className="rounded-[28px] overflow-hidden flex flex-col group animate-in fade-in slide-in-from-bottom-4 shadow-sm border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ background: palette.bg2, borderColor: palette.line, animationDelay: `${(index + 1) * 100}ms` }}>
-              {/* Image / Color Header */}
-              <div className={`h-[90px] sm:h-[120px] ${course.colorClass} relative p-4 sm:p-6 flex flex-col justify-center`}>
-                <h3 className="text-sm sm:text-xl font-bold text-white drop-shadow-md leading-tight line-clamp-2">{course.title}</h3>
-                <p className="text-[10px] sm:text-xs font-bold text-white/80 uppercase tracking-wider mt-1 sm:mt-2">{course.subject} • {course.level}</p>
-              </div>
-              
-              {/* Content */}
-              <div className="p-3 sm:p-5 flex flex-col flex-grow">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-                  <div className="flex gap-2">
-                    {course.badge && (
-                      <span className="text-xs font-bold px-2 py-1 rounded bg-[#D81B60] text-white flex items-center shadow-sm">
-                        🎁 {course.badge}
-                      </span>
-                    )}
-                    <span className="text-xs font-bold px-2 py-1 rounded-[12px] border flex items-center" style={{ background: palette.bg, borderColor: palette.line, color: palette.ink2 }}>
-                      {course.completedQuizzes}/{course.totalQuizzes} Quiz
-                    </span>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    {course.status === 'termine' && (
-                      <span className="text-[10px] sm:text-xs font-bold px-2 py-1 rounded-[12px] bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 flex items-center gap-1">
-                        Terminé <Star className="w-3 h-3 fill-current" />
-                      </span>
-                    )}
-                    {course.status === 'en_cours' && (
-                      <span className="text-[10px] sm:text-xs font-bold px-2 py-1 rounded-[12px] bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                        En cours
-                      </span>
-                    )}
-                    {course.status === 'nouveau' && (
-                      <span className="text-[10px] sm:text-xs font-bold px-2 py-1 rounded-[12px] bg-green-100/50 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                        Nouveau
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-between text-[10px] mb-1">
-                  <span className="font-medium" style={{ color: palette.ink3 }}>Progression</span>
-                  <span className="font-bold" style={{ color: palette.ink }}>{course.progress}%</span>
-                </div>
-                
-                <div className="w-full rounded-full h-1.5 sm:h-2 mb-4 overflow-hidden" style={{ background: palette.line }}>
-                  <div 
-                    className="h-full rounded-full transition-all duration-1000" 
-                    style={{ width: `${course.progress}%`, background: palette.accent }}
-                  ></div>
-                </div>
-                
-                <div className="mt-auto pt-2">
-                  {course.progress === 100 ? (
-                    <button 
-                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
-                      className="w-full py-2.5 rounded-[16px] font-bold flex items-center justify-center gap-2 transition-colors border"
-                      style={{ background: palette.bg, color: palette.ink2, borderColor: palette.line }}
-                    >
-                      <PlayCircle className="w-5 h-5" />
-                      Revoir
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => navigate(`/dashboard/course/${course.id}`)}
-                      className="w-full py-2.5 rounded-[16px] font-bold flex items-center justify-center gap-2 border-2 transition-colors hover:text-white"
-                      style={{ borderColor: palette.accent, color: palette.accent }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = palette.accent;
-                        e.currentTarget.style.color = '#FFF';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = palette.accent;
-                      }}
-                    >
-                      <PlayCircle className="w-5 h-5" />
-                      Continuer
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        /* Empty State */
-        <div className="border rounded-[28px] p-12 flex flex-col items-center justify-center text-center animate-in fade-in" style={{ background: palette.glass, borderColor: palette.glassLine, backdropFilter: 'blur(20px) saturate(160%)' }}>
-          <div className="w-20 h-20 rounded-[28px] flex items-center justify-center mb-4" style={{ background: palette.bg2 }}>
-            <Book className="w-10 h-10" style={{ color: palette.ink3 }} />
-          </div>
-          <h2 className="text-xl font-bold mb-2" style={{ color: palette.ink }}>Tu n'as pas encore de cours</h2>
-          <p className="max-w-md mb-6 font-medium text-sm" style={{ color: palette.ink2 }}>
-            Découvre notre catalogue et commence ton apprentissage dès aujourd'hui pour être prêt à l'examen.
+      {/* ── Hero « bibliothèque » (stats réelles) ── */}
+      <section
+        className="relative overflow-hidden rounded-[22px] p-5 sm:p-6"
+        style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}
+      >
+        <div className="absolute -top-12 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ border: '1.5px solid rgba(255,255,255,.14)' }} />
+        <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
+        <div className="relative">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] opacity-85 font-poppins">Ta bibliothèque</span>
+          <h2 className="mt-2 mb-1.5 text-[20px] sm:text-[22px] font-extrabold leading-[1.18]" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
+            Débloque tes cours, entraîne-toi, vise haut.
+          </h2>
+          <p className="text-[13px] leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,.85)' }}>
+            C'est ici que tu lis tes tomes et t'entraînes pour décrocher ta mention au BAC.
           </p>
-          <Link 
-            to="/dashboard/boutique"
-            className="px-6 py-3 text-white rounded-[20px] font-bold flex items-center gap-2 transition-transform hover:scale-105 shadow-md"
-            style={{ background: palette.accent, boxShadow: `0 8px 24px ${palette.accent}40` }}
-          >
-            Découvrir la boutique <ShoppingBag className="w-5 h-5" />
-          </Link>
+          <div className="grid grid-cols-3 gap-2.5 max-w-md">
+            {[
+              { n: owned.length, label: owned.length > 1 ? 'Tomes débloqués' : 'Tome débloqué' },
+              { n: locked.length, label: 'À débloquer' },
+              { n: 1, label: 'Collection' },
+            ].map((s, i) => (
+              <div key={i} className="rounded-[14px] px-3 py-2.5" style={{ background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.16)' }}>
+                <div className="text-[22px] font-extrabold leading-none" style={{ fontFamily: palette.display }}>{s.n}</div>
+                <div className="text-[10px] font-semibold opacity-85 mt-1 leading-tight">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* ── Reprendre ── */}
+      <section>
+        <SectionHeader title="Reprendre" palette={palette} />
+        <button
+          onClick={() => open(heroTome.id)}
+          className="group w-full flex items-stretch text-left rounded-[22px] border overflow-hidden transition-all duration-300 hover:shadow-lg"
+          style={{ background: palette.bg2, borderColor: palette.line }}
+        >
+          <TomeCover tome={heroTome} className="w-[96px] sm:w-[132px] shrink-0" />
+          <div className="flex-1 min-w-0 p-4 sm:p-6 flex flex-col justify-center">
+            <span className="text-[11px] font-semibold" style={{ color: palette.ink3 }}>
+              Tome {heroTome.n} · Mathématiques
+            </span>
+            <h3 className="text-lg sm:text-2xl font-bold leading-tight mt-1" style={{ color: palette.ink }}>
+              {heroTome.title}
+            </h3>
+
+            {heroProgress.started ? (
+              <div className="mt-4 max-w-md">
+                <div className="flex items-center justify-between text-[12px] mb-1.5">
+                  <span className="font-semibold" style={{ color: palette.ink2 }}>
+                    {heroProgress.done}/{heroProgress.total} chapitres validés
+                  </span>
+                  <span className="font-bold tabular-nums" style={{ color: palette.ink }}>{heroProgress.pct}%</span>
+                </div>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: palette.bg3 }}>
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${heroProgress.pct}%`, background: palette.accent }} />
+                </div>
+              </div>
+            ) : (
+              <p className="mt-3 text-[13.5px]" style={{ color: palette.ink2 }}>
+                Tu n'as pas encore commencé ce tome. C'est le bon moment.
+              </p>
+            )}
+
+            <span
+              className="mt-5 inline-flex items-center gap-2 self-start px-4 py-2.5 rounded-[14px] text-[13px] font-bold transition-transform group-hover:scale-[1.02]"
+              style={{ background: palette.accent, color: palette.onAccent }}
+            >
+              {heroProgress.started ? 'Continuer la lecture' : 'Commencer la lecture'}
+              <ArrowRight className="w-4 h-4" />
+            </span>
+          </div>
+        </button>
+      </section>
+
+      {/* ── Mes collections (dépliables) ── */}
+      <section className="space-y-3">
+        <SectionHeader title="Mes collections" palette={palette} />
+
+        {/* Les Clés Maths — seule collection avec du contenu réel */}
+        {renderCollection({
+          id: 'maths',
+          gradient: 'linear-gradient(135deg,#1976D2,#1A3557)',
+          icon: <BookOpen className="w-5 h-5" style={{ color: '#fff' }} />,
+          title: 'Les Clés Maths',
+          subtitle: `12 tomes · ${owned.length} débloqué${owned.length > 1 ? 's' : ''}`,
+          badge: `${owned.length}/12`,
+          badgeTone: 'accent',
+          defaultOpen: true,
+          children: (
+            <div className="pb-1">
+              {owned.length > 0 ? (
+                owned.map((t, i) => renderTomeRow(t, i))
+              ) : (
+                <p className="px-3.5 py-3.5 text-[12.5px] leading-relaxed" style={{ color: palette.ink2 }}>
+                  Aucun tome débloqué pour l'instant. Chaque tome s'ouvre en aperçu gratuit (intro + socle) — commence quand tu veux.
+                </p>
+              )}
+              {locked.length > 0 && (
+                <button
+                  onClick={() => setOpenCol(m => ({ ...m, locked: true }))}
+                  className="w-full text-left px-3.5 py-3 inline-flex items-center gap-2 text-[12px] font-bold"
+                  style={{ color: palette.ink3 }}
+                >
+                  <Lock className="w-3.5 h-3.5" /> +{locked.length} tomes à débloquer dans cette collection
+                </button>
+              )}
+            </div>
+          ),
+        })}
+
+        {/* Collections « Bientôt » (sans contenu lisible — message d'attente) */}
+        {SOON.map(c =>
+          renderCollection({
+            id: c.id,
+            gradient: c.gradient,
+            icon: <c.Icon className="w-5 h-5" style={{ color: '#fff' }} />,
+            title: c.name,
+            subtitle: 'Bientôt disponible',
+            badge: 'Bientôt',
+            badgeTone: 'ana',
+            defaultOpen: false,
+            children: (
+              <div className="px-4 py-6 text-center">
+                <div className="text-[26px] mb-1.5">🚧</div>
+                <p className="text-[13px] leading-relaxed max-w-xs mx-auto" style={{ color: palette.ink2 }}>{c.teaser}</p>
+              </div>
+            ),
+          })
+        )}
+      </section>
+
+      {/* ── À débloquer (collection verrouillée, dépliable) ── */}
+      {locked.length > 0 && (
+        <section className="space-y-3">
+          <SectionHeader
+            title="À débloquer"
+            count={locked.length}
+            palette={palette}
+            action={{ label: 'Voir la boutique', to: '/dashboard/boutique' }}
+          />
+          {renderCollection({
+            id: 'locked',
+            gradient: palette.bg3,
+            icon: <Lock className="w-[19px] h-[19px]" style={{ color: palette.ink3 }} strokeWidth={2.2} />,
+            title: 'Tomes verrouillés',
+            subtitle: `${locked.length} tomes · Les Clés Maths`,
+            defaultOpen: false,
+            children: (
+              <div className="pb-1">
+                {locked.map((t, i) => renderTomeRow(t, i))}
+                <Link to="/dashboard/boutique" className="block px-3.5 py-3 text-[12px] font-bold" style={{ color: palette.accent }}>
+                  Voir les {locked.length} tomes en boutique →
+                </Link>
+              </div>
+            ),
+          })}
+        </section>
+      )}
+
+      {/* ── Découvrir la boutique (si tout est déjà débloqué) ── */}
+      {locked.length === 0 && (
+        <Link
+          to="/dashboard/boutique"
+          className="flex items-center justify-between gap-4 rounded-[20px] border p-5 transition-colors hover:opacity-90"
+          style={{ background: palette.bg2, borderColor: palette.line }}
+        >
+          <div>
+            <h3 className="text-[15px] font-bold" style={{ color: palette.ink }}>Tu possèdes toute la collection</h3>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.ink2 }}>Découvre les autres collections EDUCTOME en boutique.</p>
+          </div>
+          <span className="inline-flex items-center gap-2 text-[13px] font-bold shrink-0" style={{ color: palette.accent }}>
+            Boutique <ShoppingBag className="w-4 h-4" />
+          </span>
+        </Link>
+      )}
+
+      {/* ── Bannière offre collection (upsell, s'il reste des tomes à débloquer) ── */}
+      {locked.length > 0 && (
+        <section
+          className="relative overflow-hidden rounded-[24px] p-6"
+          style={{ background: palette.bannerBg, color: '#fff', boxShadow: '0 8px 20px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08)' }}
+        >
+          <div
+            className="absolute -top-12 -right-8 w-44 h-44 rounded-full pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${palette.accent}, transparent 70%)`, opacity: 0.5, filter: 'blur(8px)' }}
+          />
+          <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
+          <div className="relative">
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.1em] mb-3.5 font-poppins"
+              style={{ background: 'linear-gradient(135deg,#F0B43E,#D9942A)', color: '#fff', border: '1px solid rgba(255,255,255,.4)', boxShadow: '0 4px 14px rgba(184,132,31,.4)' }}
+            >
+              <Sparkles className="w-3 h-3" /> Offre collection
+            </span>
+            <h3 className="text-[20px] sm:text-[21px] font-extrabold leading-tight mb-2" style={{ fontFamily: palette.display }}>
+              Tu avances bien 👏<br />Garde une longueur d'avance.
+            </h3>
+            <p className="text-[14px] leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,.84)' }}>
+              Débloque toute la collection <b className="text-white">Les Clés Maths</b> et arrive au BAC sans aucun angle mort — chaque tome corrigé, expliqué par le Grand Frère.
+            </p>
+            <div className="flex items-center gap-3.5 flex-wrap">
+              <Link
+                to="/dashboard/boutique"
+                className="inline-flex items-center px-5 py-3 rounded-[14px] text-[14px] font-bold transition-transform hover:scale-[1.02]"
+                style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 4px 12px ${palette.heroShadow}` }}
+              >
+                Voir la boutique
+              </Link>
+              <span className="text-[12px] font-semibold" style={{ color: 'rgba(255,255,255,.75)' }}>dès 2 000 FCFA / tome</span>
+            </div>
+          </div>
+        </section>
       )}
     </div>
   );

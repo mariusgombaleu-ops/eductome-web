@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useUser, UserGrades, UserGoals } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getSubjectsForLevel } from '../../constants/coefficients';
-import { Target, Calculator, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp } from 'lucide-react';
+import { Target, ChevronDown, ChevronUp, Plus, AlertCircle, X, Sparkles, Save, BookOpen, Star, ArrowRight, BarChart2, TrendingUp, TrendingDown } from 'lucide-react';
 import { BacSimulator } from '../../components/bac/BacSimulator';
 import confetti from 'canvas-confetti';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
@@ -256,44 +256,60 @@ export function GradesCalculator() {
           : "Fixe tes objectifs d'abord. On ne navigue pas à vue ! Remplis tes cibles et valide en bas de la page."}
       />
       
-      {/* Hero Section */}
-      <div className="relative rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 animate-fade-in-up" style={{ background: `linear-gradient(135deg, ${palette.accent}, ${palette.ink})` }}>
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white/10 pointer-events-none blur-2xl"></div>
-        
-        <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6 w-full">
-          <div className="bg-white/10 p-3 md:p-4 rounded-[20px] backdrop-blur-sm border border-white/20 shrink-0">
-            <Calculator className="w-8 h-8 md:w-12 md:h-12 text-white opacity-90" />
-          </div>
-          <div className="flex flex-col gap-1 md:gap-2">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white text-left leading-tight">
-              Mes Notes <br className="md:hidden" /> & Objectifs
-            </h1>
-            <p className="text-blue-100 max-w-xl text-xs sm:text-sm md:text-base hidden sm:block">
-              Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
-            </p>
-          </div>
-        </div>
-        
-        {/* On mobile, show paragraph below title to avoid squeezing */}
-        <div className="relative z-10 text-left text-white flex-1 w-full sm:hidden">
-          <p className="text-blue-100 max-w-xl text-sm">
-            Définis tes objectifs de moyenne pour l'année, puis enregistre tes notes de classe pour voir si tu es sur la bonne voie.
-          </p>
-        </div>
+      <h1 className="text-[26px] md:text-3xl font-extrabold tracking-tight -mb-2" style={{ color: palette.ink, fontFamily: palette.display }}>
+        Notes &amp; Objectifs
+      </h1>
 
-        {goals.bacPoints && (
-          <div className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 px-4 md:px-5 py-3 md:py-4 rounded-xl flex items-center gap-3 md:gap-4 shadow-lg text-white w-full md:w-auto shrink-0">
-            <Target className="w-6 h-6 md:w-8 md:h-8 text-yellow-400 shrink-0" />
-            <div>
-              <p className="text-[10px] md:text-xs text-blue-100 uppercase tracking-wider font-bold mb-0.5 md:mb-1">Objectif Final</p>
-              <p className="text-lg md:text-2xl font-black">BAC : {goals.bacPoints} Pts</p>
-              <p className="text-xs md:text-sm text-white/90">Moyenne générale : {goals.generalAverage}/20</p>
+      {/* Hero — moyenne du trimestre (maquette #7) */}
+      {(() => {
+        const trimLabels: Record<'t1' | 't2' | 't3', string> = { t1: '1er trimestre', t2: '2ᵉ trimestre', t3: '3ᵉ trimestre' };
+        const prevTrim = activeTab === 't2' ? 't1' : activeTab === 't3' ? 't2' : null;
+        const prevAvg = prevTrim ? calculateSpecificTrimesterAverage(prevTrim) : null;
+        const delta = trimesterAvg !== null && prevAvg !== null ? trimesterAvg - prevAvg : null;
+        const pct = trimesterAvg !== null && targetTrimester ? Math.min(100, Math.round((trimesterAvg / targetTrimester) * 100)) : null;
+        const remaining = trimesterAvg !== null && targetTrimester ? Math.max(0, targetTrimester - trimesterAvg) : null;
+        return (
+          <div className="relative overflow-hidden rounded-[28px] p-6 md:p-7 animate-fade-in-up" style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}>
+            <div className="absolute -top-12 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ border: '1.5px solid rgba(255,255,255,.14)' }} />
+            <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
+            <div className="relative max-w-2xl">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] opacity-85 font-poppins">Moyenne · {trimLabels[activeTab]}</span>
+                  <div className="text-[40px] font-extrabold leading-none mt-2" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
+                    {trimesterAvg !== null ? trimesterAvg.toFixed(2).replace('.', ',') : '—'}<span className="text-[16px] font-semibold opacity-80">/20</span>
+                  </div>
+                </div>
+                {delta !== null && Math.abs(delta) >= 0.05 && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.18)' }}>
+                    {delta >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />} {delta >= 0 ? '+' : ''}{delta.toFixed(1).replace('.', ',')}
+                  </span>
+                )}
+              </div>
+              {targetTrimester ? (
+                <>
+                  <div className="flex items-center justify-between text-[11px] font-semibold mt-4 mb-1.5 opacity-90 font-poppins">
+                    <span>Objectif : {targetTrimester}/20</span>
+                    <span className="font-extrabold">{pct}%</span>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,.2)' }}>
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct ?? 0}%`, background: 'linear-gradient(90deg, rgba(255,255,255,.65), #fff)', boxShadow: '0 0 12px rgba(255,255,255,.5)' }} />
+                  </div>
+                  <p className="mt-2.5 text-[12px] font-medium opacity-85 font-poppins">
+                    {trimesterAvg === null
+                      ? 'Ajoute tes notes pour suivre ta progression.'
+                      : remaining && remaining > 0
+                        ? `Plus que ${remaining.toFixed(1).replace('.', ',')} pt pour atteindre ton objectif 💪`
+                        : 'Objectif atteint, bravo 🎉'}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-4 text-[12px] font-medium opacity-85 font-poppins">Définis un objectif de trimestre dans l'onglet « Mes Objectifs » pour suivre ta progression.</p>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        );
+      })()}
 
       {/* Main Navigation Tabs */}
       <div className="flex flex-wrap p-1.5 rounded-[20px] w-full md:w-fit animate-fade-in-up animation-delay-100 gap-1" style={{ background: palette.bg2 }}>
@@ -370,45 +386,46 @@ export function GradesCalculator() {
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#30363D" opacity={0.3} />
-                    <XAxis dataKey="name" stroke="#8B949E" />
-                    <YAxis yAxisId="left" stroke="#1976D2" domain={[0, 20]} />
-                    <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#161B22', borderColor: '#30363D', borderRadius: '8px' }}
-                      itemStyle={{ color: '#E6EDF3' }}
+                    <CartesianGrid strokeDasharray="3 3" stroke={palette.line} opacity={0.6} />
+                    <XAxis dataKey="name" stroke={palette.ink3} />
+                    <YAxis yAxisId="left" stroke={palette.accent} domain={[0, 20]} />
+                    <YAxis yAxisId="right" orientation="right" stroke={palette.tipBar} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: palette.bg2, borderColor: palette.line, borderRadius: '8px' }}
+                      itemStyle={{ color: palette.ink }}
                     />
                     <Legend />
-                    <Line 
-                      yAxisId="left" 
-                      type="monotone" 
-                      dataKey="moyenne" 
-                      name="Moyenne de classe (/20)" 
-                      stroke="#1976D2" 
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="moyenne"
+                      name="Moyenne de classe (/20)"
+                      stroke={palette.accent}
                       strokeWidth={3}
-                      activeDot={{ r: 8 }} 
+                      activeDot={{ r: 8 }}
                     />
-                    <Line 
-                      yAxisId="right" 
-                      type="monotone" 
-                      dataKey="activite" 
-                      name="Activité EDUCTOME (XP)" 
-                      stroke="#10B981" 
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="activite"
+                      name="Activité EDUCTOME (XP)"
+                      stroke={palette.tipBar}
                       strokeWidth={3}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-8 text-center border border-blue-100 dark:border-blue-900/30">
-                <BarChart2 className="w-12 h-12 text-blue-300 dark:text-blue-700 mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">Pas encore assez de données</h3>
-                <p className="text-blue-700 dark:text-blue-300 max-w-md mx-auto text-sm">
+              <div className="rounded-xl p-8 text-center border" style={{ background: `${palette.accent}10`, borderColor: `${palette.accent}30` }}>
+                <BarChart2 className="w-12 h-12 mx-auto mb-4 opacity-50" style={{ color: palette.accent }} />
+                <h3 className="text-lg font-bold mb-2" style={{ color: palette.ink }}>Pas encore assez de données</h3>
+                <p className="max-w-md mx-auto text-sm" style={{ color: palette.ink2 }}>
                   Remplis tes notes pour au moins un trimestre dans l'onglet "Mes Notes" pour voir apparaître la courbe magique !
                 </p>
-                <button 
+                <button
                   onClick={() => setMainTab('notes')}
-                  className="mt-6 bg-white dark:bg-[#0D1117] text-blue-600 dark:text-blue-400 font-bold px-6 py-2 rounded-lg shadow-sm hover:shadow transition-all border border-blue-100 dark:border-blue-800"
+                  className="mt-6 font-bold px-6 py-2 rounded-lg shadow-sm hover:shadow transition-all border"
+                  style={{ background: palette.bg2, color: palette.accent, borderColor: `${palette.accent}30` }}
                 >
                   Ajouter mes notes
                 </button>
@@ -416,7 +433,7 @@ export function GradesCalculator() {
             )}
           </div>
 
-          <div className="rounded-[28px] p-6 md:p-8 text-white relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${palette.accent}, ${palette.ink})` }}>
+          <div className="rounded-[28px] p-6 md:p-8 text-white relative overflow-hidden" style={{ background: palette.heroBg }}>
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-2">Besoin d'un coup de pouce pour le prochain trimestre ?</h3>

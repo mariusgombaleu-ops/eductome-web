@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTheme } from '../contexts/ThemeContext';
+import { LogoTile } from '../components/ui/LogoTile';
 
 export const Register = () => {
   const { palette } = useTheme();
@@ -102,10 +103,11 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center font-poppins px-4 py-12 transition-colors duration-300" style={{ background: palette.bg2 }}>
-      <div className="max-w-md w-full space-y-8 p-8 rounded-[28px] shadow-sm border transition-colors duration-300" style={{ background: palette.bg, borderColor: palette.line }}>
+    <div className="min-h-screen flex items-center justify-center font-poppins px-4 py-12 transition-colors duration-300" style={{ background: palette.bg }}>
+      <div className="max-w-md w-full space-y-8 p-8 rounded-[28px] shadow-sm border transition-colors duration-300" style={{ background: palette.bg2, borderColor: palette.line }}>
         <div className="text-center">
-          <h1 className="text-3xl font-playfair font-bold transition-colors" style={{ color: palette.ink }}>Crée ton compte EDUCTOME</h1>
+          <LogoTile className="mb-4" />
+          <h1 className="text-[26px] font-extrabold leading-[1.1] tracking-tight transition-colors" style={{ color: palette.ink, fontFamily: palette.display }}>Crée ton compte</h1>
           <p className="mt-2 text-sm transition-colors" style={{ color: palette.ink2 }}>
             C'est gratuit et ça prend 1 minute.
           </p>
@@ -121,12 +123,17 @@ export const Register = () => {
           
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 1 / 2 — Tes identifiants</p>
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] font-bold tracking-[0.12em] uppercase shrink-0 transition-colors" style={{ color: palette.ink3 }}>Étape 1 / 2 — Tes identifiants</span>
+                <span className="flex-1 h-[3px] rounded-full overflow-hidden" style={{ background: palette.line }}>
+                  <span className="block h-full rounded-full transition-all duration-300" style={{ width: '50%', background: palette.accent }} />
+                </span>
+              </div>
               
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Numéro de téléphone</label>
-                <div className="mt-1 relative flex rounded-lg shadow-sm">
-                  <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 sm:text-sm transition-colors" style={{ borderColor: palette.line, background: palette.bg2, color: palette.ink2 }}>
+                <div className="mt-1 relative flex rounded-[14px] shadow-sm">
+                  <span className="inline-flex items-center px-3 rounded-l-[14px] border border-r-0 sm:text-sm transition-colors" style={{ borderColor: palette.line, background: palette.bg3, color: palette.ink2 }}>
                     +225
                   </span>
                   <div className="relative flex-1 focus-within:z-10">
@@ -138,7 +145,7 @@ export const Register = () => {
                       name="phone"
                       type="tel"
                       required
-                      className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-r-lg focus:outline-none sm:text-sm transition-colors"
+                      className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-r-[14px] focus:outline-none sm:text-sm transition-colors"
                       style={{
                         borderColor: palette.line,
                         background: palette.bg,
@@ -163,7 +170,7 @@ export const Register = () => {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={6}
-                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -195,7 +202,7 @@ export const Register = () => {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={6}
-                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -211,8 +218,8 @@ export const Register = () => {
                 <button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-[24px] shadow-sm text-sm font-bold text-white transition-colors focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
-                  style={{ background: palette.accent }}
+                  className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[16px] text-sm font-bold transition-all focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
+                  style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 4px 12px ${palette.heroShadow}` }}
                 >
                   {isLoading ? 'Création en cours...' : 'Créer mon compte 🚀'}
                 </button>
@@ -222,7 +229,12 @@ export const Register = () => {
 
           {step === 2 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <p className="text-xs font-bold tracking-wider uppercase transition-colors" style={{ color: palette.ink3 }}>ÉTAPE 2 / 2 — Ton profil</p>
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] font-bold tracking-[0.12em] uppercase shrink-0 transition-colors" style={{ color: palette.ink3 }}>Étape 2 / 2 — Ton profil</span>
+                <span className="flex-1 h-[3px] rounded-full overflow-hidden" style={{ background: palette.line }}>
+                  <span className="block h-full rounded-full transition-all duration-300" style={{ width: '100%', background: palette.accent }} />
+                </span>
+              </div>
               
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Prénom / Pseudo</label>
@@ -234,7 +246,7 @@ export const Register = () => {
                     id="firstName"
                     type="text"
                     required
-                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -256,7 +268,7 @@ export const Register = () => {
                     id="sexe"
                     required
                     defaultValue=""
-                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -281,7 +293,7 @@ export const Register = () => {
                     id="level"
                     required
                     defaultValue=""
-                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -310,7 +322,7 @@ export const Register = () => {
                     id="highschool"
                     type="text"
                     required
-                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -332,7 +344,7 @@ export const Register = () => {
                     id="subject"
                     required
                     defaultValue=""
-                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -360,7 +372,7 @@ export const Register = () => {
                     id="goal"
                     required
                     defaultValue=""
-                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -381,8 +393,8 @@ export const Register = () => {
                 <button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-[24px] shadow-sm text-sm font-bold text-white transition-colors focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
-                  style={{ background: palette.accent }}
+                  className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[16px] text-sm font-bold transition-all focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
+                  style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 4px 12px ${palette.heroShadow}` }}
                 >
                   {isLoading ? 'Enregistrement...' : 'Rejoindre EDUCTOME 🚀'}
                 </button>

@@ -15,6 +15,11 @@ import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 import { TimetableBottomSheet } from '../../components/TimetableBottomSheet';
 import { IVORIAN_CURRICULUM, IvorianSeries } from '../../utils/curriculum';
 
+const SERIE_LABELS: Record<string, string> = {
+  '3eme': '3ᵉ (Brevet)', '2nde': 'Seconde', '1ere': 'Première',
+  'terminale-c': 'Terminale C', 'terminale-d': 'Terminale D', 'terminale-a': 'Terminale A',
+};
+
 function getSeriesFromLevel(levelStr: string): IvorianSeries {
   const lower = levelStr.toLowerCase();
   if (lower.includes('3') || lower.includes('troisième') || lower.includes('3ème')) return '3EME';
@@ -25,7 +30,8 @@ function getSeriesFromLevel(levelStr: string): IvorianSeries {
 export const Profile = () => {
   const { theme, palette } = useTheme();
   const d = theme === 'dark';
-  const { xp, level, unlockedBadges, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, createdAt, userRole, isAdmin, photoURL, currentStreak, devSimulerGratuit, devSimulerFamille, devSetStreak, devUnlockCourseTest } = useUser();
+  const { xp, level, unlockedBadges, unlockedCourses, resetUser, unlockEverything, addXpDev, pseudo, levelString, highschool, favoriteSubject, goal, userRole, isAdmin, photoURL, currentStreak, devSimulerGratuit, devSimulerFamille, devSetStreak, devUnlockCourseTest } = useUser();
+  const serie = SERIE_LABELS[levelString] || levelString;
   const { currentUser } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -231,72 +237,64 @@ export const Profile = () => {
         id="profile"
         message="Ton profil, c'est ton identité de Champion. Tu peux changer ton avatar, voir tes badges et suivre ton niveau d'XP. Fais-en une machine de guerre !"
       />
-      {/* Header Profile Section */}
-      <div className="relative bg-gradient-to-r from-eductome-marine to-eductome-sky rounded-2xl p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-6 md:gap-8 animate-fade-in-up">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
-        <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
-        
-        <div className="relative z-10 group cursor-pointer" onClick={() => !uploadingPhoto && fileInputRef.current?.click()}>
-          <div className="relative">
-            {photoURL ? (
-              <img
-                className="h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-xl transition-transform group-hover:scale-105"
-                src={photoURL}
-                alt="User avatar"
-              />
-            ) : (
-              <div className="h-28 w-28 rounded-full ring-4 ring-white shadow-xl flex items-center justify-center bg-eductome-magenta text-white text-4xl font-bold transition-transform group-hover:scale-105">
-                {pseudo ? pseudo.substring(0, 2).toUpperCase() : '??'}
-              </div>
-            )}
-            
-            <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              {uploadingPhoto ? (
-                <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <Camera className="w-8 h-8 text-white" />
-              )}
+      {/* ── Identité (maquette #6) ── */}
+      <div className="max-w-2xl mx-auto w-full">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-[26px] font-extrabold tracking-tight" style={{ color: palette.ink, fontFamily: palette.display }}>Mon profil</h1>
+          <a href="#profil-edit" className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[13px] text-[12px] font-bold transition-opacity hover:opacity-80" style={{ background: palette.accentSoft, color: palette.accent }}>
+            <Edit3 className="w-3.5 h-3.5" /> Modifier
+          </a>
+        </div>
+
+        {/* Avatar + nom */}
+        <div className="flex flex-col items-center text-center pt-2 pb-4">
+          <div className="relative w-[84px] h-[84px] group cursor-pointer" onClick={() => !uploadingPhoto && fileInputRef.current?.click()}>
+            <div className="w-[84px] h-[84px] rounded-full flex items-center justify-center overflow-hidden" style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 12px 30px ${palette.heroShadow}` }}>
+              {photoURL
+                ? <img src={photoURL} alt={pseudo} className="w-full h-full object-cover" />
+                : <span className="text-[31px] font-extrabold" style={{ fontFamily: palette.display }}>{(pseudo || 'E').charAt(0).toUpperCase()}</span>}
             </div>
-            
-            <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md text-eductome-magenta hover:text-pink-600 transition-colors">
-              <Camera className="w-4 h-4" />
-            </button>
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleFileChange} 
-            />
+            <div className="absolute -right-0.5 -bottom-0.5 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: palette.accent, border: `3px solid ${palette.bg}` }}>
+              {uploadingPhoto ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Camera className="w-3.5 h-3.5 text-white" />}
+            </div>
+            <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
+          </div>
+          <div className="text-[21px] font-extrabold mt-3 flex items-center gap-1.5" style={{ color: palette.ink, fontFamily: palette.display }}>{pseudo} <RoleBadge role={userRole} /></div>
+          <div className="text-[13px] font-medium mt-0.5" style={{ color: palette.ink2 }}>{serie}{highschool ? ` · ${highschool}` : ''}</div>
+        </div>
+
+        {/* Carte niveau premium */}
+        <div className="relative overflow-hidden rounded-[22px] p-[18px] mb-3.5" style={{ background: palette.heroBg, color: '#fff', boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}>
+          <div className="absolute inset-0 pointer-events-none opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
+          <div className="relative flex items-center justify-between">
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-[0.1em] font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.18)' }}>
+                <Star className="w-3 h-3" style={{ fill: '#FFD66B', color: '#FFD66B' }} /> Niveau {level.level}
+              </span>
+              <div className="text-[17px] font-extrabold mt-2" style={{ fontFamily: palette.display }}>{level.title}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[22px] font-extrabold leading-none" style={{ fontFamily: palette.display }}>{xp.toLocaleString('fr-FR')}<span className="text-[12px] font-semibold opacity-85"> XP</span></div>
+              <div className="text-[10px] font-semibold opacity-80 mt-1">{nextLevelData ? `${Math.max(0, nextLevelXp - xp)} avant niv. ${level.level + 1}` : 'Niveau max atteint 🏆'}</div>
+            </div>
+          </div>
+          <div className="relative mt-3.5 h-[9px] rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,.2)' }}>
+            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: 'linear-gradient(90deg, rgba(255,255,255,.65), #fff)', boxShadow: '0 0 12px rgba(255,255,255,.5)' }} />
           </div>
         </div>
-        
-        <div className="relative z-10 text-center md:text-left text-white flex-1 w-full">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-playfair font-bold mb-1 flex items-center">{pseudo} <RoleBadge role={userRole} /></h1>
-              <p className="text-blue-100">{levelString} • Inscrit(e) depuis {createdAt}</p>
-              <div className="mt-3 inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 backdrop-blur-sm text-yellow-300 border border-yellow-400/30 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
-                <Star className="w-4 h-4 fill-yellow-400" /> Compte {level.level > 1 ? 'Premium' : 'Gratuit'}
-              </div>
-            </div>
 
-            <div className="bg-black/20 rounded-xl p-4 w-full md:w-64 backdrop-blur-sm border border-white/10">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-sm">Niveau {level.level} : {level.title}</span>
-                <span className="text-xs text-blue-200">{xp} {level.maxXp ? `/ ${level.maxXp}` : ''} XP</span>
-              </div>
-              <div className="h-2 bg-black/30 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full relative transition-all duration-1000 ease-out"
-                  style={{ width: `${level.maxXp ? Math.min(100, Math.max(0, ((xp - level.minXp) / (level.maxXp - level.minXp)) * 100)) : 100}%` }}
-                >
-                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                </div>
-              </div>
+        {/* 3 tuiles stats */}
+        <div className="grid grid-cols-3 gap-2.5">
+          {[
+            { n: currentStreak, label: '🔥 jours', color: palette.flame },
+            { n: unlockedBadges.length, label: '🏆 badges', color: palette.ink },
+            { n: unlockedCourses.length, label: '📘 cours', color: palette.ink },
+          ].map((s, i) => (
+            <div key={i} className="rounded-2xl border text-center py-3.5 transition-colors" style={{ background: palette.bg2, borderColor: palette.line }}>
+              <div className="text-[20px] font-extrabold leading-none" style={{ fontFamily: palette.display, color: s.color }}>{s.n}</div>
+              <div className="text-[10px] font-semibold mt-1.5" style={{ color: palette.ink3 }}>{s.label}</div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
@@ -317,7 +315,7 @@ export const Profile = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-6">
-          <div className="p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-100 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
+          <div id="profil-edit" className="scroll-mt-24 p-6 rounded-[28px] shadow-sm border animate-fade-in-up animation-delay-100 transition-colors" style={{ background: palette.bg, borderColor: palette.line }}>
             <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: palette.ink }}>
               <User className="w-5 h-5 opacity-60" /> Informations Personnelles
             </h2>

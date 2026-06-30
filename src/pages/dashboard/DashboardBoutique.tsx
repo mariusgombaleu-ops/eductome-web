@@ -5,6 +5,7 @@ import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { GrandFrereGuide } from '../../components/ui/GrandFrereGuide';
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { BottomSheet } from '../../components/ui/system';
 
 export const DashboardBoutique = () => {
   const { unlockedCourses } = useUser();
@@ -38,20 +39,28 @@ export const DashboardBoutique = () => {
       />
 
       {/* Banner */}
-      <div className="relative bg-gradient-to-br from-[#1A3557] to-[#1976D2] rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6">
+      <div className="relative rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-8 animate-fade-in-up mb-6" style={{ background: palette.heroBg }}>
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 pointer-events-none blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white/10 pointer-events-none blur-2xl"></div>
         
         <div className="relative z-10 text-white flex-1">
-          <h1 className="text-3xl font-playfair font-bold mb-2 flex items-center gap-3">
-            <ShoppingBag className="w-8 h-8 opacity-80" />
-            Débloquer du contenu
+          <div className="w-12 h-12 rounded-[14px] flex items-center justify-center mb-3.5" style={{ background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.16)' }}>
+            <ShoppingBag className="w-[22px] h-[22px]" />
+          </div>
+          <h1 className="text-[26px] md:text-[28px] font-extrabold mb-2 leading-tight" style={{ fontFamily: palette.display, textShadow: '0 2px 12px rgba(0,0,0,.18)' }}>
+            Débloque ton contenu
           </h1>
-          <p className="text-white/80 max-w-lg mt-2 text-[15px] font-medium leading-relaxed">
-            Achète le tome complet pour accéder à 100% du contenu, ou débloque chapitre par chapitre à ton rythme. 
-            Paiement sécurisé par Mobile Money (Wave, Orange, MTN).
+          <p className="text-white/85 max-w-lg text-[13px] md:text-[15px] font-medium leading-relaxed mb-4">
+            Tome complet, chapitre par chapitre dès 300 F, ou toute la collection. Corrections du Grand Frère incluses.
           </p>
+          <div className="flex flex-wrap gap-2">
+            {['Wave', 'Orange Money', 'MTN'].map(m => (
+              <span key={m} className="text-[11px] font-bold px-3 py-1.5 rounded-full font-poppins" style={{ background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.16)' }}>
+                {m}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -60,19 +69,19 @@ export const DashboardBoutique = () => {
         onClick={() => openCheckout('Collection Mathématiques (Tous les tomes)', 10000, false, true, 'cles-maths')}
         className="relative bg-gradient-to-r from-amber-500 to-yellow-400 rounded-2xl p-1 overflow-hidden shadow-lg hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 mb-8"
       >
-        <div className="bg-white dark:bg-[#161B22] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+        <div className="rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" style={{ background: palette.bg2 }}>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">OFFRE VIP RENTABLE</span>
               <span className="text-amber-500 font-bold flex items-center"><Lock className="w-4 h-4 mr-1" /> Accès total</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-black text-[#1A1A2E] dark:text-white mb-2">La Collection Mathématiques</h2>
-            <p className="text-gray-600 dark:text-[#8B949E] text-sm md:text-base">
+            <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color: palette.ink }}>La Collection Mathématiques</h2>
+            <p className="text-sm md:text-base" style={{ color: palette.ink2 }}>
               Ne choisis plus. Débloque <strong>absolument tous les tomes de Mathématiques</strong> en un seul clic, pour toute l'année scolaire.
             </p>
           </div>
           <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-            <div className="text-gray-400 line-through text-sm font-bold mb-1">Valeur: +15 000 FCFA</div>
+            <div className="line-through text-sm font-bold mb-1" style={{ color: palette.ink3 }}>Valeur: +15 000 FCFA</div>
             <div className="text-4xl md:text-5xl font-black text-amber-500 font-poppins mb-3">10 000 F</div>
             <button className="w-full md:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
               <Unlock className="w-5 h-5" />
@@ -93,7 +102,7 @@ export const DashboardBoutique = () => {
               className="w-full flex items-center justify-between p-4 sm:p-6 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
               style={{ background: isOpen ? palette.bg : palette.bg2 }}
             >
-              <h2 className="text-xl md:text-2xl font-bold font-playfair flex items-center gap-2" style={{ color: collection.primaryColor }}>
+              <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2" style={{ color: collection.primaryColor, fontFamily: palette.display }}>
                 <span>{collection.emoji}</span> Collection {collection.name}
               </h2>
               {isOpen ? <ChevronUp className="w-6 h-6" style={{ color: palette.ink2 }} /> : <ChevronDown className="w-6 h-6" style={{ color: palette.ink2 }} />}
@@ -110,7 +119,7 @@ export const DashboardBoutique = () => {
                         <span className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: palette.ink3 }}>
                           Tome {tome.number}
                         </span>
-                        <h3 className="text-base sm:text-lg font-bold leading-tight font-playfair" style={{ color: palette.ink }}>
+                        <h3 className="text-base sm:text-lg font-bold leading-tight" style={{ color: palette.ink, fontFamily: palette.display }}>
                           {tome.title}
                         </h3>
                       </div>
@@ -143,26 +152,21 @@ export const DashboardBoutique = () => {
         )})}
       </div>
 
-      {/* ── Options Modal ── */}
-      {optionsModalOpen && selectedTomeForOptions && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOptionsModalOpen(false)} />
-          <div className="relative z-10 w-full max-w-sm rounded-[28px] shadow-2xl overflow-hidden border animate-in zoom-in-95 duration-200" style={{ background: palette.bg, borderColor: palette.glassLine }}>
-            <div className="p-6 text-center border-b" style={{ borderColor: palette.line }}>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${palette.accent}20` }}>
-                <Unlock className="w-6 h-6" style={{ color: palette.accent }} />
-              </div>
-              <h3 className="text-xl font-bold font-playfair mb-1" style={{ color: palette.ink }}>
-                Comment veux-tu débloquer ?
-              </h3>
-              <p className="text-sm font-medium" style={{ color: palette.ink2 }}>
-                {selectedTomeForOptions.tome.title}
-              </p>
-            </div>
-            
-            <div className="p-4 space-y-3" style={{ background: palette.bg2 }}>
+      {/* ── Bottom sheet : 3 paliers de déblocage ── */}
+      <BottomSheet
+        open={optionsModalOpen}
+        onClose={() => setOptionsModalOpen(false)}
+        title="Comment veux-tu débloquer ?"
+      >
+        {selectedTomeForOptions && (
+          <>
+            <p className="text-sm font-medium -mt-2 mb-4" style={{ color: palette.ink2 }}>
+              {selectedTomeForOptions.tome.title}
+            </p>
+
+            <div className="space-y-3">
               {/* Option 1 : A la carte */}
-              <button 
+              <button
                 onClick={() => {
                   setOptionsModalOpen(false);
                   openCheckout(`Chapitre au choix - Tome ${selectedTomeForOptions.tome.number}`, 300, true, false, selectedTomeForOptions.tome.id);
@@ -185,7 +189,7 @@ export const DashboardBoutique = () => {
                 const finalTomePrice = Math.max(0, 1500 - deduction);
 
                 return (
-                  <button 
+                  <button
                     onClick={() => {
                       setOptionsModalOpen(false);
                       openCheckout(`Tome ${selectedTomeForOptions.tome.number} : ${selectedTomeForOptions.tome.title}${deduction > 0 ? ` (-${deduction}F déduits)` : ''}`, finalTomePrice, false, false, selectedTomeForOptions.tome.id);
@@ -196,7 +200,7 @@ export const DashboardBoutique = () => {
                     <div className="text-left">
                       <div className="font-bold" style={{ color: palette.accent }}>Tome Complet</div>
                       {deduction > 0 ? (
-                        <div className="text-xs text-green-500 font-bold">-{deduction}F pour tes chapitres acquis</div>
+                        <div className="text-xs font-bold" style={{ color: palette.tipBar }}>-{deduction}F pour tes chapitres acquis</div>
                       ) : (
                         <div className="text-xs font-medium" style={{ color: palette.ink3 }}>Débloque tous les chapitres</div>
                       )}
@@ -207,7 +211,7 @@ export const DashboardBoutique = () => {
               })()}
 
               {/* Option 3 : VIP */}
-              <button 
+              <button
                 onClick={() => {
                   setOptionsModalOpen(false);
                   openCheckout(`Collection ${selectedTomeForOptions.collection.name}`, selectedTomeForOptions.collection.id === 'cles-maths' ? 10000 : 8000, false, true, selectedTomeForOptions.collection.id);
@@ -222,10 +226,8 @@ export const DashboardBoutique = () => {
                 </div>
                 <div className="font-black">Dès 8.000F</div>
               </button>
-            </div>
-            
-            <div className="p-4 border-t" style={{ borderColor: palette.line, background: palette.bg }}>
-              <button 
+
+              <button
                 onClick={() => setOptionsModalOpen(false)}
                 className="w-full py-2.5 text-sm font-bold transition-colors"
                 style={{ color: palette.ink3 }}
@@ -233,9 +235,9 @@ export const DashboardBoutique = () => {
                 Annuler
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </BottomSheet>
 
       {selectedItem && (
         <SelarPaymentModal 

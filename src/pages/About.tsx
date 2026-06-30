@@ -28,8 +28,8 @@ export function About() {
             <div className="w-full md:w-1/3 flex-shrink-0">
               <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative">
                 <img 
-                  src="/images/marius.jpeg" 
-                  alt="Marius Gombaleu, Fondateur d'Eductome" 
+                  src="/images/profil.jpeg"
+                  alt="Marius Gombaleu, Fondateur d'Eductome"
                   loading="lazy"
                   className="w-full h-[600px] object-cover object-center"
                 />

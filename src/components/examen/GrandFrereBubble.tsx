@@ -10,7 +10,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * Avatar du grand frère. Place le fichier dans /public et adapte ce chemin,
  * ou importe ton asset existant et passe-le en prop `avatar`.
  */
-export const GF_AVATAR = '/grand-frere.jpeg';
+export const GF_AVATAR = '/images/profil.jpeg';
 
 interface GrandFrereBubbleProps {
   children: ReactNode;

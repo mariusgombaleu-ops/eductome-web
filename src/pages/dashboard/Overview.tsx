@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { AnimatedCounter } from '../../components/dashboard/AnimatedCounter';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import { WelcomeModal } from '../../components/dashboard/WelcomeModal';
 import { GoalsOnboardingModal } from '../../components/dashboard/GoalsOnboardingModal';
 // removed CircularProgress
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,12 +13,13 @@ import { PostAssessmentModal } from '../../components/PostAssessmentModal';
 import type { TimetableSlot, AssessmentEvent } from '../../components/types';
 import { getRecommendedTome } from '../../utils/getRecommendedTome';
 import { useTheme } from '../../contexts/ThemeContext';
-import { HeroLevelCard } from '../../components/dashboard/HeroLevelCard';
+import { DashboardHero } from '../../components/dashboard/DashboardHero';
 import { WeeklyStreak } from '../../components/dashboard/WeeklyStreak';
 import { ContinueReading } from '../../components/dashboard/ContinueReading';
 import { NewUserWelcome } from '../../components/dashboard/NewUserWelcome';
 import { useFlashcardProgress } from '../../hooks/useFlashcardProgress';
 import { COURSE_METADATA } from './Flashcards';
+import { Card, Badge } from '../../components/ui/system';
 
 export const Overview = () => {
   const { xp, statut, gainXp, rewardedActions, level, levelString, goals, grades, unlockedCourses } = useUser();
@@ -142,10 +142,6 @@ export const Overview = () => {
 
 
 
-  const handleWelcomeComplete = () => {
-    setIsGoalsModalOpen(true);
-  };
-
   const lastCourseRead = localStorage.getItem('eductome_last_chapter_read');
 
   // Répétition espacée : chapitres « à réviser » aujourd'hui (cf. Hub de Révision)
@@ -159,7 +155,6 @@ export const Overview = () => {
       {postAssessment && (
         <PostAssessmentModal assessment={postAssessment} onResolve={handlePostAssessmentResolve} />
       )}
-      <WelcomeModal onComplete={handleWelcomeComplete} />
       <GoalsOnboardingModal isOpen={isGoalsModalOpen} onClose={() => setIsGoalsModalOpen(false)} />
       
       {showFamilleWelcome && (
@@ -182,8 +177,8 @@ export const Overview = () => {
         </div>
       )}
 
-      {/* Hero Card & Streak */}
-      <HeroLevelCard />
+      {/* Hero niveau premium + bulle Grand Frère (maquette #2) */}
+      <DashboardHero />
       <WeeklyStreak />
 
       {/* New User Onboarding Recap */}
@@ -203,72 +198,7 @@ export const Overview = () => {
         />
       )}
 
-      {/* Timetable + Assessments Widget */}
-      <div className="mt-8">
-        <TimetableDashboardWidget
-          currentSlot={currentSlot}
-          nextSlot={nextSlot}
-          upcomingAssessment={upcomingAssessment}
-          onActionClick={handleAssessmentAction}
-        />
-        <button
-          onClick={() => navigate('/dashboard/emploi-du-temps')}
-          className="w-full mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
-          style={{ background: palette.accent, color: palette.onAccent }}
-        >
-          <Calendar className="w-5 h-5" />
-          Mon emploi du temps
-        </button>
-      </div>
-
-      {/* Révisions du jour (répétition espacée — flashcards) */}
-      <div className="mt-8">
-        <div className="rounded-2xl border p-5" style={{ background: palette.bg2, borderColor: dueCount > 0 ? palette.accent : palette.line }}>
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: palette.accentSoft, color: palette.accent }}>
-                <RotateCcw className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-[15px] font-bold" style={{ color: palette.ink }}>Révisions du jour</h2>
-                {dueCount > 0 ? (
-                  <p className="text-xs font-semibold" style={{ color: palette.accent }}>
-                    {dueCount} chapitre{dueCount > 1 ? 's' : ''} à réviser aujourd'hui
-                  </p>
-                ) : (
-                  <p className="text-xs font-semibold" style={{ color: palette.ink3 }}>Tout est à jour — beau travail.</p>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={() => navigate('/dashboard/revisions')}
-              className="px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all hover:scale-[1.02]"
-              style={dueCount > 0
-                ? { background: palette.accent, color: palette.onAccent }
-                : { background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
-            >
-              {dueCount > 0 ? 'Réviser maintenant' : 'Ouvrir mes révisions'} <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {dueCount > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {dueCourses.slice(0, 3).map(c => (
-                <span key={c.id} className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: palette.accentSoft, color: palette.accent }}>
-                  <Clock className="w-3 h-3" /> {c.title}
-                </span>
-              ))}
-              {dueCourses.length > 3 && (
-                <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: palette.bg3, color: palette.ink3 }}>
-                  +{dueCourses.length - 3}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Stats Grid */}
+      {/* Stats Grid (maquette #2 : juste après le hero) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mt-8">
         <div className="p-4 rounded-[20px] border" style={{ background: palette.bg2, borderColor: palette.line }}>
           <div className="flex items-center gap-2 mb-2">
@@ -308,6 +238,67 @@ export const Overview = () => {
         </div>
       </div>
 
+      {/* Révisions du jour (répétition espacée — flashcards) */}
+      <div className="mt-8">
+        <Card radius={20} style={{ borderColor: dueCount > 0 ? palette.accent : palette.line }}>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: palette.accentSoft, color: palette.accent }}>
+                <RotateCcw className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-[15px] font-bold" style={{ color: palette.ink }}>Révisions du jour</h2>
+                {dueCount > 0 ? (
+                  <p className="text-xs font-semibold" style={{ color: palette.accent }}>
+                    {dueCount} chapitre{dueCount > 1 ? 's' : ''} à réviser aujourd'hui
+                  </p>
+                ) : (
+                  <p className="text-xs font-semibold" style={{ color: palette.ink3 }}>Tout est à jour — beau travail.</p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/dashboard/revisions')}
+              className="px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all hover:scale-[1.02]"
+              style={dueCount > 0
+                ? { background: palette.accent, color: palette.onAccent }
+                : { background: palette.bg, color: palette.ink, border: `1px solid ${palette.line}` }}
+            >
+              {dueCount > 0 ? 'Réviser maintenant' : 'Ouvrir mes révisions'} <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {dueCount > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {dueCourses.slice(0, 3).map(c => (
+                <Badge key={c.id} tone="soft" icon={<Clock className="w-3 h-3" />}>{c.title}</Badge>
+              ))}
+              {dueCourses.length > 3 && (
+                <Badge tone="neutral">+{dueCourses.length - 3}</Badge>
+              )}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Emploi du temps — aujourd'hui (maquette #2) */}
+      <div className="mt-8">
+        <TimetableDashboardWidget
+          currentSlot={currentSlot}
+          nextSlot={nextSlot}
+          upcomingAssessment={upcomingAssessment}
+          onActionClick={handleAssessmentAction}
+        />
+        <button
+          onClick={() => navigate('/dashboard/emploi-du-temps')}
+          className="w-full mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
+          style={{ background: palette.accent, color: palette.onAccent }}
+        >
+          <Calendar className="w-5 h-5" />
+          Mon emploi du temps
+        </button>
+      </div>
+
       {/* Mes Objectifs */}
       <div className="mt-8 space-y-3">
         <h2 className="text-[15px] font-bold flex items-center gap-2" style={{ color: palette.ink }}>
@@ -324,13 +315,13 @@ export const Overview = () => {
             
             <div className="flex items-end justify-between mt-1">
               <div>
-                <span className="text-[10px] text-gray-500 block">Moyenne</span>
+                <span className="text-[10px] text-[var(--ed-ink3)] block">Moyenne</span>
                 <div className="text-xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
-                  {currentT1Avg ? currentT1Avg : '--'} <span className="text-xs text-gray-400 font-normal">/20</span>
+                  {currentT1Avg ? currentT1Avg : '--'} <span className="text-xs text-[var(--ed-ink3)] font-normal">/20</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-gray-500 block">Objectif</span>
+                <span className="text-[10px] text-[var(--ed-ink3)] block">Objectif</span>
                 <div className="text-sm font-bold" style={{ color: palette.accent2 }}>
                   {targetT1Avg ? targetT1Avg : '--'}
                 </div>
@@ -346,9 +337,9 @@ export const Overview = () => {
             </div>
             
             <div className="mt-1">
-              <span className="text-[10px] text-gray-500 block">Points à viser</span>
+              <span className="text-[10px] text-[var(--ed-ink3)] block">Points à viser</span>
               <div className="text-xl font-bold" style={{ color: palette.ink, fontFamily: palette.display }}>
-                {bacGoal ? bacGoal : '--'} <span className="text-xs text-gray-400 font-normal">pts</span>
+                {bacGoal ? bacGoal : '--'} <span className="text-xs text-[var(--ed-ink3)] font-normal">pts</span>
               </div>
             </div>
           </div>
@@ -378,7 +369,7 @@ export const Overview = () => {
             <div className="flex-1">
               <div className="flex justify-between items-center">
                 <p className="font-bold text-sm" style={{ color: palette.ink }}>Quiz : Fonctions</p>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase" style={{ background: palette.accentSoft, color: palette.accent }}>Nouveau</span>
+                <Badge tone="soft" className="text-[9px] uppercase">Nouveau</Badge>
               </div>
               <p className="text-xs uppercase font-semibold" style={{ color: palette.ink3 }}>Exercice • Maths</p>
             </div>

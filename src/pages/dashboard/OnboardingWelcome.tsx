@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Trophy,
 } from 'lucide-react';
+import { Badge } from '../../components/ui/system';
 
 // ─── Confetti Canvas ────────────────────────────────────────────────────────
 interface Particle {
@@ -50,14 +51,14 @@ function useConfetti(canvasRef: React.RefObject<HTMLCanvasElement | null>, durat
     canvas.height = window.innerHeight;
 
     const particles: Particle[] = [];
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 40; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: -20 - Math.random() * canvas.height * 0.5,
-        vx: (Math.random() - 0.5) * 6,
-        vy: Math.random() * 4 + 2,
-        w: Math.random() * 10 + 4,
-        h: Math.random() * 6 + 2,
+        vx: (Math.random() - 0.5) * 4,
+        vy: Math.random() * 3 + 1.5,
+        w: Math.random() * 8 + 3,
+        h: Math.random() * 4 + 2,
         color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.2,
@@ -150,12 +151,13 @@ export const OnboardingWelcome = () => {
   const { palette } = useTheme();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const launchConfetti = useConfetti(canvasRef);
+  const launchConfetti = useConfetti(canvasRef, 2800);
 
   const [showContent, setShowContent] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [showActions, setShowActions] = useState(false);
-  const [charIndex, setCharIndex] = useState(0);
+  const [showQuestion, setShowQuestion] = useState(false); // 2e bulle : la question d'engagement
+  const [ready, setReady] = useState(false); // l'élève a validé son engagement
 
   const isCollege = levelString === '3eme';
   const examName = isCollege ? 'BEPC' : 'BAC';
@@ -164,11 +166,20 @@ export const OnboardingWelcome = () => {
     ? sexe === 'M' ? 'futur lycéen' : sexe === 'F' ? 'future lycéenne' : 'futur(e) lycéen(ne)'
     : sexe === 'M' ? 'futur bachelier' : sexe === 'F' ? 'future bachelière' : 'futur(e) bachelier(ère)';
 
-  const welcomeMessage = `Bienvenue ${pseudo || championWord} ! Tu es officiellement ${titleWord}. `
-    + `Ton profil est prêt — ${LEVEL_LABELS[levelString] || levelString}, `
-    + `${highschool ? highschool + ', ' : ''}`
-    + `objectif ${GOAL_LABELS[goal] || 'réussite'}. `
-    + `On va construire ta victoire au ${examName} ensemble. Le Grand Frère est avec toi ! 💪`;
+  // Voix « Grand Frère » sobre & éditoriale (cf. ligne éditoriale validée) :
+  // affirmations courtes, sans emoji, signature manuscrite plutôt qu'effet sonore.
+  const serie = LEVEL_LABELS[levelString] || levelString;
+  const objectif = GOAL_LABELS[goal] || 'la réussite';
+  const lieu = highschool ? ` au ${highschool.trim()}` : '';
+  const greetingLine = `${(pseudo || championWord).trim()}, te voilà chez toi.`;
+  const bodyLines = [
+    `Tu es ${titleWord} — ${serie}${lieu}, et ton cap est clair : ${objectif} au ${examName}.`,
+    `Ici rien n'est laissé au hasard : les cours, les corrections, le rythme de révision, tout est pensé pour t'y mener.`,
+    `Je ne te lâche pas en route. Au moindre blocage, je suis là.`,
+    `Mais tout commence par toi.`,
+  ];
+  // Question d'engagement : le bouton « Je suis prêt(e) » y répond en miroir.
+  const questionLine = `Alors je te le demande franchement : es-tu prêt(e) à t'engager jusqu'au ${examName} ?`;
 
   // Guard: if user already completed onboarding, redirect
   useEffect(() => {
@@ -179,21 +190,21 @@ export const OnboardingWelcome = () => {
     }
   }, [currentUser, navigate]);
 
-  // Sequenced entrance
+  // Entrée : seul le message du Grand Frère apparaît. Le récap + les CTA
+  // ne sont révélés qu'après l'engagement de l'élève (clic « Je suis prêt(e) »).
   useEffect(() => {
     const t1 = setTimeout(() => { launchConfetti(); setShowContent(true); }, 400);
-    const t2 = setTimeout(() => setShowCard(true), 1400);
-    const t3 = setTimeout(() => setShowActions(true), 2600);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    // Petit silence, puis le Grand Frère « envoie » sa question d'engagement.
+    const t2 = setTimeout(() => setShowQuestion(true), 1700);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [launchConfetti]);
 
-  // Typing animation for message
-  useEffect(() => {
-    if (!showContent) return;
-    if (charIndex >= welcomeMessage.length) return;
-    const timer = setTimeout(() => setCharIndex(i => i + 1), 35);
-    return () => clearTimeout(timer);
-  }, [showContent, charIndex, welcomeMessage.length]);
+  // Engagement validé : le message s'efface, puis la suite se révèle.
+  const handleReady = () => {
+    if (ready) return;
+    setReady(true);
+    setTimeout(() => { setShowCard(true); setShowActions(true); }, 420);
+  };
 
   const handleContinue = (destination: string) => {
     if (currentUser) {
@@ -207,7 +218,7 @@ export const OnboardingWelcome = () => {
   // Profile info items
   const profileItems = [
     { icon: User, label: 'Prénom', value: pseudo || 'Champion(ne)', color: palette.accent },
-    { icon: GraduationCap, label: 'Série', value: LEVEL_LABELS[levelString] || levelString, color: '#1976D2' },
+    { icon: GraduationCap, label: 'Série', value: LEVEL_LABELS[levelString] || levelString, color: palette.accent2 },
     ...(highschool ? [{ icon: School, label: 'Lycée / Collège', value: highschool, color: '#2E7D32' }] : []),
     { icon: BookOpen, label: 'Matière préférée', value: SUBJECT_LABELS[favoriteSubject] || favoriteSubject || '—', color: '#E65100' },
     { icon: Target, label: `Objectif ${examName}`, value: `${GOAL_EMOJIS[goal] || '🎯'} ${GOAL_LABELS[goal] || goal || 'Non défini'}`, color: palette.accent },
@@ -232,22 +243,25 @@ export const OnboardingWelcome = () => {
       />
       <div
         className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full blur-3xl opacity-15"
-        style={{ background: '#1976D2' }}
+        style={{ background: palette.accent2 }}
       />
 
-      {/* ── Section 1: Grand Frère Message ── */}
+      {/* ── Section 1: Message du Grand Frère + engagement ── */}
+      {!showCard && (
       <div
-        className={`w-full max-w-2xl transition-all duration-700 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`w-full max-w-2xl transition-all duration-500 ${
+          ready
+            ? 'opacity-0 -translate-y-4 pointer-events-none'
+            : showContent
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-8'
+        }`}
       >
         {/* Header badge */}
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
-            style={{ background: palette.accentSoft, color: palette.accent }}
-          >
-            <Sparkles className="w-4 h-4" />
+        <div className="flex items-center justify-center mb-6">
+          <Badge tone="soft" icon={<Sparkles className="w-4 h-4" />} className="px-4 py-2 text-sm">
             Inscription réussie !
-          </div>
+          </Badge>
         </div>
 
         {/* Grand Frère bubble */}
@@ -255,9 +269,9 @@ export const OnboardingWelcome = () => {
           <div className="shrink-0">
             <div className="relative">
               <img
-                src="/images/marius.jpeg"
+                src="/images/profil.jpeg"
                 alt="Le Grand Frère"
-                className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-3 shadow-lg"
+                className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover object-center border-[3px] shadow-lg"
                 style={{ borderColor: palette.accent }}
               />
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 rounded-full"
@@ -286,23 +300,62 @@ export const OnboardingWelcome = () => {
                 Message du Grand Frère
               </span>
             </div>
-            <p className="text-sm md:text-base leading-relaxed mt-3" style={{ color: palette.ink }}>
-              "{welcomeMessage.substring(0, charIndex)}"
-              {charIndex < welcomeMessage.length && (
-                <span
-                  className="inline-block w-[2px] h-4 ml-0.5 translate-y-0.5 animate-pulse"
-                  style={{ background: palette.accent }}
-                />
-              )}
-            </p>
+            <div className="mt-3 space-y-2">
+              <p className="text-base md:text-lg font-bold leading-snug" style={{ color: palette.ink, fontFamily: palette.display }}>
+                {greetingLine}
+              </p>
+              {bodyLines.map((line, i) => (
+                <p key={i} className="text-sm md:text-[15px] leading-relaxed" style={{ color: palette.ink2 }}>
+                  {line}
+                </p>
+              ))}
+              <p className="font-caveat text-[20px] leading-none pt-1" style={{ color: palette.ink2 }}>
+                — Marius, ton grand frère
+              </p>
+            </div>
           </div>
         </div>
+
+        {/* 2e message du Grand Frère : la question d'engagement, seule */}
+        {showQuestion && (
+          <div className="flex items-start gap-4 mb-6 ml-[20px] md:ml-[28px] animate-in fade-in slide-in-from-bottom-3 duration-500">
+            <div
+              className="flex-1 p-4 md:p-5 rounded-2xl rounded-tl-sm shadow-lg relative"
+              style={{ background: palette.bg2, border: `1px solid ${palette.line}` }}
+            >
+              <div
+                className="absolute top-5 -left-2 w-0 h-0"
+                style={{ borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderRight: `8px solid ${palette.bg2}` }}
+              />
+              <p className="text-[15px] md:text-base font-semibold leading-snug" style={{ color: palette.ink }}>
+                {questionLine}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Engagement : le bouton répond en miroir à la question */}
+        {showQuestion && (
+        <div className="flex flex-col items-center gap-2.5 mt-2 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+          <button
+            type="button"
+            onClick={handleReady}
+            className="px-9 py-3.5 rounded-2xl font-bold text-[15px] transition-transform active:scale-95"
+            style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 10px 28px ${palette.accentSoft}` }}
+          >
+            Je suis prêt(e)
+          </button>
+          <p className="text-xs" style={{ color: palette.ink3 }}>
+            Tu pourras tout retrouver dans ton espace.
+          </p>
+        </div>
+        )}
       </div>
+      )}
 
       {/* ── Section 2: Carte Récap Profil ── */}
-      <div
-        className={`w-full max-w-2xl transition-all duration-700 delay-100 ${showCard ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
-      >
+      {showCard && (
+      <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div
           className="rounded-3xl overflow-hidden shadow-xl"
           style={{ border: `1px solid ${palette.line}` }}
@@ -367,11 +420,11 @@ export const OnboardingWelcome = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Section 3: Actions CTA ── */}
-      <div
-        className={`w-full max-w-2xl mt-8 space-y-3 transition-all duration-700 delay-200 ${showActions ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
-      >
+      {showActions && (
+      <div className="w-full max-w-2xl mt-8 space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
         <h3
           className="text-xs font-bold uppercase tracking-wider text-center mb-4"
           style={{ color: palette.ink3 }}
@@ -382,10 +435,11 @@ export const OnboardingWelcome = () => {
         {/* Primary CTA */}
         <button
           onClick={() => handleContinue('/dashboard/starter-pack')}
-          className="w-full flex items-center justify-between p-4 md:p-5 rounded-2xl font-bold text-white shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full flex items-center justify-between p-4 md:p-5 rounded-2xl font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
           style={{
             background: palette.accent,
-            boxShadow: `0 8px 24px ${palette.accentSoft}`,
+            color: palette.onAccent,
+            boxShadow: `0 8px 24px ${palette.heroShadow}`,
           }}
         >
           <div className="flex items-center gap-3">
@@ -453,6 +507,7 @@ export const OnboardingWelcome = () => {
           </p>
         </div>
       </div>
+      )}
     </div>
   );
 };

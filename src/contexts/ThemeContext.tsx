@@ -2,6 +2,25 @@ import { createContext, useContext, useEffect, useState, ReactNode, useMemo } fr
 
 type Theme = 'light' | 'dark';
 type VisualStyle = 'focus' | 'studio';
+type TypeSet = 'net' | 'editorial' | 'moderne';
+
+// Axe 3 (NOUVEAU) — la typographie. Chaque set injecte deux variables CSS
+// (`--font-display` pour les titres, `--font-body` pour le corps/prose).
+// Les petits labels d'interface restent en Poppins, volontairement (cf. handoff).
+const TYPE_SETS: Record<TypeSet, { display: string; body: string }> = {
+  net: {
+    display: "'Poppins',sans-serif",
+    body: "'Poppins',sans-serif",
+  },
+  editorial: {
+    display: "'Playfair Display',serif",
+    body: "'Newsreader',Georgia,serif",
+  },
+  moderne: {
+    display: "'Space Grotesk',sans-serif",
+    body: "'Manrope',sans-serif",
+  },
+};
 
 // Palette tokens derived from the Claude Design spec
 const PALETTES = {
@@ -19,7 +38,6 @@ const PALETTES = {
       bannerBg: '#0C1A2B',
       gfBubble: '#E9F2FF', gfInk: '#0C2E55',
       pfBubble: '#EFEFF4', pfInk: '#2B3340',
-      display: "'Space Grotesk','Poppins',sans-serif",
     },
     dark: {
       bg: '#080B12', bg2: '#121823', bg3: '#1A2230',
@@ -34,7 +52,6 @@ const PALETTES = {
       bannerBg: '#161E2C',
       gfBubble: '#10243B', gfInk: '#BFE0FF',
       pfBubble: '#1A2230', pfInk: '#C4D0DE',
-      display: "'Space Grotesk','Poppins',sans-serif",
     },
   },
   focus: {
@@ -51,7 +68,6 @@ const PALETTES = {
       bannerBg: '#1A3557',
       gfBubble: '#EFF5FB', gfInk: '#16202B',
       pfBubble: '#F2F4F7', pfInk: '#3A454F',
-      display: "'Poppins',sans-serif",
     },
     dark: {
       bg: '#0E1116', bg2: '#161B22', bg3: '#1B212A',
@@ -66,7 +82,6 @@ const PALETTES = {
       bannerBg: '#1B212A',
       gfBubble: '#16222E', gfInk: '#CFE3F5',
       pfBubble: '#1B212A', pfInk: '#C2CCD6',
-      display: "'Poppins',sans-serif",
     },
   },
 } as const;
@@ -87,13 +102,21 @@ const SEMANTIC = {
   },
 } as const;
 
-export type PaletteTokens = typeof PALETTES.focus.light & typeof SEMANTIC.light;
+// `display` / `body` ne sont plus figés par thème : ils pointent vers les
+// variables CSS pilotées par l'axe typo (`var(--font-display)` / `var(--font-body)`),
+// si bien que tous les `fontFamily: palette.display` existants suivent la cascade.
+export type PaletteTokens = typeof PALETTES.focus.light & typeof SEMANTIC.light & {
+  display: string;
+  body: string;
+};
 
 interface ThemeContextType {
   theme: Theme;
   visualStyle: VisualStyle;
+  typeSet: TypeSet;
   toggleTheme: () => void;
   setVisualStyle: (style: VisualStyle) => void;
+  setTypeSet: (set: TypeSet) => void;
   palette: PaletteTokens;
   isDark: boolean;
 }
@@ -117,6 +140,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return 'focus'; // Focus par défaut
   });
 
+  const [typeSet, setTypeSetState] = useState<TypeSet>(() => {
+    const saved = localStorage.getItem('eductome_type_set');
+    if (saved === 'net' || saved === 'editorial' || saved === 'moderne') {
+      return saved;
+    }
+    return 'net'; // Poppins par défaut
+  });
+
   useEffect(() => {
     const root = window.document.documentElement;
     if (theme === 'dark') {
@@ -133,6 +164,15 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const root = window.document.documentElement;
     root.dataset.visualStyle = visualStyle;
   }, [visualStyle]);
+
+  // Axe typo : persiste + injecte --font-display / --font-body (la cascade)
+  useEffect(() => {
+    localStorage.setItem('eductome_type_set', typeSet);
+    const root = window.document.documentElement;
+    root.dataset.typeSet = typeSet;
+    root.style.setProperty('--font-display', TYPE_SETS[typeSet].display);
+    root.style.setProperty('--font-body', TYPE_SETS[typeSet].body);
+  }, [typeSet]);
 
   // Inject palette as CSS variables whenever theme or style changes
   useEffect(() => {
@@ -151,14 +191,24 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setVisualStyleState(style);
   };
 
+  const setTypeSet = (set: TypeSet) => {
+    setTypeSetState(set);
+  };
+
   const isDark = theme === 'dark';
 
   const palette = useMemo<PaletteTokens>(() => {
-    return { ...PALETTES[visualStyle][theme], ...SEMANTIC[theme] } as PaletteTokens;
+    return {
+      ...PALETTES[visualStyle][theme],
+      ...SEMANTIC[theme],
+      // Pilotés par l'axe typo via variables CSS (pas par le thème de couleur)
+      display: 'var(--font-display)',
+      body: 'var(--font-body)',
+    } as PaletteTokens;
   }, [theme, visualStyle]);
 
   return (
-    <ThemeContext.Provider value={{ theme, visualStyle, toggleTheme, setVisualStyle, palette, isDark }}>
+    <ThemeContext.Provider value={{ theme, visualStyle, typeSet, toggleTheme, setVisualStyle, setTypeSet, palette, isDark }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -1198,13 +1198,16 @@ mjx-container:not([display="true"]) {
 /* COURSE READER — corps de lecture éditorial   */
 /* ============================================ */
 .ed-reader-prose {
-  font-family: 'Newsreader', Georgia, Cambria, serif;
+  /* Le corps de lecture suit l'axe typo choisi (Paramètres → Typographie). */
+  font-family: var(--font-body, 'Newsreader', Georgia, Cambria, serif);
 }
-/* Les titres et l'interface restent en Poppins */
+/* Les titres suivent l'axe typo « display ». */
 .ed-reader-prose h1,
 .ed-reader-prose h2,
-.ed-reader-prose h3,
-.ed-reader-prose .font-poppins,
+.ed-reader-prose h3 {
+  font-family: var(--font-display, 'Poppins', sans-serif);
+}
+/* Le chrome d'interface (boutons, overlines) reste neutre. */
 .ed-reader-prose button,
 .ed-reader-prose [class*="uppercase"] {
   font-family: 'Poppins', sans-serif;

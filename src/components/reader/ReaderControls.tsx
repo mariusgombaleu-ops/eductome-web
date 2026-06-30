@@ -35,7 +35,7 @@ export const ReaderControls = ({
 
   return (
     <div
-      className="mt-2 flex items-center gap-2 rounded-[14px] px-2 py-1.5 shadow-sm"
+      className="pointer-events-auto mt-2 flex items-center gap-2 rounded-[14px] px-2 py-1.5 shadow-sm"
       style={{
         background: palette.glass,
         backdropFilter: 'blur(16px) saturate(160%)',

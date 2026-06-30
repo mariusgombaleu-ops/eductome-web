@@ -32,6 +32,7 @@ import { RelaisDashboard } from './pages/RelaisDashboard';
 import { ParentDashboard } from './pages/ParentDashboard';
 import { TimetablePage } from './pages/TimetablePage';
 import { ApeDashboard } from './pages/ApeDashboard';
+import { SystemGallery } from './pages/SystemGallery';
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -87,6 +88,9 @@ export const AnimatedRoutes = () => {
 
       {/* APE / COGES Dashboard */}
       <Route path="/ape" element={<ApeDashboard />} />
+
+      {/* Galerie du système de design (Couche 2) — démo interne, publique */}
+      <Route path="/_systeme" element={<SystemGallery />} />
     </Routes>
   );
 };

@@ -275,7 +275,7 @@ export const BlockRenderer = ({ block, isDark, courseId, chapterId, sectionId }:
           {b.gf && (
             <div className="flex items-end gap-2 max-w-[90%] ml-auto flex-row-reverse">
               <div className="shrink-0 w-8 h-8 rounded-full shadow-sm overflow-hidden bg-blue-100 dark:bg-blue-900/50">
-                <img src="/grand-frere.jpeg" alt="Le Gombaleu" className="w-full h-full object-cover" />
+                <img src="/images/profil.jpeg" alt="Le Gombaleu" className="w-full h-full object-cover object-center" />
               </div>
               <div
                 className="flex-1 rounded-[20px] rounded-br-sm px-4 py-3 text-[14px] leading-relaxed shadow-sm"

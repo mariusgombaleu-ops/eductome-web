@@ -65,9 +65,9 @@ export function GrandFrereGuide({ id, title = "Le Grand Frère t'explique", mess
         <div className="flex items-center gap-4 w-full">
           <div className="shrink-0 relative">
             <img 
-              src="/images/marius.jpeg" 
-              alt="Grand Frère Marius" 
-              className="w-14 h-14 rounded-full object-cover border-2 border-white dark:border-gray-800 shadow-md"
+              src="/images/profil.jpeg"
+              alt="Grand Frère Marius"
+              className="w-14 h-14 rounded-full object-cover object-center border-2 border-white dark:border-gray-800 shadow-md"
             />
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#D81B60] rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
               <span className="text-[10px] text-white font-bold">i</span>

@@ -176,16 +176,16 @@ export const TimetablePage = () => {
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-24 font-poppins max-w-7xl mx-auto transition-colors">
       {/* Hero Banner avec dégradé EDUCTOME */}
-      <div className="relative bg-gradient-to-r from-[#1A3557] to-[#1976D2] rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg mb-8 animate-in fade-in slide-in-from-top-4 duration-500 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative rounded-[28px] p-6 md:p-8 overflow-hidden shadow-lg mb-8 animate-in fade-in slide-in-from-top-4 duration-500 flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ background: palette.heroBg, boxShadow: `0 7px 18px ${palette.heroShadow}, inset 0 1px 0 rgba(255,255,255,.28)` }}>
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 pointer-events-none"></div>
         <div className="absolute bottom-0 right-1/4 -mb-12 w-32 h-32 rounded-full bg-white opacity-10 pointer-events-none"></div>
-        
+
         <div className="relative z-10 text-white flex-1">
           <div className="flex items-center gap-3 mb-2">
             <div className="bg-white/20 p-2.5 rounded-[12px] backdrop-blur-sm shrink-0 shadow-sm">
               <Calendar className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-playfair font-bold">
+            <h1 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: palette.display }}>
               Mon Emploi du Temps
             </h1>
           </div>
@@ -219,32 +219,33 @@ export const TimetablePage = () => {
       {pendingAssessments.length > 0 && (
         <div className="space-y-3">
           {pendingAssessments.map(assessment => (
-            <div key={assessment.id} className="rounded-[16px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border transition-colors" style={{ background: '#f9731610', borderColor: '#f9731630' }}>
+            <div key={assessment.id} className="rounded-[16px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border transition-colors" style={{ background: palette.anaBg, borderColor: palette.anaBar }}>
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: palette.anaBar }} />
                 <div>
-                  <h4 className="font-bold text-orange-500 text-sm">
+                  <h4 className="font-bold text-sm" style={{ color: palette.anaInk }}>
                     Comment s'est passé ton {TYPE_LABELS[assessment.type]} de {assessment.subjectName} ?
                   </h4>
-                  <p className="text-xs text-orange-500/80 mt-1">
+                  <p className="text-xs mt-1" style={{ color: palette.anaInk, opacity: 0.85 }}>
                     C'était le {new Date(assessment.date).toLocaleDateString('fr-FR')}. Mets à jour tes notes pour voir si tu as atteint ton objectif !
                   </p>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button 
+                <button
                   onClick={() => handleMarkAsDone(assessment.id)}
                   className="border px-3 py-1.5 rounded-[12px] text-xs font-bold transition-colors hover:bg-black/5 flex items-center gap-1"
                   style={{ background: palette.bg, color: palette.ink, borderColor: palette.line }}
                 >
                   <CheckCircle2 size={14} /> Ignorer
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     handleMarkAsDone(assessment.id);
-                    navigate('/dashboard/grades');
+                    navigate('/dashboard/objectifs');
                   }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1 transition-colors"
+                  className="text-white px-4 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1 transition-opacity hover:opacity-90"
+                  style={{ background: palette.anaBar }}
                 >
                   Saisir ma note <ChevronRight size={14} />
                 </button>
@@ -413,7 +414,8 @@ export const TimetablePage = () => {
       {/* FAB */}
       <button
         onClick={() => setShowAddForm(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-[#1A3557] hover:bg-[#1A3557]/90 text-white rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-105"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 text-white rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-105"
+        style={{ background: palette.accent2 }}
         title="Ajouter un devoir / interro"
       >
         <Plus size={24} />

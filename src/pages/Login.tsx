@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { LogoTile } from '../components/ui/LogoTile';
 
 export const Login = () => {
   const { palette } = useTheme();
@@ -43,11 +44,11 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center font-poppins px-4 py-12 transition-colors duration-300" style={{ background: palette.bg2 }}>
-      <div className="max-w-md w-full space-y-8 p-8 rounded-[28px] shadow-sm border transition-colors duration-300" style={{ background: palette.bg, borderColor: palette.line }}>
+    <div className="min-h-screen flex items-center justify-center font-poppins px-4 py-12 transition-colors duration-300" style={{ background: palette.bg }}>
+      <div className="max-w-md w-full space-y-8 p-8 rounded-[28px] shadow-sm border transition-colors duration-300" style={{ background: palette.bg2, borderColor: palette.line }}>
         <div className="text-center">
-          <h1 className="text-3xl font-playfair font-bold transition-colors" style={{ color: palette.ink }}>EDUCTOME</h1>
-          <h2 className="mt-6 text-2xl font-bold transition-colors" style={{ color: palette.ink }}>Bon retour, Champion(ne) ! 👋</h2>
+          <LogoTile className="mb-4" />
+          <h2 className="text-[27px] font-extrabold leading-[1.1] tracking-tight transition-colors" style={{ color: palette.ink, fontFamily: palette.display }}>Bon retour 👋</h2>
           <p className="mt-2 text-sm transition-colors" style={{ color: palette.ink2 }}>
             Entre tes identifiants pour continuer.
           </p>
@@ -62,9 +63,9 @@ export const Login = () => {
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Numéro de téléphone</label>
+              <label htmlFor="phone" className="block text-[13px] font-semibold mb-1.5 transition-colors" style={{ color: palette.ink }}>Numéro de téléphone</label>
               <div className="mt-1 relative flex rounded-lg shadow-sm">
-                <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 sm:text-sm transition-colors" style={{ borderColor: palette.line, background: palette.bg2, color: palette.ink2 }}>
+                <span className="inline-flex items-center px-3 rounded-l-[14px] border border-r-0 sm:text-sm transition-colors" style={{ borderColor: palette.line, background: palette.bg3, color: palette.ink2 }}>
                   +225
                 </span>
                 <div className="relative flex-1 focus-within:z-10">
@@ -76,7 +77,7 @@ export const Login = () => {
                     name="phone"
                     type="tel"
                     required
-                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-r-lg focus:outline-none sm:text-sm transition-colors"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border rounded-r-[14px] focus:outline-none sm:text-sm transition-colors"
                     style={{
                       borderColor: palette.line,
                       background: palette.bg,
@@ -90,8 +91,11 @@ export const Login = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium transition-colors" style={{ color: palette.ink }}>Mot de passe</label>
-              <div className="mt-1 relative">
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="password" className="text-[13px] font-semibold transition-colors" style={{ color: palette.ink }}>Mot de passe</label>
+                <a href="#" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: palette.accent }}>Mot de passe oublié ?</a>
+              </div>
+              <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 transition-colors" style={{ color: palette.ink3 }} />
                 </div>
@@ -101,7 +105,7 @@ export const Login = () => {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none sm:text-sm transition-colors"
+                  className="appearance-none block w-full pl-10 pr-10 py-3 border rounded-[14px] focus:outline-none sm:text-sm transition-colors"
                   style={{
                     borderColor: palette.line,
                     background: palette.bg,
@@ -122,20 +126,12 @@ export const Login = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <a href="#" className="font-medium transition-colors hover:opacity-80" style={{ color: palette.accent }}>
-                Mot de passe oublié ?
-              </a>
-            </div>
-          </div>
-
           <div>
-            <button 
+            <button
               type="submit" 
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-[24px] shadow-sm text-sm font-bold text-white transition-colors focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
-              style={{ background: palette.accent }}
+              className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[16px] text-sm font-bold transition-all focus:outline-none disabled:opacity-70 transform hover:scale-[1.02] duration-200"
+              style={{ background: palette.accent, color: palette.onAccent, boxShadow: `0 4px 12px ${palette.heroShadow}` }}
             >
               {isLoading ? 'Connexion en cours...' : 'Se connecter'}
             </button>
