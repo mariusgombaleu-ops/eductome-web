@@ -46,5 +46,5 @@ export const tomeLesLimites: Tome = {
     tome: 1500,
   },
   couleurCollection: '#1A3557',
-  couverture: '/covers/t1-limites.png',
+  couverture: '/covers/tomes/Tome-01-Limites-Continuite.png',
 };

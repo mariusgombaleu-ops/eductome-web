@@ -42,5 +42,5 @@ export const tomeComplexes: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t10.png',
+  couverture: '/covers/tomes/Tome-10-Nombres-Complexes.png',
 };

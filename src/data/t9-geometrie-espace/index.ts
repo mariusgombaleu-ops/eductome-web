@@ -44,5 +44,5 @@ export const tomeGeometrieEspace: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t9.jpeg',
+  couverture: '/covers/tomes/Tome-09-Geometrie-Espace.png',
 };

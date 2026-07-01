@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Star, BookOpen, ChevronDown } from 'lucide-react';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
+import { MATHS_TOME_IDS } from '../../data/skus';
 
 const subtitles = [
   'Comprends enfin tes cours.',
@@ -157,7 +158,7 @@ export function Hero() {
           />
           <div className="w-px h-8 bg-white/20 hidden sm:block" />
           <AnimatedCounter
-            end={11}
+            end={MATHS_TOME_IDS.length}
             suffix=" tomes"
             label="programme complet"
             icon={<BookOpen className="w-5 h-5 text-eductome-sky" />}

@@ -45,5 +45,5 @@ export const tomeDerivees: Tome = {
     tome: 1500,
   },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t2.png',
+  couverture: '/covers/tomes/Tome-02-Derivees-Variations.png',
 };

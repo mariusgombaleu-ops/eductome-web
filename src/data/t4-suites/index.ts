@@ -42,5 +42,5 @@ export const tomeSuites: Tome = {
     tome: 1500,
   },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t4.png',
+  couverture: '/covers/tomes/Tome-04-Suites-Numeriques.png',
 };

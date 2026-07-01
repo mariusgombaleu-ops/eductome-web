@@ -42,5 +42,5 @@ export const tomeEquationsDiff: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t11.png',
+  couverture: '/covers/tomes/Tome-11-Equations-Differentielles.png',
 };

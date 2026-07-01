@@ -41,5 +41,5 @@ export const tomeLogExpo: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t5.png',
+  couverture: '/covers/tomes/Tome-05-Logarithme-Exponentielle.png',
 };

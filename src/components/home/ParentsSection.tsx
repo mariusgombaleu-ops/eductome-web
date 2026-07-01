@@ -1,7 +1,10 @@
 import { ScrollReveal } from '../ui/ScrollReveal';
-import { HeartHandshake, ArrowRight, Shield } from 'lucide-react';
+import { HeartHandshake, ArrowRight, Shield, Quote } from 'lucide-react';
+import { getActiveCollectionOffer, deadlineLabel } from '../../data/offers';
+import { formatFcfa } from '../../utils/format';
 
 export function ParentsSection() {
+  const offer = getActiveCollectionOffer();
   return (
     <section className="py-16 md:py-24 bg-white px-4 relative overflow-hidden">
       {/* Subtle Background Pattern */}
@@ -53,11 +56,16 @@ export function ParentsSection() {
             {/* EDUCTOME */}
             <div className="bg-green-50/60 rounded-2xl p-6 border-2 border-eductome-green text-center relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-eductome-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
-                MEILLEUR CHOIX
+                Meilleur choix
               </div>
               <p className="text-sm font-bold text-green-800 uppercase tracking-wider mb-2">EDUCTOME</p>
-              <p className="text-3xl md:text-4xl font-extrabold text-eductome-green mb-1">1 500 F<span className="text-base font-medium text-green-500"> une fois</span></p>
-              <p className="text-xs text-green-600">Par tome complet · Accès illimité</p>
+              {offer.active && (
+                <p className="text-sm text-green-500 line-through">{formatFcfa(offer.originalPrice)}</p>
+              )}
+              <p className="text-3xl md:text-4xl font-extrabold text-eductome-green mb-1">{formatFcfa(offer.price)}<span className="text-base font-medium text-green-500"> à vie</span></p>
+              <p className="text-xs text-green-600">
+                Toute la Collection Maths · accès à vie{offer.active ? ` · tarif fondateur jusqu'au ${deadlineLabel()}` : ''}
+              </p>
               <ul className="mt-4 space-y-2 text-left">
                 <li className="flex items-center gap-2 text-sm text-green-800">
                   <span className="text-eductome-green font-bold">✓</span> Méthode structurée et prouvée
@@ -66,7 +74,7 @@ export function ParentsSection() {
                   <span className="text-eductome-green font-bold">✓</span> Disponible 24h/24, partout
                 </li>
                 <li className="flex items-center gap-2 text-sm text-green-800">
-                  <span className="text-eductome-green font-bold">✓</span> L'enfant devient autonome
+                  <span className="text-eductome-green font-bold">✓</span> Payé une fois, acquis à vie
                 </li>
               </ul>
             </div>
@@ -76,7 +84,7 @@ export function ParentsSection() {
         {/* Parent testimonial */}
         <ScrollReveal delay={0.25}>
           <div className="bg-gray-50 rounded-2xl p-6 md:p-8 max-w-2xl mx-auto mb-10 border border-gray-100 relative">
-            <span className="absolute -top-2 left-6 text-3xl">💬</span>
+            <Quote className="absolute -top-3 left-6 w-7 h-7 text-eductome-magenta/30 fill-current" />
             <p className="text-gray-700 italic leading-relaxed text-sm md:text-base mt-2">
               "Mon fils est passé de 7 à 14 en maths en deux mois. J'aurais dépensé 10 fois plus en répétiteur pour un résultat pareil. Merci EDUCTOME !"
             </p>
@@ -102,7 +110,7 @@ export function ParentsSection() {
             </button>
             <div className="flex items-center gap-2 text-gray-400 text-xs">
               <Shield className="w-4 h-4" />
-              <span>Satisfait ou remboursé sous 7 jours</span>
+              <span>Essai gratuit · accès à vie · sans abonnement</span>
             </div>
           </div>
         </ScrollReveal>

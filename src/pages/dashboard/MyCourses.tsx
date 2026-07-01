@@ -22,18 +22,18 @@ interface TomeInfo {
 }
 
 const TOMES: TomeInfo[] = [
-  { id: 't1-limites', n: 1, title: 'Les Limites', total: 5, cover: '/covers/tomes/cover-t1.png' },
-  { id: 't2-derivees', n: 2, title: 'Les Dérivées', total: 6, cover: '/covers/tomes/cover-t2.png' },
-  { id: 't3-primitives', n: 3, title: 'Primitives & Intégrales', total: 6, cover: '/covers/tomes/cover-t3.png' },
-  { id: 't4-suites', n: 4, title: 'Suites Numériques', total: 5, cover: '/covers/tomes/cover-t4.png' },
-  { id: 't5-log-expo', n: 5, title: 'Logarithme & Exponentielle', total: 6, cover: '/covers/tomes/cover-t5.png' },
-  { id: 't6-trigonometrie', n: 6, title: 'Fonctions Trigonométriques', total: 6, cover: '/covers/tomes/cover-t6.png' },
-  { id: 't7-probabilites', n: 7, title: 'Probabilités', total: 6, cover: '/covers/tomes/cover-t7.png' },
-  { id: 't8-statistiques', n: 8, title: 'Statistiques', total: 6, cover: '/covers/tomes/cover-t8.png' },
-  { id: 't9-geometrie-espace', n: 9, title: "Géométrie dans l'Espace", total: 7, cover: '/covers/tomes/cover-t9.jpeg' },
-  { id: 't10-complexes', n: 10, title: 'Nombres Complexes', total: 6, cover: '/covers/tomes/cover-t10.png' },
-  { id: 't11-equations-diff', n: 11, title: 'Équations Différentielles', total: 6, cover: '/covers/tomes/cover-t11.png' },
-  { id: 't12-revisions-bac', n: 12, title: 'Révisions BAC', total: 4 },
+  { id: 't1-limites', n: 1, title: 'Les Limites', total: 5, cover: '/covers/tomes/Tome-01-Limites-Continuite.png' },
+  { id: 't2-derivees', n: 2, title: 'Les Dérivées', total: 6, cover: '/covers/tomes/Tome-02-Derivees-Variations.png' },
+  { id: 't3-primitives', n: 3, title: 'Primitives & Intégrales', total: 6, cover: '/covers/tomes/Tome-03-Primitives-Integrales.png' },
+  { id: 't4-suites', n: 4, title: 'Suites Numériques', total: 5, cover: '/covers/tomes/Tome-04-Suites-Numeriques.png' },
+  { id: 't5-log-expo', n: 5, title: 'Logarithme & Exponentielle', total: 6, cover: '/covers/tomes/Tome-05-Logarithme-Exponentielle.png' },
+  { id: 't6-trigonometrie', n: 6, title: 'Fonctions Trigonométriques', total: 6, cover: '/covers/tomes/Tome-06-Fonctions-Trigo.png' },
+  { id: 't7-probabilites', n: 7, title: 'Probabilités', total: 6, cover: '/covers/tomes/Tome-07-Probabilites.png' },
+  { id: 't8-statistiques', n: 8, title: 'Statistiques', total: 6, cover: '/covers/tomes/Tome-08-Statistiques.png' },
+  { id: 't9-geometrie-espace', n: 9, title: "Géométrie dans l'Espace", total: 7, cover: '/covers/tomes/Tome-09-Geometrie-Espace.png' },
+  { id: 't10-complexes', n: 10, title: 'Nombres Complexes', total: 6, cover: '/covers/tomes/Tome-10-Nombres-Complexes.png' },
+  { id: 't11-equations-diff', n: 11, title: 'Équations Différentielles', total: 6, cover: '/covers/tomes/Tome-11-Equations-Differentielles.png' },
+  { id: 't12-revisions-bac', n: 12, title: 'Révisions BAC', total: 4, cover: '/covers/tomes/Tome-12-Revisions-BAC.png' },
 ];
 
 // Collections dont le contenu n'existe pas encore : présentées en « Bientôt »,

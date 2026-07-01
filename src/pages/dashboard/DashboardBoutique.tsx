@@ -7,6 +7,9 @@ import { PageHero } from '../../components/dashboard/PageHero';
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BottomSheet } from '../../components/ui/system';
+import { PRICES, MATHS_TOME_IDS } from '../../data/skus';
+import { formatFcfa } from '../../utils/format';
+import { getActiveCollectionOffer, daysRemaining, deadlineLabel } from '../../data/offers';
 
 export const DashboardBoutique = () => {
   const { unlockedCourses } = useUser();
@@ -36,6 +39,9 @@ export const DashboardBoutique = () => {
   const ownedTomes = allTomes.filter(t => unlockedCourses.includes(t.id)).length;
   const lockedTomes = Math.max(0, allTomes.length - ownedTomes);
 
+  // Offre fondateurs (Collection Maths à 12 000 jusqu'au 30 sept.) — sinon prix standard.
+  const collectionOffer = getActiveCollectionOffer();
+
   return (
     <div className="space-y-8 px-4 md:px-6 lg:px-8 pt-6 pb-10 font-poppins">
       
@@ -47,7 +53,7 @@ export const DashboardBoutique = () => {
       <PageHero
         eyebrow="Collections"
         title="Boutique"
-        description="Investis en toi : débloque tes tomes à la carte dès 300 F, ou passe VIP pour tout le programme."
+        description={`Investis en toi : débloque tes modules à la carte dès ${PRICES.module} F, ou passe VIP pour tout le programme.`}
         stats={[
           { value: ownedTomes, label: ownedTomes > 1 ? 'Tomes à toi' : 'Tome à toi', progress: allTomes.length ? Math.round((ownedTomes / allTomes.length) * 100) : 0 },
           { value: lockedTomes, label: 'À débloquer', progress: allTomes.length ? Math.round((lockedTomes / allTomes.length) * 100) : 100 },
@@ -57,23 +63,30 @@ export const DashboardBoutique = () => {
 
       {/* VIP Collection Complete Banner */}
       <div 
-        onClick={() => openCheckout('Collection Mathématiques (Tous les tomes)', 10000, false, true, 'cles-maths')}
+        onClick={() => openCheckout(collectionOffer.active ? 'Collection Mathématiques — Membre Fondateur' : 'Collection Mathématiques (Tous les tomes)', collectionOffer.price, false, true, 'cles-maths')}
         className="relative bg-gradient-to-r from-amber-500 to-yellow-400 rounded-2xl p-1 overflow-hidden shadow-lg hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 mb-8"
       >
         <div className="rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" style={{ background: palette.bg2 }}>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">OFFRE VIP RENTABLE</span>
+              <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{collectionOffer.active ? 'Offre Rentrée — Fondateur' : 'Offre VIP Rentable'}</span>
               <span className="text-amber-500 font-bold flex items-center"><Lock className="w-4 h-4 mr-1" /> Accès total</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color: palette.ink }}>La Collection Mathématiques</h2>
             <p className="text-sm md:text-base" style={{ color: palette.ink2 }}>
-              Ne choisis plus. Débloque <strong>absolument tous les tomes de Mathématiques</strong> en un seul clic, pour toute l'année scolaire.
+              Ne choisis plus. Débloque <strong>absolument tous les tomes de Mathématiques</strong> en un seul clic, à vie.
             </p>
+            {collectionOffer.active && (
+              <p className="text-sm font-bold text-amber-600 mt-2">
+                Tarif fondateur jusqu'au {deadlineLabel()} · plus que {daysRemaining()} jours
+              </p>
+            )}
           </div>
           <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-            <div className="line-through text-sm font-bold mb-1" style={{ color: palette.ink3 }}>Valeur: +15 000 FCFA</div>
-            <div className="text-4xl md:text-5xl font-black text-amber-500 font-poppins mb-3">10 000 F</div>
+            <div className="line-through text-sm font-bold mb-1" style={{ color: palette.ink3 }}>
+              {collectionOffer.active ? formatFcfa(collectionOffer.originalPrice) : `Valeur: ${formatFcfa(MATHS_TOME_IDS.length * PRICES.tome)}`}
+            </div>
+            <div className="text-4xl md:text-5xl font-black text-amber-500 font-poppins mb-3">{formatFcfa(collectionOffer.price)}</div>
             <button className="w-full md:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
               <Unlock className="w-5 h-5" />
               Tout débloquer
@@ -117,7 +130,7 @@ export const DashboardBoutique = () => {
 
                       {/* Price Section */}
                       <div className="mb-3 flex items-baseline gap-1 mt-auto">
-                        <span className="text-xl sm:text-2xl font-black" style={{ color: palette.ink }}>1.500</span>
+                        <span className="text-xl sm:text-2xl font-black" style={{ color: palette.ink }}>{formatFcfa(PRICES.tome, false)}</span>
                         <span className="text-[10px] sm:text-xs font-bold" style={{ color: palette.ink3 }}>FCFA</span>
                       </div>
 
@@ -160,24 +173,24 @@ export const DashboardBoutique = () => {
               <button
                 onClick={() => {
                   setOptionsModalOpen(false);
-                  openCheckout(`Chapitre au choix - Tome ${selectedTomeForOptions.tome.number}`, 300, true, false, selectedTomeForOptions.tome.id);
+                  openCheckout(`Module au choix - Tome ${selectedTomeForOptions.tome.number}`, PRICES.module, true, false, selectedTomeForOptions.tome.id);
                 }}
                 className="w-full flex items-center justify-between p-4 rounded-[20px] border hover:shadow-md transition-all group"
                 style={{ background: palette.bg, borderColor: palette.line }}
               >
                 <div className="text-left">
-                  <div className="font-bold mb-0.5 group-hover:opacity-80 transition-opacity" style={{ color: palette.ink }}>1 Chapitre à la carte</div>
-                  <div className="text-xs font-medium" style={{ color: palette.ink3 }}>Choisis le chapitre de ton choix</div>
+                  <div className="font-bold mb-0.5 group-hover:opacity-80 transition-opacity" style={{ color: palette.ink }}>1 Module à la carte</div>
+                  <div className="text-xs font-medium" style={{ color: palette.ink3 }}>Choisis le module de ton choix</div>
                 </div>
-                <div className="font-black" style={{ color: palette.ink }}>300F</div>
+                <div className="font-black" style={{ color: palette.ink }}>{PRICES.module}F</div>
               </button>
 
               {/* Option 2 : Tome Complet */}
               {(() => {
                 const tomePrefix = selectedTomeForOptions?.tome?.id?.split('-')[0] + '-chap';
                 const ownedChaptersCount = unlockedCourses.filter(id => id.startsWith(tomePrefix)).length;
-                const deduction = ownedChaptersCount * 300;
-                const finalTomePrice = Math.max(0, 1500 - deduction);
+                const deduction = ownedChaptersCount * PRICES.module;
+                const finalTomePrice = Math.max(0, PRICES.tome - deduction);
 
                 return (
                   <button
@@ -191,9 +204,9 @@ export const DashboardBoutique = () => {
                     <div className="text-left">
                       <div className="font-bold" style={{ color: palette.accent }}>Tome Complet</div>
                       {deduction > 0 ? (
-                        <div className="text-xs font-bold" style={{ color: palette.tipBar }}>-{deduction}F pour tes chapitres acquis</div>
+                        <div className="text-xs font-bold" style={{ color: palette.tipBar }}>-{deduction}F pour tes modules acquis</div>
                       ) : (
-                        <div className="text-xs font-medium" style={{ color: palette.ink3 }}>Débloque tous les chapitres</div>
+                        <div className="text-xs font-medium" style={{ color: palette.ink3 }}>Débloque tous les modules</div>
                       )}
                     </div>
                     <div className="font-black" style={{ color: palette.accent }}>{finalTomePrice}F</div>
@@ -205,7 +218,7 @@ export const DashboardBoutique = () => {
               <button
                 onClick={() => {
                   setOptionsModalOpen(false);
-                  openCheckout(`Collection ${selectedTomeForOptions.collection.name}`, selectedTomeForOptions.collection.id === 'cles-maths' ? 10000 : 8000, false, true, selectedTomeForOptions.collection.id);
+                  openCheckout(`Collection ${selectedTomeForOptions.collection.name}`, selectedTomeForOptions.collection.id === 'cles-maths' ? collectionOffer.price : 8000, false, true, selectedTomeForOptions.collection.id);
                 }}
                 className="w-full flex items-center justify-between p-4 rounded-[20px] bg-gradient-to-r from-amber-500 to-yellow-400 text-white hover:from-amber-600 hover:to-yellow-500 transition-colors shadow-md"
               >
@@ -213,9 +226,11 @@ export const DashboardBoutique = () => {
                   <div className="font-bold mb-0.5 flex items-center gap-1">
                     Offre VIP <Lock className="w-3 h-3" />
                   </div>
-                  <div className="text-xs text-amber-50 font-medium">Toute la collection</div>
+                  <div className="text-xs text-amber-50 font-medium">
+                    {selectedTomeForOptions.collection.id === 'cles-maths' && collectionOffer.active ? 'Tarif fondateur, à vie' : 'Toute la collection, à vie'}
+                  </div>
                 </div>
-                <div className="font-black">Dès 8.000F</div>
+                <div className="font-black">{formatFcfa(selectedTomeForOptions.collection.id === 'cles-maths' ? collectionOffer.price : 8000)}</div>
               </button>
 
               <button

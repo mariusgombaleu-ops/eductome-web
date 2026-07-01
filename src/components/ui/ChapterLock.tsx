@@ -1,4 +1,7 @@
 import { Lock, CreditCard, BookOpen, MessageCircle } from 'lucide-react';
+import { PRICES } from '../../data/skus';
+import { formatFcfa } from '../../utils/format';
+import { getActiveCollectionOffer, daysRemaining, deadlineLabel } from '../../data/offers';
 
 interface ChapterLockProps {
   chapterTitle: string;
@@ -11,6 +14,8 @@ interface ChapterLockProps {
 }
 
 export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapter, onUnlockTome, onUnlockCollection, onRequestParent }: ChapterLockProps) => {
+
+  const collectionOffer = getActiveCollectionOffer();
 
   return (
     <div className="my-8 max-w-2xl mx-auto border-2 border-eductome-magenta rounded-2xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 relative">
@@ -30,13 +35,13 @@ export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapte
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4 w-full">
-          {/* Option 1: Unlocked Chapter */}
+          {/* Option 1: Unlocked Module */}
           <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-[#30363D] rounded-xl p-5 hover:border-eductome-magenta dark:hover:border-eductome-magenta transition-colors cursor-pointer flex flex-col h-full shadow-sm" onClick={onUnlockChapter}>
-            <h4 className="font-bold text-gray-800 dark:text-[#E6EDF3] mb-1">Débloquer le Chapitre</h4>
-            <div className="text-2xl font-black text-[#1A3557] dark:text-blue-400 mb-3">300 FCFA</div>
-            <p className="text-sm text-gray-500 dark:text-[#8B949E] flex-grow mb-4">Accès illimité à ce chapitre uniquement, avec tous ses exercices.</p>
+            <h4 className="font-bold text-gray-800 dark:text-[#E6EDF3] mb-1">Débloquer le Module</h4>
+            <div className="text-2xl font-black text-[#1A3557] dark:text-blue-400 mb-3">{formatFcfa(PRICES.module)}</div>
+            <p className="text-sm text-gray-500 dark:text-[#8B949E] flex-grow mb-4">Accès à vie à ce module uniquement, avec tous ses exercices.</p>
             <button className="w-full mt-auto min-h-[44px] py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-[#30363D] dark:hover:bg-gray-700 text-[#1A3557] dark:text-white font-bold transition-colors flex items-center justify-center gap-2">
-              <CreditCard size={18} /> Payer 300 F
+              <CreditCard size={18} /> Payer {PRICES.module} F
             </button>
           </div>
 
@@ -46,13 +51,13 @@ export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapte
               🔥 PLUS RENTABLE
             </div>
             <h4 className="font-bold text-blue-100 mb-1">Le Tome Complet</h4>
-            <div className="text-2xl font-black text-white mb-1">{tomePrice} FCFA</div>
+            <div className="text-2xl font-black text-white mb-1">{formatFcfa(tomePrice)}</div>
             {deduction > 0 && (
               <div className="text-xs font-bold text-green-300 mb-2">
-                -{deduction}F déduits pour tes chapitres déjà achetés !
+                -{deduction}F déduits pour tes modules déjà achetés !
               </div>
             )}
-            <p className="text-sm text-blue-200 flex-grow mb-4">Débloque tous les chapitres, tous les quiz et le chapitre bonus BAC.</p>
+            <p className="text-sm text-blue-200 flex-grow mb-4">Débloque tous les modules, tous les quiz et le module bonus BAC.</p>
             <button className="w-full mt-auto min-h-[44px] py-2 rounded-lg bg-eductome-magenta hover:bg-pink-600 text-white font-bold transition-colors shadow-sm flex items-center justify-center gap-2">
               <BookOpen size={18} /> Payer {tomePrice} F
             </button>
@@ -68,17 +73,28 @@ export const ChapterLock = ({ chapterTitle, tomePrice, deduction, onUnlockChapte
             <div className="bg-white dark:bg-[#161B22] rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-left flex-grow">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide text-sm">Offre VIP</h4>
-                  <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">RECOMMANDÉ</span>
+                  <h4 className="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide text-sm">
+                    {collectionOffer.active ? 'Offre Rentrée' : 'Offre VIP'}
+                  </h4>
+                  <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {collectionOffer.active ? 'MEMBRE FONDATEUR' : 'RECOMMANDÉ'}
+                  </span>
                 </div>
                 <h3 className="font-black text-xl text-[#1A1A2E] dark:text-white mb-1">La Collection Complète</h3>
-                <p className="text-sm text-gray-600 dark:text-[#8B949E]">Débloque absolument TOUT. Accès à tous les tomes de Terminale D pendant 1 an.</p>
+                <p className="text-sm text-gray-600 dark:text-[#8B949E]">Débloque absolument TOUT. Accès à vie aux 12 tomes de Maths Terminale D.</p>
+                {collectionOffer.active && (
+                  <p className="text-xs font-bold text-amber-600 dark:text-amber-400 mt-1">
+                    Tarif fondateur jusqu'au {deadlineLabel()} · plus que {daysRemaining()} jours
+                  </p>
+                )}
               </div>
               <div className="flex flex-col items-center sm:items-end min-w-[120px]">
-                <div className="text-xs text-gray-400 line-through mb-1">Au lieu de 15 000 F</div>
-                <div className="text-2xl font-black text-amber-500 mb-2">10 000 F</div>
+                {collectionOffer.active && (
+                  <div className="text-xs text-gray-400 line-through">{formatFcfa(collectionOffer.originalPrice)}</div>
+                )}
+                <div className="text-2xl font-black text-amber-500 mb-2">{formatFcfa(collectionOffer.price)}</div>
                 <button className="w-full sm:w-auto min-h-[44px] px-6 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm text-sm">
-                  Devenir VIP
+                  {collectionOffer.active ? 'Devenir Fondateur' : 'Devenir VIP'}
                 </button>
               </div>
             </div>

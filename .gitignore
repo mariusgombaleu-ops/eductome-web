@@ -10,3 +10,6 @@ dev-dist
 
 .vercel
 .env*
+
+# Outils locaux Claude Code (preview, plans) — pas pour le repo
+.claude

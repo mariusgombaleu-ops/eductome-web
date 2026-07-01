@@ -5,43 +5,47 @@ import { MessageCircle } from 'lucide-react';
 export function FAQSection() {
   const faqs = [
     {
-      category: '📚',
+      question: "C'est un abonnement ? Je dois payer tous les mois ?",
+      answer: "Non. Chez EDUCTOME, tu paies une seule fois et l'accès est à vie. Tu peux commencer gratuitement, puis débloquer ce que tu veux : un module dès 500 F, un tome à 2 000 F, ou toute la Collection Maths. Une fois payé, c'est acquis pour toujours — aucun prélèvement, aucune date d'expiration."
+    },
+    {
+      question: "Comment je paie et je débloque un cours dans l'app ?",
+      answer: "Le paiement se fait par Mobile Money (Orange Money, MTN, Wave). Tu choisis ton module, ton tome ou la collection, tu paies, et le contenu se débloque automatiquement dans ton compte — en général en quelques instants. Pas besoin de carte bancaire."
+    },
+    {
+      question: "J'ai payé mais mon cours n'est pas encore débloqué, que faire ?",
+      answer: "Pas d'inquiétude, ton achat n'est jamais perdu. Va dans « Réclamer un achat » depuis ton compte et saisis la référence reçue au paiement : le déblocage se fait aussitôt. Si ça bloque, écris-nous sur WhatsApp avec ta référence, on règle ça tout de suite."
+    },
+    {
+      question: "Un même compte peut-il servir à plusieurs élèves ?",
+      answer: "Un compte = un élève. C'est ce qui permet à l'app de suivre TA progression, TES faiblesses et TES révisions personnalisées. Le partage de compte est limité. Si vous êtes plusieurs à la maison, chaque enfant crée son compte gratuit — et un livre physique acheté débloque le tome sur le compte de l'élève à qui il est destiné."
+    },
+    {
       question: "Mon enfant est vraiment faible (6/20), est-ce que ça peut l'aider ?",
       answer: "Oui ! Nos manuels ne sont pas faits pour les génies, ils sont faits pour ceux qui ont des difficultés. On reprend tout depuis les bases, avec des mots simples."
     },
     {
-      category: '⏱️',
       question: "Combien de temps faut-il pour voir des résultats ?",
       answer: "En général, nos élèves voient un déclic dès les 2 premières semaines d'utilisation régulière, car ils comprennent enfin comment structurer leur réflexion."
     },
     {
-      category: '📚',
       question: "Est-ce que c'est conforme au programme ivoirien ?",
       answer: "Absolument. Nos manuels sont 100% alignés sur le programme du Ministère de l'Éducation Nationale de Côte d'Ivoire."
     },
     {
-      category: '📦',
-      question: "Livrez-vous à l'intérieur du pays ?",
-      answer: "Oui, nous livrons partout en Côte d'Ivoire. À Abidjan, la livraison se fait à domicile. À l'intérieur, nous expédions via les compagnies de transport."
+      question: "Application, PDF ou livre physique ?",
+      answer: "L'application est ta base : tout s'y débloque à vie (module, tome ou collection). Le livre physique est livré chez toi et vient avec un code qui débloque le tome dans l'app — idéal comme cadeau des parents. Les fiches PDF (Les Derniers Codes) sont téléchargeables tout de suite après paiement Mobile Money, pour réviser vite. Tu peux commencer par n'importe quel format."
     },
     {
-      category: '💰',
-      question: "PDF ou livre physique ?",
-      answer: "Les Clés Maths et Les Clés Sciences sont disponibles en livre physique (livrés à Abidjan et à l'intérieur). Les Derniers Codes, La Voie et La Racine sont disponibles en PDF, téléchargeables immédiatement après achat sur Selar. Certaines collections proposent les deux formats — vérifie sur la page de chaque collection."
-    },
-    {
-      category: '📚',
       question: "Pour quelle série exactement ?",
       answer: "Les Clés Maths est pensé pour les séries C et D (Terminale). Les Clés Sciences est conçu pour la Terminale D (Physique-Chimie). Les Derniers Codes couvre Terminale et 3ᵉ. La Voie et La Racine s'adressent à toutes les séries. Pour les élèves de 3ᵉ, la collection dédiée est 3e Facile."
     },
     {
-      category: '📦',
       question: "Combien de temps pour recevoir les livres physiques ?",
       answer: "À Abidjan, comptez 24h à 72h après confirmation de paiement. Pour l'intérieur (San-Pédro, Bouaké, Korhogo, Daloa, etc.), la livraison se fait via une compagnie de transport, généralement sous 3 à 5 jours. On t'envoie le numéro de suivi par WhatsApp."
     },
     {
-      category: '📚',
-      question: "Et si je suis bloqué sur un exercice après avoir lu le livre ?",
+      question: "Et si je suis bloqué sur un exercice après avoir lu le cours ?",
       answer: "Tu peux nous écrire directement sur WhatsApp. On t'oriente vers la bonne fiche, ou un grand frère du réseau EDUCTOME peut t'expliquer la notion. Tu n'es jamais seul devant ton manuel."
     }
   ];
@@ -58,7 +62,7 @@ export function FAQSection() {
         <ScrollReveal>
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 bg-blue-50 text-eductome-marine font-bold tracking-wider uppercase text-xs px-4 py-2 rounded-full mb-4 shadow-sm border border-blue-100">
-              ❓ FAQ
+              FAQ
             </span>
             <h2 className="text-3xl md:text-4xl font-playfair font-bold text-eductome-marine mb-4">
               Questions Fréquentes
@@ -83,7 +87,6 @@ export function FAQSection() {
                   onClick={() => toggleFAQ(index)}
                   className="w-full px-6 py-5 flex items-center gap-3 text-left focus:outline-none group"
                 >
-                  <span className="text-lg shrink-0">{faq.category}</span>
                   <span className={`font-semibold flex-1 transition-colors ${
                     openIndex === index ? 'text-eductome-magenta' : 'text-eductome-marine group-hover:text-eductome-sky'
                   }`}>

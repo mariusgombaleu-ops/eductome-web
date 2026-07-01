@@ -16,6 +16,8 @@ import { loadTome } from '../../data/tomeLoaders';
 import { QuizBlock, Tome, ExerciceBlock } from '../../types/course';
 import { BlockRenderer, parseMarkdown } from '../../components/blocks/BlockRenderer';
 import { ChapterLock } from '../../components/ui/ChapterLock';
+import { PRICES } from '../../data/skus';
+import { getActiveCollectionOffer } from '../../data/offers';
 import { SelarPaymentModal } from '../../components/payment/SelarPaymentModal';
 import { ChapterCompletionModal } from '../../components/ui/ChapterCompletionModal';
 import { fireConfetti } from '../../utils/confetti';
@@ -302,28 +304,32 @@ export const CourseReader = () => {
 
   const handleUnlockChapter = () => {
     if (!chapter) return;
-    setPaymentAmount(300);
+    setPaymentAmount(PRICES.module);
     setPaymentItemName(chapter.titre);
     setPaymentType('chapter');
     setIsPaymentModalOpen(true);
   };
 
-  // Calcul global du Booster Déductible pour ce tome
+  // Calcul global du Booster Déductible pour ce tome (crédit des modules déjà payés)
   const chaptersInTome = course?.chapitres.map(c => c.id) ?? [];
   const ownedChapters = chaptersInTome.filter(cId => unlockedCourses.includes(cId));
-  const deduction = ownedChapters.length * 300;
-  const finalTomePrice = Math.max(0, 1500 - deduction);
+  const deduction = ownedChapters.length * PRICES.module;
+  const finalTomePrice = Math.max(0, PRICES.tome - deduction);
 
   const handleUnlockTome = () => {
     setPaymentAmount(finalTomePrice);
-    setPaymentItemName(deduction > 0 ? `Le Tome Complet (-${deduction}F déduits pour tes chapitres)` : 'Le Tome Complet (Tous les chapitres)');
+    setPaymentItemName(deduction > 0 ? `Le Tome Complet (-${deduction}F déduits pour tes modules)` : 'Le Tome Complet (Tous les modules)');
     setPaymentType('tome');
     setIsPaymentModalOpen(true);
   };
 
   const handleUnlockCollection = () => {
-    setPaymentAmount(10000);
-    setPaymentItemName('La Collection Complète EDUCTOME');
+    // Offre fondateurs (12 000 jusqu'au 30 sept.) sinon prix standard 15 000, à vie.
+    // NB : le crédit au différentiel complet (modules + tomes déjà payés) sur la
+    // collection arrive avec l'intégration entitlements/Chariow (WS3).
+    const offer = getActiveCollectionOffer();
+    setPaymentAmount(offer.price);
+    setPaymentItemName(offer.active ? 'La Collection Complète — Membre Fondateur' : 'La Collection Complète EDUCTOME');
     setPaymentType('collection');
     setIsPaymentModalOpen(true);
   };

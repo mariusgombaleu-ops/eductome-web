@@ -105,7 +105,7 @@ export function Footer() {
                 <Heart className="w-3.5 h-3.5 text-eductome-magenta" /> Conçu à Abidjan pour les élèves
               </p>
               <p className="flex items-center gap-1.5 text-gray-400 font-medium">
-                <Shield className="w-3.5 h-3.5" /> Satisfait ou remboursé 7j
+                <Shield className="w-3.5 h-3.5" /> Essai gratuit · accès à vie
               </p>
             </div>
 

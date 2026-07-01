@@ -41,5 +41,5 @@ export const tomeTrigonometrie: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t6.png',
+  couverture: '/covers/tomes/Tome-06-Fonctions-Trigo.png',
 };

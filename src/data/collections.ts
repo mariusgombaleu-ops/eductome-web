@@ -19,7 +19,7 @@ export const collectionsData: Collection[] = [
     description: "Tout le programme de Terminale, tome par tome. Comprends enfin les notions qui te bloquent.",
     
     format: 'Livre physique + PDF',
-    tomeCount: 11,
+    tomeCount: 12,
     targetClass: 'Terminale D',
     
     objective: "Te faire maîtriser l'intégralité du programme de Mathématiques de Terminale, un chapitre à la fois, sans sauter d'étapes. 12 tomes pour transformer ta façon de penser les maths, de la première limite jusqu'aux équations différentielles.",
@@ -112,17 +112,18 @@ export const collectionsData: Collection[] = [
     ],
 
     tomes: [
-      { id: "cm-1", number: 1, title: 'Les Limites', chapters: ['Continuité', 'Asymptotes', 'Calculs', 'BAC'], coverImage: "/covers/tomes/cover-t1.png", image: "/covers/tomes/cover-t1.png" },
-      { id: "cm-2", number: 2, title: 'Les Dérivées', chapters: ['Tangentes', 'Variations', 'Optimisation', 'BAC'], coverImage: "/covers/tomes/cover-t2.png", image: "/covers/tomes/cover-t2.png" },
-      { id: "cm-3", number: 3, title: 'Intégrales & Primitives', chapters: ['Primitives', 'Aires', 'Volumes', 'BAC'], coverImage: "/covers/tomes/cover-t3.png", image: "/covers/tomes/cover-t3.png" },
-      { id: "cm-4", number: 4, title: 'Suites Numériques', coverImage: "/covers/tomes/cover-t4.png", image: "/covers/tomes/cover-t4.png" },
-      { id: "cm-5", number: 5, title: 'Log & Expo', coverImage: "/covers/tomes/cover-t5.png", image: "/covers/tomes/cover-t5.png" },
-      { id: "cm-6", number: 6, title: 'Fonctions Trigo', coverImage: "/covers/tomes/cover-t6.png", image: "/covers/tomes/cover-t6.png" },
-      { id: "cm-7", number: 7, title: 'Probabilités', coverImage: "/covers/tomes/cover-t7.png", image: "/covers/tomes/cover-t7.png" },
-      { id: "cm-8", number: 8, title: 'Statistiques', coverImage: "/covers/tomes/cover-t8.png", image: "/covers/tomes/cover-t8.png" },
-      { id: "cm-9", number: 9, title: 'Géométrie dans l\'Espace', coverImage: "/covers/tomes/cover-t9.jpeg", image: "/covers/tomes/cover-t9.jpeg" },
-      { id: "cm-10", number: 10, title: 'Nombres Complexes', coverImage: "/covers/tomes/cover-t10.png", image: "/covers/tomes/cover-t10.png" },
-      { id: "cm-11", number: 11, title: 'Équations Diff.', coverImage: "/covers/tomes/cover-t11.png", image: "/covers/tomes/cover-t11.png" }
+      { id: "cm-1", number: 1, title: 'Les Limites', chapters: ['Continuité', 'Asymptotes', 'Calculs', 'BAC'], coverImage: "/covers/tomes/Tome-01-Limites-Continuite.png", image: "/covers/tomes/Tome-01-Limites-Continuite.png" },
+      { id: "cm-2", number: 2, title: 'Les Dérivées', chapters: ['Tangentes', 'Variations', 'Optimisation', 'BAC'], coverImage: "/covers/tomes/Tome-02-Derivees-Variations.png", image: "/covers/tomes/Tome-02-Derivees-Variations.png" },
+      { id: "cm-3", number: 3, title: 'Intégrales & Primitives', chapters: ['Primitives', 'Aires', 'Volumes', 'BAC'], coverImage: "/covers/tomes/Tome-03-Primitives-Integrales.png", image: "/covers/tomes/Tome-03-Primitives-Integrales.png" },
+      { id: "cm-4", number: 4, title: 'Suites Numériques', coverImage: "/covers/tomes/Tome-04-Suites-Numeriques.png", image: "/covers/tomes/Tome-04-Suites-Numeriques.png" },
+      { id: "cm-5", number: 5, title: 'Log & Expo', coverImage: "/covers/tomes/Tome-05-Logarithme-Exponentielle.png", image: "/covers/tomes/Tome-05-Logarithme-Exponentielle.png" },
+      { id: "cm-6", number: 6, title: 'Fonctions Trigo', coverImage: "/covers/tomes/Tome-06-Fonctions-Trigo.png", image: "/covers/tomes/Tome-06-Fonctions-Trigo.png" },
+      { id: "cm-7", number: 7, title: 'Probabilités', coverImage: "/covers/tomes/Tome-07-Probabilites.png", image: "/covers/tomes/Tome-07-Probabilites.png" },
+      { id: "cm-8", number: 8, title: 'Statistiques', coverImage: "/covers/tomes/Tome-08-Statistiques.png", image: "/covers/tomes/Tome-08-Statistiques.png" },
+      { id: "cm-9", number: 9, title: 'Géométrie dans l\'Espace', coverImage: "/covers/tomes/Tome-09-Geometrie-Espace.png", image: "/covers/tomes/Tome-09-Geometrie-Espace.png" },
+      { id: "cm-10", number: 10, title: 'Nombres Complexes', coverImage: "/covers/tomes/Tome-10-Nombres-Complexes.png", image: "/covers/tomes/Tome-10-Nombres-Complexes.png" },
+      { id: "cm-11", number: 11, title: 'Équations Diff.', coverImage: "/covers/tomes/Tome-11-Equations-Differentielles.png", image: "/covers/tomes/Tome-11-Equations-Differentielles.png" },
+      { id: "cm-12", number: 12, title: 'Révisions BAC', coverImage: "/covers/tomes/Tome-12-Revisions-BAC.png", image: "/covers/tomes/Tome-12-Revisions-BAC.png" }
     ],
     
     faq: [

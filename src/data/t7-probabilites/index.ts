@@ -41,5 +41,5 @@ export const tomeProbabilites: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t7.png',
+  couverture: '/covers/tomes/Tome-07-Probabilites.png',
 };

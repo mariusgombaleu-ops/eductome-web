@@ -41,5 +41,5 @@ export const tomeStatistiques: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t8.png',
+  couverture: '/covers/tomes/Tome-08-Statistiques.png',
 };

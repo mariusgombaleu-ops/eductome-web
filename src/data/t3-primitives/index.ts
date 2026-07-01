@@ -45,5 +45,5 @@ export const tomePrimitives: Tome = {
     tome: 1500,
   },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t3.png',
+  couverture: '/covers/tomes/Tome-03-Primitives-Integrales.png',
 };

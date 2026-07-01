@@ -35,5 +35,5 @@ export const tomeRevisionsBac: Tome = {
   ],
   prix: { chapitre: 300, tome: 1500 },
   couleurCollection: '#1A3557',
-  couverture: '/covers/tomes/cover-t12.png',
+  couverture: '/covers/tomes/Tome-12-Revisions-BAC.png',
 };
