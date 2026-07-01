@@ -49,7 +49,7 @@ export function Hero() {
   const titleWords = "Le premier manuel qui t'explique".split(' ');
 
   return (
-    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-16 md:pb-20 overflow-hidden">
+    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-12 md:pb-16 overflow-hidden">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#1A3557] to-[#0a1628] animate-gradient-shift z-0" />
 
@@ -74,14 +74,14 @@ export function Hero() {
           loading="eager"
         />
         {/* Dégradé au bas seulement — laisse le visage respirer */}
-        <div className="absolute inset-x-0 bottom-0 h-[62%] lg:h-[68%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/75 to-transparent z-[3]" />
+        <div className="absolute inset-x-0 bottom-0 h-[55%] lg:h-[60%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/70 to-transparent z-[3]" />
       </div>
 
       {/* Content */}
       <div className="relative z-30 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center mt-auto">
         {/* Badge */}
         <span
-          className="animate-stagger-in inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 tracking-widest uppercase text-[11px] md:text-xs px-4 py-2 rounded-full mb-4 md:mb-6 border border-white/15 shadow-lg"
+          className="animate-stagger-in inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 tracking-widest uppercase text-[11px] md:text-xs px-4 py-2 rounded-full mb-2.5 md:mb-4 border border-white/15 shadow-lg"
           style={{ animationDelay: '0.1s' }}
         >
           <span className="w-2.5 h-2.5 rounded-full bg-[#FF3D8B] animate-soft-blink shadow-[0_0_8px_1px_rgba(255,61,139,0.6)]" />
@@ -109,7 +109,7 @@ export function Hero() {
         </h1>
 
         {/* Typewriter subtitle */}
-        <div className="mb-5 md:mb-8 h-10 md:h-12 flex items-center justify-center">
+        <div className="mb-3 md:mb-5 h-8 md:h-10 flex items-center justify-center">
           <p className="text-base md:text-xl lg:text-2xl text-white/90 font-medium drop-shadow-md">
             <span>{displayText}</span>
             <span className="typewriter-cursor" />
