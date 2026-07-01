@@ -1,4 +1,5 @@
 import { Hero } from '../components/home/Hero';
+import { SocialProofStrip } from '../components/home/SocialProofStrip';
 import { FoundersOfferBanner } from '../components/home/FoundersOfferBanner';
 import { RecognizeSection } from '../components/home/RecognizeSection';
 import { DifferenceSection } from '../components/home/DifferenceSection';
@@ -24,7 +25,10 @@ export function Home() {
       {/* 1. Hero Cinématique */}
       <Hero />
 
-      {/* 1bis. Offre fondateurs (auto-affichée jusqu'au 30 sept, sinon masquée) */}
+      {/* 1bis. Bande de preuve sociale (sortie du hero pour l'aérer) */}
+      <SocialProofStrip />
+
+      {/* 1ter. Offre fondateurs (auto-affichée jusqu'au 30 sept, sinon masquée) */}
       <FoundersOfferBanner />
 
       {/* 2. Le Problème — "Tu te reconnais ?" + Citation Fondateur */}

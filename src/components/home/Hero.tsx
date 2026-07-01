@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Star, BookOpen, ChevronDown } from 'lucide-react';
-import { AnimatedCounter } from '../ui/AnimatedCounter';
-import { MATHS_TOME_IDS } from '../../data/skus';
+import { ChevronDown, Check } from 'lucide-react';
 
 const subtitles = [
   'Comprends enfin tes cours.',
@@ -72,11 +70,11 @@ export function Hero() {
         <img
           src="/images/hero_ivorian_student_hd.png"
           alt="Élève ivoirien confiant qui révise avec succès avec un manuel EDUCTOME"
-          className="w-full h-full object-cover object-top opacity-70"
+          className="w-full h-full object-cover object-top opacity-95"
           loading="eager"
         />
-        {/* Stronger gradient for text contrast */}
-        <div className="absolute inset-x-0 bottom-0 h-[70%] lg:h-[75%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/85 to-transparent z-[3]" />
+        {/* Dégradé au bas seulement — laisse le visage respirer */}
+        <div className="absolute inset-x-0 bottom-0 h-[62%] lg:h-[68%] bg-gradient-to-t from-[#0a1628] via-[#0a1628]/75 to-transparent z-[3]" />
       </div>
 
       {/* Content */}
@@ -91,7 +89,7 @@ export function Hero() {
         </span>
 
         {/* Title with stagger animation */}
-        <h1 className="font-poppins text-[1.7rem] md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.15] text-white mb-2 md:mb-3">
+        <h1 className="font-poppins text-[1.7rem] md:text-4xl lg:text-[3.5rem] font-extrabold leading-[1.15] text-white mb-2 md:mb-3 [text-shadow:_0_2px_18px_rgba(4,10,22,0.55)]">
           {titleWords.map((word, i) => (
             <span
               key={i}
@@ -103,7 +101,7 @@ export function Hero() {
           ))}
           <br className="block md:hidden xl:block" />
           <span
-            className="animate-stagger-in text-eductome-magenta font-playfair italic font-normal inline-block whitespace-nowrap"
+            className="animate-stagger-in text-[#FF6AA8] font-playfair italic font-normal inline-block whitespace-nowrap [text-shadow:_0_2px_18px_rgba(4,10,22,0.55)]"
             style={{ animationDelay: `${0.3 + titleWords.length * 0.08}s` }}
           >
             comme un grand frère.
@@ -120,7 +118,7 @@ export function Hero() {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8 w-full sm:w-auto animate-stagger-in"
+          className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 w-full sm:w-auto animate-stagger-in"
           style={{ animationDelay: '1s' }}
         >
           <Link
@@ -137,34 +135,18 @@ export function Hero() {
           </Link>
         </div>
 
-        {/* Animated Social Proof Bar */}
+        {/* Levée de risque — le déclencheur de clic */}
         <div
-          className="animate-stagger-in flex flex-wrap items-center justify-center gap-5 md:gap-8 mb-4"
-          style={{ animationDelay: '1.2s' }}
+          className="animate-stagger-in flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 mb-6 md:mb-8 text-white/80 text-[12px] md:text-sm font-medium"
+          style={{ animationDelay: '1.1s' }}
         >
-          <AnimatedCounter
-            end={3200}
-            prefix="+"
-            label="élèves ivoiriens"
-            icon={<Users className="w-5 h-5 text-eductome-magenta" />}
-          />
-          <div className="w-px h-8 bg-white/20 hidden sm:block" />
-          <AnimatedCounter
-            end={49}
-            suffix="/5 ★"
-            label="satisfaction"
-            icon={<Star className="w-5 h-5 text-yellow-400" />}
-            duration={800}
-          />
-          <div className="w-px h-8 bg-white/20 hidden sm:block" />
-          <AnimatedCounter
-            end={MATHS_TOME_IDS.length}
-            suffix=" tomes"
-            label="programme complet"
-            icon={<BookOpen className="w-5 h-5 text-eductome-sky" />}
-            duration={800}
-          />
+          {['Gratuit pour commencer', 'Sans carte bancaire', 'Accès à vie'].map((t) => (
+            <span key={t} className="inline-flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-eductome-magenta" strokeWidth={3} /> {t}
+            </span>
+          ))}
         </div>
+
       </div>
 
       {/* Scroll indicator */}
