@@ -49,7 +49,7 @@ export function Hero() {
   const titleWords = "Le premier manuel qui t'explique".split(' ');
 
   return (
-    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-5 md:pb-10 overflow-hidden">
+    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-16 md:pb-20 overflow-hidden">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#1A3557] to-[#0a1628] animate-gradient-shift z-0" />
 
@@ -81,11 +81,11 @@ export function Hero() {
       <div className="relative z-30 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center mt-auto">
         {/* Badge */}
         <span
-          className="animate-stagger-in inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 font-bold tracking-widest uppercase text-[11px] md:text-xs px-4 py-2 rounded-full mb-4 md:mb-6 border border-white/15 shadow-lg"
+          className="animate-stagger-in inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 tracking-widest uppercase text-[11px] md:text-xs px-4 py-2 rounded-full mb-4 md:mb-6 border border-white/15 shadow-lg"
           style={{ animationDelay: '0.1s' }}
         >
-          <span className="w-2 h-2 rounded-full bg-eductome-magenta animate-pulse" />
-          BEPC & BAC Ivoirien
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FF3D8B] animate-soft-blink shadow-[0_0_8px_1px_rgba(255,61,139,0.6)]" />
+          <span className="font-extrabold text-white">BAC</span> &amp; <span className="font-extrabold text-white">BEPC</span> Ivoirien
         </span>
 
         {/* Title with stagger animation */}
@@ -101,7 +101,7 @@ export function Hero() {
           ))}
           <br className="block md:hidden xl:block" />
           <span
-            className="animate-stagger-in text-[#FF6AA8] font-playfair italic font-normal inline-block whitespace-nowrap [text-shadow:_0_2px_18px_rgba(4,10,22,0.55)]"
+            className="animate-stagger-in text-[#FF3D8B] font-playfair italic font-normal inline-block whitespace-nowrap"
             style={{ animationDelay: `${0.3 + titleWords.length * 0.08}s` }}
           >
             comme un grand frère.
@@ -123,7 +123,7 @@ export function Hero() {
         >
           <Link
             to="/register"
-            className="inline-flex items-center justify-center font-bold px-6 py-3.5 md:px-8 md:py-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 bg-gradient-to-r from-eductome-magenta to-[#f02b74] text-white shadow-lg animate-cta-glow text-sm md:text-base"
+            className="inline-flex items-center justify-center font-bold px-6 py-3.5 md:px-8 md:py-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 bg-gradient-to-r from-[#F0247A] to-[#FF3D8B] text-white shadow-lg animate-cta-glow text-sm md:text-base"
           >
             Commencer gratuitement →
           </Link>

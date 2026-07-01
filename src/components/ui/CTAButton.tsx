@@ -14,7 +14,7 @@ export function CTAButton({ to, href, children, variant = 'primary', className =
   const baseStyles = "inline-flex items-center justify-center font-bold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 text-center";
   
   const variants = {
-    primary: "bg-gradient-to-r from-eductome-magenta to-[#f02b74] text-white animate-pulse-glow shadow-lg",
+    primary: "bg-gradient-to-r from-[#F0247A] to-[#FF3D8B] text-white animate-pulse-glow shadow-lg",
     secondary: "bg-transparent border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm"
   };
 

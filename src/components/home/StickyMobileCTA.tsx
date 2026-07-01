@@ -35,7 +35,7 @@ export function StickyMobileCTA() {
       <div className="flex items-center gap-3">
         <Link
           to="/register"
-          className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-eductome-magenta to-[#f02b74] text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-pink-500/25 active:scale-95 transition-transform text-sm"
+          className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#F0247A] to-[#FF3D8B] text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-pink-500/25 active:scale-95 transition-transform text-sm"
         >
           Commencer gratuitement
           <ArrowRight className="w-4 h-4" />

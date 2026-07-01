@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="bg-eductome-dark text-white relative">
       {/* Mini CTA Banner */}
-      <div className="bg-gradient-to-r from-eductome-magenta to-[#f02b74] py-4 px-4">
+      <div className="bg-gradient-to-r from-[#F0247A] to-[#FF3D8B] py-4 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white font-bold text-sm md:text-base text-center sm:text-left">
             Prêt à commencer ? Ton premier chapitre est gratuit.

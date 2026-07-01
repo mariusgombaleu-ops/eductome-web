@@ -833,3 +833,140 @@ export const trackRelaisSale = onRequest({ cors: CORS_ORIGINS }, async (req, res
     res.status(500).json({ success: false, message: "Erreur interne du serveur." });
   }
 });
+
+// ─── Migration one-shot : unlockedCourses/achats → entitlements ──────────────
+// WS1. Backfille le champ `users/{uid}.entitlements` (droits à vie) depuis le
+// modèle historique. Réservé aux admins. Dry-run par défaut : n'écrit QUE si
+// ?apply=true. ?uid=<uid> pour cibler un seul compte (test). Idempotente
+// (recalcul complet + set). Miroir de src/utils/entitlements.ts::entitlementsFromLegacy.
+export const migrateEntitlements = onRequest({ cors: CORS_ORIGINS }, async (req, res) => {
+  let decoded: admin.auth.DecodedIdToken;
+  try {
+    decoded = await verifyFirebaseToken(req);
+  } catch {
+    res.status(401).json({ success: false, message: "Non autorisé — token Firebase requis" });
+    return;
+  }
+  if (decoded.isAdmin !== true) {
+    res.status(403).json({ success: false, message: "Réservé aux administrateurs." });
+    return;
+  }
+
+  const apply = req.query.apply === "true"; // sinon : dry-run (aucune écriture)
+  const onlyUid = typeof req.query.uid === "string" ? req.query.uid : null;
+  const db = admin.firestore();
+
+  const MATHS_TOMES = [
+    "t1-limites", "t2-derivees", "t3-primitives", "t4-suites", "t5-log-expo",
+    "t6-trigonometrie", "t7-probabilites", "t8-statistiques", "t9-geometrie-espace",
+    "t10-complexes", "t11-equations-diff", "t12-revisions-bac",
+  ];
+  const COLLECTION = "cles-maths";
+
+  const legacyToEntitlements = (unlockedCourses: string[], achats: any[]): any[] => {
+    const seen = new Set<string>();
+    const out: any[] = [];
+    const push = (scope: string, ref: string, source: string, grantedAt: string, orderId?: string) => {
+      if (!ref) return;
+      const key = `${scope}:${ref}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const e: any = { scope, ref, source, grantedAt };
+      if (orderId) e.orderId = String(orderId);
+      out.push(e);
+    };
+
+    for (const a of achats) {
+      const grantedAt: string =
+        a.date ||
+        (a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toISOString() : null) ||
+        new Date().toISOString();
+      const orderId = a.ref_commande_selar;
+      const ref = a.reference;
+      switch (a.type) {
+        case "collection": push("collection", ref || COLLECTION, "chariow", grantedAt, orderId); break;
+        case "physique": push("tome", ref, "book", grantedAt, orderId); break;
+        case "tome": push("tome", ref, "chariow", grantedAt, orderId); break;
+        case "chapitre":
+          if (ref && ref.includes(":")) push("module", ref, "chariow", grantedAt, orderId);
+          else push("tome", ref, "chariow", grantedAt, orderId);
+          break;
+        default: break;
+      }
+    }
+
+    for (const c of unlockedCourses) {
+      if (c === "cles-maths" || c === "collection_maths") {
+        push("collection", COLLECTION, "chariow", new Date().toISOString());
+      } else {
+        push("tome", c, "chariow", new Date().toISOString());
+      }
+    }
+
+    // Dédup : une collection rend ses tomes redondants ; un tome rend ses modules redondants.
+    const hasCollection = out.some((e) => e.scope === "collection" && e.ref === COLLECTION);
+    return out.filter((e) => {
+      if (e.scope === "tome" && hasCollection && MATHS_TOMES.includes(e.ref)) return false;
+      if (e.scope === "module") {
+        const tome = e.ref.split(":")[0];
+        const tomeOwned = out.some((o) => o.scope === "tome" && o.ref === tome) ||
+          (hasCollection && MATHS_TOMES.includes(tome));
+        if (tomeOwned) return false;
+      }
+      return true;
+    });
+  };
+
+  try {
+    // 1 seule lecture des achats, groupés par compte_id.
+    const achatsByUid = new Map<string, any[]>();
+    const achatsSnap = await db.collection("achats").get();
+    achatsSnap.forEach((d) => {
+      const a = d.data();
+      const uid = a.compte_id;
+      if (!uid) return;
+      const arr = achatsByUid.get(uid) || [];
+      arr.push(a);
+      achatsByUid.set(uid, arr);
+    });
+
+    const userDocs = onlyUid
+      ? [await db.collection("users").doc(onlyUid).get()]
+      : (await db.collection("users").get()).docs;
+
+    let processed = 0;
+    let withEntitlements = 0;
+    let written = 0;
+    const samples: any[] = [];
+
+    for (const doc of userDocs) {
+      if (!doc.exists) continue;
+      processed++;
+      const data = doc.data() || {};
+      const unlocked: string[] = Array.isArray(data.unlockedCourses) ? data.unlockedCourses : [];
+      const userAchats = achatsByUid.get(doc.id) || [];
+      const ents = legacyToEntitlements(unlocked, userAchats);
+      if (ents.length > 0) withEntitlements++;
+      if (samples.length < 5) samples.push({ uid: doc.id, count: ents.length, entitlements: ents });
+      if (apply && ents.length > 0) {
+        await doc.ref.update({
+          entitlements: ents,
+          entitlementsMigratedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+        written++;
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      mode: apply ? "APPLY" : "DRY_RUN",
+      usersProcessed: processed,
+      usersWithEntitlements: withEntitlements,
+      docsWritten: written,
+      samples,
+    });
+  } catch (error) {
+    console.error("Erreur migrateEntitlements:", error);
+    res.status(500).json({ success: false, message: "Erreur interne du serveur." });
+  }
+});

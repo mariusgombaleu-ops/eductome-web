@@ -50,7 +50,7 @@ export function Navbar() {
 
   const isTransparent = isHome && !scrolled && !isOpen && !isClosing;
 
-  const primaryCta = 'inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-eductome-magenta to-[#f02b74] text-white font-bold rounded-full shadow-lg shadow-pink-500/25 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300';
+  const primaryCta = 'inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#F0247A] to-[#FF3D8B] text-white font-bold rounded-full shadow-lg shadow-pink-500/25 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300';
 
   return (
     <>

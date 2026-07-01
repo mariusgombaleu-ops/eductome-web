@@ -1,10 +1,17 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from './ToastContext';
 import { BADGES } from '../constants/badges';
 import { useAuth } from './AuthContext';
 import { db } from '../config/firebase';
 import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, increment, collection, query, where } from 'firebase/firestore';
 import { Achat } from '../types';
+import {
+  entitlementsFromLegacy,
+  canAccess as canAccessEntitlement,
+  isMember as isMemberEntitlement,
+  Entitlement,
+} from '../utils/entitlements';
+import { Resource } from '../data/skus';
 
 export interface UserLevel {
   level: number;
@@ -55,6 +62,12 @@ interface UserContextType {
   unlockedCourses: string[];
   achats: Achat[];
   statut: 'gratuit' | 'famille';
+  /** Droits à vie (module ⊂ tome ⊂ collection). Lus depuis le doc, sinon dérivés du legacy. */
+  entitlements: Entitlement[];
+  /** Accès effectif à une ressource protégée, en remontant la hiérarchie des droits. */
+  hasAccess: (resource: Resource) => boolean;
+  /** true si l'utilisateur possède au moins un droit payant. */
+  isMember: boolean;
   currentStreak: number;
   email_selar?: string;
   activityHistory: Record<string, number>;
@@ -98,6 +111,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [unlockedCourses, setUnlockedCourses] = useState<string[]>([]);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [statut, setStatut] = useState<'gratuit' | 'famille'>('gratuit');
+  const [firestoreEntitlements, setFirestoreEntitlements] = useState<Entitlement[]>([]);
   const [currentStreak, setCurrentStreak] = useState<number>(1);
   const [email_selar, setEmailSelar] = useState<string | undefined>(undefined);
   const streakUpdatedRef = useRef(false);
@@ -126,6 +140,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUnlockedCourses([]);
       setAchats([]);
       setStatut('gratuit');
+      setFirestoreEntitlements([]);
       setCurrentStreak(1);
       setEmailSelar(undefined);
       setActivityHistory({});
@@ -151,6 +166,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const data = docSnap.data();
         setXp(data.xp || 0);
         setUnlockedCourses(data.unlockedCourses || []);
+        setFirestoreEntitlements((data.entitlements as Entitlement[]) || []);
         setUnlockedBadges(data.unlockedBadges || []);
         setRewardedActions(new Set(data.rewardedActions || []));
         setActivityHistory(data.activityHistory || {});
@@ -659,14 +675,33 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Droits à vie : source de vérité = champ `entitlements` du doc Firestore (écrit par
+  // les Cloud Functions). Tant que la migration n'a pas tourné, on dérive du legacy
+  // (`unlockedCourses` + `achats`) pour rester rétro-compatible.
+  const entitlements = useMemo<Entitlement[]>(
+    () =>
+      firestoreEntitlements.length > 0
+        ? firestoreEntitlements
+        : entitlementsFromLegacy(unlockedCourses, achats as any),
+    [firestoreEntitlements, unlockedCourses, achats],
+  );
+  const isMember = useMemo(() => isMemberEntitlement(entitlements), [entitlements]);
+  const hasAccess = useMemo(
+    () => (resource: Resource) => canAccessEntitlement(entitlements, resource),
+    [entitlements],
+  );
+
   return (
-    <UserContext.Provider value={{ 
-      xp, 
-      level: getLevelFromXp(xp), 
-      unlockedBadges, 
-      unlockedCourses, 
+    <UserContext.Provider value={{
+      xp,
+      level: getLevelFromXp(xp),
+      unlockedBadges,
+      unlockedCourses,
       achats,
       statut,
+      entitlements,
+      hasAccess,
+      isMember,
       currentStreak,
       email_selar,
       activityHistory,
