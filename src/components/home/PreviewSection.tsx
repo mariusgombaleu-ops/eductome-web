@@ -471,13 +471,15 @@ export function PreviewSection() {
                 label="élèves utilisent EDUCTOME"
                 icon={<Users className="w-5 h-5 text-eductome-magenta" />}
               />
-              <AnimatedCounter
-                end={49}
-                suffix="/5"
-                label="satisfaction moyenne"
-                icon={<Star className="w-5 h-5 text-yellow-500" />}
-                duration={800}
-              />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                </div>
+                <div>
+                  <div className="text-white font-extrabold text-xl leading-none tracking-tight">4,9<span className="text-blue-200">/5</span></div>
+                  <div className="text-blue-200 text-xs mt-1 font-medium">satisfaction moyenne</div>
+                </div>
+              </div>
               <AnimatedCounter
                 end={MATHS_TOME_IDS.length}
                 suffix=" tomes"

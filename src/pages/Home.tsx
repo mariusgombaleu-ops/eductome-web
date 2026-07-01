@@ -1,5 +1,4 @@
 import { Hero } from '../components/home/Hero';
-import { SocialProofStrip } from '../components/home/SocialProofStrip';
 import { FoundersOfferBanner } from '../components/home/FoundersOfferBanner';
 import { RecognizeSection } from '../components/home/RecognizeSection';
 import { DifferenceSection } from '../components/home/DifferenceSection';
@@ -25,12 +24,6 @@ export function Home() {
       {/* 1. Hero Cinématique */}
       <Hero />
 
-      {/* 1bis. Bande de preuve sociale (sortie du hero pour l'aérer) */}
-      <SocialProofStrip />
-
-      {/* 1ter. Offre fondateurs (auto-affichée jusqu'au 30 sept, sinon masquée) */}
-      <FoundersOfferBanner />
-
       {/* 2. Le Problème — "Tu te reconnais ?" + Citation Fondateur */}
       <RecognizeSection />
 
@@ -48,7 +41,11 @@ export function Home() {
       {/* 5. Collections & Formats */}
       <CollectionsSection />
 
-      {/* 5bis. Tarifs — échelle de prix à vie (Gratuit → Module → Tome → Collection) */}
+      {/* 5bis. Offre fondateurs — placée APRÈS la découverte de la valeur (pas à l'entrée).
+          La vente devient une récompense, jamais le premier contact. */}
+      <FoundersOfferBanner />
+
+      {/* 5ter. Tarifs — échelle de prix à vie (Gratuit → Module → Tome → Collection) */}
       <PricingSection />
 
       {/* 6. Goûte Gratuitement — Ressources gratuites */}

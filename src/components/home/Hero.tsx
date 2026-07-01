@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Check } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const subtitles = [
   'Comprends enfin tes cours.',
@@ -49,7 +49,7 @@ export function Hero() {
   const titleWords = "Le premier manuel qui t'explique".split(' ');
 
   return (
-    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-6 md:pb-12 overflow-hidden">
+    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-end pt-16 pb-5 md:pb-10 overflow-hidden">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#1A3557] to-[#0a1628] animate-gradient-shift z-0" />
 
@@ -133,18 +133,6 @@ export function Hero() {
           >
             Voir un extrait gratuit
           </Link>
-        </div>
-
-        {/* Levée de risque — le déclencheur de clic */}
-        <div
-          className="animate-stagger-in flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 mb-6 md:mb-8 text-white/80 text-[12px] md:text-sm font-medium"
-          style={{ animationDelay: '1.1s' }}
-        >
-          {['Gratuit pour commencer', 'Sans carte bancaire', 'Accès à vie'].map((t) => (
-            <span key={t} className="inline-flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-eductome-magenta" strokeWidth={3} /> {t}
-            </span>
-          ))}
         </div>
 
       </div>
